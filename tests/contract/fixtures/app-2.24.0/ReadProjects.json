@@ -1,0 +1,41 @@
+{
+  "projects": [
+    {
+      "id": "35a91681-3803-4f71-ad47-7d81acaa2f6c",
+      "name": "<name>",
+      "projectResources": {
+        "resources": [
+          {
+            "folderUri": "file:///tmp/TMP/folder-db8bca60"
+          }
+        ]
+      }
+    },
+    {
+      "id": "a7e11e00-1106-4000-8000-000000000001",
+      "name": "<name>",
+      "projectResources": {
+        "resources": [
+          {
+            "folderUri": "file:///tmp/TMP/folder-db8bca60"
+          }
+        ]
+      },
+      "permissionGrants": {
+        "v2Migrated": true
+      },
+      "settings": {
+        "autoExecutionPolicy": "CASCADE_COMMANDS_AUTO_EXECUTION_OFF"
+      }
+    },
+    {
+      "id": "default-cli-project",
+      "name": "<name>",
+      "projectResources": {}
+    },
+    {
+      "id": "outside-of-project",
+      "name": "<name>"
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "skills": [
+    {
+      "path": "/Users/USER/.gemini/antigravity/builtin/skills/agy-customizations/SKILL.md",
+      "name": "<name>",
+      "description": "<description:238>",
+      "content": "<content:5169>",
+      "isBuiltin": true,
+      "scope": {
+        "globalScope": {}
+      },
+      "baseDir": "file:///Users/USER/.gemini/antigravity/builtin",
+      "discoveredIn": "builtin",
+      "discoveryCategory": "DISCOVERY_CATEGORY_BUILTIN"
+    },
+    {
+      "path": "/Users/USER/.gemini/antigravity/builtin/skills/antigravity_guide/SKILL.md",
+      "name": "<name>",
+      "description": "<description:416>",
+      "content": "<content:2559>",
+      "isBuiltin": true,
+      "scope": {
+        "globalScope": {}
+      },
+      "baseDir": "file:///Users/USER/.gemini/antigravity/builtin",
+      "discoveredIn": "builtin",
+      "discoveryCategory": "DISCOVERY_CATEGORY_BUILTIN"
+    },
+    {
+      "path": "/Users/USER/.gemini/antigravity/builtin/skills/automation/SKILL.md",
+      "name": "<name>",
+      "description": "<description:289>",
+      "content": "<content:9880>",
+      "isBuiltin": true,
+      "scope": {
+        "globalScope": {}
+      },
+      "baseDir": "file:///Users/USER/.gemini/antigravity/builtin",
+      "discoveredIn": "builtin",
+      "discoveryCategory": "DISCOVERY_CATEGORY_BUILTIN",
+      "icon": "schedule"
+    },
+    {
+      "path": "/Users/USER/.gemini/config/skills/context7/SKILL.md",
+      "name": "<name>",
+      "description": "<description:367>",
+      "content": "<content:2068>",
+      "scope": {
+        "globalScope": {}
+      },
+      "baseDir": "file:///Users/USER/.gemini/config",
+      "discoveredIn": "~/.gemini/config/skills",
+      "discoveryCategory": "DISCOVERY_CATEGORY_INSTALLED"
+    },
+    {
+      "path": "/Users/USER/.gemini/antigravity/builtin/skills/generative_ui/SKILL.md",
+      "name": "<name>",
+      "description": "<description:274>",
+      "content": "<content:5500>",
+      "isBuiltin": true,
+      "scope": {
+        "globalScope": {}
+      },
+      "baseDir": "file:///Users/USER/.gemini/antigravity/builtin",
+      "discoveredIn": "builtin",
+      "discoveryCategory": "DISCOVERY_CATEGORY_BUILTIN"
+    },
+    {
+      "path": "/Users/USER/.gemini/antigravity/builtin/skills/migrate-workflows/SKILL.md",
+      "name": "<name>",
+      "description": "<description:200>",
+      "content": "<content:5791>",
+      "isBuiltin": true,
+      "scope": {
+        "globalScope": {}
+      },
+      "baseDir": "file:///Users/USER/.gemini/antigravity/builtin",
+      "discoveredIn": "builtin",
+      "discoveryCategory": "DISCOVERY_CATEGORY_BUILTIN"
+    },
+    {
+      "path": "/Users/USER/.gemini/antigravity/builtin/skills/permissioned-github/SKILL.md",
+      "name": "<name>",
+      "description": "<description:141>",
+      "content": "<content:8102>",
+      "isBuiltin": true,
+      "scope": {
+        "globalScope": {}
+      },
+      "baseDir": "file:///Users/USER/.gemini/antigravity/builtin",
+      "discoveredIn": "builtin",
+      "discoveryCategory": "DISCOVERY_CATEGORY_BUILTIN"
+    },
+    {
+      "path": "/Users/USER/.gemini/antigravity/builtin/skills/plugin/SKILL.md",
+      "name": "<name>",
+      "description": "<description:630>",
+      "content": "<content:9999>",
+      "isBuiltin": true,
+      "scope": {
+        "globalScope": {}
+      },
+      "baseDir": "file:///Users/USER/.gemini/antigravity/builtin",
+      "discoveredIn": "builtin",
+      "discoveryCategory": "DISCOVERY_CATEGORY_BUILTIN"
+    },
+    {
+      "path": "/Users/USER/.gemini/antigravity/builtin/skills/ui-plugin-navigation/SKILL.md",
+      "name": "<name>",
+      "description": "<description:297>",
+      "content": "<content:3194>",
+      "isBuiltin": true,
+      "scope": {
+        "globalScope": {}
+      },
+      "baseDir": "file:///Users/USER/.gemini/antigravity/builtin",
+      "disableSlashCommand": true,
+      "discoveredIn": "builtin",
+      "discoveryCategory": "DISCOVERY_CATEGORY_BUILTIN"
+    }
+  ]
+}
