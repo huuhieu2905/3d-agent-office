@@ -191,10 +191,10 @@ V). Vì vậy chỉ những test này được đưa vào. Các test khác là t
 
 **Independent Test**: quickstart V8. Bấm giờ một lượt cài mới trên macOS.
 
-- [ ] T075 [US8] Viết `scripts/install.sh` (bash, `set -euo pipefail`): kiểm tra `uname` là Darwin (khác thì báo "chỉ hỗ trợ macOS"); kiểm tra Node ≥ 22, nếu thiếu thì in lệnh cài `fnm` và dừng; chạy `npm ci`, `npm run build`. **Không** đọc dữ liệu hay phiên bản của Antigravity App trong script (Constitution II). Việc kiểm tra App và phiên bản do adapter làm khi `npm start`, và script chỉ in lời nhắc "Hãy mở Antigravity App 2.24.0 trước khi chạy `npm start`"
-- [ ] T076 [US8] Viết `docs/INSTALL.md`: yêu cầu (macOS 13+, Antigravity App 2.24.0 đang mở, Chrome/Edge/Firefox), các bước cài Node qua `fnm`, `git clone`, `./scripts/install.sh`, `npm start`; mục "Xử lý sự cố" (App chưa mở, cảnh báo sai phiên bản, cổng 4317 bận thì dùng `AGENT_OFFICE_PORT`, trình duyệt không mở tự động); vị trí dữ liệu `~/Library/Application Support/agent-office/`
-- [ ] T077 [US8] Cập nhật `README.md` ở thư mục gốc: giới thiệu ngắn, ảnh chụp màn hình, liên kết `docs/INSTALL.md`, ghi rõ "Linux: hoãn"
-- [ ] T078 [US8] Kiểm chứng cài đặt mới trên macOS (máy sạch hoặc user macOS mới), có bấm giờ. Ghi kết quả (thời gian, vướng mắc) vào `docs/INSTALL.md` mục "Đã kiểm chứng" và sửa hướng dẫn nếu vượt 15 phút
+- [X] T075 [US8] Viết `scripts/install.sh` (bash, `set -euo pipefail`): kiểm tra `uname` là Darwin (khác thì báo "chỉ hỗ trợ macOS"); kiểm tra Node ≥ 22, nếu thiếu thì in lệnh cài `fnm` và dừng; chạy `npm ci`, `npm run build`. **Không** đọc dữ liệu hay phiên bản của Antigravity App trong script (Constitution II). Việc kiểm tra App và phiên bản do adapter làm khi `npm start`, và script chỉ in lời nhắc "Hãy mở Antigravity App 2.24.0 trước khi chạy `npm start`"
+- [X] T076 [US8] Viết `docs/INSTALL.md`: yêu cầu (macOS 13+, Antigravity App 2.24.0 đang mở, Chrome/Edge/Firefox), các bước cài Node qua `fnm`, `git clone`, `./scripts/install.sh`, `npm start`; mục "Xử lý sự cố" (App chưa mở, cảnh báo sai phiên bản, cổng 4317 bận thì dùng `AGENT_OFFICE_PORT`, trình duyệt không mở tự động); vị trí dữ liệu `~/Library/Application Support/agent-office/`
+- [X] T077 [US8] Cập nhật `README.md` ở thư mục gốc: giới thiệu ngắn, ảnh chụp màn hình, liên kết `docs/INSTALL.md`, ghi rõ "Linux: hoãn"
+- [X] T078 [US8] Kiểm chứng cài đặt mới trên macOS (máy sạch hoặc user macOS mới), có bấm giờ. Ghi kết quả (thời gian, vướng mắc) vào `docs/INSTALL.md` mục "Đã kiểm chứng" và sửa hướng dẫn nếu vượt 15 phút
 
 **Checkpoint**: **Kết thúc Đợt 1** (US1 + US2 + US8). Chạy đủ 5 cổng chất lượng: (1) `npm test`; (2) `AGENT_OFFICE_LIVE=1 npm run test:live -- latency`; (3) `npm run test:leaks`; (4) `npm run bench:fps` (văn phòng, chưa có công viên); (5) quickstart V8. Thêm quickstart V1 và V2. Bắt đầu đo SC-001 bằng bộ đếm sử dụng trong 2–4 tuần.
 

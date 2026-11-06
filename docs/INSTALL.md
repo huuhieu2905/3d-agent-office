@@ -80,4 +80,9 @@ rm -rf agent-office "$HOME/Library/Application Support/agent-office"
 
 ## Đã kiểm chứng
 
-_Cập nhật sau mỗi lần cài thử (T078)._
+| Ngày | Máy | Kết quả |
+|---|---|---|
+| 2026-11-06 | MacBook Pro M1 Pro, macOS, Antigravity App 2.24.0 | Cài Node 22 qua `fnm`: khoảng 1 phút. `git clone` + `./scripts/install.sh` + `npm start` từ bản clone sạch: **6 giây** (npm cache có sẵn). Kết nối App thành công. |
+
+> Chưa kiểm chứng: một người dùng mới trên **một máy Mac khác** chưa có cache npm (SC-005: ≤ 15 phút). Lần cài
+> đầu tiên tải khoảng 300 MB thư viện, nên thời gian phụ thuộc tốc độ mạng.
