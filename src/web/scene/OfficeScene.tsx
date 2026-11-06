@@ -13,6 +13,7 @@ import { Office } from './Office';
 import { OfficeMood } from './OfficeMood';
 import { OverviewCamera } from './cameras/Overview';
 import { SubagentLinks, subagentOverflow } from './SubagentLinks';
+import { QuotaScreen } from '../ui/quota/QuotaScreen';
 
 export function OfficeScene({
   theme,
@@ -70,6 +71,7 @@ export function OfficeScene({
           />
         ))}
         <SubagentLinks employees={visible} positions={positions} />
+        {!benchMode && <QuotaScreen layout={layout} grid={grid} />}
       </Office>
     </>
   );

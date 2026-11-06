@@ -9,6 +9,7 @@ import { useUi } from '../../state/ui';
 import { Composer } from './Composer';
 import { StepView } from './StepView';
 import { ComposerExtensions } from './extensions';
+import { PermissionPrompt } from './PermissionPrompt';
 
 // T067: right-hand chat for the clicked employee — full history, live updates, send, stop.
 
@@ -50,6 +51,7 @@ export function ChatPanel() {
 
   if (!id) return null;
   const busy = employee?.visualState === 'working' || employee?.visualState === 'thinking';
+  const pending = steps?.filter((s) => s.kind === 'permission_request' && s.status === 'WAITING').at(-1);
   const lastModel = null;
 
   return (
@@ -75,6 +77,7 @@ export function ChatPanel() {
         {!steps && <div className="muted">Đang tải…</div>}
         {steps?.map((s) => <StepView key={s.index} step={s} />)}
       </div>
+      {pending && <PermissionPrompt key={pending.permission?.requestId} conversationId={id} step={pending} />}
       <Composer
         key={id}
         busy={busy}

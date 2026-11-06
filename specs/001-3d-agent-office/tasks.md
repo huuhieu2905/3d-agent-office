@@ -212,9 +212,9 @@ V). Vì vậy chỉ những test này được đưa vào. Các test khác là t
 - [X] T082 [US3] Cài `answerPermission` trong `src/server/app-adapter/index.ts` theo kết quả spike T079, và ánh xạ bước xin quyền thành `Step.kind = 'permission_request'` với `permission: { requestId, description, options }` trong `src/server/app-adapter/mappers/step.ts`. Nếu spike thất bại: chuyển FR-029 sang nút "Mở trong Antigravity App" và ghi lại trong spec Assumptions
 - [X] T083 [US3] Viết các route `GET /api/commands?model=`, `GET /api/conversations/:id/mentions?q=`, `POST /api/conversations/:id/permissions/:requestId` (`{ decision: 'allow' | 'deny' }`) trong `src/server/http/routes/commands.ts`
 - [X] T084 [P] [US3] Contract test trong `tests/contract/adapter-commands.test.ts`: ánh xạ lệnh `/` từ fixture; `sendMessage` có mục nhắc file tạo `{item:{file:{absoluteUri}}}`; `answerPermission` gửi đúng định dạng đã tìm được ở spike
-- [ ] T085 [US3] Thêm menu `/` vào `Composer` trong `src/web/ui/chat/SlashMenu.tsx`: mở khi `/` là ký tự đầu, lọc khi gõ tiếp, điều hướng bằng phím mũi tên và Enter, hiện nhãn system hoặc skill cùng mô tả (FR-027)
-- [ ] T086 [US3] Thêm menu `@` vào `Composer` trong `src/web/ui/chat/MentionMenu.tsx`: gọi `/mentions?q=` (debounce 120 ms). Mục được chọn hiện thành "chip" trong ô nhập và được gửi như phần `{ mention }` của `UserInput`, không phải văn bản thường (FR-028)
-- [ ] T087 [US3] Viết `PermissionPrompt` trong `src/web/ui/chat/PermissionPrompt.tsx`: hiện trong chat khi có `permission_request` chưa trả lời, kèm nút "Cho phép" và "Từ chối". Nhân viên rời `waiting_for_boss` sau khi trả lời (FR-029)
+- [X] T085 [US3] Thêm menu `/` vào `Composer` trong `src/web/ui/chat/SlashMenu.tsx`: mở khi `/` là ký tự đầu, lọc khi gõ tiếp, điều hướng bằng phím mũi tên và Enter, hiện nhãn system hoặc skill cùng mô tả (FR-027)
+- [X] T086 [US3] Thêm menu `@` vào `Composer` trong `src/web/ui/chat/MentionMenu.tsx`: gọi `/mentions?q=` (debounce 120 ms). Mục được chọn hiện thành "chip" trong ô nhập và được gửi như phần `{ mention }` của `UserInput`, không phải văn bản thường (FR-028)
+- [X] T087 [US3] Viết `PermissionPrompt` trong `src/web/ui/chat/PermissionPrompt.tsx`: hiện trong chat khi có `permission_request` chưa trả lời, kèm nút "Cho phép" và "Từ chối". Nhân viên rời `waiting_for_boss` sau khi trả lời (FR-029)
 
 **Checkpoint**: chạy quickstart V3.
 
@@ -229,8 +229,8 @@ V). Vì vậy chỉ những test này được đưa vào. Các test khác là t
 - [X] T088 [P] [US4] Viết mapper quota trong `src/server/app-adapter/mappers/quota.ts`: từ `GetUserStatus`, **xoá `name` và `email` ngay lập tức**; `planName` lấy từ `userTier.name`; gom `clientModelConfigs[]` theo cặp `quotaInfo.remainingFraction` + `quotaInfo.resetTime` thành `QuotaGroup { models[{label, modelId}], remainingPercent: 0–100, resetAt, low: remainingPercent < 10 }`; `credits` lấy từ `planStatus.availablePromptCredits/availableFlowCredits` và `planInfo.monthlyPromptCredits/monthlyFlowCredits`
 - [X] T089 [P] [US4] Contract test quota trong `tests/contract/adapter-quota.test.ts`: dùng fixture `GetUserStatus`, khẳng định không có `name`/`email` trong kết quả, gom nhóm đúng, `low` khi dưới 10% (A8)
 - [X] T090 [US4] Viết `QuotaService` trong `src/server/services/quota.ts`: làm mới mỗi **5 phút** và ngay khi một conversation chuyển từ `RUNNING` sang `IDLE` (nghe sự kiện từ `EmployeesService`) (FR-042). Phát `quota` qua ws-hub. Kèm route `GET /api/quota` trong `src/server/http/routes/quota.ts`
-- [ ] T091 [US4] Viết `QuotaScreen` trong `src/web/ui/quota/QuotaScreen.tsx`: một màn hình 3D gắn trên vật `wall_screen` của bố cục, hiện thanh % của các nhóm model (vẽ texture bằng canvas). Đổi sang màu cảnh báo khi có nhóm `low` (FR-040, FR-043). Bấm 1 lần mở bảng chi tiết
-- [ ] T092 [US4] Viết `QuotaPanel` trong `src/web/ui/quota/QuotaPanel.tsx`: gói tài khoản, bảng các nhóm model (tên model, % còn lại, thời điểm làm mới theo giờ địa phương và dạng "còn x giờ"), credits, thời điểm cập nhật (FR-041). Kèm nút quota nhỏ trên thanh công cụ, dự phòng khi bố cục không có `wall_screen`
+- [X] T091 [US4] Viết `QuotaScreen` trong `src/web/ui/quota/QuotaScreen.tsx`: một màn hình 3D gắn trên vật `wall_screen` của bố cục, hiện thanh % của các nhóm model (vẽ texture bằng canvas). Đổi sang màu cảnh báo khi có nhóm `low` (FR-040, FR-043). Bấm 1 lần mở bảng chi tiết
+- [X] T092 [US4] Viết `QuotaPanel` trong `src/web/ui/quota/QuotaPanel.tsx`: gói tài khoản, bảng các nhóm model (tên model, % còn lại, thời điểm làm mới theo giờ địa phương và dạng "còn x giờ"), credits, thời điểm cập nhật (FR-041). Kèm nút quota nhỏ trên thanh công cụ, dự phòng khi bố cục không có `wall_screen`
 
 **Checkpoint**: chạy quickstart V4. **Kết thúc Đợt 2**, chạy cổng chất lượng.
 

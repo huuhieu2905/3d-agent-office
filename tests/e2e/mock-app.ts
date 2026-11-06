@@ -9,6 +9,7 @@ export class MockApp {
   sent: { method: string; body: unknown }[] = [];
   private generation = 1;
   runningAll = false;
+  waiting = false;
 
   constructor() {
     const t = this.transport;
@@ -22,10 +23,19 @@ export class MockApp {
       this.sent.push({ method: 'StartCascade', body });
       return { cascadeId: '00000000-0000-4000-8000-0000000000e2' };
     };
-    t.handlers.GetCascadeTrajectorySteps = () => fixture('GetCascadeTrajectorySteps');
+    t.handlers.GetCascadeTrajectorySteps = () => fixture(this.waiting ? 'waiting-steps' : 'GetCascadeTrajectorySteps');
+    t.handlers.HandleCascadeUserInteraction = (body) => {
+      this.sent.push({ method: 'HandleCascadeUserInteraction', body });
+      this.waiting = false;
+      return {};
+    };
     t.handlers.GetAllCascadeTrajectories = () => {
       const data = fixture<{ trajectorySummaries: Record<string, Record<string, unknown>> }>('GetAllCascadeTrajectories');
-      if (this.runningAll) for (const v of Object.values(data.trajectorySummaries)) v.status = 'CASCADE_RUN_STATUS_RUNNING';
+      for (const v of Object.values(data.trajectorySummaries)) {
+        if (this.runningAll) v.status = 'CASCADE_RUN_STATUS_RUNNING';
+        // Keep summaries consistent with the steps fixture being served (the real App always is).
+        v.stepCount = this.waiting ? 7 : 20;
+      }
       return data;
     };
   }

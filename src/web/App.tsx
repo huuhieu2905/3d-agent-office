@@ -9,6 +9,7 @@ import { ProjectLegend } from './ui/ProjectLegend';
 import { ChatPanel } from './ui/chat/ChatPanel';
 import { HireButton, HireDialog } from './ui/chat/HireDialog';
 import { useUi } from './state/ui';
+import { QuotaButton, QuotaPanel } from './ui/quota/QuotaPanel';
 
 function ConnectionBanner() {
   const { app, serverOnline, warnings, dismissWarning } = useConnection();
@@ -54,9 +55,11 @@ export function App() {
       </Canvas>
       <ConnectionBanner />
       <div className="hud-top-right">
+        <QuotaButton />
         <HireButton />
       </div>
       <ChatPanel />
+      <QuotaPanel />
       {hireDeskId && <HireDialog deskId={hireDeskId} onClose={() => setHireDesk(null)} />}
       <div className="hud-left">
         <ProjectLegend />

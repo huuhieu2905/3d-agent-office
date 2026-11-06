@@ -466,3 +466,120 @@ code.inline {
   justify-content: flex-end;
   gap: 8px;
 }
+
+.hud-top-right {
+  display: flex;
+  gap: 8px;
+}
+.btn-warn {
+  border-color: var(--warn);
+  color: var(--warn);
+}
+
+/* `/` and `@` menus */
+.menu {
+  position: absolute;
+  bottom: calc(100% - 4px);
+  left: 12px;
+  right: 12px;
+  max-height: 300px;
+  overflow: auto;
+  padding: 6px;
+  z-index: 2;
+}
+.menu-title {
+  font-size: 11px;
+  color: var(--muted);
+  padding: 2px 6px 6px;
+}
+.menu-item {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  padding: 6px 8px;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.menu-item.active,
+.menu-item:hover {
+  background: rgba(47, 111, 237, 0.15);
+}
+.menu-label {
+  font-weight: 600;
+  white-space: nowrap;
+}
+.menu-badge {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(127, 127, 127, 0.2);
+}
+.menu-hint {
+  color: var(--muted);
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Permission prompt */
+.permission {
+  margin: 0 12px 8px;
+  border-left: 4px solid var(--warn);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.permission-title {
+  font-weight: 700;
+}
+
+/* Quota */
+.quota-panel {
+  width: min(640px, 94vw);
+}
+.usage {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.usage th,
+.usage td {
+  text-align: left;
+  padding: 6px 4px;
+  border-bottom: 1px solid rgba(127, 127, 127, 0.2);
+  vertical-align: top;
+}
+.usage tr.low td {
+  color: var(--error);
+}
+.usage .good {
+  color: #2e9d5b;
+  font-weight: 700;
+}
+.bar {
+  height: 8px;
+  width: 120px;
+  border-radius: 4px;
+  background: rgba(127, 127, 127, 0.2);
+  overflow: hidden;
+  margin-bottom: 2px;
+}
+.bar span {
+  display: block;
+  height: 100%;
+  background: #2ec4b6;
+}
+.low .bar span {
+  background: var(--error);
+}
+.credits {
+  font-size: 13px;
+}
