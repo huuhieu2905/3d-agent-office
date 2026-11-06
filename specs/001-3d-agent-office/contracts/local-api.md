@@ -30,6 +30,8 @@ Server chỉ lắng nghe `http://127.0.0.1:<PORT>` (mặc định `4317`, đổi
 | GET | `/api/commands?model=` | — | `Command[]` | FR-027 |
 | GET | `/api/conversations/:id/mentions?q=` | — | `Mention[]` | FR-028 |
 | GET | `/api/models` | — | `ModelOption[]` | FR-024 |
+| GET | `/api/projects` | — | `Project[]` | FR-013, FR-026 |
+| GET | `/api/usage` | — | `{ weeks: { weekStart, sentViaOffice, userInputsTotal }[] }` | đo SC-001/SC-006, chỉ là số đếm |
 | GET | `/api/quota` | — | `Quota` | FR-041 |
 | GET | `/api/layout` | — | `OfficeLayout` | |
 | PUT | `/api/layout` | `OfficeLayout` | `200` hoặc `422 { error, invalidItems: string[] }` | kiểm tra theo data-model §5 |

@@ -63,7 +63,7 @@ tiến trình đặt sau một giao diện theo hệ điều hành để thêm L
 - 1 người dùng, 1 máy.
 - ≤ 20 nhân viên hiển thị cùng lúc, số conversation không giới hạn (phần dư xem qua danh sách).
 - 5 thành phố, khoảng 10 loại đồ nội thất, 3 mức chi tiết.
-- 8 user story, 45 yêu cầu chức năng.
+- 8 user story, 43 yêu cầu chức năng.
 
 ## Constitution Check
 

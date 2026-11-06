@@ -19,7 +19,7 @@ Tên trường viết theo kiểu TypeScript. Kiểu dùng chung nằm ở `src/
 |---|---|---|---|
 | `id` | string (UUID) | `trajectoryId` / `cascadeId` | khoá chính |
 | `title` | string | `summary` | rỗng thì dùng "Nhân viên mới" |
-| `projectId` | string \| null | metadata project | để tô màu (FR-013) |
+| `projectId` | string \| null | **chưa xác định**: spike T028(d) sẽ tìm trường trong `trajectoryMetadata` hoặc RPC liệt kê project | để tô màu (FR-013) |
 | `parentId` | string \| null | `parentConversationId` | subagent |
 | `runStatus` | `RunStatus` | `status` | xem §6 |
 | `stepCount` | number | `stepCount` | |
@@ -146,6 +146,22 @@ Xét theo thứ tự ưu tiên, điều kiện đúng đầu tiên thắng:
   `GetSlashCommands`.
 - `Mention`: `{ kind: 'file' | 'directory', uri: string, label: string }`. Đây là kiểu mà đợt 2 hỗ
   trợ. Các loại khác (`rule`, `mcp_resource`…) để sau.
+
+## 8b. Project *(App, chỉ đọc)*
+
+| Trường | Kiểu | Ghi chú |
+|---|---|---|
+| `id` | string | khoá, khớp `Conversation.projectId` |
+| `name` | string | hiện trong chú giải và hộp thoại tuyển nhân viên |
+| `color` | màu | hệ thống tính ổn định từ hash(id), không lưu |
+
+## 8c. UsageStats *(hệ thống, lưu `usage.json`, chỉ số đếm)*
+
+```text
+{ schemaVersion: 1, days: { [YYYY-MM-DD]: { sentViaOffice: number, userInputsTotal: number } } }
+```
+
+- KHÔNG chứa nội dung, ID tin nhắn hay ID conversation (FR-081). Dữ liệu cũ hơn 90 ngày được dọn.
 
 ## 9. Settings *(hệ thống, lưu `settings.json`)*
 
