@@ -29,7 +29,7 @@ trong trình duyệt (web).
 **Primary Dependencies**:
 - Server: Fastify 5 (HTTP + `@fastify/websocket`, `@fastify/static`), `undici`/`node:https`, `zod`
   (kiểm tra dữ liệu), `pino` (log, có bộ lọc che thông tin nhạy cảm), `env-paths`.
-- Web: Vite 6, React 19, three.js, @react-three/fiber, @react-three/drei, zustand, react-markdown +
+- Web: Vite 8 (bản ổn định hiện tại; plugin React mới nhất yêu cầu Vite 8), React 19, three.js, @react-three/fiber, @react-three/drei, zustand, react-markdown +
   Shiki.
 
 **Storage**: File JSON có version schema trong thư mục cấu hình người dùng (`layout.json`,

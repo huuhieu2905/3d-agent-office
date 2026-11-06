@@ -44,16 +44,16 @@ V). Vì vậy chỉ những test này được đưa vào. Các test khác là t
 
 **Purpose**: Khởi tạo dự án và công cụ
 
-- [ ] T001 Cài Node.js 22 LTS qua `fnm` trên máy phát triển (`curl -fsSL https://fnm.vercel.app/install | bash`, rồi `fnm install 22 && fnm default 22`), kiểm tra `node -v` ≥ 22
-- [ ] T002 Tạo `package.json` (một package, `"type": "module"`, `"engines": {"node": ">=22"}`) với các scripts `dev`, `build`, `start`, `test`, `test:e2e`, `test:live`, `test:leaks`, `bench:fps`, `typecheck`, `lint` ở thư mục gốc
-- [ ] T003 Cài dependency server: `fastify@5`, `@fastify/websocket`, `@fastify/static`, `zod`, `pino`, `env-paths`, `open`; dev: `typescript`, `tsx`, `@types/node`
-- [ ] T004 Cài dependency web: `react@19`, `react-dom@19`, `three`, `@react-three/fiber`, `@react-three/drei`, `zustand`, `react-markdown`, `remark-gfm`, `shiki`; dev: `vite@6`, `@vitejs/plugin-react`, `@types/react`, `@types/react-dom`, `@types/three`
-- [ ] T005 Cài dependency test: `vitest`, `@playwright/test`; chạy `npx playwright install chromium`
-- [ ] T006 [P] Tạo `tsconfig.json` (strict, `moduleResolution: bundler`, alias `@shared/*` → `src/shared/*`), `tsconfig.server.json` (target Node 22) ở thư mục gốc
-- [ ] T007 [P] Tạo `vite.config.ts`: root `src/web`, build ra `dist/web`, plugin React, alias `@shared`, proxy `/api` và `/ws` tới `http://127.0.0.1:4317` khi `dev`
-- [ ] T008 [P] Cấu hình ESLint + Prettier trong `eslint.config.js` và `.prettierrc`. Thêm luật `no-restricted-imports`: mọi file **bên ngoài** `src/server/app-adapter/` chỉ được import `src/server/app-adapter/index.ts` (API công khai của adapter), cấm import các file con (`rpc-client.ts`, `discovery/**`, `mappers/**`…). `src/web/**` không được import adapter. Đây là cách bảo vệ Constitution II
-- [ ] T009 [P] Tạo khung thư mục theo plan.md: `src/shared/`, `src/server/{http,app-adapter/{discovery,mappers},services,storage}/`, `src/web/{api,state,scene/{grid,park,city,weather,cameras,perf},ui/{chat,quota,build,settings},bench}/`, `assets/models/`, `tests/{unit,contract/fixtures/app-2.24.0,e2e,live,leaks}/`, `scripts/`, `docs/`
-- [ ] T010 [P] Tạo `vitest.config.ts` (môi trường node cho `tests/unit`, `tests/contract`, `tests/leaks`; `tests/live` chỉ chạy khi `AGENT_OFFICE_LIVE=1`) và `playwright.config.ts` (chạy `tests/e2e`, webServer khởi động server với App giả lập)
+- [X] T001 Cài Node.js 22 LTS qua `fnm` trên máy phát triển (`curl -fsSL https://fnm.vercel.app/install | bash`, rồi `fnm install 22 && fnm default 22`), kiểm tra `node -v` ≥ 22
+- [X] T002 Tạo `package.json` (một package, `"type": "module"`, `"engines": {"node": ">=22"}`) với các scripts `dev`, `build`, `start`, `test`, `test:e2e`, `test:live`, `test:leaks`, `bench:fps`, `typecheck`, `lint` ở thư mục gốc
+- [X] T003 Cài dependency server: `fastify@5`, `@fastify/websocket`, `@fastify/static`, `zod`, `pino`, `env-paths`, `open`; dev: `typescript`, `tsx`, `@types/node`
+- [X] T004 Cài dependency web: `react@19`, `react-dom@19`, `three`, `@react-three/fiber`, `@react-three/drei`, `zustand`, `react-markdown`, `remark-gfm`, `shiki`; dev: `vite@6`, `@vitejs/plugin-react`, `@types/react`, `@types/react-dom`, `@types/three`
+- [X] T005 Cài dependency test: `vitest`, `@playwright/test`; chạy `npx playwright install chromium`
+- [X] T006 [P] Tạo `tsconfig.json` (strict, `moduleResolution: bundler`, alias `@shared/*` → `src/shared/*`), `tsconfig.server.json` (target Node 22) ở thư mục gốc
+- [X] T007 [P] Tạo `vite.config.ts`: root `src/web`, build ra `dist/web`, plugin React, alias `@shared`, proxy `/api` và `/ws` tới `http://127.0.0.1:4317` khi `dev`
+- [X] T008 [P] Cấu hình ESLint + Prettier trong `eslint.config.js` và `.prettierrc`. Thêm luật `no-restricted-imports`: mọi file **bên ngoài** `src/server/app-adapter/` chỉ được import `src/server/app-adapter/index.ts` (API công khai của adapter), cấm import các file con (`rpc-client.ts`, `discovery/**`, `mappers/**`…). `src/web/**` không được import adapter. Đây là cách bảo vệ Constitution II
+- [X] T009 [P] Tạo khung thư mục theo plan.md: `src/shared/`, `src/server/{http,app-adapter/{discovery,mappers},services,storage}/`, `src/web/{api,state,scene/{grid,park,city,weather,cameras,perf},ui/{chat,quota,build,settings},bench}/`, `assets/models/`, `tests/{unit,contract/fixtures/app-2.24.0,e2e,live,leaks}/`, `scripts/`, `docs/`
+- [X] T010 [P] Tạo `vitest.config.ts` (môi trường node cho `tests/unit`, `tests/contract`, `tests/leaks`; `tests/live` chỉ chạy khi `AGENT_OFFICE_LIVE=1`) và `playwright.config.ts` (chạy `tests/e2e`, webServer khởi động server với App giả lập)
 
 **Checkpoint**: `npm run typecheck` và `npm test` chạy được (chưa có test nào).
 

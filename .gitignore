@@ -6,3 +6,9 @@ coverage/
 playwright-report/
 test-results/
 .env
+build/
+*.tmp
+*.swp
+.vscode/
+.idea/
+.env*
