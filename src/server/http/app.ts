@@ -43,6 +43,8 @@ export async function createHttpServer(opts: HttpServerOptions): Promise<HttpSer
   const webRoot = opts.webRoot ?? join(import.meta.dirname, '..', '..', '..', 'dist', 'web');
   if (existsSync(webRoot)) {
     await app.register(fastifyStatic, { root: webRoot, index: ['index.html'] });
+    // FPS benchmark page (T058) is the same single-page app.
+    app.get('/bench', (_req, reply) => reply.sendFile('index.html'));
   } else {
     app.get('/', async (_req, reply) =>
       reply.type('text/plain').send('Web UI not built yet. Run `npm run build`, or use `npm run dev`.'),

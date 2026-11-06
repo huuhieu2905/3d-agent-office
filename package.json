@@ -13,8 +13,8 @@
     "start": "tsx src/server/main.ts",
     "test": "vitest run && bash scripts/check-guards.sh",
     "test:e2e": "playwright test",
-    "test:live": "AGENT_OFFICE_LIVE=1 vitest run --dir tests/live",
-    "test:leaks": "vitest run --dir tests/leaks",
+    "test:live": "AGENT_OFFICE_LIVE=1 vitest run",
+    "test:leaks": "vitest run tests/leaks",
     "bench:fps": "tsx scripts/bench-fps.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.server.json",
     "lint": "eslint ."

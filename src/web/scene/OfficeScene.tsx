@@ -14,7 +14,15 @@ import { OfficeMood } from './OfficeMood';
 import { OverviewCamera } from './cameras/Overview';
 import { SubagentLinks, subagentOverflow } from './SubagentLinks';
 
-export function OfficeScene({ theme, layoutOverride }: { theme: 'light' | 'dark'; layoutOverride?: OfficeLayout }) {
+export function OfficeScene({
+  theme,
+  layoutOverride,
+  benchMode = false,
+}: {
+  theme: 'light' | 'dark';
+  layoutOverride?: OfficeLayout;
+  benchMode?: boolean;
+}) {
   const [layout, setLayout] = useState<OfficeLayout | null>(layoutOverride ?? null);
   const serverOnline = useConnection((s) => s.serverOnline);
   useEffect(() => {
@@ -46,7 +54,7 @@ export function OfficeScene({ theme, layoutOverride }: { theme: 'light' | 'dark'
   return (
     <>
       <OfficeMood disconnected={disconnected} theme={theme} />
-      <OverviewCamera size={size} />
+      {!benchMode && <OverviewCamera size={size} />}
       <Office layout={layout} grid={grid} employeesByDesk={byDesk} theme={theme}>
         {entries.map(({ employee, leaving, enter }) => (
           <Employee

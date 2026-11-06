@@ -1,13 +1,16 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
+import { Bench } from './bench/Bench';
 import './styles.css';
 import { socket } from './api/ws';
 import { useConnection } from './state/connection';
 import { useEmployees } from './state/employees';
 
 // Route server messages into stores once, outside React.
-socket.on((m) => {
+const isBench = location.pathname === '/bench';
+
+if (!isBench) socket.on((m) => {
   switch (m.type) {
     case 'connection':
       useConnection.getState().setApp(m.payload);
@@ -25,11 +28,13 @@ socket.on((m) => {
       break;
   }
 });
-socket.onOpenChange((open) => useConnection.getState().setServerOnline(open));
-socket.connect();
+if (!isBench) {
+  socket.onOpenChange((open) => useConnection.getState().setServerOnline(open));
+  socket.connect();
+}
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    {isBench ? <Bench /> : <App />}
   </StrictMode>,
 );

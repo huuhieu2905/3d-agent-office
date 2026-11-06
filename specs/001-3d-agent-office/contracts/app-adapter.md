@@ -52,6 +52,9 @@ type ModelOption = { label: string, modelId: string, quotaGroupKey: string }
 // Chỉ dùng cho scripts/record-fixtures.ts. Chỉ cho phép các RPC đọc trong danh sách trắng,
 // kết quả đã qua redact. Không dùng trong mã chạy thật.
 export function recordRaw(method: ReadOnlyRpc, body: unknown): Promise<unknown>
+
+// Chỉ dùng cho tests/live và spike: xoá conversation, NHƯNG chỉ khi nó được đánh dấu "[agent-office-test]".
+export function deleteTestConversation(conversationId: string): Promise<boolean>
 ```
 
 ## Hành vi bắt buộc
