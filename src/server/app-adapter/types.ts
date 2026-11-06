@@ -26,7 +26,7 @@ export interface AppAdapter {
   getSlashCommands(model: string): Promise<Command[]>;
   suggestMentions(conversationId: string, query: string): Promise<Mention[]>;
   getModels(): Promise<ModelOption[]>;
-  getQuota(): Promise<Quota>;
+  getQuota(maxAgeMs?: number): Promise<Quota>;
   listProjects(): Promise<Project[]>;
 
   sendMessage(conversationId: string, input: UserInput): Promise<void>;

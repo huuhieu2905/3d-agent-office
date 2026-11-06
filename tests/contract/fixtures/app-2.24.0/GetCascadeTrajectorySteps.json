@@ -365,7 +365,7 @@
         "toolCalls": [
           {
             "id": "call_2335949061260683455",
-            "name": "<name>",
+            "name": "read_file",
             "argumentsJson": "{}",
             "thinkingSignature": "<thinkingSignature:984>"
           }
@@ -386,7 +386,7 @@
         "source": "CORTEX_STEP_SOURCE_MODEL",
         "toolCall": {
           "id": "call_2335949061260683455",
-          "name": "<name>",
+          "name": "read_file",
           "argumentsJson": "{}",
           "thinkingSignature": "<thinkingSignature:984>"
         },
@@ -481,7 +481,7 @@
         "toolCalls": [
           {
             "id": "call_2167577025626921870",
-            "name": "<name>",
+            "name": "read_file",
             "argumentsJson": "{}",
             "thinkingSignature": "<thinkingSignature:996>"
           }
@@ -502,7 +502,7 @@
         "source": "CORTEX_STEP_SOURCE_MODEL",
         "toolCall": {
           "id": "call_2167577025626921870",
-          "name": "<name>",
+          "name": "read_file",
           "argumentsJson": "{}",
           "thinkingSignature": "<thinkingSignature:996>"
         },
@@ -902,7 +902,7 @@
         "toolCalls": [
           {
             "id": "call_4261625953032918735",
-            "name": "<name>",
+            "name": "run_command",
             "argumentsJson": "{}",
             "thinkingSignature": "<thinkingSignature:1368>"
           }
@@ -923,7 +923,7 @@
         "source": "CORTEX_STEP_SOURCE_MODEL",
         "toolCall": {
           "id": "call_4261625953032918735",
-          "name": "<name>",
+          "name": "run_command",
           "argumentsJson": "{}",
           "thinkingSignature": "<thinkingSignature:1368>"
         },

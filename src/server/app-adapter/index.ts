@@ -15,10 +15,12 @@ import { mapConversations } from './mappers/conversation';
 import { mapSteps } from './mappers/step';
 import { mapProjectIds, mapProjects } from './mappers/project';
 import { mapModels, toItems } from './mappers/model';
+import { mapCommands } from './mappers/command';
+import { mapQuota } from './mappers/quota';
 import { openStream, type StreamHandle } from './stream';
 import { sanitizeRaw, stripIdentity } from './redact';
 import { HttpsRpcTransport, RpcClient, type RpcTransport } from './rpc-client';
-import { AppNotSupportedError, AppUnavailableError, RpcError, type AppAdapter, type Unsubscribe } from './types';
+import { AppUnavailableError, RpcError, type AppAdapter, type Unsubscribe } from './types';
 
 export { AppUnavailableError, AppProtocolError, AppNotSupportedError } from './types';
 export type { AppAdapter, Unsubscribe } from './types';
@@ -58,6 +60,7 @@ function createInternal(deps: AdapterDeps): { adapter: AppAdapter; rpc: RpcClien
 
   // GetUserStatus is large (~25 KB); share one response for models and quota for a few seconds.
   let statusCache: { at: number; value: Promise<unknown> } | null = null;
+  const commandCache = new Map<string, { at: number; value: Command[] }>();
   function userStatus(maxAgeMs = 5_000): Promise<unknown> {
     if (!statusCache || Date.now() - statusCache.at > maxAgeMs) {
       statusCache = { at: Date.now(), value: call('GetUserStatus', {}).then((r) => stripIdentity(r as Record<string, unknown>)) };
@@ -150,7 +153,6 @@ function createInternal(deps: AdapterDeps): { adapter: AppAdapter; rpc: RpcClien
     };
   }
 
-  const notYet = (what: string) => () => Promise.reject(new AppNotSupportedError(`${what} is not implemented yet`));
 
   const adapter: AppAdapter = {
     start: () => conn.start(),
@@ -167,12 +169,35 @@ function createInternal(deps: AdapterDeps): { adapter: AppAdapter; rpc: RpcClien
     watchConversation(conversationId: string, cb: (steps: Step[]) => void): Unsubscribe {
       return watch(conversationId, cb);
     },
-    getSlashCommands: notYet('getSlashCommands') as (m: string) => Promise<Command[]>,
-    suggestMentions: notYet('suggestMentions') as (c: string, q: string) => Promise<Mention[]>,
+    async getSlashCommands(model: string): Promise<Command[]> {
+      const hit = commandCache.get(model);
+      if (hit && Date.now() - hit.at < 60_000) return hit.value;
+      const value = mapCommands(await call('GetSlashCommands', { cascadeConfig: { plannerConfig: { planModel: model } } }));
+      commandCache.set(model, { at: Date.now(), value });
+      return value;
+    },
+    async suggestMentions(conversationId: string, query: string): Promise<Mention[]> {
+      // App-side search (returns nothing without an IDE workspace in 2.24.0); the server falls back to its own listing.
+      const conv = (await adapter.listConversations()).find((c) => c.id === conversationId);
+      const res = await call<Record<string, unknown>>('GetMatchingContextScopeItems', {
+        query,
+        workspaceUris: conv?.workspaceUris ?? [],
+      }).catch(() => ({}) as Record<string, unknown>);
+      const items = (res.items ?? res.scopeItems ?? []) as Record<string, unknown>[];
+      const out: Mention[] = [];
+      for (const it of Array.isArray(items) ? items : []) {
+        const file = (it.file ?? (it.item as Record<string, unknown> | undefined)?.file) as Record<string, unknown> | undefined;
+        const uri = typeof file?.absoluteUri === 'string' ? file.absoluteUri : null;
+        if (uri) out.push({ kind: 'file', uri, label: uri.split('/').pop() ?? uri });
+      }
+      return out.slice(0, 50);
+    },
     async getModels(): Promise<ModelOption[]> {
       return mapModels(await userStatus());
     },
-    getQuota: notYet('getQuota') as () => Promise<Quota>,
+    async getQuota(maxAgeMs = 5_000): Promise<Quota> {
+      return mapQuota(await userStatus(maxAgeMs));
+    },
     async listProjects(): Promise<Project[]> {
       const ids = mapProjectIds(await call('ListProjects', {}));
       if (ids.length === 0) return [];

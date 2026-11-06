@@ -6,6 +6,8 @@ import { EmployeeProfiles } from './employee-profiles';
 import { EmployeesService } from './employees';
 import { LayoutStore } from './layout-store';
 import { UsageService } from './usage';
+import { MentionService } from './mentions';
+import { QuotaService } from './quota';
 
 // Registry of long-running server services. Each user story adds its service here.
 
@@ -23,6 +25,8 @@ export interface Services {
   layout: LayoutStore;
   employees: EmployeesService;
   usage: UsageService;
+  mentions: MentionService;
+  quota: QuotaService;
   start(): Promise<void>;
   stop(): Promise<void>;
 }
@@ -40,6 +44,8 @@ export function createServices(deps: ServiceDeps): Services {
     intervalMs: deps.pollIntervalMs,
   });
   const usage = new UsageService(dataDir);
+  const mentions = new MentionService(deps.adapter);
+  const quota = new QuotaService(deps.adapter, deps.hub, deps.log, employees);
   employees.on((e) => {
     if (e.type === 'user-inputs') void usage.userInputs(e.count);
   });
@@ -50,14 +56,18 @@ export function createServices(deps: ServiceDeps): Services {
   return {
     dataDir,
     usage,
+    mentions,
+    quota,
     profiles,
     layout,
     employees,
     async start() {
       employees.start();
+      quota.start();
     },
     async stop() {
       employees.stop();
+      quota.stop();
       await profiles.flush();
     },
   };

@@ -38,6 +38,37 @@
     "cascadeModelConfigData": {
       "clientModelConfigs": [
         {
+          "label": "Claude Sonnet 5.5 (High)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M405"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "allowedTiers": [
+            "TEAMS_TIER_PRO",
+            "TEAMS_TIER_TEAMS",
+            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
+            "TEAMS_TIER_ENTERPRISE_SAAS",
+            "TEAMS_TIER_HYBRID",
+            "TEAMS_TIER_PRO_ULTIMATE"
+          ],
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-11-06T21:43:28Z"
+          },
+          "tagTitle": "New",
+          "supportedMimeTypes": {
+            "image/heic": true,
+            "image/heif": true,
+            "image/jpeg": true,
+            "image/png": true,
+            "image/webp": true,
+            "video/jpeg2000": true,
+            "video/videoframe/jpeg2000": true
+          },
+          "modelId": "claude-sonnet-5-5-high"
+        },
+        {
           "label": "Gemini 4 Argon (Medium)",
           "modelOrAlias": {
             "model": "MODEL_PLACEHOLDER_M418"
@@ -53,7 +84,7 @@
             "TEAMS_TIER_PRO_ULTIMATE"
           ],
           "quotaInfo": {
-            "remainingFraction": 0.9949908,
+            "remainingFraction": 0.9673457,
             "resetTime": "2026-11-12T15:28:54Z"
           },
           "tagTitle": "New",
@@ -116,6 +147,84 @@
           "modelId": "gemini-4-argon-medium"
         },
         {
+          "label": "Gemini 4 Argon (High)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M417"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "allowedTiers": [
+            "TEAMS_TIER_PRO",
+            "TEAMS_TIER_TEAMS",
+            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
+            "TEAMS_TIER_ENTERPRISE_SAAS",
+            "TEAMS_TIER_HYBRID",
+            "TEAMS_TIER_PRO_ULTIMATE"
+          ],
+          "quotaInfo": {
+            "remainingFraction": 0.9673457,
+            "resetTime": "2026-11-12T15:28:54Z"
+          },
+          "tagTitle": "New",
+          "supportedMimeTypes": {
+            "application/json": true,
+            "application/msword": true,
+            "application/pdf": true,
+            "application/rtf": true,
+            "application/vnd.ms-excel": true,
+            "application/vnd.ms-powerpoint": true,
+            "application/vnd.oasis.opendocument.presentation": true,
+            "application/vnd.oasis.opendocument.spreadsheet": true,
+            "application/vnd.oasis.opendocument.text": true,
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation": true,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": true,
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document": true,
+            "application/x-ipynb+json": true,
+            "application/x-javascript": true,
+            "application/x-python-code": true,
+            "application/x-typescript": true,
+            "audio/aac": true,
+            "audio/flac": true,
+            "audio/l16": true,
+            "audio/m4a": true,
+            "audio/mp3": true,
+            "audio/mp4": true,
+            "audio/mpeg": true,
+            "audio/ogg": true,
+            "audio/opus": true,
+            "audio/vnd.wave": true,
+            "audio/wav": true,
+            "audio/wave": true,
+            "audio/webm": true,
+            "audio/webm;codecs=opus": true,
+            "audio/x-wav": true,
+            "image/heic": true,
+            "image/heif": true,
+            "image/jpeg": true,
+            "image/png": true,
+            "image/webp": true,
+            "text/css": true,
+            "text/csv": true,
+            "text/html": true,
+            "text/javascript": true,
+            "text/markdown": true,
+            "text/plain": true,
+            "text/rtf": true,
+            "text/x-python": true,
+            "text/x-python-script": true,
+            "text/x-typescript": true,
+            "text/xml": true,
+            "video/audio/s16le": true,
+            "video/audio/wav": true,
+            "video/jpeg2000": true,
+            "video/mp4": true,
+            "video/text/timestamp": true,
+            "video/videoframe/jpeg2000": true,
+            "video/webm": true
+          },
+          "modelId": "gemini-4-argon-high"
+        },
+        {
           "label": "Gemini 3.8 Flash (High)",
           "modelOrAlias": {
             "model": "MODEL_PLACEHOLDER_M318"
@@ -131,8 +240,8 @@
             "TEAMS_TIER_PRO_ULTIMATE"
           ],
           "quotaInfo": {
-            "remainingFraction": 0.97340375,
-            "resetTime": "2026-11-06T13:39:08Z"
+            "remainingFraction": 0.9798667,
+            "resetTime": "2026-11-06T21:42:13Z"
           },
           "supportedMimeTypes": {
             "application/json": true,
@@ -208,8 +317,8 @@
             "TEAMS_TIER_PRO_ULTIMATE"
           ],
           "quotaInfo": {
-            "remainingFraction": 0.97340375,
-            "resetTime": "2026-11-06T13:39:08Z"
+            "remainingFraction": 0.9798667,
+            "resetTime": "2026-11-06T21:42:13Z"
           },
           "supportedMimeTypes": {
             "application/json": true,
@@ -270,6 +379,137 @@
           "modelId": "gemini-3.8-flash-medium"
         },
         {
+          "label": "Claude Opus 5.5 (Medium)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M401"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "allowedTiers": [
+            "TEAMS_TIER_PRO",
+            "TEAMS_TIER_TEAMS",
+            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
+            "TEAMS_TIER_ENTERPRISE_SAAS",
+            "TEAMS_TIER_HYBRID",
+            "TEAMS_TIER_PRO_ULTIMATE"
+          ],
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-11-06T21:43:28Z"
+          },
+          "tagTitle": "New",
+          "supportedMimeTypes": {
+            "image/heic": true,
+            "image/heif": true,
+            "image/jpeg": true,
+            "image/png": true,
+            "image/webp": true,
+            "video/jpeg2000": true,
+            "video/videoframe/jpeg2000": true
+          },
+          "modelId": "claude-opus-5-5-medium"
+        },
+        {
+          "label": "GPT-OSS 120B (Medium)",
+          "modelOrAlias": {
+            "model": "MODEL_OPENAI_GPT_OSS_120B_MEDIUM"
+          },
+          "isRecommended": true,
+          "allowedTiers": [
+            "TEAMS_TIER_PRO",
+            "TEAMS_TIER_TEAMS",
+            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
+            "TEAMS_TIER_ENTERPRISE_SAAS",
+            "TEAMS_TIER_HYBRID",
+            "TEAMS_TIER_PRO_ULTIMATE"
+          ],
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-11-06T21:43:28Z"
+          },
+          "tagTitle": "Notice",
+          "tagDescription": "GPT-OSS will be removed from Antigravity on November 18, 2026.",
+          "modelId": "gpt-oss-120b-medium"
+        },
+        {
+          "label": "Gemini 4 Argon (Low)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M419"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "allowedTiers": [
+            "TEAMS_TIER_PRO",
+            "TEAMS_TIER_TEAMS",
+            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
+            "TEAMS_TIER_ENTERPRISE_SAAS",
+            "TEAMS_TIER_HYBRID",
+            "TEAMS_TIER_PRO_ULTIMATE"
+          ],
+          "quotaInfo": {
+            "remainingFraction": 0.9673457,
+            "resetTime": "2026-11-12T15:28:54Z"
+          },
+          "tagTitle": "New",
+          "supportedMimeTypes": {
+            "application/json": true,
+            "application/msword": true,
+            "application/pdf": true,
+            "application/rtf": true,
+            "application/vnd.ms-excel": true,
+            "application/vnd.ms-powerpoint": true,
+            "application/vnd.oasis.opendocument.presentation": true,
+            "application/vnd.oasis.opendocument.spreadsheet": true,
+            "application/vnd.oasis.opendocument.text": true,
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation": true,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": true,
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document": true,
+            "application/x-ipynb+json": true,
+            "application/x-javascript": true,
+            "application/x-python-code": true,
+            "application/x-typescript": true,
+            "audio/aac": true,
+            "audio/flac": true,
+            "audio/l16": true,
+            "audio/m4a": true,
+            "audio/mp3": true,
+            "audio/mp4": true,
+            "audio/mpeg": true,
+            "audio/ogg": true,
+            "audio/opus": true,
+            "audio/vnd.wave": true,
+            "audio/wav": true,
+            "audio/wave": true,
+            "audio/webm": true,
+            "audio/webm;codecs=opus": true,
+            "audio/x-wav": true,
+            "image/heic": true,
+            "image/heif": true,
+            "image/jpeg": true,
+            "image/png": true,
+            "image/webp": true,
+            "text/css": true,
+            "text/csv": true,
+            "text/html": true,
+            "text/javascript": true,
+            "text/markdown": true,
+            "text/plain": true,
+            "text/rtf": true,
+            "text/x-python": true,
+            "text/x-python-script": true,
+            "text/x-typescript": true,
+            "text/xml": true,
+            "video/audio/s16le": true,
+            "video/audio/wav": true,
+            "video/jpeg2000": true,
+            "video/mp4": true,
+            "video/text/timestamp": true,
+            "video/videoframe/jpeg2000": true,
+            "video/webm": true
+          },
+          "modelId": "gemini-4-argon-low"
+        },
+        {
           "label": "Gemini 3.8 Flash (Low)",
           "modelOrAlias": {
             "model": "MODEL_PLACEHOLDER_M320"
@@ -285,8 +525,8 @@
             "TEAMS_TIER_PRO_ULTIMATE"
           ],
           "quotaInfo": {
-            "remainingFraction": 0.97340375,
-            "resetTime": "2026-11-06T13:39:08Z"
+            "remainingFraction": 0.9798667,
+            "resetTime": "2026-11-06T21:42:13Z"
           },
           "supportedMimeTypes": {
             "application/json": true,
@@ -363,7 +603,7 @@
           ],
           "quotaInfo": {
             "remainingFraction": 1,
-            "resetTime": "2026-11-06T15:36:59Z"
+            "resetTime": "2026-11-06T21:43:28Z"
           },
           "tagTitle": "New",
           "supportedMimeTypes": {
@@ -376,277 +616,6 @@
             "video/videoframe/jpeg2000": true
           },
           "modelId": "claude-opus-5-5-low"
-        },
-        {
-          "label": "Claude Sonnet 5.5 (Low)",
-          "modelOrAlias": {
-            "model": "MODEL_PLACEHOLDER_M403"
-          },
-          "supportsImages": true,
-          "isRecommended": true,
-          "allowedTiers": [
-            "TEAMS_TIER_PRO",
-            "TEAMS_TIER_TEAMS",
-            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
-            "TEAMS_TIER_ENTERPRISE_SAAS",
-            "TEAMS_TIER_HYBRID",
-            "TEAMS_TIER_PRO_ULTIMATE"
-          ],
-          "quotaInfo": {
-            "remainingFraction": 1,
-            "resetTime": "2026-11-06T15:36:59Z"
-          },
-          "tagTitle": "New",
-          "supportedMimeTypes": {
-            "image/heic": true,
-            "image/heif": true,
-            "image/jpeg": true,
-            "image/png": true,
-            "image/webp": true,
-            "video/jpeg2000": true,
-            "video/videoframe/jpeg2000": true
-          },
-          "modelId": "claude-sonnet-5-5-low"
-        },
-        {
-          "label": "Claude Sonnet 5.5 (High)",
-          "modelOrAlias": {
-            "model": "MODEL_PLACEHOLDER_M405"
-          },
-          "supportsImages": true,
-          "isRecommended": true,
-          "allowedTiers": [
-            "TEAMS_TIER_PRO",
-            "TEAMS_TIER_TEAMS",
-            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
-            "TEAMS_TIER_ENTERPRISE_SAAS",
-            "TEAMS_TIER_HYBRID",
-            "TEAMS_TIER_PRO_ULTIMATE"
-          ],
-          "quotaInfo": {
-            "remainingFraction": 1,
-            "resetTime": "2026-11-06T15:36:59Z"
-          },
-          "tagTitle": "New",
-          "supportedMimeTypes": {
-            "image/heic": true,
-            "image/heif": true,
-            "image/jpeg": true,
-            "image/png": true,
-            "image/webp": true,
-            "video/jpeg2000": true,
-            "video/videoframe/jpeg2000": true
-          },
-          "modelId": "claude-sonnet-5-5-high"
-        },
-        {
-          "label": "GPT-OSS 120B (Medium)",
-          "modelOrAlias": {
-            "model": "MODEL_OPENAI_GPT_OSS_120B_MEDIUM"
-          },
-          "isRecommended": true,
-          "allowedTiers": [
-            "TEAMS_TIER_PRO",
-            "TEAMS_TIER_TEAMS",
-            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
-            "TEAMS_TIER_ENTERPRISE_SAAS",
-            "TEAMS_TIER_HYBRID",
-            "TEAMS_TIER_PRO_ULTIMATE"
-          ],
-          "quotaInfo": {
-            "remainingFraction": 1,
-            "resetTime": "2026-11-06T15:36:59Z"
-          },
-          "tagTitle": "Notice",
-          "tagDescription": "GPT-OSS will be removed from Antigravity on November 18, 2026.",
-          "modelId": "gpt-oss-120b-medium"
-        },
-        {
-          "label": "Gemini 4 Argon (High)",
-          "modelOrAlias": {
-            "model": "MODEL_PLACEHOLDER_M417"
-          },
-          "supportsImages": true,
-          "isRecommended": true,
-          "allowedTiers": [
-            "TEAMS_TIER_PRO",
-            "TEAMS_TIER_TEAMS",
-            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
-            "TEAMS_TIER_ENTERPRISE_SAAS",
-            "TEAMS_TIER_HYBRID",
-            "TEAMS_TIER_PRO_ULTIMATE"
-          ],
-          "quotaInfo": {
-            "remainingFraction": 0.9949908,
-            "resetTime": "2026-11-12T15:28:54Z"
-          },
-          "tagTitle": "New",
-          "supportedMimeTypes": {
-            "application/json": true,
-            "application/msword": true,
-            "application/pdf": true,
-            "application/rtf": true,
-            "application/vnd.ms-excel": true,
-            "application/vnd.ms-powerpoint": true,
-            "application/vnd.oasis.opendocument.presentation": true,
-            "application/vnd.oasis.opendocument.spreadsheet": true,
-            "application/vnd.oasis.opendocument.text": true,
-            "application/vnd.openxmlformats-officedocument.presentationml.presentation": true,
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": true,
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document": true,
-            "application/x-ipynb+json": true,
-            "application/x-javascript": true,
-            "application/x-python-code": true,
-            "application/x-typescript": true,
-            "audio/aac": true,
-            "audio/flac": true,
-            "audio/l16": true,
-            "audio/m4a": true,
-            "audio/mp3": true,
-            "audio/mp4": true,
-            "audio/mpeg": true,
-            "audio/ogg": true,
-            "audio/opus": true,
-            "audio/vnd.wave": true,
-            "audio/wav": true,
-            "audio/wave": true,
-            "audio/webm": true,
-            "audio/webm;codecs=opus": true,
-            "audio/x-wav": true,
-            "image/heic": true,
-            "image/heif": true,
-            "image/jpeg": true,
-            "image/png": true,
-            "image/webp": true,
-            "text/css": true,
-            "text/csv": true,
-            "text/html": true,
-            "text/javascript": true,
-            "text/markdown": true,
-            "text/plain": true,
-            "text/rtf": true,
-            "text/x-python": true,
-            "text/x-python-script": true,
-            "text/x-typescript": true,
-            "text/xml": true,
-            "video/audio/s16le": true,
-            "video/audio/wav": true,
-            "video/jpeg2000": true,
-            "video/mp4": true,
-            "video/text/timestamp": true,
-            "video/videoframe/jpeg2000": true,
-            "video/webm": true
-          },
-          "modelId": "gemini-4-argon-high"
-        },
-        {
-          "label": "Gemini 4 Argon (Low)",
-          "modelOrAlias": {
-            "model": "MODEL_PLACEHOLDER_M419"
-          },
-          "supportsImages": true,
-          "isRecommended": true,
-          "allowedTiers": [
-            "TEAMS_TIER_PRO",
-            "TEAMS_TIER_TEAMS",
-            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
-            "TEAMS_TIER_ENTERPRISE_SAAS",
-            "TEAMS_TIER_HYBRID",
-            "TEAMS_TIER_PRO_ULTIMATE"
-          ],
-          "quotaInfo": {
-            "remainingFraction": 0.9949908,
-            "resetTime": "2026-11-12T15:28:54Z"
-          },
-          "tagTitle": "New",
-          "supportedMimeTypes": {
-            "application/json": true,
-            "application/msword": true,
-            "application/pdf": true,
-            "application/rtf": true,
-            "application/vnd.ms-excel": true,
-            "application/vnd.ms-powerpoint": true,
-            "application/vnd.oasis.opendocument.presentation": true,
-            "application/vnd.oasis.opendocument.spreadsheet": true,
-            "application/vnd.oasis.opendocument.text": true,
-            "application/vnd.openxmlformats-officedocument.presentationml.presentation": true,
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": true,
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document": true,
-            "application/x-ipynb+json": true,
-            "application/x-javascript": true,
-            "application/x-python-code": true,
-            "application/x-typescript": true,
-            "audio/aac": true,
-            "audio/flac": true,
-            "audio/l16": true,
-            "audio/m4a": true,
-            "audio/mp3": true,
-            "audio/mp4": true,
-            "audio/mpeg": true,
-            "audio/ogg": true,
-            "audio/opus": true,
-            "audio/vnd.wave": true,
-            "audio/wav": true,
-            "audio/wave": true,
-            "audio/webm": true,
-            "audio/webm;codecs=opus": true,
-            "audio/x-wav": true,
-            "image/heic": true,
-            "image/heif": true,
-            "image/jpeg": true,
-            "image/png": true,
-            "image/webp": true,
-            "text/css": true,
-            "text/csv": true,
-            "text/html": true,
-            "text/javascript": true,
-            "text/markdown": true,
-            "text/plain": true,
-            "text/rtf": true,
-            "text/x-python": true,
-            "text/x-python-script": true,
-            "text/x-typescript": true,
-            "text/xml": true,
-            "video/audio/s16le": true,
-            "video/audio/wav": true,
-            "video/jpeg2000": true,
-            "video/mp4": true,
-            "video/text/timestamp": true,
-            "video/videoframe/jpeg2000": true,
-            "video/webm": true
-          },
-          "modelId": "gemini-4-argon-low"
-        },
-        {
-          "label": "Claude Opus 5.5 (Medium)",
-          "modelOrAlias": {
-            "model": "MODEL_PLACEHOLDER_M401"
-          },
-          "supportsImages": true,
-          "isRecommended": true,
-          "allowedTiers": [
-            "TEAMS_TIER_PRO",
-            "TEAMS_TIER_TEAMS",
-            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
-            "TEAMS_TIER_ENTERPRISE_SAAS",
-            "TEAMS_TIER_HYBRID",
-            "TEAMS_TIER_PRO_ULTIMATE"
-          ],
-          "quotaInfo": {
-            "remainingFraction": 1,
-            "resetTime": "2026-11-06T15:36:59Z"
-          },
-          "tagTitle": "New",
-          "supportedMimeTypes": {
-            "image/heic": true,
-            "image/heif": true,
-            "image/jpeg": true,
-            "image/png": true,
-            "image/webp": true,
-            "video/jpeg2000": true,
-            "video/videoframe/jpeg2000": true
-          },
-          "modelId": "claude-opus-5-5-medium"
         },
         {
           "label": "Claude Opus 5.5 (High)",
@@ -665,7 +634,7 @@
           ],
           "quotaInfo": {
             "remainingFraction": 1,
-            "resetTime": "2026-11-06T15:36:59Z"
+            "resetTime": "2026-11-06T21:43:28Z"
           },
           "tagTitle": "New",
           "supportedMimeTypes": {
@@ -678,6 +647,37 @@
             "video/videoframe/jpeg2000": true
           },
           "modelId": "claude-opus-5-5-high"
+        },
+        {
+          "label": "Claude Sonnet 5.5 (Low)",
+          "modelOrAlias": {
+            "model": "MODEL_PLACEHOLDER_M403"
+          },
+          "supportsImages": true,
+          "isRecommended": true,
+          "allowedTiers": [
+            "TEAMS_TIER_PRO",
+            "TEAMS_TIER_TEAMS",
+            "TEAMS_TIER_ENTERPRISE_SELF_HOSTED",
+            "TEAMS_TIER_ENTERPRISE_SAAS",
+            "TEAMS_TIER_HYBRID",
+            "TEAMS_TIER_PRO_ULTIMATE"
+          ],
+          "quotaInfo": {
+            "remainingFraction": 1,
+            "resetTime": "2026-11-06T21:43:28Z"
+          },
+          "tagTitle": "New",
+          "supportedMimeTypes": {
+            "image/heic": true,
+            "image/heif": true,
+            "image/jpeg": true,
+            "image/png": true,
+            "image/webp": true,
+            "video/jpeg2000": true,
+            "video/videoframe/jpeg2000": true
+          },
+          "modelId": "claude-sonnet-5-5-low"
         },
         {
           "label": "Claude Sonnet 5.5 (Medium)",
@@ -696,7 +696,7 @@
           ],
           "quotaInfo": {
             "remainingFraction": 1,
-            "resetTime": "2026-11-06T15:36:59Z"
+            "resetTime": "2026-11-06T21:43:28Z"
           },
           "tagTitle": "New",
           "supportedMimeTypes": {
@@ -713,7 +713,7 @@
       ],
       "clientModelSorts": [
         {
-          "name": "<name>",
+          "name": "Recommended",
           "groups": [
             {
               "modelLabels": [
@@ -744,7 +744,7 @@
     "acceptedLatestTermsOfService": true,
     "userTier": {
       "id": "g1-pro-tier",
-      "name": "<name>",
+      "name": "Google AI Pro",
       "description": "<description:13>",
       "upgradeSubscriptionUri": "https://antigravity.google/g1-upgrade",
       "upgradeSubscriptionText": "You can upgrade to a Google AI Ultra plan to receive higher rate limits.",
