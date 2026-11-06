@@ -199,7 +199,19 @@ function createInternal(deps: AdapterDeps): { adapter: AppAdapter; rpc: RpcClien
     async cancel(conversationId: string): Promise<void> {
       await call('CancelCascadeInvocation', { cascadeId: conversationId });
     },
-    answerPermission: notYet('answerPermission') as AppAdapter['answerPermission'],
+    async answerPermission(conversationId: string, requestId: string, decision: 'allow' | 'deny'): Promise<void> {
+      // Spike T079: HandleCascadeUserInteraction {cascadeId, interaction:{trajectoryId, stepIndex, <kind>:{...}}}
+      const [trajectoryId, idx, kind = 'permission'] = requestId.split(':');
+      const stepIndex = Number(idx);
+      if (!trajectoryId || !Number.isInteger(stepIndex)) throw new RpcError('protocol', 'bad permission request id');
+      const allow = decision === 'allow';
+      const answer =
+        kind === 'runCommand' || kind === 'approvalInteraction' ? { confirm: allow } : { allow };
+      await call('HandleCascadeUserInteraction', {
+        cascadeId: conversationId,
+        interaction: { trajectoryId, stepIndex, [kind]: answer },
+      });
+    },
   };
   return { adapter, rpc };
 }

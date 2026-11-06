@@ -206,6 +206,21 @@ thuật** cho plan. Mỗi quyết định gồm: Quyết định / Lý do / Phư
   (conversation tạo bằng `agentapi` không có projectId). Project đặc biệt: `default-cli-project`, `outside-of-project`.
 - **Dọn dẹp**: `DeleteCascadeTrajectory { cascadeId }` xoá conversation thử nghiệm (chỉ dùng trong test/spike).
 
+### Kết quả spike T029 + T079 (2026-11-06, App 2.24.0, chế độ "hỏi trước khi chạy lệnh")
+
+- **Chờ duyệt**: agent xin chạy lệnh → bước mới `CORTEX_STEP_TYPE_GENERIC` với `status = WAITING`, trong khi
+  conversation vẫn `RUNNING`. Bước có `requestedInteraction.permission = { resource: { action: "command", target:
+  "<lệnh>" }, actionDescription, suggestedPersistPattern, shellName }` và `generic.args.CommandLine`. Các loại khác
+  có trong schema: `filePermission`, `runCommand`, `approvalInteraction`, `mcp`…
+- **Duyệt / từ chối**: `HandleCascadeUserInteraction` với body **`{ cascadeId, interaction: { trajectoryId,
+  stepIndex, permission: { allow: true|false } } }`**. Lưu ý: phải dùng `cascadeId`. Nếu dùng `conversationId`
+  sẽ lỗi "conversation id is required" (có hai message cùng tên). `trajectoryId` lấy từ
+  `metadata.sourceTrajectoryStepInfo.trajectoryId` của bước đang chờ.
+  - Cho phép: bước chuyển thành `RUN_COMMAND:DONE` (lệnh chạy, mã thoát 0), rồi agent trả lời tiếp.
+  - Từ chối: bước chuyển thành **`RUN_COMMAND:ERROR`**, rồi agent trả lời tiếp. → đây là tín hiệu "lỗi" quan sát được.
+- **Ánh xạ**: `Step.kind = permission_request`, `permission.requestId = "<trajectoryId>:<stepIndex>:<kind>"`.
+  Fixture: `waiting-steps.json` (bước 6 dựng lại đúng cấu trúc đã quan sát) và `error-steps.json` (ghi thật).
+
 ## R9. Quota
 
 - **Quyết định**: `GetUserStatus` được gọi mỗi 5 phút và ngay sau khi một conversation chuyển từ

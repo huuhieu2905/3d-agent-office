@@ -47,13 +47,26 @@ function userText(input: Raw): string | null {
   return str(input.userResponse);
 }
 
-function permissionFrom(raw: Raw): Step['permission'] {
-  // Shape confirmed by spike T029/T079; until then accept common fields defensively.
-  const p = (raw.permissions ?? raw.permissionRequest ?? raw.requestedInteraction) as Raw | undefined;
-  if (!p || typeof p !== 'object') return null;
-  const requestId = str(p.requestId) ?? str(p.id) ?? str(p.interactionId);
-  if (!requestId) return null;
-  return { requestId, description: str(p.description) ?? str(p.title) ?? 'Agent xin quyền', options: ['allow', 'deny'] };
+// Spike T029/T079 (2026-11-06): a pending approval is a step with status WAITING and
+// `requestedInteraction.{permission|filePermission|runCommand|...}`. Answering needs the step's
+// trajectoryId + stepIndex, so requestId = "<trajectoryId>:<stepIndex>:<interactionKind>".
+const INTERACTION_KINDS = ['permission', 'filePermission', 'runCommand', 'approvalInteraction', 'mcp'] as const;
+
+function permissionFrom(raw: Raw, index: number): Step['permission'] {
+  const ri = raw.requestedInteraction as Raw | undefined;
+  if (!ri || typeof ri !== 'object') return null;
+  const kind = INTERACTION_KINDS.find((k) => ri[k] && typeof ri[k] === 'object') ?? (Object.keys(ri)[0] as string | undefined);
+  if (!kind) return null;
+  const p = (ri[kind] ?? {}) as Raw;
+  const resource = (p.resource ?? {}) as Raw;
+  const trajectoryId = str(((raw.metadata as Raw | undefined)?.sourceTrajectoryStepInfo as Raw | undefined)?.trajectoryId) ?? '';
+  const what = str(p.actionDescription) ?? str(resource.action) ?? kind;
+  const target = str(resource.target) ?? str(p.absolutePathUri) ?? str(p.proposedCommandLine);
+  return {
+    requestId: `${trajectoryId}:${index}:${kind}`,
+    description: target ? `${what}: ${target}` : what,
+    options: ['allow', 'deny'],
+  };
 }
 
 export function mapStep(raw: Raw, index: number): Step {
@@ -118,6 +131,12 @@ export function mapStep(raw: Raw, index: number): Step {
       step.file = { uri, summary: str(ca.description) ?? (uri.split('/').pop() ?? 'thay đổi file') };
       break;
     }
+    case 'GENERIC': {
+      const g = ((raw.generic as Raw | undefined)?.args ?? {}) as Raw;
+      const cl = str(g.CommandLine);
+      if (cl) step.command = { commandLine: cl, output: '', exitCode: null };
+      break;
+    }
     case 'SYSTEM_MESSAGE': {
       const sm = (raw.systemMessage ?? {}) as Raw;
       const blocks = ((sm.renderInfo as Raw | undefined)?.contentBlocks ?? []) as Raw[];
@@ -128,7 +147,7 @@ export function mapStep(raw: Raw, index: number): Step {
       break;
   }
 
-  const permission = permissionFrom(raw);
+  const permission = status === 'WAITING' ? permissionFrom(raw, index) : null;
   if (permission && status === 'WAITING') {
     step.permission = permission;
     kind = 'permission_request';
