@@ -148,7 +148,7 @@ V). Vì vậy chỉ những test này được đưa vào. Các test khác là t
 - [X] T056 [P] [US1] Viết chú giải màu project (tên lấy từ `GET /api/projects`) và bộ lọc hoặc làm nổi bật theo project (FR-013) trong `src/web/ui/ProjectLegend.tsx`
 - [X] T057 [US1] Thể hiện subagent trong `src/web/scene/Employee.tsx` và `src/server/services/employees.ts`: subagent ngồi ở bàn trống gần nhân viên cha nhất, có đường nối mảnh tới cha. Nếu không còn bàn trống thì gom thành huy hiệu số trên nhân viên cha
 - [X] T058 [US1] Viết **lõi benchmark FPS** trong `src/web/bench/Bench.tsx` (route `/bench`) và script `bench:fps` trong `scripts/bench-fps.ts` (Playwright mở Chrome 1920×1080 tại `/bench`): 20 nhân viên giả với trạng thái thay đổi mỗi 2 giây trong bố cục mặc định, camera bay theo lộ trình cố định trong 60 giây. In FPS trung bình và p1, thoát mã lỗi nếu trung bình < 60 (SC-004, cổng chất lượng 4). Benchmark được mở rộng thêm công viên ở US6
-- [ ] T059 [US1] Viết test độ trễ và độ khớp trạng thái với App thật trong `tests/live/latency.live.test.ts` (chỉ khi `AGENT_OFFICE_LIVE=1`): tạo conversation `[agent-office-test] latency` và cho agent làm một việc dài khoảng 60 giây. Trong ≥ 10 phút, lấy mẫu song song mỗi 250 ms `status` thật từ App (đọc qua adapter) và `VisualState` server đã phát. Khẳng định p95 độ trễ ≤ 2 giây (FR-003) và tỷ lệ khớp ≥ 99% (SC-002, cổng chất lượng 2). Dọn conversation sau khi chạy
+- [X] T059 [US1] Viết test độ trễ và độ khớp trạng thái với App thật trong `tests/live/latency.live.test.ts` (chỉ khi `AGENT_OFFICE_LIVE=1`): tạo conversation `[agent-office-test] latency` và cho agent làm một việc dài khoảng 60 giây. Trong ≥ 10 phút, lấy mẫu song song mỗi 250 ms `status` thật từ App (đọc qua adapter) và `VisualState` server đã phát. Khẳng định p95 độ trễ ≤ 2 giây (FR-003) và tỷ lệ khớp ≥ 99% (SC-002, cổng chất lượng 2). Dọn conversation sau khi chạy
 - [X] T060 [P] [US1] Kiểm thử suy giảm có kiểm soát trong `tests/e2e/resilience.spec.ts` với App giả lập `tests/e2e/mock-app.ts` (tạo mock nếu chưa có): tắt App giả lập thì văn phòng chuyển `disconnected` và có banner (FR-006); bật lại thì kết nối lại ≤ 10 giây không cần tải lại trang (SC-010); App giả lập đổi cổng hoặc token thì tự dò lại (cổng chất lượng 1)
 
 **Checkpoint**: chạy quickstart V1, `npm test` (gồm `check-guards.sh`), `npm run test:e2e -- resilience`, `npm run bench:fps` và `AGENT_OFFICE_LIVE=1 npm run test:live -- latency`. US1 dùng được độc lập.
@@ -164,7 +164,7 @@ V). Vì vậy chỉ những test này được đưa vào. Các test khác là t
 ### Tests for User Story 2
 
 - [X] T061 [P] [US2] Contract test ghi trong `tests/contract/adapter-write.test.ts` (dùng RPC giả): `sendMessage` gửi đúng `SendUserCascadeMessage {cascadeId, items[{text}|{item:{file:{absoluteUri}}}], cascadeConfig.plannerConfig.planModel}`; `cancel` gửi `CancelCascadeInvocation {cascadeId}`; `getModels` đọc `clientModelConfigs[]` từ fixture `GetUserStatus`
-- [ ] T062 [P] [US2] Live test trong `tests/live/chat.live.test.ts` (chỉ khi `AGENT_OFFICE_LIVE=1`): tạo conversation `[agent-office-test] chat`, gửi tin rồi kiểm tra bước mới là `USER_INPUT` (A6, không phải `SYSTEM_MESSAGE`), cancel rồi kiểm tra `IDLE` trong ≤ 3 giây (A7), cuối cùng dọn conversation
+- [X] T062 [P] [US2] Live test trong `tests/live/chat.live.test.ts` (chỉ khi `AGENT_OFFICE_LIVE=1`): tạo conversation `[agent-office-test] chat`, gửi tin rồi kiểm tra bước mới là `USER_INPUT` (A6, không phải `SYSTEM_MESSAGE`), cancel rồi kiểm tra `IDLE` trong ≤ 3 giây (A7), cuối cùng dọn conversation
 
 ### Implementation for User Story 2
 
