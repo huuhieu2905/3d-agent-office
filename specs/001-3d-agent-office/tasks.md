@@ -90,7 +90,7 @@ V). Vì vậy chỉ những test này được đưa vào. Các test khác là t
 - [X] T025 [P] Viết mapper step trong `src/server/app-adapter/mappers/step.ts`: `CORTEX_STEP_TYPE_*` → `Step.kind` (`USER_INPUT`→user, `PLANNER_RESPONSE`→agent kèm `thinking` và `toolCalls`, `RUN_COMMAND`→command, `VIEW_FILE`→file_view, `CODE_ACTION`→file_change, `SYSTEM_MESSAGE`→system, loại khác→`other`). `CORTEX_STEP_STATUS_*` → `StepStatus`. Không sập khi thiếu trường (A5)
 - [X] T026 Viết `createAppAdapter()` trong `src/server/app-adapter/index.ts`, nối `ConnectionManager` + `RpcClient` + mapper. Cài đặt `start`, `stop`, `getConnection`, `onConnectionChange`, `listConversations`, `getSteps`, `listProjects` (theo trường hoặc RPC tìm được ở spike T028). Khi chưa kết nối thì ném `AppUnavailableError` trong ≤ 3 giây (A1)
 - [X] T027 [P] Contract test cho adapter trong `tests/contract/adapter-read.test.ts`, dùng fixture cộng một `ProcessFinder` và `RpcClient` giả: A1 (không có App), A2 (đổi PID/cổng → kết nối lại), A3 (sai phiên bản → `versionSupported=false`), A5 (fixture bị xoá trường hoặc có loại bước lạ)
-- [ ] T028 **Spike (R7, R8)** với App thật bằng conversation `[agent-office-test]`:
+- [X] T028 **Spike (R7, R8)** với App thật bằng conversation `[agent-office-test]`:
   (a) tham số `StartCascade` để tạo conversation mới;
   (b) `StreamCascadeReactiveUpdates` (luồng cập nhật);
   (c) bước `PLANNER_RESPONSE` ở trạng thái `GENERATING` có chứa `response` từng phần không (phục vụ FR-023);

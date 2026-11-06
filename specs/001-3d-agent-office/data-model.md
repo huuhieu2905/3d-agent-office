@@ -19,7 +19,7 @@ Tên trường viết theo kiểu TypeScript. Kiểu dùng chung nằm ở `src/
 |---|---|---|---|
 | `id` | string (UUID) | `trajectoryId` / `cascadeId` | khoá chính |
 | `title` | string | `summary` | rỗng thì dùng "Nhân viên mới" |
-| `projectId` | string \| null | **chưa xác định**: spike T028(d) sẽ tìm trường trong `trajectoryMetadata` hoặc RPC liệt kê project | để tô màu (FR-013) |
+| `projectId` | string \| null | `trajectoryMetadata.projectId` (spike T028(d)); tên project lấy qua `ListProjects` + `ReadProjects` | để tô màu (FR-013) |
 | `parentId` | string \| null | `parentConversationId` | subagent |
 | `runStatus` | `RunStatus` | `status` | xem §6 |
 | `stepCount` | number | `stepCount` | |

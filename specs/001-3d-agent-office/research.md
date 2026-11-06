@@ -162,7 +162,7 @@ thuật** cho plan. Mỗi quyết định gồm: Quyết định / Lý do / Phư
   | Gợi ý `@` | thử `GetMatchingContextScopeItems` với workspace của conversation. Nếu vẫn rỗng, **server tự liệt kê file** trong `workspaceUris` (bỏ qua `.git`, `node_modules`, tối đa 5.000 file, lọc theo tên) | đáp ứng FR-028 kể cả khi API không trả kết quả |
   | Chọn model | `GetUserStatus` → `cascadeModelConfigData.clientModelConfigs[]` (`label`, `modelOrAlias.model`, `quotaInfo`) | dùng chung dữ liệu với quota |
   | Dừng | `CancelCascadeInvocation {cascadeId}` | đã chạy thử: về IDLE trong khoảng 1 giây |
-  | Tạo conversation mới | `StartCascade` rồi `SendUserCascadeMessage` | **cần kiểm chứng** tham số của `StartCascade`; dự phòng bằng `agy agentapi new-conversation` |
+  | Tạo conversation mới | `StartCascade` rồi `SendUserCascadeMessage` | ✅ đã kiểm chứng (xem Kết quả spike T028) |
   | Duyệt / từ chối quyền | `HandleCascadeUserInteraction {conversationId, interaction}` | **cần kiểm chứng** định dạng `interaction` (spike) |
 
 - **Lý do**: Đây là đúng các API mà giao diện App dùng, nên kết quả "giống App" (FR-022, FR-027,
@@ -173,6 +173,27 @@ thuật** cho plan. Mỗi quyết định gồm: Quyết định / Lý do / Phư
   cách bật chế độ hỏi quyền trong App; (b) tham số của `StartCascade`; (c) `StreamCascadeReactiveUpdates`.
   Nếu (a) không làm được thì FR-029 rơi về "mở conversation trong App", và ghi lại theo spec
   Assumptions.
+
+### Kết quả spike T028 (2026-11-06, App 2.24.0)
+
+- **(a) Tạo conversation mới**: `StartCascade` với body
+  `{ "source": "CORTEX_TRAJECTORY_SOURCE_INTERACTIVE_CASCADE", "projectEnvConfig": { "projectId": "<id>", "defaultProjectEnvironment": {} } }`
+  trả về `{ cascadeId }`, rồi gọi `SendUserCascadeMessage` để gửi yêu cầu đầu tiên. Conversation được gán đúng
+  `projectId`. Thiếu `source` thì lỗi `CortexTrajectorySource is unspecified`. Thiếu `defaultProjectEnvironment`
+  thì lỗi `unsupported target type in ProjectEnvironmentConfig`. **Không cần** phương án dự phòng `agy agentapi`.
+- **(b) Luồng cập nhật**: `StreamCascadeReactiveUpdates` **đã bị ngừng** ("reactive state is deprecated"). Thay
+  bằng **`StreamAgentStateUpdates`** (Connect server-streaming, `content-type: application/connect+json`, mỗi khung
+  có 5 byte tiền tố) với body `{ conversationId, subscriberId }`. Khung đầu tiên là ảnh chụp đầy đủ, các khung sau
+  là `update.status`/`executorLoopStatus` (đổi sang RUNNING khoảng 1,5 giây sau khi gửi tin) và
+  `update.mainTrajectoryUpdate.stepsUpdate.steps[]`.
+- **(c) Câu trả lời từng phần**: khi đọc định kỳ bằng `GetCascadeTrajectorySteps`, `plannerResponse.response` **rỗng**
+  suốt thời gian `GENERATING` (33/33 lần lấy mẫu). Trong luồng, **`plannerResponse.thinking` lớn dần** (45 → 1439 →
+  2260 → 2452 ký tự, khoảng 2–3 giây một khung), còn `response` chỉ có khi bước chuyển `DONE`. → FR-023 được đáp ứng
+  bằng cách **hiện phần suy nghĩ chạy dần**, rồi câu trả lời hiện khi xong (giống App).
+- **(d) Project**: `ListProjects {}` → `{ projectIds[] }`; `ReadProjects { ids }` → `{ projects[{ id, name,
+  projectResources }] }`. `projectId` của conversation nằm ở `trajectorySummaries[id].trajectoryMetadata.projectId`
+  (conversation tạo bằng `agentapi` không có projectId). Project đặc biệt: `default-cli-project`, `outside-of-project`.
+- **Dọn dẹp**: `DeleteCascadeTrajectory { cascadeId }` xoá conversation thử nghiệm (chỉ dùng trong test/spike).
 
 ## R9. Quota
 
