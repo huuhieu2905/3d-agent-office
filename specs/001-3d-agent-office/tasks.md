@@ -110,10 +110,10 @@ V). Vì vậy chỉ những test này được đưa vào. Các test khác là t
 
 ### Client web nền tảng
 
-- [ ] T037 [P] Viết client API trong `src/web/api/client.ts`: đọc `sessionToken` từ `location.hash` (`#k=`), lưu trong `sessionStorage` rồi xoá khỏi URL. `fetch` có `Authorization: Bearer`. Lỗi `503 APP_UNAVAILABLE` được ném dạng có kiểu
-- [ ] T038 [P] Viết client WebSocket trong `src/web/api/ws.ts`: kết nối `/ws?k=`, tự kết nối lại với backoff (tối đa 5 giây), nhận lại `employees.snapshot` khi kết nối lại
-- [ ] T039 Tạo các store `zustand` trong `src/web/state/`: `connection.ts`, `employees.ts` (áp `employees.patch`), `ui.ts` (conversation đang mở, chế độ camera), `settings.ts`
-- [ ] T040 Tạo khung ứng dụng trong `src/web/main.tsx` và `src/web/App.tsx`: `<Canvas>` của R3F chiếm toàn màn hình, lớp UI 2D phía trên, banner trạng thái kết nối (`searching` → "Chưa kết nối được Antigravity App — hãy mở App", cảnh báo phiên bản)
+- [X] T037 [P] Viết client API trong `src/web/api/client.ts`: đọc `sessionToken` từ `location.hash` (`#k=`), lưu trong `sessionStorage` rồi xoá khỏi URL. `fetch` có `Authorization: Bearer`. Lỗi `503 APP_UNAVAILABLE` được ném dạng có kiểu
+- [X] T038 [P] Viết client WebSocket trong `src/web/api/ws.ts`: kết nối `/ws?k=`, tự kết nối lại với backoff (tối đa 5 giây), nhận lại `employees.snapshot` khi kết nối lại
+- [X] T039 Tạo các store `zustand` trong `src/web/state/`: `connection.ts`, `employees.ts` (áp `employees.patch`), `ui.ts` (conversation đang mở, chế độ camera), `settings.ts`
+- [X] T040 Tạo khung ứng dụng trong `src/web/main.tsx` và `src/web/App.tsx`: `<Canvas>` của R3F chiếm toàn màn hình, lớp UI 2D phía trên, banner trạng thái kết nối (`searching` → "Chưa kết nối được Antigravity App — hãy mở App", cảnh báo phiên bản)
 
 **Checkpoint**: `npm start` mở được trang. Banner hiển thị đúng `connected`/`searching` khi mở hoặc đóng App. Contract test, test rò rỉ và `scripts/check-guards.sh` đều qua.
 
