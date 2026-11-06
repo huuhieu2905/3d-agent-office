@@ -72,3 +72,151 @@ body,
   font-size: 18px;
   cursor: pointer;
 }
+
+.panel {
+  background: var(--panel);
+  border-radius: var(--radius);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+.hud-left {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 320px;
+  z-index: 5;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.legend-item,
+.link,
+.row {
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  border-radius: 8px;
+}
+
+.legend-item.active,
+.legend-item:hover,
+.row:hover {
+  background: rgba(127, 127, 127, 0.15);
+}
+
+.overflow ul {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  max-height: 260px;
+  overflow: auto;
+}
+
+.row {
+  width: 100%;
+  justify-content: space-between;
+}
+
+.row-name {
+  flex: 1;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.state {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* Name tags above employees */
+.tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #1d2433;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  transition: opacity 0.2s, transform 0.2s;
+  user-select: none;
+}
+
+.tag-hover {
+  transform: scale(1.08);
+}
+
+.tag-dim {
+  opacity: 0.25;
+}
+
+.tag-name {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tag-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+  flex: none;
+}
+
+.tag-badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  font-size: 11px;
+  color: white;
+  padding: 0 4px;
+}
+
+.badge-working {
+  background: #2f6fed;
+}
+.badge-thinking {
+  background: #8e6c8a;
+}
+.badge-waiting {
+  background: #f3a712;
+  animation: pulse 1s infinite;
+}
+.badge-error {
+  background: #d64545;
+}
+.badge-stopped {
+  background: #8a93a3;
+}
+.badge-unknown {
+  background: #b0b7c3;
+}
+
+@keyframes pulse {
+  50% {
+    transform: scale(1.25);
+  }
+}

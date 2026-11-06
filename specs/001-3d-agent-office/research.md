@@ -103,6 +103,17 @@ thuật** cho plan. Mỗi quyết định gồm: Quyết định / Lý do / Phư
   | bị dừng | ngồi yên, kèm biểu tượng xám |
   | không rõ | mờ đi, kèm biểu tượng "?" |
 
+- **Cập nhật khi triển khai (2026-11-06, T047)**: trang tải của Kenney chỉ hoạt động qua JavaScript, không có link
+  tải trực tiếp. Thay vào đó:
+  - **Nhân vật**: `RobotExpressive` của Quaternius (CC0 1.0, lấy từ repo three.js r170, 464 KB). Có 14 hoạt ảnh (Idle,
+    Walking, Sitting, Standing, Wave, Yes, No, ThumbsUp…) và 3 biểu cảm (Angry, Surprised, Sad). 8 "ngoại hình" được
+    tạo bằng cách đổi màu vật liệu `Main`.
+  - **Nội thất, tường, kính, cây, máy nước**: dựng **bằng code từ khối low-poly** (`src/web/scene/furniture/`), không
+    dùng file bên thứ ba. Phong cách vẫn thống nhất (Constitution V).
+  - Ánh xạ hoạt ảnh: ngồi = `Sitting` dừng ở khung cuối; đang làm = ngồi kèm nhún người theo nhịp gõ và màn hình sáng;
+    đang nghĩ = ngồi kèm bong bóng "…"; chờ sếp = `Wave` kèm "!" và mặt `Surprised`; lỗi = `No` kèm mặt `Sad` và dấu đỏ;
+    đi lại = `Walking`; vươn vai = `ThumbsUp`; uống nước = `Yes`.
+
 ## R6. Kết nối với Antigravity App: phát hiện, xác thực, phiên bản
 
 - **Quyết định**: Lớp kết nối (`src/server/app-adapter/`) thực hiện các bước sau:

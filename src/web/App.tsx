@@ -3,6 +3,9 @@ import { Suspense } from 'react';
 import { useConnection } from './state/connection';
 import { useSettings } from './state/settings';
 import { getSessionToken } from './api/client';
+import { OfficeScene } from './scene/OfficeScene';
+import { OverflowList } from './ui/OverflowList';
+import { ProjectLegend } from './ui/ProjectLegend';
 
 function ConnectionBanner() {
   const { app, serverOnline, warnings, dismissWarning } = useConnection();
@@ -25,7 +28,9 @@ function ConnectionBanner() {
       {warnings.map((w) => (
         <div key={w.code} className="banner banner-warn">
           {w.message}
-          <button onClick={() => dismissWarning(w.code)} aria-label="Đóng">×</button>
+          <button onClick={() => dismissWarning(w.code)} aria-label="Đóng">
+            ×
+          </button>
         </div>
       ))}
     </div>
@@ -37,13 +42,16 @@ export function App() {
   return (
     <div className={`app theme-${theme}`}>
       <Canvas shadows dpr={[1, 2]} camera={{ position: [10, 12, 14], fov: 45 }}>
+        <color attach="background" args={[theme === 'dark' ? '#0f1420' : '#dfe9f3']} />
         <Suspense fallback={null}>
-          <color attach="background" args={[theme === 'dark' ? '#0f1420' : '#dfe9f3']} />
-          <ambientLight intensity={0.6} />
-          <directionalLight position={[8, 14, 6]} intensity={1.2} castShadow />
+          <OfficeScene theme={theme} />
         </Suspense>
       </Canvas>
       <ConnectionBanner />
+      <div className="hud-left">
+        <ProjectLegend />
+        <OverflowList />
+      </div>
     </div>
   );
 }
