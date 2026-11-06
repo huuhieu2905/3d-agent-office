@@ -5,6 +5,8 @@ interface UiStore {
   camera: 'overview' | 'first_person';
   highlightProjectId: string | null;
   buildMode: boolean;
+  hireDeskId: string | null;
+  setHireDesk(id: string | null): void;
   openConversation(id: string): void;
   closeConversation(): void;
   setCamera(c: 'overview' | 'first_person'): void;
@@ -17,6 +19,8 @@ export const useUi = create<UiStore>((set) => ({
   camera: 'overview',
   highlightProjectId: null,
   buildMode: false,
+  hireDeskId: null,
+  setHireDesk: (hireDeskId) => set({ hireDeskId }),
   openConversation: (id) => set({ openConversationId: id }),
   closeConversation: () => set({ openConversationId: null }),
   setCamera: (camera) => set({ camera }),

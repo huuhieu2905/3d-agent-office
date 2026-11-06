@@ -5,6 +5,7 @@ import type { WsHub } from '../ws-hub';
 import type { Services } from '../../services/index';
 import { healthRoutes } from './health';
 import { employeeRoutes } from './employees';
+import { conversationRoutes } from './conversations';
 
 // Every route plugin MUST be registered here (tasks.md conventions).
 
@@ -18,4 +19,5 @@ export interface RouteDeps {
 export async function registerRoutes(app: FastifyInstance, deps: RouteDeps): Promise<void> {
   await app.register(healthRoutes, deps);
   await app.register(employeeRoutes, deps);
+  await app.register(conversationRoutes, deps);
 }

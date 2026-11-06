@@ -6,6 +6,9 @@ import { getSessionToken } from './api/client';
 import { OfficeScene } from './scene/OfficeScene';
 import { OverflowList } from './ui/OverflowList';
 import { ProjectLegend } from './ui/ProjectLegend';
+import { ChatPanel } from './ui/chat/ChatPanel';
+import { HireButton, HireDialog } from './ui/chat/HireDialog';
+import { useUi } from './state/ui';
 
 function ConnectionBanner() {
   const { app, serverOnline, warnings, dismissWarning } = useConnection();
@@ -39,6 +42,8 @@ function ConnectionBanner() {
 
 export function App() {
   const theme = useSettings((s) => s.settings.theme);
+  const hireDeskId = useUi((s) => s.hireDeskId);
+  const setHireDesk = useUi((s) => s.setHireDesk);
   return (
     <div className={`app theme-${theme}`}>
       <Canvas shadows dpr={[1, 2]} camera={{ position: [10, 12, 14], fov: 45 }}>
@@ -48,6 +53,11 @@ export function App() {
         </Suspense>
       </Canvas>
       <ConnectionBanner />
+      <div className="hud-top-right">
+        <HireButton />
+      </div>
+      <ChatPanel />
+      {hireDeskId && <HireDialog deskId={hireDeskId} onClose={() => setHireDesk(null)} />}
       <div className="hud-left">
         <ProjectLegend />
         <OverflowList />

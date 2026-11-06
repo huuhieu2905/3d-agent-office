@@ -5,6 +5,7 @@ import { defaultDataDir } from '../storage/json-store';
 import { EmployeeProfiles } from './employee-profiles';
 import { EmployeesService } from './employees';
 import { LayoutStore } from './layout-store';
+import { UsageService } from './usage';
 
 // Registry of long-running server services. Each user story adds its service here.
 
@@ -21,6 +22,7 @@ export interface Services {
   profiles: EmployeeProfiles;
   layout: LayoutStore;
   employees: EmployeesService;
+  usage: UsageService;
   start(): Promise<void>;
   stop(): Promise<void>;
 }
@@ -37,8 +39,17 @@ export function createServices(deps: ServiceDeps): Services {
     layout,
     intervalMs: deps.pollIntervalMs,
   });
+  const usage = new UsageService(dataDir);
+  employees.on((e) => {
+    if (e.type === 'user-inputs') void usage.userInputs(e.count);
+  });
+  // T065: per-client live steps for the open chat.
+  deps.hub.setWatchHandler((conversationId, push) =>
+    deps.adapter.watchConversation(conversationId, (steps) => push({ type: 'steps.append', payload: { conversationId, steps } })),
+  );
   return {
     dataDir,
+    usage,
     profiles,
     layout,
     employees,

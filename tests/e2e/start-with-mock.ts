@@ -31,6 +31,12 @@ createServer((req, res) => {
   if (action === 'quit') mock.quit();
   else if (action === 'open') mock.open();
   else if (action === 'restart') mock.restart();
+  else if (action === 'running') mock.runningAll = true;
+  else if (action === 'idle') mock.runningAll = false;
+  else if (action === 'reset') {
+    mock.sent = [];
+    mock.runningAll = false;
+  }
   else if (action === 'sent') {
     res.setHeader('content-type', 'application/json');
     return res.end(JSON.stringify(mock.sent));

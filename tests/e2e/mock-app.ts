@@ -8,6 +8,7 @@ export class MockApp {
   readonly transport = new FakeTransport();
   sent: { method: string; body: unknown }[] = [];
   private generation = 1;
+  runningAll = false;
 
   constructor() {
     const t = this.transport;
@@ -22,6 +23,11 @@ export class MockApp {
       return { cascadeId: '00000000-0000-4000-8000-0000000000e2' };
     };
     t.handlers.GetCascadeTrajectorySteps = () => fixture('GetCascadeTrajectorySteps');
+    t.handlers.GetAllCascadeTrajectories = () => {
+      const data = fixture<{ trajectorySummaries: Record<string, Record<string, unknown>> }>('GetAllCascadeTrajectories');
+      if (this.runningAll) for (const v of Object.values(data.trajectorySummaries)) v.status = 'CASCADE_RUN_STATUS_RUNNING';
+      return data;
+    };
   }
 
   quit(): void {

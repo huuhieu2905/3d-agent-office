@@ -220,3 +220,249 @@ body,
     transform: scale(1.25);
   }
 }
+
+.hud-top-right {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 6;
+}
+
+.btn {
+  border: 1px solid rgba(127, 127, 127, 0.3);
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 7px 14px;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+.btn-stop {
+  background: var(--error);
+  border-color: var(--error);
+  color: white;
+}
+.hire {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+}
+.icon {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 22px;
+  cursor: pointer;
+}
+.muted {
+  color: var(--muted);
+}
+.small {
+  font-size: 12px;
+}
+
+/* Chat panel */
+.chat {
+  position: absolute;
+  top: 60px;
+  right: 12px;
+  bottom: 12px;
+  width: min(520px, 42vw);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  z-index: 7;
+}
+.chat-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(127, 127, 127, 0.2);
+}
+.chat-title {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.chat-title strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chat-list {
+  flex: 1;
+  overflow: auto;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.msg {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.msg-user {
+  align-items: flex-end;
+}
+.msg-user .bubble {
+  background: var(--accent);
+  color: white;
+  border-radius: 14px 14px 4px 14px;
+  padding: 8px 12px;
+  max-width: 85%;
+  white-space: pre-wrap;
+}
+.msg-agent .bubble {
+  background: rgba(127, 127, 127, 0.1);
+  border-radius: 14px 14px 14px 4px;
+  padding: 2px 12px;
+  overflow-x: auto;
+}
+.msg-system {
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
+.msg-error {
+  color: var(--error);
+}
+.msg-tool {
+  color: var(--muted);
+}
+.tool-call {
+  font-size: 12px;
+  color: var(--muted);
+}
+.thinking {
+  white-space: pre-wrap;
+  color: var(--muted);
+  font-size: 12px;
+  max-height: 220px;
+  overflow: auto;
+}
+.typing {
+  color: var(--muted);
+  animation: pulse 1s infinite;
+}
+.collapsible summary {
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--muted);
+}
+.code,
+.code pre {
+  font-size: 12px;
+  border-radius: 8px;
+  padding: 8px;
+  overflow: auto;
+  margin: 6px 0;
+  background: rgba(0, 0, 0, 0.05);
+}
+code.inline {
+  background: rgba(127, 127, 127, 0.15);
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+.mentions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.chip {
+  background: rgba(47, 111, 237, 0.15);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 12px;
+}
+.chip button {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: var(--muted);
+}
+.composer {
+  border-top: 1px solid rgba(127, 127, 127, 0.2);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+}
+.composer textarea,
+.modal textarea,
+.modal select,
+.model-picker select {
+  width: 100%;
+  border: 1px solid rgba(127, 127, 127, 0.3);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 14px;
+  background: transparent;
+  color: var(--text);
+  resize: vertical;
+}
+.composer-bar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.model-picker {
+  flex: 1;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.quota-warn {
+  color: var(--warn);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.quota-empty,
+.send-failed {
+  color: var(--error);
+  font-size: 12px;
+}
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: grid;
+  place-items: center;
+  z-index: 20;
+}
+.modal {
+  width: min(480px, 92vw);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+}
+.modal h3 {
+  margin: 0;
+}
+.modal label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+}
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

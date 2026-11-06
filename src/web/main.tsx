@@ -6,6 +6,7 @@ import './styles.css';
 import { socket } from './api/ws';
 import { useConnection } from './state/connection';
 import { useEmployees } from './state/employees';
+import { useSteps } from './state/steps';
 
 // Route server messages into stores once, outside React.
 const isBench = location.pathname === '/bench';
@@ -20,6 +21,9 @@ if (!isBench) socket.on((m) => {
       break;
     case 'employees.snapshot':
       useEmployees.getState().snapshot(m.payload.employees, m.payload.overflow);
+      break;
+    case 'steps.append':
+      useSteps.getState().merge(m.payload.conversationId, m.payload.steps);
       break;
     case 'employees.patch':
       useEmployees.getState().patch(m.payload.upserted, m.payload.removed, m.payload.overflow);
