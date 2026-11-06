@@ -90,10 +90,11 @@ Mỗi kịch bản ứng với một user story trong `spec.md`. Chạy theo th�
 ## Cổng chất lượng tự động
 
 ```bash
-npm test                     # unit + contract test của adapter (fixture App 2.24.0)
-npm run test:e2e             # Playwright với App giả lập
+npm test                     # unit + contract test của adapter (fixture App 2.24.0) + scripts/check-guards.sh
+npm run test:e2e             # Playwright với App giả lập (gồm resilience: App đóng, đổi cổng, kết nối lại ≤ 10 giây)
 npm run test:leaks           # quét log và thư mục cấu hình tìm token, email, nội dung (SC-009)
 AGENT_OFFICE_LIVE=1 npm run test:live   # tuỳ chọn: chạy với App thật, tự dọn conversation [agent-office-test]
+AGENT_OFFICE_LIVE=1 npm run test:live -- latency   # cổng chất lượng 2: p95 độ trễ ≤ 2 giây, khớp trạng thái ≥ 99% (≥ 10 phút)
 npm run bench:fps            # mở trang benchmark 20 nhân viên trong 60 giây, in FPS trung bình và p1 (SC-004: ≥ 60)
 ```
 
