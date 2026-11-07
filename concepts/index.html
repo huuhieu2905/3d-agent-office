@@ -1,0 +1,1290 @@
+<title>Concept Văn Phòng 3D</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;700&family=Big+Shoulders+Display:wght@600;800&family=Archivo:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;800&family=Be+Vietnam+Pro:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Lexend:wght@400;500;600&family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;800&display=swap">
+<style>
+/* Layout: one long comparison sheet — sticky jump bar, then five concept "boards" (3D stage + live UI mock + spec), then the decision form. The chrome stays quiet so each concept carries its own identity. */
+:root {
+  --bg: #f3f3ef;
+  --surface: #ffffff;
+  --ink: #1b1c1e;
+  --muted: #61646a;
+  --line: #dcdcd5;
+  --accent: #2b4c7e;
+  --accent-ink: #ffffff;
+  --shadow: 0 1px 2px rgba(20, 22, 26, .06), 0 8px 24px rgba(20, 22, 26, .06);
+  --f-ui: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121315; --surface: #1b1c1f; --ink: #ececea; --muted: #9a9ca3; --line: #2d2e33;
+    --accent: #93b2e2; --accent-ink: #0f1626; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121315; --surface: #1b1c1f; --ink: #ececea; --muted: #9a9ca3; --line: #2d2e33;
+  --accent: #93b2e2; --accent-ink: #0f1626; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-ui); font-size: 15px; line-height: 1.55; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+.wrap { max-width: 1240px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+.intro { padding-block: 40px 24px; display: grid; gap: 12px; }
+.intro h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.15; margin: 0; letter-spacing: -.01em; font-weight: 700; text-wrap: balance; }
+.intro p { margin: 0; max-width: 68ch; color: var(--muted); }
+.intro .scene-note { font-size: 13px; }
+
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.bar .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-block: 10px; }
+.jump { display: flex; flex-wrap: wrap; gap: 6px; flex: 1 1 auto; min-width: 0; }
+.jump a { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px 5px 6px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); text-decoration: none; font-size: 13px; white-space: nowrap; }
+.jump a:hover, .jump a:focus-visible { border-color: var(--accent); outline: none; }
+.jump .dot { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 700; color: #fff; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 2px; gap: 2px; }
+.seg button { font: inherit; font-size: 13px; border: 0; background: transparent; color: var(--muted); padding: 5px 14px; border-radius: 999px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.concepts { display: grid; gap: 40px; padding-block: 32px 48px; }
+.concept { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); overflow: hidden; scroll-margin-top: 72px; }
+.c-head { display: flex; align-items: baseline; gap: 14px; padding: 20px 22px 14px; flex-wrap: wrap; }
+.c-letter { font-family: var(--c-display); font-weight: var(--c-dw); font-size: 40px; line-height: 1; color: var(--c-swatch); }
+.c-title { min-width: 0; flex: 1 1 260px; }
+.c-title h2 { margin: 0; font-family: var(--c-display); font-weight: var(--c-dw); font-size: 28px; line-height: 1.15; letter-spacing: var(--c-track); }
+.c-title p { margin: 2px 0 0; color: var(--muted); }
+.c-body { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); gap: 0; border-top: 1px solid var(--line); }
+@media (max-width: 920px) { .c-body { grid-template-columns: minmax(0, 1fr); } }
+
+.stage { position: relative; aspect-ratio: 16 / 10; max-width: 100%; background: #c9d2d8; overflow: hidden; }
+.stage canvas { display: block; width: 100%; height: 100%; touch-action: pan-y; }
+.stage-hint { position: absolute; left: 12px; bottom: 10px; font-size: 12px; padding: 3px 9px; border-radius: 999px; background: rgba(0,0,0,.45); color: #fff; pointer-events: none; }
+.size-pick { position: absolute; right: 10px; top: 10px; display: flex; align-items: center; gap: 6px; font-size: 12px; padding: 4px 6px 4px 10px; border-radius: 999px; background: rgba(0,0,0,.5); color: #fff; }
+.size-pick select { font: inherit; font-size: 12px; border-radius: 999px; border: 0; padding: 3px 6px; background: #fff; color: #1b1c1e; }
+.stage-load { position: absolute; inset: 0; display: grid; place-items: center; color: #34383d; font-size: 13px; }
+
+.spec { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px 28px; padding: 18px 22px 22px; border-top: 1px solid var(--line); margin: 0; }
+.spec div { min-width: 0; }
+.spec dt { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 4px; }
+.spec dd { margin: 0; font-size: 14px; }
+.swatches { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+.swatches span { width: 26px; height: 26px; border-radius: 6px; border: 1px solid rgba(0,0,0,.12); }
+.specimen { display: grid; gap: 2px; }
+.specimen .sd { font-family: var(--c-display); font-weight: var(--c-dw); font-size: 22px; line-height: 1.2; letter-spacing: var(--c-track); }
+.specimen .sb { font-family: var(--c-body); font-size: 14px; }
+.specimen small { color: var(--muted); font-size: 12px; }
+
+/* ---------- Live UI mock (styled entirely from the concept's own tokens) ---------- */
+.mock { --r: 10px; background: var(--m-bg); color: var(--m-ink); font-family: var(--c-body); padding: 16px; display: grid; gap: 12px; align-content: start; min-width: 0; border-left: 1px solid var(--line); }
+@media (max-width: 920px) { .mock { border-left: 0; border-top: 1px solid var(--line); } }
+.m-card { background: var(--m-panel); border: 1px solid var(--m-line); border-radius: var(--r); min-width: 0; }
+.m-chat-h { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--m-line); }
+.m-ava { width: 30px; height: 30px; border-radius: 50%; flex: none; display: grid; place-items: center; font-family: var(--c-display); font-weight: var(--c-dw); color: var(--m-accent-ink); background: var(--m-accent); font-size: 14px; }
+.m-name { font-family: var(--c-display); font-weight: var(--c-dw); font-size: 16px; line-height: 1.1; letter-spacing: var(--c-track); }
+.m-sub { font-size: 12px; color: var(--m-muted); }
+.m-chip { margin-left: auto; font-size: 11px; padding: 3px 8px; border-radius: 999px; background: var(--m-chip); color: var(--m-ink); white-space: nowrap; display: inline-flex; align-items: center; gap: 5px; }
+.m-chip i { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+.m-msgs { padding: 12px; display: grid; gap: 8px; font-size: 13px; }
+.m-msg { padding: 8px 10px; border-radius: calc(var(--r) - 2px); max-width: 92%; }
+.m-msg.user { background: var(--m-user); justify-self: end; }
+.m-msg.agent { background: var(--m-agent); border: 1px solid var(--m-line); }
+.m-msg code { font-family: var(--f-mono); font-size: 12px; background: var(--m-chip); padding: 0 4px; border-radius: 4px; }
+.m-tool { font-family: var(--f-mono); font-size: 11.5px; color: var(--m-muted); padding-left: 10px; border-left: 2px solid var(--m-accent); }
+.m-comp { display: flex; gap: 8px; align-items: center; padding: 10px 12px; border-top: 1px solid var(--m-line); flex-wrap: wrap; }
+.m-input { flex: 1 1 140px; min-width: 0; padding: 8px 10px; border: 1px solid var(--m-line); border-radius: calc(var(--r) - 2px); color: var(--m-muted); font-size: 13px; background: var(--m-bg); }
+.m-model { font-size: 12px; padding: 7px 10px; border: 1px solid var(--m-line); border-radius: calc(var(--r) - 2px); white-space: nowrap; }
+.m-send { font-size: 13px; padding: 7px 14px; border-radius: calc(var(--r) - 2px); background: var(--m-accent); color: var(--m-accent-ink); font-weight: 600; white-space: nowrap; }
+.m-quota { padding: 10px 12px; display: grid; gap: 8px; font-size: 12.5px; }
+.m-quota h4 { margin: 0; font-family: var(--c-display); font-weight: var(--c-dw); font-size: 14px; letter-spacing: var(--c-track); }
+.m-q { display: grid; grid-template-columns: 1fr auto; gap: 3px 8px; font-variant-numeric: tabular-nums; }
+.m-track { grid-column: 1 / -1; height: 6px; border-radius: 99px; background: var(--m-chip); overflow: hidden; }
+.m-track b { display: block; height: 100%; background: var(--m-accent); border-radius: 99px; }
+.m-track b.low { background: #d1453b; }
+.m-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.m-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; padding: 4px 9px 4px 7px; border-radius: 999px; background: var(--m-panel); border: 1px solid var(--m-line); }
+.m-tag i { width: 8px; height: 8px; border-radius: 50%; }
+
+/* ---------- Decision ---------- */
+.decide { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 22px; display: grid; gap: 14px; margin-bottom: 56px; box-shadow: var(--shadow); }
+.decide h2 { margin: 0; font-size: 22px; }
+.decide p { margin: 0; color: var(--muted); max-width: 68ch; }
+.picks { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px; border: 0; padding: 0; margin: 0; }
+.picks label { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; cursor: pointer; }
+.picks input { accent-color: var(--accent); }
+.picks label:has(input:checked) { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.decide textarea { width: 100%; min-height: 92px; font: inherit; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); resize: vertical; }
+.decide textarea:focus-visible, .picks label:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.btn { font: inherit; font-weight: 600; border: 0; border-radius: 10px; padding: 10px 18px; background: var(--accent); color: var(--accent-ink); cursor: pointer; }
+.btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.status { font-size: 13px; color: var(--muted); }
+.out { font-family: var(--f-mono); font-size: 13px; padding: 10px 12px; border-radius: 10px; background: var(--bg); border: 1px dashed var(--line); white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<div class="bar">
+  <div class="wrap">
+    <nav class="jump" id="jump" aria-label="Chuyển tới concept"></nav>
+    <div class="seg" role="group" aria-label="Thời điểm trong ngày">
+      <button type="button" id="btn-day" aria-pressed="true">Ngày</button>
+      <button type="button" id="btn-night" aria-pressed="false">Đêm</button>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+  <section class="intro">
+    <h1>Năm concept cho văn phòng 3D</h1>
+    <p>Cả năm mẫu dựng cùng một khung cảnh: văn phòng 4 bàn, 4 nhân viên ở 4 trạng thái (đang làm, chờ sếp duyệt, gặp lỗi, đang rảnh), một con phố có quán cà phê và quán ăn. Chỉ vật liệu, ánh sáng, nhân vật, bảng màu và font thay đổi, nên bạn so sánh được trực tiếp. Bấm “Đêm” để xem cảnh ban đêm và giao diện tối.</p>
+    <p class="scene-note"><strong>Đã chọn:</strong> E+ (Soft Studio · Sài Gòn), thẻ cuối cùng. Văn phòng nằm giữa công viên (cây, hồ, ki-ốt cà phê, người đi bộ, chạy bộ, tập thể dục); phố và xe cộ ở xa phía sau. Xoay hoặc phóng xa để xem phố. Dùng ô “Văn phòng” trên cảnh E+ để thử mở rộng tới 40 × 40 m: công viên tự giãn ra, không có gì chồng lên văn phòng.</p>
+    <p class="scene-note">Đây là bản phác thảo dựng bằng hình khối để chốt phong cách. Bản triển khai thật sẽ dùng mô hình, texture và nhân vật chi tiết hơn theo concept bạn chọn.</p>
+  </section>
+  <div class="concepts" id="concepts"></div>
+  <section class="decide" id="chon">
+    <h2>Chọn concept</h2>
+    <p>Chọn một mẫu, ghi góp ý nếu muốn chỉnh (ví dụ: “lấy B nhưng sàn gỗ như A”). Bấm sao chép rồi dán vào chat với Claude.</p>
+    <fieldset class="picks" id="picks"><legend class="status">Concept</legend></fieldset>
+    <label for="feedback" class="status">Góp ý (không bắt buộc)</label>
+    <textarea id="feedback" placeholder="Ví dụ: thích ánh sáng của A, muốn thêm cây xanh, font tiêu đề bớt đậm…"></textarea>
+    <div class="actions">
+      <button type="button" class="btn" id="copy">Sao chép lựa chọn</button>
+      <span class="status" id="copy-status" aria-live="polite"></span>
+    </div>
+    <div class="out" id="out">Chưa chọn concept nào.</div>
+  </section>
+</main>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+/* =====================================================================
+   Concept presets (research.md R2-06). Everything a concept changes lives here.
+   ===================================================================== */
+const STATUS = {
+  working: { label: 'Đang làm', color: '#2f9e6b' },
+  waiting: { label: 'Chờ sếp duyệt', color: '#e0a21b' },
+  error:   { label: 'Gặp lỗi', color: '#d1453b' },
+  idle:    { label: 'Đang rảnh', color: '#8a8f98' },
+};
+
+const PRESETS = [
+  {
+    id: 'a', letter: 'A', name: 'Nordic Daylight', tagline: 'Gỗ sáng, nắng tự nhiên, yên tĩnh như một studio Bắc Âu.',
+    swatch: '#56785a', fonts: { display: 'Fraunces', body: 'Manrope', dw: 600, track: '-0.01em' }, rounded: 0,
+    desc: {
+      materials: 'Sàn gỗ sồi sáng, tường trát trắng ngà, vách gỗ nan, ghế bọc nỉ xám.',
+      light: 'Nắng tự nhiên qua mặt kính, bóng mềm. Ban đêm: đèn thả ánh vàng ấm.',
+      chars: 'Người tỉ lệ thật, trang phục tối giản tông đất.',
+      city: 'Toà nhà đá sáng cửa sổ lớn. Quán cà phê “Kaffe Lind”, quán ăn “Bếp Gỗ”.',
+      palette: ['#f2eee7', '#d9bc93', '#56785a', '#2f3a33', '#b8643f'],
+    },
+    office: {
+      floor: { tex: 'wood', a: '#dcc09a', b: '#cfae82', seam: '#b9966b' },
+      wall: { tex: 'woodslat', a: '#d2b48d', b: '#c3a27a' }, plinth: '#f2eee7',
+      frame: '#f4f3ef', frameMetal: 0.1,
+      deskTop: { color: '#dcc19b', tex: 'wood' }, deskLeg: '#f1efea', legStyle: 'thin',
+      chair: '#b7b2a9', chairFrame: '#ece9e3', rug: '#a9b8a0', plant: '#55804f', pot: '#ece6dc',
+      monitor: '#2b2d31', screen: '#cfe6ff', lamp: 'cone', lampColor: '#f4f3ef', cooler: '#f1efea',
+    },
+    people: { style: 'real', skins: ['#e9c4a6', '#c99a76', '#f1d2b8', '#a87655'], hair: ['#3b2a20', '#1d1a18', '#7a5232', '#2a221d'],
+      outfits: [['#7f9a7c', '#3b4048'], ['#e9e2d5', '#5b5f66'], ['#2f3e57', '#c9bba3'], ['#b8643f', '#2d3238']] },
+    light: { sky: '#cfe1ea', hemiGround: '#e8dcc8', sun: '#fff1dc', sunI: 2.7, hemiI: 0.8, env: 0.45, exposure: 1.0,
+      nightSky: '#0f1828', interior: '#ffd29a', interiorI: 9 },
+    city: { style: 'stone', ground: '#a7bd8c', plaza: '#e3ded4', street: '#56595e', walk: '#d3cec5', tree: '#5f8a4f', window: '#93aebd',
+      colors: ['#e8e3da', '#d6d0c4', '#c8ccce', '#efe9df', '#d2c8b8'], seating: 'bistro', seatColor: '#2f3a33',
+      cafe: { name: 'Kaffe Lind', facade: '#2f3a33', awning: ['#e9e3d7', '#e9e3d7'], sign: '#f4efe6', ink: '#2f3a33' },
+      resto: { name: 'Bếp Gỗ', facade: '#7a5a3e', awning: ['#efe7d8', '#b8643f'], sign: '#2f2a26', ink: '#f4ead8' } },
+    ui: { radius: 10,
+      light: { bg: '#f8f6f1', panel: '#ffffff', ink: '#24262a', muted: '#6a6d71', accent: '#4f7353', accentInk: '#ffffff', line: '#e6e1d8', chip: '#edf1ea', user: '#e8eee5', agent: '#faf8f4' },
+      dark:  { bg: '#171a18', panel: '#202322', ink: '#ecebe6', muted: '#9da29c', accent: '#9cbf9b', accentInk: '#14201a', line: '#323633', chip: '#29302a', user: '#29302a', agent: '#232725' } },
+  },
+  {
+    id: 'b', letter: 'B', name: 'Urban Loft', tagline: 'Gạch trần, bê tông, thép đen và đèn dây tóc trong một xưởng cũ.',
+    swatch: '#a8642c', fonts: { display: 'Big Shoulders Display', body: 'Archivo', dw: 800, track: '0.01em' }, rounded: 0,
+    desc: {
+      materials: 'Sàn bê tông mài, tường gạch trần, khung thép đen, bàn gỗ tái chế, ghế da bò.',
+      light: 'Nắng xiên ấm, bụi mờ. Ban đêm: bóng đèn Edison treo dây, ánh cam.',
+      chars: 'Người tỉ lệ thật, trang phục casual: áo khoác, áo len, quần jeans.',
+      city: 'Dãy phố gạch cũ có ban công, bồn nước trên mái. Quán “Xưởng Cà Phê”, quán ăn “Quán Nướng Lò Gạch”.',
+      palette: ['#9b4b36', '#6f6b66', '#1c1c1c', '#a8642c', '#e9dfcf'],
+    },
+    office: {
+      floor: { tex: 'concrete', a: '#7b7773', b: '#66625e' },
+      wall: { tex: 'brick', a: '#9b4b36', b: '#874031', mortar: '#cbb9a6' }, plinth: '#3a3633',
+      frame: '#1d1d1d', frameMetal: 0.6,
+      deskTop: { color: '#6e4c31', tex: 'woodDark' }, deskLeg: '#1c1c1c', legStyle: 'frame',
+      chair: '#5b3925', chairFrame: '#1c1c1c', rug: '#7a3b2a', plant: '#4d6e45', pot: '#2a2a2a',
+      monitor: '#1a1a1a', screen: '#ffe6c2', lamp: 'edison', lampColor: '#1c1c1c', cooler: '#2a2a2a',
+    },
+    people: { style: 'real', skins: ['#e3b896', '#b98361', '#f0cfb2', '#8f5f43'], hair: ['#2a1f19', '#121110', '#5b3a24', '#3a2a20'],
+      outfits: [['#3f4a3c', '#2b3442'], ['#c8b79a', '#3a3a3d'], ['#7a2f25', '#1f2a3a'], ['#d9d4c8', '#4a4036']] },
+    light: { sky: '#d9d2c4', hemiGround: '#8a7b6b', sun: '#ffdcb0', sunI: 2.5, hemiI: 0.6, env: 0.3, exposure: 0.95,
+      nightSky: '#120f0d', interior: '#ffad55', interiorI: 12 },
+    city: { style: 'brick', ground: '#8f8a80', plaza: '#8c867e', street: '#3e3f42', walk: '#a39d95', tree: '#56713f', window: '#2c3136',
+      colors: ['#8e4a37', '#a35a40', '#6f3d30', '#9a7a5e', '#7b5b48'], seating: 'bistro', seatColor: '#1c1c1c',
+      cafe: { name: 'Xưởng Cà Phê', facade: '#1d1d1d', awning: ['#1d1d1d', '#1d1d1d'], sign: '#c8964a', ink: '#1a1a1a' },
+      resto: { name: 'Quán Nướng Lò Gạch', facade: '#3a2a22', awning: ['#8f2f22', '#efe4d2'], sign: '#1a1a1a', ink: '#e9b765' } },
+    ui: { radius: 3,
+      light: { bg: '#efe9e0', panel: '#faf7f2', ink: '#1e1c1a', muted: '#6b6359', accent: '#8f531c', accentInk: '#ffffff', line: '#dacebd', chip: '#ece0cd', user: '#ece0cd', agent: '#fbf9f5' },
+      dark:  { bg: '#151311', panel: '#1f1c19', ink: '#efe7dc', muted: '#a39686', accent: '#d39a52', accentInk: '#1a140e', line: '#38322b', chip: '#2e2721', user: '#2e2721', agent: '#221f1b' } },
+  },
+  {
+    id: 'c', letter: 'C', name: 'Glass HQ', tagline: 'Trụ sở kính và đá, sáng, gọn, chuyên nghiệp.',
+    swatch: '#1f3a68', fonts: { display: 'Plus Jakarta Sans', body: 'Be Vietnam Pro', dw: 800, track: '-0.02em' }, rounded: 0,
+    desc: {
+      materials: 'Sàn đá granite xám trắng, vách kính khung nhôm xước, bàn trắng, ghế lưới đen.',
+      light: 'Ánh sáng trắng lạnh, phản chiếu trên kính và đá. Ban đêm: đèn LED dải dài.',
+      chars: 'Người tỉ lệ thật, trang phục công sở: vest, sơ mi.',
+      city: 'Cao ốc kính xanh, quảng trường lát đá. Quán “Plaza Coffee”, nhà hàng “Bistro 28”.',
+      palette: ['#f3f5f8', '#d9dce1', '#1f3a68', '#3a5f86', '#23272e'],
+    },
+    office: {
+      floor: { tex: 'granite', a: '#dadde2', b: '#c4c8cf', seam: '#b3b9c2' },
+      wall: { tex: 'panel', a: '#eef0f3', b: '#e1e5ea' }, plinth: '#9aa3ad',
+      frame: '#a3abb5', frameMetal: 0.85,
+      deskTop: { color: '#f4f5f7' }, deskLeg: '#b4bcc6', legStyle: 'panel',
+      chair: '#23272e', chairFrame: '#9aa3ad', rug: null, plant: '#3f6f55', pot: '#f4f5f7',
+      monitor: '#1b1e23', screen: '#dbe9ff', lamp: 'linear', lampColor: '#e9edf2', cooler: '#d9dde3',
+    },
+    people: { style: 'real', skins: ['#ecc8a9', '#c18f6b', '#f4d7bf', '#9a6748'], hair: ['#231b16', '#141210', '#6b4a33', '#2d241e'],
+      outfits: [['#1f2f4d', '#1f2f4d'], ['#f2f3f5', '#3a3f47'], ['#5d6b80', '#22262c'], ['#8b2f3c', '#2a2e35']] },
+    light: { sky: '#cddff1', hemiGround: '#c7ccd3', sun: '#ffffff', sunI: 3.0, hemiI: 0.7, env: 0.65, exposure: 1.05,
+      nightSky: '#0a1220', interior: '#e7efff', interiorI: 9 },
+    city: { style: 'glass', ground: '#c9cdd3', plaza: '#d2d5da', street: '#3d4249', walk: '#c2c6cc', tree: '#4f7a5c', window: '#9fbad6',
+      colors: ['#2c4a6b', '#3a5f86', '#5d7fa3', '#22384f', '#46698f'], seating: 'plaza', seatColor: '#e9ecf0',
+      cafe: { name: 'Plaza Coffee', facade: '#e6e9ee', awning: ['#1f3a68', '#1f3a68'], sign: '#1f3a68', ink: '#ffffff' },
+      resto: { name: 'Bistro 28', facade: '#2a2f36', awning: ['#2a2f36', '#2a2f36'], sign: '#f2f3f5', ink: '#1f3a68' } },
+    ui: { radius: 8,
+      light: { bg: '#f2f4f7', panel: '#ffffff', ink: '#121a2b', muted: '#58627a', accent: '#1f3a68', accentInk: '#ffffff', line: '#dee3eb', chip: '#e7edf6', user: '#e7edf6', agent: '#ffffff' },
+      dark:  { bg: '#0b111b', panel: '#121a27', ink: '#e6ebf3', muted: '#8e9ab0', accent: '#86abe8', accentInk: '#0b1322', line: '#243048', chip: '#1a263c', user: '#1a263c', agent: '#141d2c' } },
+  },
+  {
+    id: 'd', letter: 'D', name: 'Saigon Co-working', tagline: 'Gạch bông, mây tre, cây nhiệt đới và quán cóc ngay dưới phố.',
+    swatch: '#1f6f6a', fonts: { display: 'Bricolage Grotesque', body: 'Lexend', dw: 800, track: '-0.015em' }, rounded: 0,
+    desc: {
+      materials: 'Sàn gạch bông, tường quét vôi kem, gỗ tếch, ghế mây, chậu đất nung, cây lá lớn.',
+      light: 'Nắng nhiệt đới gắt, bóng rõ. Ban đêm: đèn mây tre đan ánh vàng.',
+      chars: 'Người tỉ lệ thật, áo phông, sơ mi ngắn tay, màu tươi.',
+      city: 'Nhà phố ống nhiều màu, ban công cây xanh. Quán “Cà Phê Vỉa Hè” ghế nhựa thấp, quán “Cơm Tấm Cô Ba”.',
+      palette: ['#efe4cc', '#1f6f6a', '#c2603a', '#f2c14e', '#8a5a35'],
+    },
+    office: {
+      floor: { tex: 'encaustic', a: '#efe4cc', b: '#1f6f6a', c: '#c2603a' },
+      wall: { tex: 'limewash', a: '#eadcbc', b: '#dfcea9' }, plinth: '#8a5a35',
+      frame: '#5a3b22', frameMetal: 0.0,
+      deskTop: { color: '#8a5a35', tex: 'woodDark' }, deskLeg: '#5a3b22', legStyle: 'thin',
+      chair: '#c99a5b', chairFrame: '#8a5a35', rug: null, plant: '#2f7a45', pot: '#b5532f',
+      monitor: '#24221f', screen: '#fff0cf', lamp: 'rattan', lampColor: '#c99a5b', cooler: '#e7dcc4',
+    },
+    people: { style: 'real', skins: ['#d9a77f', '#b07c57', '#e8bf9c', '#8c5a3c'], hair: ['#1a1513', '#120f0e', '#2b211b', '#1f1814'],
+      outfits: [['#f2c94c', '#2f3a4a'], ['#ffffff', '#1f6f6a'], ['#2f80a5', '#e9e1cf'], ['#c2603a', '#3b3b3b']] },
+    light: { sky: '#bfe0ec', hemiGround: '#d9c79f', sun: '#fff0c8', sunI: 3.2, hemiI: 0.7, env: 0.35, exposure: 1.0,
+      nightSky: '#0d1a1f', interior: '#ffc977', interiorI: 11 },
+    city: { style: 'tube', ground: '#b5c78a', plaza: '#cdbfa6', street: '#4b4d50', walk: '#c7b79e', tree: '#3f8a4a', window: '#3f5a5a',
+      colors: ['#f2c14e', '#9ccfb4', '#f2a7a0', '#e8e1cf', '#7fb3d5', '#f4d58d', '#c9e4ca', '#f0b07a'], shutter: '#2f7a5a', seating: 'stools', seatColor: '#d93a2b',
+      cafe: { name: 'Cà Phê Vỉa Hè', facade: '#1f6f6a', awning: ['#1f6f6a', '#efe4cc'], sign: '#c2603a', ink: '#fff4e0' },
+      resto: { name: 'Cơm Tấm Cô Ba', facade: '#b5532f', awning: ['#d93a2b', '#f6e6c8'], sign: '#f2c14e', ink: '#7a1e14' } },
+    ui: { radius: 14,
+      light: { bg: '#f5eedf', panel: '#fffaf0', ink: '#2a221a', muted: '#74675a', accent: '#1f6f6a', accentInk: '#ffffff', line: '#e6dac3', chip: '#e4efe7', user: '#e4efe7', agent: '#fffdf8' },
+      dark:  { bg: '#121819', panel: '#1a2222', ink: '#f1e8d8', muted: '#a49a8b', accent: '#5fb3a9', accentInk: '#0f1a19', line: '#2c3534', chip: '#203130', user: '#203130', agent: '#1c2525' } },
+  },
+  {
+    id: 'e', letter: 'E', name: 'Soft Studio', tagline: 'Mềm, bo tròn, pastel, nhân vật như phim hoạt hình 3D. Gần trang tham khảo nhất.',
+    swatch: '#e0607e', fonts: { display: 'Baloo 2', body: 'Nunito', dw: 800, track: '0' }, rounded: 0.06,
+    desc: {
+      materials: 'Nhựa mờ, vải bông, mọi cạnh bo tròn, thảm tròn, chậu cây màu kẹo.',
+      light: 'Ánh sáng studio mềm, gần như không có bóng gắt. Ban đêm: đèn cầu tròn ánh hồng cam.',
+      chars: 'Kiểu hoạt hình 3D: đầu to, mắt tròn, tóc khối, màu tươi.',
+      city: 'Toà nhà pastel bo góc, cửa sổ tròn. Tiệm “Bánh & Bông” mái sọc, quán “Mì Mây” có ô dù.',
+      palette: ['#fff7f9', '#f3d9c9', '#e0607e', '#9ed9c8', '#7a6ad8'],
+    },
+    office: {
+      floor: { tex: 'pastel', a: '#f3d9c9', b: '#efd0bd' },
+      wall: { tex: 'pastel', a: '#d9d0f2', b: '#d1c7ee' }, plinth: '#ffffff',
+      frame: '#ffffff', frameMetal: 0.0,
+      deskTop: { color: '#fff6ec' }, deskLeg: '#f7b6a8', legStyle: 'round',
+      chair: '#9ed9c8', chairFrame: '#ffffff', rug: '#ffd6e0', plant: '#7cc79a', pot: '#ffcf8a',
+      monitor: '#4b4466', screen: '#e8f4ff', lamp: 'globe', lampColor: '#ffffff', cooler: '#cde7ff',
+    },
+    people: { style: 'toon', skins: ['#ffd9c2', '#f2b994', '#ffe3cf', '#c98d6a'], hair: ['#5a3d8a', '#2d2340', '#ff8f5a', '#3b2b25'],
+      outfits: [['#ff9eb1', '#6c7bd8'], ['#8fd3ff', '#ffffff'], ['#ffd166', '#7a6ad8'], ['#9ee6b5', '#ff8fa3']] },
+    light: { sky: '#ffe6ee', hemiGround: '#f6e2d8', sun: '#fff3e6', sunI: 2.2, hemiI: 1.0, env: 0.55, exposure: 1.05,
+      nightSky: '#1d1838', interior: '#ffc2a3', interiorI: 10 },
+    city: { style: 'pastel', ground: '#c6eabd', plaza: '#fbe9df', street: '#9a9cb6', walk: '#f4e6dc', tree: '#8ad6a0', window: '#9cc7e8',
+      colors: ['#ffd6e0', '#cde7ff', '#d9f5e3', '#fff0c2', '#e5dcff'], seating: 'umbrella', seatColor: '#ffffff',
+      cafe: { name: 'Bánh & Bông', facade: '#ff9eb1', awning: ['#ff9eb1', '#ffffff'], sign: '#ffffff', ink: '#d9506f' },
+      resto: { name: 'Mì Mây', facade: '#8fd3ff', awning: ['#7a9cff', '#ffffff'], sign: '#fff6ec', ink: '#4b5bd6' } },
+    ui: { radius: 20,
+      light: { bg: '#fff6f8', panel: '#ffffff', ink: '#3a2f4f', muted: '#7a7090', accent: '#d9506f', accentInk: '#ffffff', line: '#f1e1e8', chip: '#ffe8ef', user: '#ffe8ef', agent: '#ffffff' },
+      dark:  { bg: '#1b1730', panel: '#25203d', ink: '#f5eefc', muted: '#b2a8cc', accent: '#ff9eb5', accentInk: '#2a1626', line: '#383058', chip: '#33294f', user: '#33294f', agent: '#2a2445' } },
+  },
+  {
+    id: 'f', letter: 'E+', name: 'Soft Studio · Sài Gòn', tagline: 'Bản kết hợp theo góp ý: hình khối và nhân vật của E, ánh sáng và màu của D, sàn gỗ của A.',
+    swatch: '#1f6f6a', fonts: { display: 'Baloo 2', body: 'Nunito', dw: 800, track: '0' }, rounded: 0.06,
+    desc: {
+      materials: 'Đồ trong văn phòng bo tròn như E. Sàn gỗ sồi sáng của A. Tường quét vôi kem, bàn kem chân xanh ngọc, ghế màu mây, chậu đất nung. Cảnh bên ngoài dựng thật hơn.',
+      light: 'Nắng nhiệt đới của D, bóng rõ nhưng mềm. Ban đêm: đèn mây tre đan ánh vàng.',
+      chars: 'Kiểu hoạt hình 3D của E (đầu to, mắt tròn), trang phục theo bảng màu D.',
+      city: 'Công viên bao quanh văn phòng: lối đi vòng, hồ nước, ghế đá, ki-ốt “Cà Phê Công Viên”, cây tán nhiều tầng, phượng đỏ, dừa; người đi bộ, chạy bộ, tập thể dục, ngồi đọc sách. Thành phố chỉ ở xa (cách khoảng 30 m): phố nhà ống có quán “Cà Phê Vỉa Hè”, “Cơm Tấm Cô Ba”, cột điện, xe hơi, xe máy, xe buýt; xa hơn là cao ốc.',
+      palette: ['#efe4cc', '#dcc09a', '#1f6f6a', '#c2603a', '#f2c14e'],
+    },
+    office: {
+      floor: { tex: 'wood', a: '#dcc09a', b: '#cfae82', seam: '#b9966b' },
+      wall: { tex: 'limewash', a: '#eadcbc', b: '#dfcea9' }, plinth: '#efe4cc',
+      frame: '#fffaf0', frameMetal: 0.0,
+      deskTop: { color: '#fffaf0' }, deskLeg: '#1f6f6a', legStyle: 'round',
+      chair: '#c99a5b', chairFrame: '#fffaf0', rug: '#9cc9bd', plant: '#2f7a45', pot: '#c2603a',
+      monitor: '#2a2622', screen: '#fff0cf', lamp: 'rattan', lampColor: '#c99a5b', cooler: '#e7dcc4',
+    },
+    people: { style: 'toon', skins: ['#ffd9c2', '#e8bf9c', '#ffe3cf', '#c98d6a'], hair: ['#1a1513', '#2b211b', '#5a3b22', '#1f1814'],
+      outfits: [['#f2c94c', '#1f6f6a'], ['#fffaf0', '#c2603a'], ['#2f80a5', '#efe4cc'], ['#c2603a', '#3b3b3b']] },
+    light: { sky: '#bfe0ec', hemiGround: '#d9c79f', sun: '#fff0c8', sunI: 3.0, hemiI: 0.8, env: 0.4, exposure: 1.0,
+      nightSky: '#0d1a1f', interior: '#ffc977', interiorI: 11 },
+    realSurroundings: true,
+    city: { style: 'tube', ground: '#8fb26a', plaza: '#efe4cc', street: '#4b4d50', walk: '#d8cab2', tree: '#3d7f3f', window: '#3f5a5a', shutter: '#2f7a5a', blossom: '#e0503a',
+      colors: ['#f2c14e', '#9ccfb4', '#f2a7a0', '#e8e1cf', '#7fb3d5', '#f4d58d', '#c9e4ca', '#f0b07a'], seating: 'stools', seatColor: '#fffaf0', umbrella: ['#1f6f6a', '#c2603a'],
+      cafe: { name: 'Cà Phê Vỉa Hè', facade: '#1f6f6a', awning: ['#1f6f6a', '#efe4cc'], sign: '#c2603a', ink: '#fff4e0' },
+      resto: { name: 'Cơm Tấm Cô Ba', facade: '#c2603a', awning: ['#d93a2b', '#f6e6c8'], sign: '#f2c14e', ink: '#7a1e14' } },
+    ui: { radius: 20,
+      light: { bg: '#f5eedf', panel: '#fffaf0', ink: '#2a221a', muted: '#74675a', accent: '#1f6f6a', accentInk: '#ffffff', line: '#e6dac3', chip: '#e4efe7', user: '#e4efe7', agent: '#fffdf8' },
+      dark:  { bg: '#121819', panel: '#1a2222', ink: '#f1e8d8', muted: '#a49a8b', accent: '#5fb3a9', accentInk: '#0f1a19', line: '#2c3534', chip: '#203130', user: '#203130', agent: '#1c2525' } },
+  },
+];
+
+/* =====================================================================
+   Small helpers
+   ===================================================================== */
+function rngFrom(seed) { let a = seed >>> 0; return () => { a |= 0; a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+const C = (hex) => new THREE.Color(hex);
+function shade(hex, amt) { const c = C(hex); const hsl = {}; c.getHSL(hsl); c.setHSL(hsl.h, hsl.s, Math.min(1, Math.max(0, hsl.l + amt))); return '#' + c.getHexString(); }
+
+function canvasTex(w, h, draw, repeat, srgb = true) {
+  const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+  draw(cv.getContext('2d'), w, h);
+  const t = new THREE.CanvasTexture(cv);
+  if (srgb) t.colorSpace = THREE.SRGBColorSpace;
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  if (repeat) t.repeat.set(repeat[0], repeat[1]);
+  t.anisotropy = 8;
+  return t;
+}
+function speckle(g, w, h, rng, color, n, size, alpha) {
+  g.fillStyle = color;
+  for (let i = 0; i < n; i++) { g.globalAlpha = alpha * (0.4 + rng() * 0.6); const s = size * (0.3 + rng()); g.fillRect(rng() * w, rng() * h, s, s); }
+  g.globalAlpha = 1;
+}
+
+/* ---- Surface textures ---- */
+const TEX = {
+  wood(o, rng) {
+    return canvasTex(512, 512, (g, w, h) => {
+      const rows = 8, rh = h / rows;
+      for (let r = 0; r < rows; r++) {
+        let x = -rng() * 200;
+        while (x < w) {
+          const len = 160 + rng() * 220;
+          g.fillStyle = C(o.a).lerp(C(o.b), rng()).getStyle();
+          g.fillRect(x, r * rh, len, rh);
+          g.strokeStyle = 'rgba(80,50,20,.08)';
+          for (let k = 0; k < 6; k++) { g.beginPath(); const y = r * rh + rng() * rh; g.moveTo(x, y); g.bezierCurveTo(x + len * .3, y + (rng() - .5) * 6, x + len * .7, y + (rng() - .5) * 6, x + len, y); g.stroke(); }
+          g.fillStyle = o.seam || 'rgba(0,0,0,.25)'; g.fillRect(x + len - 1, r * rh, 2, rh);
+          x += len;
+        }
+        g.fillStyle = o.seam || 'rgba(0,0,0,.25)'; g.fillRect(0, r * rh, w, 2);
+      }
+    }, o.repeat || [3, 3]);
+  },
+  woodDark(o, rng) { return TEX.wood({ a: o.color, b: shade(o.color, -0.06), seam: shade(o.color, -0.15), repeat: [1, 1] }, rng); },
+  concrete(o, rng) {
+    return canvasTex(512, 512, (g, w, h) => {
+      g.fillStyle = o.a; g.fillRect(0, 0, w, h);
+      for (let i = 0; i < 70; i++) { const r = 30 + rng() * 120; const gr = g.createRadialGradient(0, 0, 0, 0, 0, r); gr.addColorStop(0, C(o.b).getStyle()); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.save(); g.translate(rng() * w, rng() * h); g.globalAlpha = .18; g.fillStyle = gr; g.fillRect(-r, -r, r * 2, r * 2); g.restore(); }
+      speckle(g, w, h, rng, '#000', 1800, 2, .12); speckle(g, w, h, rng, '#fff', 900, 2, .1);
+      g.strokeStyle = 'rgba(0,0,0,.18)'; g.lineWidth = 2; g.strokeRect(0, 0, w, h);
+    }, [3, 2.5]);
+  },
+  granite(o, rng) {
+    return canvasTex(512, 512, (g, w, h) => {
+      g.fillStyle = o.a; g.fillRect(0, 0, w, h);
+      speckle(g, w, h, rng, o.b, 5000, 3, .5); speckle(g, w, h, rng, '#2b2f36', 1200, 2, .25); speckle(g, w, h, rng, '#ffffff', 1500, 2, .4);
+      g.strokeStyle = o.seam; g.lineWidth = 3; for (let i = 0; i <= 2; i++) { g.beginPath(); g.moveTo(i * w / 2, 0); g.lineTo(i * w / 2, h); g.stroke(); g.beginPath(); g.moveTo(0, i * h / 2); g.lineTo(w, i * h / 2); g.stroke(); }
+    }, [5, 4]);
+  },
+  encaustic(o) {
+    return canvasTex(512, 512, (g, w, h) => {
+      const n = 4, s = w / n;
+      for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
+        const x = i * s, y = j * s;
+        g.fillStyle = o.a; g.fillRect(x, y, s, s);
+        g.fillStyle = o.c; for (const [cx, cy] of [[x, y], [x + s, y], [x, y + s], [x + s, y + s]]) { g.beginPath(); g.arc(cx, cy, s * .32, 0, Math.PI * 2); g.fill(); }
+        g.fillStyle = o.a; for (const [cx, cy] of [[x, y], [x + s, y], [x, y + s], [x + s, y + s]]) { g.beginPath(); g.arc(cx, cy, s * .18, 0, Math.PI * 2); g.fill(); }
+        g.fillStyle = o.b; g.beginPath(); g.moveTo(x + s / 2, y + s * .14); g.lineTo(x + s * .86, y + s / 2); g.lineTo(x + s / 2, y + s * .86); g.lineTo(x + s * .14, y + s / 2); g.closePath(); g.fill();
+        g.fillStyle = o.a; g.beginPath(); g.arc(x + s / 2, y + s / 2, s * .14, 0, Math.PI * 2); g.fill();
+        g.fillStyle = o.c; g.beginPath(); g.arc(x + s / 2, y + s / 2, s * .07, 0, Math.PI * 2); g.fill();
+        g.strokeStyle = 'rgba(60,40,20,.25)'; g.lineWidth = 2; g.strokeRect(x, y, s, s);
+      }
+    }, [7.5, 6.25]);
+  },
+  pastel(o, rng) {
+    return canvasTex(256, 256, (g, w, h) => { g.fillStyle = o.a; g.fillRect(0, 0, w, h); speckle(g, w, h, rng, o.b, 400, 4, .5); }, [4, 4]);
+  },
+  plaster(o, rng) { return canvasTex(256, 256, (g, w, h) => { g.fillStyle = o.a; g.fillRect(0, 0, w, h); speckle(g, w, h, rng, o.b || '#000', 1200, 3, .08); }, [2, 1]); },
+  limewash(o, rng) {
+    return canvasTex(512, 256, (g, w, h) => {
+      g.fillStyle = o.a; g.fillRect(0, 0, w, h);
+      for (let i = 0; i < 90; i++) { g.globalAlpha = .08; g.fillStyle = rng() < .5 ? o.b : '#fffaf0'; g.beginPath(); g.ellipse(rng() * w, rng() * h, 20 + rng() * 60, 10 + rng() * 30, rng() * 3, 0, Math.PI * 2); g.fill(); }
+      g.globalAlpha = 1;
+    }, [2, 1]);
+  },
+  woodslat(o, rng) {
+    return canvasTex(512, 256, (g, w, h) => {
+      g.fillStyle = shade(o.a, -0.25); g.fillRect(0, 0, w, h);
+      const n = 24, sw = w / n;
+      for (let i = 0; i < n; i++) { g.fillStyle = C(o.a).lerp(C(o.b), rng()).getStyle(); g.fillRect(i * sw + 2, 0, sw - 4, h); }
+    }, [2, 1]);
+  },
+  brick(o, rng) {
+    return canvasTex(512, 512, (g, w, h) => {
+      g.fillStyle = o.mortar; g.fillRect(0, 0, w, h);
+      const rows = 16, bh = h / rows, bw = w / 6;
+      for (let r = 0; r < rows; r++) for (let c = -1; c < 7; c++) {
+        const x = c * bw + (r % 2 ? bw / 2 : 0);
+        g.fillStyle = C(o.a).lerp(C(o.b), rng()).offsetHSL(0, 0, (rng() - .5) * .06).getStyle();
+        g.fillRect(x + 2, r * bh + 2, bw - 4, bh - 4);
+      }
+      speckle(g, w, h, rng, '#000', 1500, 2, .12);
+    }, [3, 1.6]);
+  },
+  panel(o) {
+    return canvasTex(256, 256, (g, w, h) => { g.fillStyle = o.a; g.fillRect(0, 0, w, h); g.strokeStyle = o.b; g.lineWidth = 3; g.strokeRect(0, 0, w, h); }, [6, 2]);
+  },
+};
+
+/* Building facade: colour map + a matching emissive map (lit windows at night). */
+const streetZOf = (P) => (P.realSurroundings ? -54 : -8);
+
+function facadeTex(P, base, cols, floors, rng, styleOverride) {
+  const style = styleOverride || P.city.style, cw = 48, ch = 64, W = cols * cw, H = floors * ch;
+  const lit = [];
+  const map = canvasTex(W, H, (g) => {
+    g.fillStyle = base; g.fillRect(0, 0, W, H);
+    if (style === 'brick') { for (let y = 0; y < H; y += 8) for (let x = (y / 8) % 2 ? -6 : 0; x < W; x += 16) { g.fillStyle = C(base).offsetHSL(0, 0, (rng() - .5) * .08).getStyle(); g.fillRect(x + 1, y + 1, 14, 6); } }
+    else speckle(g, W, H, rng, '#000', W * H / 300, 2, .06);
+    for (let f = 0; f < floors; f++) for (let c = 0; c < cols; c++) {
+      const x = c * cw, y = f * ch;
+      let r;
+      if (style === 'stone') r = [x + 7, y + 10, cw - 14, ch - 20];
+      else if (style === 'brick') r = [x + 12, y + 12, cw - 24, ch - 22];
+      else if (style === 'glass') r = [x + 1, y + 6, cw - 2, ch - 16];
+      else if (style === 'tube') r = [x + 12, y + 14, cw - 24, ch - 28];
+      else r = [x + 11, y + 12, cw - 22, ch - 24];
+      if (style === 'glass') { g.fillStyle = shade(base, -0.12); g.fillRect(x, y + ch - 10, cw, 10); }
+      const gr = g.createLinearGradient(0, r[1], 0, r[1] + r[3]);
+      gr.addColorStop(0, shade(P.city.window, 0.12)); gr.addColorStop(1, shade(P.city.window, -0.1));
+      g.fillStyle = gr;
+      if (style === 'pastel') { g.beginPath(); g.roundRect(r[0], r[1], r[2], r[3], 12); g.fill(); g.strokeStyle = '#ffffff'; g.lineWidth = 3; g.stroke(); }
+      else { g.fillRect(...r); }
+      if (style === 'stone') { g.fillStyle = shade(base, 0.08); g.fillRect(r[0] - 3, r[1] + r[3], r[2] + 6, 4); g.fillStyle = shade(base, -0.25); g.fillRect(r[0] + r[2] / 2 - 1, r[1], 2, r[3]); }
+      if (style === 'brick') { g.fillStyle = '#d8cbb8'; g.fillRect(r[0] - 3, r[1] + r[3], r[2] + 6, 4); g.fillRect(r[0] - 2, r[1] - 4, r[2] + 4, 4); }
+      if (style === 'tube') { g.fillStyle = P.city.shutter; g.fillRect(r[0] - 9, r[1], 8, r[3]); g.fillRect(r[0] + r[2] + 1, r[1], 8, r[3]); }
+      if (rng() < 0.45) lit.push({ r, round: style === 'pastel', warm: rng() < .7 });
+    }
+  }, [1, 1]);
+  const emissiveMap = canvasTex(W, H, (g) => {
+    g.fillStyle = '#000'; g.fillRect(0, 0, W, H);
+    for (const l of lit) { g.fillStyle = l.warm ? '#ffc777' : '#fff0d4'; if (l.round) { g.beginPath(); g.roundRect(...l.r, 12); g.fill(); } else g.fillRect(...l.r); }
+  }, [1, 1]);
+  return { map, emissiveMap };
+}
+
+function labelTex(text, opts) {
+  const { font, weight = 700, size = 56, bg, ink, pad = 28, radius = 10, minW = 0 } = opts;
+  const meas = document.createElement('canvas').getContext('2d');
+  meas.font = `${weight} ${size}px "${font}"`;
+  const tw = Math.ceil(meas.measureText(text).width);
+  const w = Math.max(minW, tw + pad * 2), h = Math.round(size * 1.6);
+  const t = canvasTex(w, h, (g) => {
+    g.fillStyle = bg; g.beginPath(); g.roundRect(0, 0, w, h, radius); g.fill();
+    g.fillStyle = ink; g.font = `${weight} ${size}px "${font}"`; g.textBaseline = 'middle'; g.textAlign = 'center';
+    g.fillText(text, w / 2, h / 2 + size * 0.04);
+  });
+  t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping;
+  return { tex: t, aspect: w / h };
+}
+
+/* =====================================================================
+   Scene construction
+   ===================================================================== */
+function std(color, rough = 0.7, metal = 0, extra = {}) { return new THREE.MeshStandardMaterial({ color, roughness: rough, metalness: metal, ...extra }); }
+function mesh(geo, mat, x = 0, y = 0, z = 0, parent, shadow = true) {
+  const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z);
+  m.castShadow = shadow; m.receiveShadow = true; if (parent) parent.add(m); return m;
+}
+function box(P, w, h, d, mat, x, y, z, parent, r) {
+  const rr = r ?? P.rounded;
+  const geo = rr > 0 ? new RoundedBoxGeometry(w, h, d, 3, Math.min(rr, Math.min(w, h, d) / 2 - 0.002)) : new THREE.BoxGeometry(w, h, d);
+  return mesh(geo, mat, x, y, z, parent);
+}
+const cyl = (rt, rb, h, seg = 20) => new THREE.CylinderGeometry(rt, rb, h, seg);
+
+function buildPerson(P, idx, pose, look) {
+  const toon = P.people.style === 'toon';
+  const s = toon ? { head: 0.21, r: 0.17, len: 0.16, leg: 0.42, legR: 0.07, arm: 0.34, armR: 0.055 }
+                 : { head: 0.112, r: 0.155, len: 0.3, leg: 0.84, legR: 0.068, arm: 0.58, armR: 0.048 };
+  const L = look || { skin: P.people.skins[idx], top: P.people.outfits[idx][0], bottom: P.people.outfits[idx][1], hair: P.people.hair[idx] };
+  const skin = std(L.skin, 0.6), top = std(L.top, 0.85), bottom = std(L.bottom, 0.85);
+  const hairM = std(L.hair, 0.55), shoe = std(L.shoe || '#2a2622', 0.6);
+  const legs = [];
+  const g = new THREE.Group();
+  const seated = !['idle', 'walk', 'jog', 'exercise'].includes(pose);
+  const hip = seated ? (toon ? 0.42 : 0.5) : s.leg + 0.02;
+  if (seated) {
+    for (const sx of [-1, 1]) {
+      const thigh = mesh(new THREE.CapsuleGeometry(s.legR, toon ? 0.2 : 0.34, 6, 12), bottom, sx * 0.085, hip, toon ? 0.13 : 0.2, g); thigh.rotation.x = Math.PI / 2;
+      const shinL = hip - 0.08;
+      mesh(new THREE.CapsuleGeometry(s.legR * 0.92, shinL - 0.1, 6, 12), bottom, sx * 0.085, shinL / 2 + 0.02, toon ? 0.27 : 0.4, g);
+      box(P, 0.1, 0.07, 0.2, shoe, sx * 0.085, 0.035, (toon ? 0.27 : 0.4) + 0.05, g, P.rounded ? 0.03 : 0);
+    }
+  } else {
+    for (const sx of [-1, 1]) {
+      const lg = new THREE.Group(); lg.position.set(sx * 0.085, s.leg + 0.02, 0); g.add(lg);
+      mesh(new THREE.CapsuleGeometry(s.legR, s.leg - 0.16, 6, 12), bottom, 0, -s.leg / 2 + 0.03, 0, lg);
+      box(P, 0.1, 0.07, 0.22, shoe, 0, -s.leg + 0.015, 0.04, lg, P.rounded ? 0.03 : 0);
+      legs.push(lg);
+    }
+  }
+  const torsoH = s.len + s.r * 2;
+  const torso = new THREE.Group(); torso.position.y = hip; g.add(torso);
+  const body = mesh(new THREE.CapsuleGeometry(s.r, s.len, 8, 16), top, 0, torsoH / 2, 0, torso); body.scale.z = 0.78;
+  const neckY = torsoH + (toon ? -0.02 : 0.03);
+  if (!toon) mesh(cyl(0.045, 0.05, 0.08), skin, 0, neckY, 0, torso);
+  const head = new THREE.Group(); head.position.y = neckY + s.head * (toon ? 0.85 : 1.05); torso.add(head);
+  mesh(new THREE.SphereGeometry(s.head, 28, 20), skin, 0, 0, 0, head).scale.set(1, toon ? 0.95 : 1.12, toon ? 0.95 : 1.02);
+  const hair = mesh(new THREE.SphereGeometry(s.head * 1.06, 28, 20, 0, Math.PI * 2, 0, Math.PI * 0.55), hairM, 0, s.head * 0.12, -s.head * 0.08, head);
+  hair.rotation.x = -0.25; hair.scale.set(1, toon ? 1.05 : 1.15, 1.04);
+  if (toon) {
+    const eye = std('#2b2238', 0.3);
+    for (const sx of [-1, 1]) { mesh(new THREE.SphereGeometry(s.head * 0.12, 16, 12), eye, sx * s.head * 0.36, -s.head * 0.05, s.head * 0.86, head, false); mesh(new THREE.SphereGeometry(s.head * 0.04, 8, 8), std('#ffffff', 0.2), sx * s.head * 0.33, 0, s.head * 0.96, head, false); }
+    mesh(new THREE.SphereGeometry(s.head * 0.1, 12, 10), std('#ff9aa8', 0.6), s.head * -0.55, -s.head * 0.32, s.head * 0.72, head, false).scale.set(1, .6, .5);
+    mesh(new THREE.SphereGeometry(s.head * 0.1, 12, 10), std('#ff9aa8', 0.6), s.head * 0.55, -s.head * 0.32, s.head * 0.72, head, false).scale.set(1, .6, .5);
+  }
+  const arms = [];
+  for (const sx of [-1, 1]) {
+    const a = new THREE.Group(); a.position.set(sx * (s.r + s.armR * 0.9), torsoH - s.r * 0.55, 0); torso.add(a);
+    mesh(new THREE.CapsuleGeometry(s.armR, s.arm - s.armR * 2, 6, 12), top, 0, -s.arm / 2, 0, a);
+    mesh(new THREE.SphereGeometry(s.armR * 1.1, 12, 10), skin, 0, -s.arm, 0, a);
+    arms.push(a);
+  }
+  const [armL, armR] = arms;
+  if (pose === 'working') { armL.rotation.x = armR.rotation.x = -1.15; armL.rotation.z = 0.12; armR.rotation.z = -0.12; torso.rotation.x = 0.06; }
+  if (pose === 'waiting') { armL.rotation.x = -1.0; armR.rotation.z = 2.75; armR.rotation.x = -0.2; }
+  if (pose === 'error') { armL.rotation.x = armR.rotation.x = -0.75; torso.rotation.x = 0.22; head.rotation.x = 0.45; }
+  if (pose === 'idle') {
+    armR.rotation.x = -1.3; armR.rotation.z = 0.25; armL.rotation.z = 0.08;
+    const cup = mesh(cyl(0.035, 0.03, 0.09, 16), std('#ffffff', 0.3), 0, -s.arm - 0.02, 0.05, armR); cup.rotation.x = 1.3;
+  }
+  if (pose === 'jog') { torso.rotation.x = 0.14; }
+  if (pose === 'bench') {
+    armL.rotation.x = armR.rotation.x = -0.95; armL.rotation.z = 0.25; armR.rotation.z = -0.25;
+    box(P, 0.22, 0.03, 0.16, std('#c2603a', 0.7), 0.12, -s.arm - 0.02, 0.05, armR, 0).rotation.x = 0.9;
+    head.rotation.x = 0.3;
+  }
+  return { group: g, torso, head, armL, armR, pose, hip, legs };
+}
+
+function buildChair(P, o, parent) {
+  const g = new THREE.Group(); parent.add(g);
+  const seat = std(o.chair, 0.85), frame = std(o.chairFrame, 0.5, P.office.frameMetal);
+  if (P.id === 'd') { // rattan
+    box(P, 0.5, 0.06, 0.48, seat, 0, 0.45, 0, g); box(P, 0.5, 0.48, 0.05, seat, 0, 0.7, -0.24, g);
+    for (const [x, z] of [[-.22, -.2], [.22, -.2], [-.22, .2], [.22, .2]]) mesh(cyl(.018, .018, .45, 8), frame, x, .225, z, g);
+  } else {
+    box(P, 0.5, 0.08, 0.48, seat, 0, 0.46, 0, g, P.rounded ? .04 : 0);
+    box(P, 0.48, 0.5, 0.07, seat, 0, 0.75, -0.24, g, P.rounded ? .04 : 0);
+    mesh(cyl(0.025, 0.025, 0.4, 10), frame, 0, 0.22, 0, g);
+    for (let i = 0; i < 5; i++) { const a = i / 5 * Math.PI * 2; const leg = mesh(new THREE.BoxGeometry(0.26, 0.025, 0.04), frame, Math.cos(a) * 0.12, 0.03, Math.sin(a) * 0.12, g); leg.rotation.y = -a; }
+  }
+  return g;
+}
+
+function buildDesk(P, parent, x, z, rng) {
+  const o = P.office, g = new THREE.Group(); g.position.set(x, 0, z); parent.add(g);
+  const topMat = o.deskTop.tex ? std('#ffffff', 0.6, 0, { map: TEX[o.deskTop.tex](o.deskTop, rng) }) : std(o.deskTop.color, 0.35);
+  const leg = std(o.deskLeg, 0.45, P.office.frameMetal);
+  box(P, 1.5, 0.05, 0.75, topMat, 0, 0.74, 0, g, P.rounded ? 0.025 : 0);
+  if (o.legStyle === 'frame') { for (const sx of [-1, 1]) { box(P, 0.05, 0.72, 0.05, leg, sx * 0.68, 0.36, 0.3, g); box(P, 0.05, 0.72, 0.05, leg, sx * 0.68, 0.36, -0.3, g); box(P, 0.05, 0.05, 0.6, leg, sx * 0.68, 0.08, 0, g); } box(P, 1.36, 0.04, 0.04, leg, 0, 0.62, -0.3, g); }
+  else if (o.legStyle === 'panel') { for (const sx of [-1, 1]) box(P, 0.04, 0.72, 0.7, leg, sx * 0.71, 0.36, 0, g); }
+  else if (o.legStyle === 'round') { for (const sx of [-1, 1]) for (const sz of [-1, 1]) mesh(cyl(0.045, 0.045, 0.72, 16), leg, sx * 0.64, 0.36, sz * 0.28, g); }
+  else { for (const sx of [-1, 1]) for (const sz of [-1, 1]) { const l = mesh(cyl(0.018, 0.014, 0.74, 10), leg, sx * 0.66, 0.36, sz * 0.3, g); l.rotation.z = sx * 0.05; } }
+  // Monitor faces the person (who sits on the -z side, facing +z toward the camera).
+  const mon = std(o.monitor, 0.4, 0.2);
+  box(P, 0.6, 0.36, 0.03, mon, 0, 1.06, 0.18, g, P.rounded ? 0.02 : 0);
+  mesh(new THREE.PlaneGeometry(0.56, 0.32), std('#000000', 0.2, 0, { emissive: o.screen, emissiveIntensity: 0.6 }), 0, 1.06, 0.163, g, false).rotation.y = Math.PI;
+  mesh(cyl(0.02, 0.02, 0.16, 10), mon, 0, 0.84, 0.2, g); box(P, 0.2, 0.015, 0.14, mon, 0, 0.77, 0.2, g, 0);
+  box(P, 0.42, 0.02, 0.13, std('#d9d9d6', 0.5), 0, 0.775, -0.12, g, P.rounded ? 0.008 : 0);
+  if (rng() < 0.6) mesh(cyl(0.04, 0.035, 0.1, 16), std(['#ffffff', o.pot, '#c96f4a'][Math.floor(rng() * 3)], 0.4), 0.5, 0.815, -0.1, g);
+  if (rng() < 0.6) box(P, 0.24, 0.03, 0.3, std(shade(o.deskTop.color || '#dddddd', -0.25), 0.8), -0.5, 0.78, 0.05, g, 0);
+  const chair = buildChair(P, o, g); chair.position.z = -0.62;
+  return g;
+}
+
+function buildPlant(P, parent, x, z, scale = 1, big = false) {
+  const o = P.office, g = new THREE.Group(); g.position.set(x, 0, z); g.scale.setScalar(scale); parent.add(g);
+  const pot = std(o.pot, 0.7);
+  if (P.rounded) mesh(new THREE.SphereGeometry(0.2, 24, 16, 0, Math.PI * 2, Math.PI * 0.35, Math.PI * 0.65), pot, 0, 0.2, 0, g);
+  else mesh(cyl(0.2, 0.15, 0.36, 24), pot, 0, 0.18, 0, g);
+  const leaf = std(o.plant, 0.7);
+  if (P.id === 'd' || big) {
+    for (let i = 0; i < 9; i++) { const a = i / 9 * Math.PI * 2; const l = mesh(new THREE.SphereGeometry(0.22, 12, 8), leaf, Math.cos(a) * 0.22, 0.75 + (i % 3) * 0.18, Math.sin(a) * 0.22, g); l.scale.set(1, 0.18, 0.55); l.rotation.set(0.5 * Math.sin(a), -a, 0.6); }
+    mesh(cyl(0.015, 0.02, 0.8, 6), std('#5a7a3a', 0.8), 0, 0.6, 0, g);
+  } else if (P.rounded) {
+    mesh(new THREE.SphereGeometry(0.28, 24, 18), leaf, 0, 0.6, 0, g);
+  } else {
+    for (let i = 0; i < 6; i++) { const a = i / 6 * Math.PI * 2; mesh(new THREE.IcosahedronGeometry(0.17, 1), leaf, Math.cos(a) * 0.1, 0.55 + (i % 2) * 0.16, Math.sin(a) * 0.1, g); }
+    mesh(new THREE.IcosahedronGeometry(0.2, 1), leaf, 0, 0.8, 0, g);
+  }
+  return g;
+}
+
+function buildTree(P, parent, x, z, rng, s = 1) {
+  const g = new THREE.Group(); g.position.set(x, 0, z); g.scale.setScalar(s); parent.add(g);
+  mesh(cyl(0.09, 0.13, 2.2, 10), std('#6b5240', 0.9), 0, 1.1, 0, g);
+  const leaf = std(P.city.tree, 0.8);
+  if (P.rounded) { mesh(new THREE.SphereGeometry(1.1, 28, 20), leaf, 0, 2.7, 0, g); }
+  else if (P.id === 'd') { for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2; const f = mesh(new THREE.SphereGeometry(0.9, 10, 8), leaf, Math.cos(a) * 0.7, 2.6, Math.sin(a) * 0.7, g); f.scale.set(1, 0.18, 0.4); f.rotation.set(0, -a, -0.4); } mesh(new THREE.SphereGeometry(0.4, 12, 10), leaf, 0, 2.7, 0, g); }
+  else { for (let i = 0; i < 5; i++) mesh(new THREE.IcosahedronGeometry(0.75 + rng() * 0.3, 1), leaf, (rng() - .5) * 1.1, 2.5 + rng() * 0.9, (rng() - .5) * 1.1, g); }
+  return g;
+}
+
+/* ---------- Realistic surroundings (E+ feedback): trees, park life, traffic ---------- */
+function grassTex(P, rng) {
+  return canvasTex(256, 256, (g, w, h) => {
+    g.fillStyle = P.city.ground; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 2600; i++) { g.globalAlpha = 0.45; g.fillStyle = C(P.city.ground).offsetHSL((rng() - .5) * .04, (rng() - .5) * .1, (rng() - .5) * .14).getStyle(); g.fillRect(rng() * w, rng() * h, 2 + rng() * 3, 4 + rng() * 6); }
+    g.globalAlpha = 1;
+  }, [45, 45]);
+}
+const matCache = new Map();
+const cmat = (color, rough = 0.85) => { const k = color + rough; if (!matCache.has(k)) matCache.set(k, std(color, rough)); return matCache.get(k); };
+
+function buildTreeReal(P, parent, x, z, rng, kind = 'canopy', s = 1) {
+  const g = new THREE.Group(); g.position.set(x, 0, z); g.scale.setScalar(s); g.rotation.y = rng() * Math.PI * 2; parent.add(g);
+  const bark = cmat('#6b5442', 0.95);
+  if (kind === 'palm') {
+    let px = 0, py = 0; const lean = 0.05 + rng() * 0.05;
+    for (let i = 0; i < 8; i++) { const a = lean * i * 0.5; const seg = mesh(cyl(0.12 - i * 0.006, 0.14 - i * 0.006, 0.78, 10), bark, px + Math.sin(a) * 0.39, py + Math.cos(a) * 0.39, 0, g); seg.rotation.z = -a; px += Math.sin(a) * 0.76; py += Math.cos(a) * 0.74; }
+    const crown = new THREE.Group(); crown.position.set(px, py, 0); g.add(crown);
+    const frond = std(shade(P.city.tree, 0.06), 0.8, 0, { side: THREE.DoubleSide });
+    for (let i = 0; i < 10; i++) { const f = new THREE.Group(); f.rotation.y = i / 10 * Math.PI * 2 + rng() * 0.3; crown.add(f); const leaf = mesh(new THREE.SphereGeometry(1, 14, 6), frond, 1.15, -0.3, 0, f); leaf.scale.set(1.3, 0.08, 0.3); leaf.rotation.z = -0.35 - rng() * 0.3; }
+    for (let i = 0; i < 4; i++) mesh(new THREE.SphereGeometry(0.11, 10, 8), cmat('#7a5a2a', 0.7), Math.cos(i * 1.6) * 0.18, -0.18, Math.sin(i * 1.6) * 0.18, crown);
+    return g;
+  }
+  const h = 2.3 + rng() * 1.2;
+  mesh(cyl(0.12, 0.21, h, 12), bark, 0, h / 2, 0, g);
+  for (let i = 0; i < 3; i++) { const a = i / 3 * Math.PI * 2 + rng(); const b = mesh(cyl(0.05, 0.08, 1.3, 8), bark, Math.cos(a) * 0.32, h + 0.35, Math.sin(a) * 0.32, g); b.rotation.set(Math.sin(a) * 0.6, 0, -Math.cos(a) * 0.6); }
+  const greens = [P.city.tree, shade(P.city.tree, 0.07), shade(P.city.tree, -0.07), shade(P.city.tree, 0.13)];
+  const n = 13 + Math.floor(rng() * 6);
+  for (let i = 0; i < n; i++) {
+    const a = rng() * Math.PI * 2, r = 0.2 + rng() * 1.35, y = h + 0.55 + rng() * 1.4 - r * 0.35;
+    const col = kind === 'flower' && rng() < 0.6 ? (rng() < 0.7 ? P.city.blossom : shade(P.city.blossom, 0.1)) : greens[i % 4];
+    const m = mesh(new THREE.IcosahedronGeometry(0.5 + rng() * 0.45, 2), cmat(col), Math.cos(a) * r, y, Math.sin(a) * r, g); m.scale.y = 0.72;
+  }
+  return g;
+}
+
+function buildBench(P, parent, x, z, ry) {
+  const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = ry; parent.add(g);
+  const wood = cmat('#9a6a3e', 0.7), iron = std('#2b2d30', 0.5, 0.6);
+  for (let i = 0; i < 3; i++) box(P, 1.7, 0.04, 0.12, wood, 0, 0.45, -0.15 + i * 0.15, g, 0.015);
+  for (let i = 0; i < 2; i++) box(P, 1.7, 0.1, 0.04, wood, 0, 0.66 + i * 0.16, -0.27, g, 0.015);
+  for (const sx of [-0.75, 0.75]) { box(P, 0.05, 0.45, 0.45, iron, sx, 0.22, -0.05, g, 0); box(P, 0.05, 0.5, 0.05, iron, sx, 0.68, -0.27, g, 0); }
+  return g;
+}
+
+function wheel(parent, x, z, r, w) { const m = mesh(cyl(r, r, w, 18), cmat('#1f1f22', 0.8), x, r, z, parent); m.rotation.x = Math.PI / 2; mesh(cyl(r * 0.5, r * 0.5, w + 0.01, 12), cmat('#b9bcc2', 0.4), x, r, z, parent).rotation.x = Math.PI / 2; }
+function lightsOn(night, color, i = 3) { return night ? std(color, 0.3, 0, { emissive: color, emissiveIntensity: i }) : std(shade(color, -0.1), 0.3); }
+
+function buildCar(P, color, night) {
+  const g = new THREE.Group();
+  box(P, 4.0, 0.7, 1.8, std(color, 0.35, 0.3), 0, 0.68, 0, g, 0.25);
+  box(P, 2.2, 0.62, 1.62, std('#2c3b45', 0.12, 0.4), -0.25, 1.28, 0, g, 0.22);
+  for (const [x, z] of [[1.3, 0.82], [1.3, -0.82], [-1.3, 0.82], [-1.3, -0.82]]) wheel(g, x, z, 0.33, 0.24);
+  for (const z of [0.6, -0.6]) { box(P, 0.06, 0.14, 0.32, lightsOn(night, '#fff6d8', 4), 2.0, 0.78, z, g, 0); box(P, 0.06, 0.12, 0.3, lightsOn(night, '#e0322a', 3), -2.0, 0.8, z, g, 0); }
+  return g;
+}
+function buildBus(P, night) {
+  const g = new THREE.Group();
+  box(P, 10, 2.5, 2.5, std('#3a9a5a', 0.45, 0.2), 0, 1.6, 0, g, 0.35);
+  box(P, 9.4, 0.85, 2.54, std(night ? '#3a3020' : '#2c3b45', 0.15, 0.3, night ? { emissive: '#ffd99a', emissiveIntensity: 0.8 } : {}), 0, 2.2, 0, g, 0.1);
+  box(P, 9.6, 0.18, 2.54, std('#f2c14e', 0.6), 0, 1.15, 0, g, 0);
+  for (const [x, z] of [[3.4, 1.15], [3.4, -1.15], [-3.4, 1.15], [-3.4, -1.15]]) wheel(g, x, z, 0.5, 0.3);
+  for (const z of [0.8, -0.8]) box(P, 0.06, 0.2, 0.36, lightsOn(night, '#fff6d8', 4), 5.0, 0.8, z, g, 0);
+  return g;
+}
+function buildMoto(P, rng, night) {
+  const g = new THREE.Group();
+  const body = std(['#c2603a', '#2f80a5', '#fffaf0', '#1f1f22', '#f2c14e'][Math.floor(rng() * 5)], 0.4, 0.3);
+  box(P, 1.3, 0.32, 0.3, body, 0, 0.58, 0, g, 0.12);
+  box(P, 0.5, 0.12, 0.3, cmat('#2a2622', 0.7), -0.2, 0.8, 0, g, 0.05);
+  wheel(g, 0.62, 0, 0.3, 0.1); wheel(g, -0.62, 0, 0.3, 0.1);
+  box(P, 0.06, 0.12, 0.14, lightsOn(night, '#fff6d8', 5), 0.72, 0.85, 0, g, 0);
+  const shirt = cmat(['#ffffff', '#2f80a5', '#c2603a', '#3fae7a', '#f2c94c'][Math.floor(rng() * 5)]);
+  const rider = mesh(new THREE.CapsuleGeometry(0.15, 0.32, 6, 12), shirt, -0.15, 1.18, 0, g); rider.rotation.z = -0.2;
+  mesh(new THREE.SphereGeometry(0.15, 16, 12), cmat(['#f2c14e', '#e0322a', '#ffffff', '#1f6f6a'][Math.floor(rng() * 4)], 0.4), -0.08, 1.62, 0, g);
+  for (const z of [0.1, -0.1]) { const leg = mesh(new THREE.CapsuleGeometry(0.06, 0.32, 4, 8), cmat('#2b3442'), 0.1, 0.82, z, g); leg.rotation.z = 1.2; }
+  return g;
+}
+
+/* Park layout reflows around the office (E+ feedback, round 4): a clear lawn of CLEAR m on every side,
+   the loop path just outside it, then benches, kiosk, pond and trees. Nothing is fixed near the office,
+   so resizing the office (up to 40 × 40 m) never collides with the park. */
+const CLEAR = 8; // m of open lawn from the office edge before any tree (the loop path and low decor start ≥ 5 m out)
+const parkFrame = (size) => { const hw = size.w / 2, hd = size.d / 2; return { hw, hd, rx: hw * 1.414 + 4.5, rz: hd * 1.414 + 4.5 }; };
+
+function buildParkLife(P, root, night, rng, lights, size) {
+  const movers = [];
+  const { hw, hd, rx, rz } = parkFrame(size);
+  const cx = 0, cz = 0;
+  const sz = streetZOf(P);
+  const ring = mesh(new THREE.RingGeometry(1 - 1.5 / Math.min(rx, rz), 1, 160), std(P.city.walk, 0.9), cx, 0.007, cz, root, false); ring.rotation.x = -Math.PI / 2; ring.scale.set(rx, rz, 1);
+  const onEllipse = (a, r = 1) => [cx + Math.cos(a) * rx * r, cz + Math.sin(a) * rz * r];
+
+  // Palms along the far street
+  for (let x = -63; x <= 63; x += 7) buildTreeReal(P, root, x, sz + 3.5, rng, 'palm', 1.0);
+
+  // Flower beds and shrubs just outside the loop
+  const blooms = ['#e0503a', '#f2c14e', '#ff9eb1', '#ffffff', '#c26ad8'];
+  for (const a of [0.35, 2.8]) {
+    const [bx, bz] = onEllipse(a, 1.16);
+    box(P, 2.4, 0.28, 1.0, cmat('#8a5a35', 0.8), bx, 0.14, bz, root, 0.05);
+    for (let i = 0; i < 18; i++) mesh(new THREE.IcosahedronGeometry(0.13 + rng() * 0.08, 1), cmat(rng() < 0.55 ? P.city.tree : blooms[Math.floor(rng() * blooms.length)]), bx + (rng() - .5) * 2.1, 0.34 + rng() * 0.06, bz + (rng() - .5) * 0.8, root);
+  }
+  for (let i = 0; i < 14; i++) { const a = rng() * Math.PI * 2; const [x, z] = onEllipse(a, 1.18 + rng() * 0.2); mesh(new THREE.IcosahedronGeometry(0.35 + rng() * 0.25, 2), cmat(shade(P.city.tree, (rng() - .5) * .12)), x, 0.25, z, root).scale.y = 0.75; }
+
+  // Benches outside the loop, one with a reader
+  const look = (i) => ({ skin: P.people.skins[i % 4], hair: P.people.hair[(i + 1) % 4], top: ['#ff7a59', '#2f80a5', '#f2c14e', '#ffffff', '#3fae7a', '#c2603a', '#7a6ad8'][i % 7], bottom: ['#2b2b2b', '#1f6f6a', '#3b4a6b', '#efe4cc'][i % 4], shoe: '#f5f5f5' });
+  buildBench(P, root, cx + rx + 1.8, 0.5, -Math.PI / 2);
+  buildBench(P, root, cx - rx - 1.8, 1.5, Math.PI / 2);
+  const reader = buildPerson(P, 0, 'bench', look(5)); reader.group.position.set(cx + rx + 1.8, 0, 0.5); reader.group.rotation.y = -Math.PI / 2; root.add(reader.group);
+
+  // Park lamps beside the loop
+  for (const a of [0.6, 2.5, 3.9, 5.5, 4.7]) {
+    const [x, z] = onEllipse(a, 1.08);
+    mesh(cyl(0.04, 0.06, 3, 8), std('#2b2d30', 0.5, 0.6), x, 1.5, z, root);
+    mesh(new THREE.SphereGeometry(0.18, 16, 12), std('#fff6dc', 0.3, 0, night ? { emissive: '#ffdc9a', emissiveIntensity: 4 } : {}), x, 3.1, z, root, false);
+  }
+  if (night) { const l = new THREE.PointLight('#ffd08a', 25, 14, 1.6); l.position.set(-rx - 2, 3, rz * 0.4); root.add(l); lights.push(l); }
+
+  // Exercise group on the lawn outside the loop (left side)
+  [[-rx - 3.6, rz * 0.35], [-rx - 4.6, rz * 0.35 + 1.1], [-rx - 3.1, rz * 0.35 + 1.5]].forEach(([x, z], i) => {
+    const p = buildPerson(P, 0, 'exercise', look(i + 1)); p.group.position.set(x, 0, z); p.group.rotation.y = 0.9; root.add(p.group);
+    const speed = i === 2 ? 1.6 : 3.6, ph = i * 0.7;
+    movers.push((dt, t) => {
+      const k = (1 + Math.sin(t * speed + ph)) / 2;
+      p.armL.rotation.z = -(0.2 + k * 2.5); p.armR.rotation.z = 0.2 + k * 2.5;
+      p.legs[0].rotation.z = -k * 0.25; p.legs[1].rotation.z = k * 0.25;
+      p.group.position.y = i === 2 ? 0 : Math.abs(Math.sin(t * speed + ph)) * 0.06;
+    });
+  });
+
+  // Walkers and joggers on the loop path
+  [{ pose: 'walk', v: 1.1, d: 1 }, { pose: 'walk', v: 0.9, d: -1 }, { pose: 'jog', v: 2.6, d: 1 }, { pose: 'walk', v: 1.0, d: 1 }, { pose: 'jog', v: 2.3, d: -1 }, { pose: 'walk', v: 0.8, d: -1 }].forEach((w, i) => {
+    const p = buildPerson(P, 0, w.pose, look(i + 2)); root.add(p.group);
+    let th = rng() * Math.PI * 2; const lane = 1 - 0.75 / Math.min(rx, rz) + (w.d > 0 ? 0.3 : -0.3) / Math.min(rx, rz);
+    const f = w.pose === 'jog' ? 9 : 5.5, amp = w.pose === 'jog' ? 0.85 : 0.45;
+    movers.push((dt, t) => {
+      th += w.d * w.v / (((rx + rz) / 2) * lane) * dt;
+      const x = cx + rx * lane * Math.cos(th), z = cz + rz * lane * Math.sin(th);
+      const tx = -rx * Math.sin(th) * w.d, tz = rz * Math.cos(th) * w.d;
+      p.group.position.set(x, w.pose === 'jog' ? Math.abs(Math.sin(t * f)) * 0.05 : 0, z);
+      p.group.rotation.y = Math.atan2(tx, tz);
+      const sw = Math.sin(t * f + i);
+      p.legs[0].rotation.x = sw * amp; p.legs[1].rotation.x = -sw * amp;
+      p.armL.rotation.x = -sw * amp * 0.8 - (w.pose === 'jog' ? 0.5 : 0); p.armR.rotation.x = sw * amp * 0.8 - (w.pose === 'jog' ? 0.5 : 0);
+    });
+  });
+
+  // Traffic on the far street: each sub-lane has one speed so nothing overlaps
+  const span = 140;
+  const lanes = [
+    { z: sz + 0.7, d: 1, v: 6.5, items: () => [buildCar(P, '#fffaf0', night), buildCar(P, '#2f80a5', night), buildBus(P, night), buildCar(P, '#f2c14e', night)] },
+    { z: sz - 0.7, d: -1, v: 5.5, items: () => [buildCar(P, '#c2603a', night), buildCar(P, '#3fae7a', night), buildCar(P, '#9a9ca3', night), buildBus(P, night)] },
+    { z: sz + 1.7, d: 1, v: 8, items: () => Array.from({ length: 7 }, () => buildMoto(P, rng, night)) },
+    { z: sz - 1.7, d: -1, v: 7.5, items: () => Array.from({ length: 7 }, () => buildMoto(P, rng, night)) },
+  ];
+  for (const L of lanes) {
+    const items = L.items(); const gap = span / items.length;
+    items.forEach((obj, i) => {
+      obj.position.set(-span / 2 + i * gap + rng() * gap * 0.4, 0, L.z); if (L.d < 0) obj.rotation.y = Math.PI; root.add(obj);
+      movers.push((dt) => { obj.position.x += L.d * L.v * dt; if (obj.position.x > span / 2) obj.position.x -= span; if (obj.position.x < -span / 2) obj.position.x += span; });
+    });
+  }
+
+  // Saigon power poles with sagging wires along the far sidewalk
+  const poleZ = sz - 2.8, poles = [-44, -32, -20, -8, 4, 16, 28, 40];
+  for (const x of poles) { mesh(cyl(0.09, 0.12, 7, 8), cmat('#9a9690', 0.8), x, 3.5, poleZ, root); box(P, 1.2, 0.08, 0.08, cmat('#5a5650'), x, 6.6, poleZ, root, 0); }
+  const wireM = new THREE.LineBasicMaterial({ color: '#2b2b2b' });
+  for (let i = 0; i < poles.length - 1; i++) for (const off of [-0.5, -0.1, 0.3, 0.5]) {
+    const a = new THREE.Vector3(poles[i], 6.6, poleZ + off * 0.2), b = new THREE.Vector3(poles[i + 1], 6.6, poleZ + off * 0.2);
+    const mid = a.clone().lerp(b, 0.5); mid.y -= 0.7 + Math.abs(off);
+    root.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(new THREE.QuadraticBezierCurve3(a, mid, b).getPoints(20)), wireM));
+  }
+
+  // Path from the loop out to the street
+  const pathLen = -rz - (sz + 4.5);
+  const toStreet = mesh(new THREE.PlaneGeometry(1.6, pathLen), std(P.city.walk, 0.9), 0, 0.007, (-rz + sz + 4.5) / 2, root, false); toStreet.rotation.x = -Math.PI / 2;
+  // Pond behind-left, beyond the loop
+  const pond = { x: -rx - 13, z: -rz - 3, rx: 6.5, rz: 3.8 };
+  const rim = mesh(new THREE.CircleGeometry(1, 64), std('#b7ad9c', 0.9), pond.x, 0.012, pond.z, root, false); rim.rotation.x = -Math.PI / 2; rim.scale.set(pond.rx + 0.5, pond.rz + 0.5, 1);
+  const water = mesh(new THREE.CircleGeometry(1, 64), std(night ? '#1b2c33' : '#5f9fae', 0.08, 0.2, { envMapIntensity: 1.5 }), pond.x, 0.02, pond.z, root, false); water.rotation.x = -Math.PI / 2; water.scale.set(pond.rx, pond.rz, 1);
+  for (let i = 0; i < 9; i++) { const a = rng() * Math.PI * 2, r = rng() * 0.8; const lp = mesh(new THREE.CircleGeometry(0.28 + rng() * 0.15, 16), cmat('#4f8a3c', 0.7), pond.x + Math.cos(a) * pond.rx * r, 0.03, pond.z + Math.sin(a) * pond.rz * r, root, false); lp.rotation.x = -Math.PI / 2; }
+  buildBench(P, root, pond.x + 2, pond.z + pond.rz + 1.4, Math.PI);
+  // Park kiosk café beyond the loop, on the left of the default view
+  const kx = -rx - 5, kz = -rz * 0.55;
+  box(P, 4.2, 3.3, 2.6, std('#efe4cc', 0.8), kx, 1.65, kz - 1.3, root, 0.05);
+  buildShop(P, root, 'cafe', kx, kz, 4.0, night, rng, { name: 'Cà Phê Công Viên' });
+
+  // Trees: one fixed, seeded set for the whole park; a tree is shown only when it is outside the clear lawn,
+  // off the paths, the pond and the kiosk, and not between the camera and the office. Resizing only hides trees.
+  const trng = rngFrom(4242);
+  const clear = (x, z) => {
+    if (Math.abs(x) < hw + CLEAR && Math.abs(z) < hd + CLEAR) return false;
+    const e = Math.hypot((x - cx) / rx, (z - cz) / rz); if (e < 1.12) return false;
+    if (Math.hypot((x - pond.x) / (pond.rx + 1.5), (z - pond.z) / (pond.rz + 1.5)) < 1) return false;
+    if (Math.abs(x) < 2.2 && z < 0) return false;
+    if (Math.abs(x - kx) < 4.5 && z > kz - 4 && z < kz + 4.5) return false;
+    if (x > -4 && z > 0) return false;
+    if (z < sz + 6) return false;
+    return true;
+  };
+  let placed = 0;
+  for (let n = 0; n < 220 && placed < 46; n++) {
+    const x = (trng() - 0.5) * 130, z = sz + 6 + trng() * (60 - sz - 6), r = trng(), sc = 0.85 + trng() * 0.45;
+    if (!clear(x, z)) continue;
+    buildTreeReal(P, root, x, z, trng, r < 0.65 ? 'canopy' : r < 0.85 ? 'flower' : 'palm', sc); placed++;
+  }
+  return movers;
+}
+
+function buildOffice(P, root, night, rng, lights, size = { w: 6, d: 5 }) {
+  const o = P.office, W = size.w, D = size.d, hw = W / 2, hd = D / 2;
+  // Foundation slab + floor
+  box(P, W + 0.6, 0.16, D + 0.6, std(o.plinth, 0.8), 0, -0.08, 0, root, 0);
+  const floorMat = std('#ffffff', P.id === 'c' ? 0.25 : 0.7, 0, { map: TEX[o.floor.tex](o.floor, rng) });
+  floorMat.map.repeat.multiply(new THREE.Vector2(W / 6, D / 5));
+  mesh(new THREE.PlaneGeometry(W, D), floorMat, 0, 0.002, 0, root).rotation.x = -Math.PI / 2;
+  if (o.rug && W <= 8) { const rug = mesh(P.rounded ? new THREE.CircleGeometry(1.6, 48) : new THREE.PlaneGeometry(4.6, 3.4), std(o.rug, 0.95), 0, 0.006, -0.15, root); rug.rotation.x = -Math.PI / 2; }
+
+  // Left wall (solid, concept material) and back curtain wall (glass).
+  const wallMat = std('#ffffff', 0.85, 0, { map: TEX[o.wall.tex](o.wall, rng) });
+  wallMat.map.repeat.x *= D / 5;
+  box(P, 0.14, 2.7, D, wallMat, -hw, 1.35, 0, root, 0);
+  const frame = std(o.frame, 0.4, o.frameMetal);
+  box(P, W + 0.14, 0.12, 0.14, frame, 0, 0.06, -hd, root, 0);
+  box(P, W + 0.14, 0.1, 0.14, frame, 0, 2.66, -hd, root, 0);
+  for (let i = 0; i <= Math.round(W); i++) box(P, 0.06, 2.6, 0.1, frame, -hw + i * (W / Math.round(W)), 1.33, -hd, root, 0);
+  const glass = new THREE.MeshPhysicalMaterial({ color: P.id === 'c' ? '#d6e6f5' : '#eef6f6', roughness: 0.05, metalness: 0.0, transparent: true, opacity: 0.18, envMapIntensity: 1.2, side: THREE.DoubleSide });
+  const gl = mesh(new THREE.PlaneGeometry(W, 2.5), glass, 0, 1.36, -hd, root, false); gl.receiveShadow = false;
+
+  // Desks on a grid in the middle of the floor (capped so a huge office stays light); people at the first three.
+  const cols = Math.min(6, Math.max(2, Math.floor((W - 1.2) / 2.7))), rows = Math.min(5, Math.max(2, Math.floor((D - 1.4) / 2.1)));
+  const spots = [];
+  for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) spots.push([(i - (cols - 1) / 2) * 2.7, (j - (rows - 1) / 2) * 2.1 - 0.1]);
+  spots.forEach(([x, z]) => buildDesk(P, root, x, z, rng));
+  const people = [];
+  ['working', 'waiting', 'error'].forEach((pose, i) => { const p = buildPerson(P, i, pose); p.group.position.set(spots[i][0], 0, spots[i][1] - 0.62); root.add(p.group); people.push(p); });
+  const idle = buildPerson(P, 3, 'idle'); idle.group.position.set(hw - 0.85, 0, -hd + 0.85); idle.group.rotation.y = -0.5; root.add(idle.group); people.push(idle);
+
+  // Water cooler + plants in the corners
+  const cooler = new THREE.Group(); cooler.position.set(hw - 0.38, 0, -hd + 0.4); root.add(cooler);
+  box(P, 0.36, 1.0, 0.36, std(o.cooler, 0.5), 0, 0.5, 0, cooler);
+  mesh(cyl(0.15, 0.15, 0.4, 20), std('#a9d6f2', 0.1, 0, { transparent: true, opacity: 0.6 }), 0, 1.2, 0, cooler);
+  buildPlant(P, root, -hw + 0.4, -hd + 0.4, 1.1, P.id === 'd');
+  buildPlant(P, root, hw - 0.4, hd - 0.4, 1.25, true);
+  buildPlant(P, root, -hw + 0.4, hd - 0.35, 0.9);
+
+  // Ceiling lamps over the desks (shapes only; lit at night)
+  const lampOn = night ? { emissive: o.lampColor === '#1c1c1c' ? '#ffb45e' : P.light.interior, emissiveIntensity: 2.2 } : {};
+  for (const [x, z] of spots) {
+    const ly = 2.35;
+    mesh(cyl(0.004, 0.004, 0.5, 4), std('#222', 0.5), x, ly + 0.25, z, root, false);
+    if (o.lamp === 'edison') { mesh(new THREE.SphereGeometry(0.06, 12, 10), std('#ffcf8a', 0.2, 0, night ? { emissive: '#ffae4a', emissiveIntensity: 4 } : { transparent: true, opacity: .85 }), x, ly - 0.05, z, root, false); }
+    else if (o.lamp === 'cone') { mesh(new THREE.ConeGeometry(0.2, 0.18, 24, 1, true), std(o.lampColor, 0.6, 0, { side: THREE.DoubleSide, ...lampOn }), x, ly, z, root, false); }
+    else if (o.lamp === 'rattan') { const r = mesh(new THREE.SphereGeometry(0.2, 12, 8, 0, Math.PI * 2, 0, Math.PI * 0.6), std(o.lampColor, 0.9, 0, { wireframe: true, ...lampOn }), x, ly, z, root, false); r.rotation.x = Math.PI; }
+    else if (o.lamp === 'globe') { mesh(new THREE.SphereGeometry(0.16, 24, 16), std('#ffffff', 0.4, 0, night ? lampOn : { emissive: '#ffffff', emissiveIntensity: 0.15 }), x, ly, z, root, false); }
+  }
+  if (o.lamp === 'linear') for (const z of [...new Set(spots.map((s) => s[1]))]) { mesh(cyl(0.004, 0.004, 0.4, 4), std('#888', 0.5), 0, 2.6, z, root, false); box(P, cols * 2.7 - 1.8, 0.04, 0.08, std('#f5f7fa', 0.3, 0.3, night ? { emissive: '#eef4ff', emissiveIntensity: 2.4 } : {}), 0, 2.38, z, root, 0); }
+  if (night) for (const [x, z] of [[-1.2, -0.6], [1.2, -0.6], [0, 1.2]]) { const l = new THREE.PointLight(P.light.interior, P.light.interiorI * Math.max(1, W / 8), 6 * Math.max(1, W / 8), 1.6); l.position.set(x * W / 6, 2.2, z * D / 5); root.add(l); lights.push(l); }
+  return people;
+}
+
+function buildShop(P, parent, kind, bx, frontZ, w, night, rng, override) {
+  const s = { ...P.city[kind], ...(override || {}) };
+  const g = new THREE.Group(); g.position.set(bx, override ? 0 : 0.14, frontZ); parent.add(g);
+  const facade = std(s.facade, 0.6, P.id === 'c' ? 0.3 : 0);
+  box(P, w, 3.3, 0.3, facade, 0, 1.65, 0.15, g, P.rounded ? 0.08 : 0);
+  const glow = night ? { emissive: '#ffcf8f', emissiveIntensity: 1.4 } : {};
+  box(P, w * 0.62, 2.0, 0.05, std(night ? '#3a2a18' : '#a9c4cf', 0.1, 0.2, glow), -w * 0.12, 1.25, 0.32, g, 0);
+  box(P, 0.9, 2.2, 0.05, std(shade(s.facade, -0.2), 0.5), w * 0.32, 1.1, 0.32, g, 0);
+  // Awning
+  const stripes = canvasTex(256, 64, (gg, W, H) => { const n = s.awning[0] === s.awning[1] ? 1 : 8; for (let i = 0; i < n; i++) { gg.fillStyle = s.awning[i % 2]; gg.fillRect(i * W / n, 0, W / n + 1, H); } }, [1, 1]);
+  if (P.city.style === 'glass' && kind === 'cafe') { box(P, w * 0.95, 0.06, 1.4, std('#d9e6f2', 0.1, 0.5, { transparent: true, opacity: 0.6 }), 0, 2.6, 0.95, g, 0); }
+  else { const aw = box(P, w * 0.92, 0.06, 1.3, std('#ffffff', 0.8, 0, { map: stripes }), 0, 2.55, 0.85, g, P.rounded ? 0.03 : 0); aw.rotation.x = 0.32; }
+  // Sign with the concept's display font
+  const lt = labelTex(s.name, { font: P.fonts.display, weight: P.fonts.dw, size: 64, bg: s.sign, ink: s.ink, radius: P.rounded ? 40 : P.ui.radius });
+  const sh = 0.62, sw = Math.min(w * 0.9, sh * lt.aspect);
+  const sign = mesh(new THREE.PlaneGeometry(sw, sw / lt.aspect), new THREE.MeshStandardMaterial({ map: lt.tex, roughness: 0.6, emissive: night ? '#ffffff' : '#000000', emissiveMap: night ? lt.tex : null, emissiveIntensity: night ? 0.9 : 0, transparent: true }), 0, 3.05, 0.32, g, false);
+  sign.castShadow = false;
+  // Outdoor seating on the sidewalk
+  const seatM = std(P.city.seatColor, 0.5, P.city.seating === 'bistro' ? 0.5 : 0);
+  for (let i = 0; i < 2; i++) {
+    const tx = -w * 0.28 + i * w * 0.42, tz = 1.6;
+    if (P.city.seating === 'stools') {
+      box(P, 0.5, 0.05, 0.5, std('#3a7bd5', 0.5), tx, 0.42, tz, g, 0);
+      for (const [lx, lz] of [[-.2, -.2], [.2, -.2], [-.2, .2], [.2, .2]]) box(P, 0.04, 0.4, 0.04, std('#3a7bd5', 0.5), tx + lx, 0.2, tz + lz, g, 0);
+      for (const [dx, dz, c] of [[-.5, 0, '#d93a2b'], [.5, 0, '#2f80c5'], [0, .5, '#d93a2b']]) { mesh(cyl(0.15, 0.12, 0.26, 16), std(c, 0.5), tx + dx, 0.13, tz + dz, g); }
+      if (P.city.umbrella) { mesh(cyl(0.02, 0.02, 2.2, 8), std('#ffffff', 0.5), tx, 1.1, tz, g); mesh(new THREE.ConeGeometry(1.1, 0.35, 16), std(P.city.umbrella[i], 0.8), tx, 2.25, tz, g); }
+    } else {
+      mesh(cyl(0.3, 0.3, 0.03, 24), seatM, tx, 0.74, tz, g); mesh(cyl(0.03, 0.03, 0.72, 8), seatM, tx, 0.36, tz, g); mesh(cyl(0.2, 0.2, 0.02, 16), seatM, tx, 0.01, tz, g);
+      for (const dx of [-0.45, 0.45]) { mesh(cyl(0.18, 0.18, 0.04, 16), seatM, tx + dx, 0.46, tz, g); mesh(cyl(0.02, 0.02, 0.45, 6), seatM, tx + dx, 0.23, tz, g); }
+      if (P.city.seating === 'umbrella' || P.city.seating === 'plaza') {
+        mesh(cyl(0.02, 0.02, 2.2, 8), std('#ffffff', 0.5), tx, 1.1, tz, g);
+        const cone = mesh(new THREE.ConeGeometry(1.0, 0.35, P.rounded ? 32 : 8), std(P.city.seating === 'umbrella' ? (P.city.umbrella ? P.city.umbrella[i] : (i ? '#ffb3c6' : '#a9d8ff')) : '#f2f3f5', 0.8), tx, 2.25, tz, g); cone.castShadow = true;
+      }
+    }
+  }
+  if (P.id === 'd' && kind === 'cafe') { // coffee cart
+    const cart = new THREE.Group(); cart.position.set(w * 0.6, 0, 1.9); g.add(cart);
+    box(P, 1.0, 0.7, 0.55, std('#c2603a', 0.6), 0, 0.65, 0, cart, 0);
+    for (const sx of [-1, 1]) { const wh = mesh(cyl(0.22, 0.22, 0.05, 20), std('#222', 0.7), sx * 0.45, 0.22, 0.3, cart); wh.rotation.x = Math.PI / 2; }
+    box(P, 1.1, 0.04, 0.7, std('#1f6f6a', 0.7), 0, 1.6, 0, cart, 0);
+    for (const sx of [-1, 1]) mesh(cyl(0.015, 0.015, 0.6, 6), std('#888', 0.5), sx * 0.5, 1.3, 0.3, cart);
+  }
+  return g;
+}
+
+function buildCity(P, root, night, rng, lights, size) {
+  const c = P.city;
+  const ground = mesh(new THREE.PlaneGeometry(P.realSurroundings ? 420 : 140, P.realSurroundings ? 420 : 140), P.realSurroundings ? std('#ffffff', 0.95, 0, { map: grassTex(P, rng) }) : std(c.ground, 0.95), 0, -0.01, 0, root); ground.rotation.x = -Math.PI / 2;
+  const plaza = P.realSurroundings ? mesh(new THREE.PlaneGeometry(size.w + 3, size.d + 3), std(c.plaza, 0.9), 0, 0, 0, root) : mesh(new THREE.PlaneGeometry(12, 9), std(c.plaza, 0.9), 0, 0, 0.3, root); plaza.rotation.x = -Math.PI / 2; plaza.position.y = 0.001;
+  // Street along x, sidewalks on both sides
+  const streetZ = streetZOf(P), sw = 5;
+  mesh(new THREE.PlaneGeometry(140, sw), std(c.street, 0.85), 0, 0.004, streetZ, root).rotation.x = -Math.PI / 2;
+  for (let x = -60; x < 60; x += 3) mesh(new THREE.PlaneGeometry(1.4, 0.12), std('#e9e5d8', 0.6), x, 0.008, streetZ, root, false).rotation.x = -Math.PI / 2;
+  box(P, 140, 0.14, 2.0, std(c.walk, 0.9), 0, 0.07, streetZ + sw / 2 + 1, root, 0);
+  box(P, 140, 0.14, 2.6, std(c.walk, 0.9), 0, 0.07, streetZ - sw / 2 - 1.3, root, 0);
+
+  // Building row facing the office across the street
+  const frontZ = streetZ - sw / 2 - 2.6;
+  let defs;
+  if (c.style === 'tube') {
+    defs = []; let x = -19;
+    while (x < 19) { const w = 3.6 + rng() * 0.9; defs.push({ x: x + w / 2, w, h: 8 + rng() * 7, d: 9 }); x += w + 0.05; }
+  } else if (c.style === 'glass') {
+    defs = [{ x: -13, w: 7, h: 26 }, { x: -5, w: 7, h: 10 }, { x: 2.5, w: 6.5, h: 34 }, { x: 9.5, w: 6.5, h: 12 }, { x: 17, w: 7.5, h: 22 }].map(d => ({ ...d, d: 9 }));
+  } else {
+    defs = [{ x: -13, w: 6.5, h: 14 }, { x: -5, w: 7, h: 9 }, { x: 2.2, w: 6.5, h: 17 }, { x: 9.5, w: 7, h: 10 }, { x: 16.8, w: 6.5, h: 20 }].map(d => ({ ...d, d: 8 }));
+    if (c.style === 'pastel') defs.forEach(d => d.h *= 0.7);
+  }
+  const nearest = (tx) => defs.reduce((b, d) => Math.abs(d.x - tx) < Math.abs(b.x - tx) ? d : b, defs[0]);
+  const cafeB = nearest(-5), restoB = nearest(9.5);
+  cafeB.shop = 'cafe'; restoB.shop = 'resto';
+  if (c.style === 'tube') { cafeB.h = Math.max(cafeB.h, 9); restoB.h = Math.max(restoB.h, 9); }
+
+  defs.forEach((d, i) => {
+    const base = c.colors[i % c.colors.length];
+    const cols = Math.max(2, Math.round(d.w / (c.style === 'glass' ? 1.4 : 1.6))), floors = Math.max(2, Math.round(d.h / 3.2));
+    const { map, emissiveMap } = facadeTex(P, base, cols, floors, rng);
+    const glassy = c.style === 'glass';
+    const side = new THREE.MeshStandardMaterial({ map, emissiveMap, emissive: night ? '#ffffff' : '#000000', emissiveIntensity: night ? 1.1 : 0, roughness: glassy ? 0.15 : 0.85, metalness: glassy ? 0.55 : 0 });
+    const roof = std(shade(base, -0.15), 0.9);
+    const geo = c.style === 'pastel' ? new RoundedBoxGeometry(d.w, d.h, d.d, 3, 0.6) : new THREE.BoxGeometry(d.w, d.h, d.d);
+    const b = new THREE.Mesh(geo, c.style === 'pastel' ? side : [side, side, roof, roof, side, side]);
+    b.position.set(d.x, d.h / 2, frontZ - d.d / 2); b.castShadow = b.receiveShadow = true; root.add(b);
+    if (c.style !== 'pastel') box(P, d.w + 0.1, 0.4, d.d + 0.1, std(shade(base, -0.2), 0.8), d.x, d.h + 0.2, frontZ - d.d / 2, root, 0);
+    if (c.style === 'brick' && i % 2 === 0) { const t = mesh(cyl(0.7, 0.7, 1.4, 16), std('#5b5550', 0.7, 0.3), d.x + 1.2, d.h + 1.1, frontZ - d.d / 2, root); for (const sx of [-1, 1]) mesh(cyl(.05, .05, .9, 6), std('#333', .6), d.x + 1.2 + sx * .5, d.h + 0.45, frontZ - d.d / 2, root); void t; }
+    if (c.style === 'brick' || c.style === 'tube') {
+      for (let f = 1; f < floors; f++) {
+        if (d.shop && f === 1 && c.style === 'brick') continue;
+        const y = f * (d.h / floors);
+        box(P, d.w * 0.8, 0.12, 0.8, std(c.style === 'tube' ? '#e9e4da' : '#2a2a2a', 0.7, 0.2), d.x, y, frontZ + 0.4, root, 0);
+        box(P, d.w * 0.8, 0.5, 0.03, std(c.style === 'tube' ? '#2f2f2f' : '#1c1c1c', 0.5, 0.5, { transparent: true, opacity: 0.85 }), d.x, y + 0.3, frontZ + 0.78, root, 0);
+        if (c.style === 'tube' && rng() < 0.7) for (let k = 0; k < 3; k++) mesh(new THREE.IcosahedronGeometry(0.22, 0), std(c.tree, 0.8), d.x - d.w * 0.3 + k * d.w * 0.3, y + 0.25, frontZ + 0.55, root);
+      }
+    }
+    if (c.style === 'glass') box(P, d.w * 0.5, 1.2, d.d * 0.5, std('#c9d3dd', 0.3, 0.6), d.x, d.h + 0.6, frontZ - d.d / 2, root, 0);
+    if (d.shop) buildShop(P, root, d.shop, d.x, frontZ, Math.min(d.w - 0.3, 6.2), night, rng);
+  });
+  // Skyline behind
+  const real = !!P.realSurroundings;
+  for (let i = 0; i < (real ? 14 : 9); i++) {
+    const w = 6 + rng() * 6, h = real ? 28 + rng() * 45 : (c.style === 'tube' ? 14 : c.style === 'pastel' ? 14 : 24) + rng() * (c.style === 'glass' ? 40 : 20);
+    const sty = real ? 'glass' : c.style;
+    const base = real ? ['#3a5f86', '#5d7fa3', '#8fa6b8', '#c9cfd4', '#2c4a6b'][i % 5] : shade(c.colors[i % c.colors.length], c.style === 'glass' ? 0 : -0.05);
+    const { map, emissiveMap } = facadeTex(P, base, Math.round(w / 1.6), Math.round(h / 3.2), rng, sty);
+    const m = new THREE.MeshStandardMaterial({ map, emissiveMap, emissive: night ? '#ffffff' : '#000', emissiveIntensity: night ? 0.9 : 0, roughness: sty === 'glass' ? 0.2 : 0.9, metalness: sty === 'glass' ? 0.5 : 0 });
+    const geo = c.style === 'pastel' ? new RoundedBoxGeometry(w, h, w, 3, 0.8) : new THREE.BoxGeometry(w, h, w);
+    const b = new THREE.Mesh(geo, m);
+    if (real) b.position.set(-55 + i * 8.5 + (rng() - .5) * 3, h / 2, streetZ - 26 - rng() * 12);
+    else b.position.set(-30 + i * 7.5 + (rng() - .5) * 2, h / 2, -32 - rng() * 6);
+    root.add(b);
+  }
+  // Trees along the near sidewalk and in the park around the office
+  if (!P.realSurroundings) {
+    for (const x of [-14, -8, 8, 14]) buildTree(P, root, x, streetZ + sw / 2 + 1, rng, 0.9);
+    for (const [x, z] of [[-6, 1], [-5.5, 4], [6.2, 3.5], [7, -1.5]]) buildTree(P, root, x, z, rng, 1.1);
+  }
+  // Street lamps
+  const lampM = std('#2b2d30', 0.5, 0.6);
+  for (const x of [-11, 0, 11]) {
+    const z = streetZ + sw / 2 + 0.4;
+    mesh(cyl(0.05, 0.07, 4.2, 10), lampM, x, 2.1, z, root);
+    box(P, 0.9, 0.06, 0.12, lampM, x, 4.2, z - 0.4, root, 0);
+    mesh(new THREE.SphereGeometry(0.14, 16, 12), std('#fff6dc', 0.3, 0, night ? { emissive: '#ffdc9a', emissiveIntensity: 5 } : {}), x, 4.1, z - 0.8, root, false);
+    if (night && x !== 0) { const l = new THREE.PointLight('#ffd08a', 30, 14, 1.6); l.position.set(x, 4, z - 0.8); root.add(l); lights.push(l); }
+  }
+  if (night) for (const b of [cafeB, restoB]) { const l = new THREE.PointLight('#ffc27a', 22, 9, 1.6); l.position.set(b.x, 2.6, frontZ + 1.6); root.add(l); lights.push(l); }
+}
+
+function addTags(P, root, people) {
+  const statuses = ['working', 'waiting', 'error', 'idle'];
+  const names = ['Lan', 'Minh', 'Hùng', 'Thảo'];
+  const ui = P.ui.light;
+  people.forEach((p, i) => {
+    const st = STATUS[statuses[i]];
+    const text = `${names[i]} · ${st.label}`;
+    const font = P.fonts.body, size = 40;
+    const meas = document.createElement('canvas').getContext('2d'); meas.font = `700 ${size}px "${font}"`;
+    const tw = meas.measureText(text).width, h = 68, w = Math.ceil(tw + 84);
+    const tex = canvasTex(w, h, (g) => {
+      g.fillStyle = ui.panel; g.beginPath(); g.roundRect(2, 2, w - 4, h - 4, Math.min(34, P.ui.radius * 1.6 + 6)); g.fill();
+      g.strokeStyle = st.color; g.lineWidth = 4; g.stroke();
+      g.fillStyle = st.color; g.beginPath(); g.arc(36, h / 2, 12, 0, Math.PI * 2); g.fill();
+      g.fillStyle = ui.ink; g.font = `700 ${size}px "${font}"`; g.textBaseline = 'middle'; g.fillText(text, 60, h / 2 + 2);
+    });
+    tex.wrapS = tex.wrapT = THREE.ClampToEdgeWrapping;
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false, transparent: true }));
+    const H = 0.24; sp.scale.set(H * w / h, H, 1);
+    const top = (P.people.style === 'toon' ? 1.6 : 1.62) + (p.pose === 'idle' ? (P.people.style === 'toon' ? 0.15 : 0.4) : 0);
+    sp.position.set(0, top, 0); sp.renderOrder = 10; p.group.add(sp);
+  });
+}
+
+const camScale = (P, size) => (P.realSurroundings ? Math.max(1.15, Math.max(size.w / 6, size.d / 5) * 0.8) : 1);
+
+function buildScene(P, night, size = { w: 6, d: 5 }) {
+  const k = camScale(P, size);
+  const scene = new THREE.Scene();
+  const L = P.light;
+  const rng = rngFrom((P.id === 'f' ? 'e' : P.id).charCodeAt(0) * 977);
+  const sky = night ? L.nightSky : L.sky;
+  scene.background = C(sky);
+  scene.fog = P.realSurroundings ? new THREE.Fog(sky, 30 + 15 * k, 150 + 30 * k) : new THREE.Fog(sky, 28, 85);
+  const lights = [];
+  const hemi = new THREE.HemisphereLight(night ? '#6c7da8' : L.sky, night ? '#1a1a22' : L.hemiGround, night ? 0.25 : L.hemiI); scene.add(hemi);
+  const sun = new THREE.DirectionalLight(night ? '#9fb3e0' : L.sun, night ? 0.35 : L.sunI);
+  const sb = Math.max(14, Math.max(size.w, size.d) * 0.75 + 6);
+  sun.position.set((night ? -6 : 9) * sb / 14, 14 * sb / 14, (night ? 4 : 7) * sb / 14); sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left: -sb, right: sb, top: sb, bottom: -sb, near: 1, far: 50 * sb / 14 });
+  sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.02; sun.shadow.radius = P.rounded ? 8 : 4;
+  scene.add(sun);
+  const root = new THREE.Group(); scene.add(root);
+  buildCity(P, root, night, rng, lights, size);
+  const people = buildOffice(P, root, night, rng, lights, size);
+  addTags(P, root, people);
+  const movers = P.realSurroundings ? buildParkLife(P, root, night, rng, lights, size) : [];
+  return { scene, people, movers, envIntensity: night ? L.env * 0.35 : L.env };
+}
+
+/* =====================================================================
+   Viewers: one renderer per concept card; only visible ones animate.
+   ===================================================================== */
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const coarse = matchMedia('(pointer: coarse)').matches;
+const viewers = [];
+let night = false;
+
+function makeViewer(P, stage) {
+  const canvas = stage.querySelector('canvas');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: false });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = P.rounded ? THREE.VSMShadowMap : THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = P.light.exposure;
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  const envTex = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  const camera = new THREE.PerspectiveCamera(36, 16 / 10, 0.1, 700);
+  const target = new THREE.Vector3(-0.4, 1.0, -2.6);
+  const camOffset = new THREE.Vector3(7.8, 4.4, 11.2);
+  camera.position.copy(target).add(camOffset.clone().multiplyScalar(camScale(P, { w: 6, d: 5 })));
+  const controls = new OrbitControls(camera, canvas);
+  controls.target.copy(target); controls.enableDamping = true; controls.enablePan = false;
+  controls.minDistance = 7; controls.maxDistance = 20; controls.minPolarAngle = 0.55; controls.maxPolarAngle = 1.38;
+  const az = Math.atan2(camera.position.x - target.x, camera.position.z - target.z);
+  controls.minAzimuthAngle = az - 0.95; controls.maxAzimuthAngle = az + 0.75;
+  controls.enabled = !coarse;
+  controls.update();
+  const v = { P, stage, renderer, camera, controls, envTex, visible: false, t: 0, scene: null, people: [], movers: [], size: { w: 6, d: 5 } };
+  v.frame = () => {
+    const k = camScale(P, v.size);
+    camera.position.copy(target).add(camOffset.clone().multiplyScalar(k));
+    controls.maxDistance = 20 * k * 1.4; controls.update();
+  };
+  v.build = () => {
+    if (v.scene) v.scene.traverse((o) => { if (o.geometry) o.geometry.dispose(); const ms = Array.isArray(o.material) ? o.material : o.material ? [o.material] : []; ms.forEach((m) => { for (const k in m) if (m[k] && m[k].isTexture) m[k].dispose(); m.dispose(); }); });
+    const built = buildScene(P, night, v.size);
+    built.scene.environment = envTex; built.scene.environmentIntensity = built.envIntensity;
+    v.scene = built.scene; v.people = built.people; v.movers = built.movers;
+    renderer.toneMappingExposure = P.light.exposure * (night ? 1.1 : 1);
+    v.render();
+  };
+  v.resize = () => {
+    const w = stage.clientWidth, h = stage.clientHeight; if (!w || !h) return;
+    renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); v.render();
+  };
+  v.render = () => { if (v.scene) renderer.render(v.scene, camera); };
+  v.animate = (dt) => {
+    v.t += dt; const t = v.t;
+    for (const p of v.people) {
+      if (p.pose === 'working') { p.armL.rotation.x = -1.15 + Math.sin(t * 14) * 0.05; p.armR.rotation.x = -1.15 + Math.sin(t * 14 + 1.7) * 0.05; }
+      if (p.pose === 'waiting') { p.armR.rotation.z = 2.75 + Math.sin(t * 5) * 0.18; }
+      if (p.pose === 'error') { p.head.rotation.x = 0.45 + Math.sin(t * 1.2) * 0.06; }
+      if (p.pose === 'idle') { p.torso.rotation.z = Math.sin(t * 0.9) * 0.03; p.armR.rotation.x = -1.3 - Math.max(0, Math.sin(t * 0.7)) * 0.5; }
+    }
+    for (const m of v.movers) m(dt, t);
+  };
+  new ResizeObserver(v.resize).observe(stage);
+  new IntersectionObserver(([e]) => { v.visible = e.isIntersecting; }, { rootMargin: '100px' }).observe(stage);
+  canvas.addEventListener('pointerdown', () => stage.querySelector('.stage-hint')?.remove(), { once: true });
+  return v;
+}
+
+let last = performance.now();
+function loop(now) {
+  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  for (const v of viewers) if (v.visible && v.scene) { if (!reduceMotion) v.animate(dt); v.controls.update(); v.render(); }
+  requestAnimationFrame(loop);
+}
+
+/* =====================================================================
+   Page: cards, live UI mocks, decision form
+   ===================================================================== */
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function mockVars(P) {
+  const u = night ? P.ui.dark : P.ui.light;
+  return `--m-bg:${u.bg};--m-panel:${u.panel};--m-ink:${u.ink};--m-muted:${u.muted};--m-accent:${u.accent};--m-accent-ink:${u.accentInk};--m-line:${u.line};--m-chip:${u.chip};--m-user:${u.user};--m-agent:${u.agent};--r:${P.ui.radius}px;`;
+}
+function conceptVars(P) {
+  return `--c-display:"${P.fonts.display}", system-ui, sans-serif;--c-body:"${P.fonts.body}", system-ui, sans-serif;--c-dw:${P.fonts.dw};--c-track:${P.fonts.track};--c-swatch:${P.swatch};`;
+}
+function cardHTML(P) {
+  const d = P.desc;
+  return `
+  <section class="concept" id="concept-${P.id}" style='${conceptVars(P)}' aria-labelledby="h-${P.id}">
+    <div class="c-head">
+      <span class="c-letter" aria-hidden="true">${P.letter}</span>
+      <div class="c-title"><h2 id="h-${P.id}">${esc(P.name)}</h2><p>${esc(P.tagline)}</p></div>
+    </div>
+    <div class="c-body">
+      <div class="stage"><div class="stage-load">Đang dựng cảnh…</div><canvas aria-label="Cảnh 3D concept ${P.letter}: văn phòng 4 nhân viên và con phố có quán cà phê, quán ăn"></canvas>${coarse ? '' : '<div class="stage-hint">Kéo để xoay · cuộn để phóng to</div>'}${P.realSurroundings ? `<label class="size-pick" for="size-${P.id}">Văn phòng <select id="size-${P.id}"><option value="6x5">6 × 5 m (mẫu)</option><option value="16x12">16 × 12 m (mặc định)</option><option value="28x20">28 × 20 m</option><option value="40x40">40 × 40 m (tối đa)</option></select></label>` : ''}</div>
+      <div class="mock" style="${mockVars(P)}">
+        <div class="m-card">
+          <div class="m-chat-h"><div class="m-ava">L</div><div><div class="m-name">Lan</div><div class="m-sub">Dự án Báo cáo doanh thu</div></div><span class="m-chip"><i style="background:${STATUS.working.color}"></i>Đang làm việc</span></div>
+          <div class="m-msgs">
+            <div class="m-msg user">Thêm bộ lọc theo ngày cho báo cáo doanh thu nhé.</div>
+            <div class="m-tool">▸ Đã sửa <b>reports/filters.ts</b> · chạy npm test: 42 đạt</div>
+            <div class="m-msg agent">Đã thêm bộ lọc ở <code>reports/filters.ts</code> và cập nhật 3 test. Toàn bộ bộ test đều qua.</div>
+          </div>
+          <div class="m-comp"><div class="m-input">Nhắn cho Lan…</div><span class="m-model">3.8 Flash ▾</span><span class="m-send">Gửi</span></div>
+        </div>
+        <div class="m-card m-quota">
+          <h4>Hạn mức model</h4>
+          <div class="m-q"><span>3.8 Flash</span><span>72%</span><div class="m-track"><b style="width:72%"></b></div></div>
+          <div class="m-q"><span>4 Argon</span><span>18% · sắp hết</span><div class="m-track"><b class="low" style="width:18%"></b></div></div>
+        </div>
+        <div class="m-tags">
+          ${['working', 'waiting', 'error', 'idle'].map((k, i) => `<span class="m-tag"><i style="background:${STATUS[k].color}"></i>${['Lan', 'Minh', 'Hùng', 'Thảo'][i]} · ${STATUS[k].label}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+    <dl class="spec">
+      <div><dt>Vật liệu</dt><dd>${esc(d.materials)}</dd></div>
+      <div><dt>Ánh sáng</dt><dd>${esc(d.light)}</dd></div>
+      <div><dt>Nhân vật</dt><dd>${esc(d.chars)}</dd></div>
+      <div><dt>Thành phố</dt><dd>${esc(d.city)}</dd></div>
+      <div><dt>Bảng màu</dt><dd><div class="swatches">${d.palette.map((c) => `<span style="background:${c}" title="${c}"></span>`).join('')}</div></dd></div>
+      <div><dt>Font</dt><dd class="specimen"><span class="sd">Đặng Thị Hương</span><span class="sb">Ưng ý, nhân viên đã sẵn sàng.</span><small>${esc(P.fonts.display)} / ${esc(P.fonts.body)}</small></dd></div>
+    </dl>
+  </section>`;
+}
+
+function setNight(n) {
+  night = n;
+  document.getElementById('btn-day').setAttribute('aria-pressed', String(!n));
+  document.getElementById('btn-night').setAttribute('aria-pressed', String(n));
+  for (const v of viewers) { v.stage.parentElement.querySelector('.mock').setAttribute('style', mockVars(v.P)); v.build(); }
+}
+
+function setupDecision() {
+  const picks = document.getElementById('picks'), fb = document.getElementById('feedback'), out = document.getElementById('out');
+  PRESETS.forEach((P) => {
+    const l = document.createElement('label');
+    l.innerHTML = `<input type="radio" name="concept" id="pick-${P.id}" value="${P.letter}"> <strong>${P.letter}</strong> ${esc(P.name)}`;
+    picks.appendChild(l);
+  });
+  const text = () => {
+    const sel = picks.querySelector('input:checked');
+    if (!sel) return '';
+    const P = PRESETS.find((p) => p.letter === sel.value);
+    const note = fb.value.trim();
+    return `Tôi chọn concept ${P.letter} (${P.name}).` + (note ? `\nGóp ý: ${note}` : '');
+  };
+  const refresh = () => { out.textContent = text() || 'Chưa chọn concept nào.'; };
+  picks.addEventListener('change', refresh); fb.addEventListener('input', refresh);
+  document.getElementById('copy').addEventListener('click', () => {
+    const t = text(), st = document.getElementById('copy-status');
+    if (!t) { st.textContent = 'Hãy chọn một concept trước.'; return; }
+    navigator.clipboard.writeText(t).then(() => { st.textContent = 'Đã sao chép. Dán vào chat với Claude.'; })
+      .catch(() => { const r = document.createRange(); r.selectNodeContents(out); const s = getSelection(); s.removeAllRanges(); s.addRange(r); st.textContent = 'Không sao chép tự động được. Đoạn bên dưới đã được bôi đen, hãy nhấn ⌘C.'; });
+  });
+}
+
+async function main() {
+  const jump = document.getElementById('jump');
+  jump.innerHTML = PRESETS.map((P) => `<a href="#concept-${P.id}"><span class="dot" style="background:${P.swatch}">${P.letter}</span>${esc(P.name)}</a>`).join('') + `<a href="#chon">Chọn</a>`;
+  document.getElementById('concepts').innerHTML = PRESETS.map(cardHTML).join('');
+  setupDecision();
+  document.getElementById('btn-day').addEventListener('click', () => setNight(false));
+  document.getElementById('btn-night').addEventListener('click', () => setNight(true));
+  // Canvas signs and name tags need the real fonts before they are drawn.
+  const fams = [...new Set(PRESETS.flatMap((P) => [`${P.fonts.dw} 64px "${P.fonts.display}"`, `700 40px "${P.fonts.body}"`]))];
+  await Promise.race([Promise.all(fams.map((f) => document.fonts.load(f, 'Đặng Thị Hương'))), new Promise((r) => setTimeout(r, 4000))]);
+  for (const P of PRESETS) {
+    const stage = document.querySelector(`#concept-${P.id} .stage`);
+    try {
+      const v = makeViewer(P, stage); viewers.push(v); v.resize(); v.build();
+      const sel = document.getElementById(`size-${P.id}`);
+      if (sel) sel.addEventListener('change', () => { const [w, d] = sel.value.split('x').map(Number); v.size = { w, d }; v.frame(); v.build(); });
+      stage.querySelector('.stage-load')?.remove();
+    } catch (err) {
+      stage.querySelector('.stage-load').textContent = 'Trình duyệt không dựng được cảnh 3D (cần WebGL).';
+      console.error(err);
+    }
+  }
+  requestAnimationFrame(loop);
+}
+main();
+</script>
