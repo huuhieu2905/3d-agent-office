@@ -1,5 +1,5 @@
 import { PerformanceMonitor } from '@react-three/drei';
-import { useThree } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { CONCEPT } from '../../theme/concept';
@@ -33,6 +33,7 @@ export function PerfManager({ children }: { children: React.ReactNode }) {
       }}
     >
       <RenderQuality />
+      {throttled() && <Throttle />}
       {children}
     </PerformanceMonitor>
   );
@@ -64,5 +65,20 @@ function RenderQuality() {
       else if (m) m.needsUpdate = true;
     });
   }, [gl, scene, detail]);
+  return null;
+}
+
+/** Dev only: `?throttle=1` makes every frame slow, to try the automatic detail lowering (002 T095). */
+function throttled(): boolean {
+  return !!import.meta.env?.DEV && typeof location !== 'undefined' && new URLSearchParams(location.search).get('throttle') === '1';
+}
+
+function Throttle() {
+  useFrame(() => {
+    const until = performance.now() + 25; // ≈ 35 FPS at most
+    while (performance.now() < until) {
+      /* busy-wait on purpose */
+    }
+  });
   return null;
 }

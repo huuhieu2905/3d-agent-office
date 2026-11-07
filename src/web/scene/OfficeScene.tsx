@@ -22,7 +22,7 @@ import { useSettings } from '../state/settings';
 import { useWeather } from '../state/weather';
 import { LIGHT_FACTOR } from './weather/Weather';
 import { FirstPersonCamera } from './cameras/FirstPerson';
-import { TestHooks } from './interaction/TestHooks';
+import { TestHooks, testHooksEnabled } from './interaction/TestHooks';
 import { Crowd } from './crowd/crowd';
 import { DragLayer, beginDrag } from './interaction/DragLayer';
 
@@ -123,7 +123,7 @@ export function OfficeScene({
         {!benchMode && !build.active && <QuotaScreen layout={layout} />}
         {build.active && <BuildGizmo layout={layout} />}
         {build.active && <DragLayer layout={layout} currentDesks={currentDesks} />}
-        <TestHooks layout={layout} />
+        {testHooksEnabled() && <TestHooks layout={layout} />}
       </Office>
     </>
   );

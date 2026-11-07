@@ -51,6 +51,7 @@ export const Surroundings = memo(function Surroundings({
   const rainy = condition === 'rain' || condition === 'storm';
   const [ready, setReady] = useState(false);
   // Bench only (/bench?off=trees,traffic,people,city,kiosk): switch parts off to find what costs frames.
+  // Kept on purpose (002 T097): it has no effect outside /bench and is how T081/T090 profiled the city.
   const off = useMemo(() => (typeof location !== 'undefined' && location.pathname.startsWith('/bench') ? new Set((new URLSearchParams(location.search).get('off') ?? '').split(',')) : new Set<string>()), []);
   // Defer the heavy background one frame so the office appears first.
   useEffect(() => {

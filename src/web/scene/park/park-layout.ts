@@ -8,9 +8,10 @@ import { PARK_RADIUS, ROAD_RADIUS, rng } from './detail';
 
 /** Open lawn (m) between the office edge and the nearest tree. */
 export const CLEAR = 8;
-export const PATH_WIDTH = 1.6;
+/** Wide enough for four walking/jogging lanes 0.6 m apart (park/walkers.ts). */
+export const PATH_WIDTH = 2.4;
 /** Path centre-line beyond the office corners (m); keeps ≥ 5 m of lawn up to the path's inner edge. */
-const PATH_OFFSET = 6;
+const PATH_OFFSET = 6.4;
 
 export interface ParkFrame {
   /** Half size of the office (m). */

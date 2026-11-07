@@ -122,6 +122,13 @@ với 20 agent; separation + nhường đường + giải ràng buộc là đủ
 
 ---
 
+> **Cập nhật (2026-11-07, T096)**: người đi bộ và chạy bộ ngoài **công viên** không dùng hệ thống crowd của
+> văn phòng. Họ đi trên một vòng cố định, nên chỉ cần mỗi chiều đi và mỗi chiều chạy có làn riêng, một tốc độ
+> và cách đều nhau là không bao giờ chồng lên nhau (`src/web/scene/park/walkers.ts`). Bốn làn cách nhau
+> 0,6 m, lớn hơn bề ngang hai người (2 × 0,28 m), nên lối đi được nới lên 2,4 m. Kiểm chứng:
+> `tests/unit/walkers.test.ts` mô phỏng 5 phút ở 3 kích thước văn phòng. Crowd vẫn dùng cho nhân viên
+> trong văn phòng, nơi đường đi thay đổi theo bố cục.
+
 ## R2-05 · Đổi kích thước văn phòng (US4)
 
 **Quyết định**:
@@ -219,6 +226,19 @@ bóng thành phố) chỉ bật ở mức Cao.
 thay đổi nên không nướng trước được).
 
 ---
+
+> **Cập nhật sau khi thực hiện (2026-11-07, T094)**: những gì thực tế đã làm khác với quyết định trên.
+> - **Ánh sáng môi trường**: dùng `RoomEnvironment` của three.js, tạo PMREM một lần lúc khởi động
+>   (`src/web/scene/OfficeMood.tsx`), thay cho HDRI của Poly Haven. Lý do: máy chủ tải của Poly Haven trả lỗi
+>   521 lúc thực hiện, và cách này không cần thêm file tài nguyên nào (không phải ghi giấy phép, không tăng
+>   dung lượng cài đặt).
+> - **SSAO ở mức Cao**: không làm, vì app chưa có pipeline hậu kỳ. Thay vào đó mỗi mức chi tiết dùng một kiểu
+>   bóng đổ (`src/web/scene/perf/PerfManager.tsx`): Thấp `BasicShadowMap`, Vừa `PCFShadowMap`, Cao
+>   `VSMShadowMap` (bóng mềm như bản xem trước concept).
+> - **Nhân vật, nội thất**: dựng bằng hình khối với hoạt ảnh thủ tục (`character.ts`, `furniture/`), không tải
+>   bộ CC0. Đúng với concept E+ đã duyệt và không thêm file tài nguyên.
+> - **Ngân sách**: tổng tài nguyên tải thêm chỉ là font (khoảng 155 kB woff2), xa dưới mức 25 MB. Đo
+>   `bench:fps` mức Vừa với cảnh đầy đủ: khoảng 120 FPS.
 
 ## R2-08 · Font chữ (US6)
 

@@ -93,7 +93,9 @@ Tự động: `tests/e2e/build-drag.spec.ts` (viết trước, chạy đỏ trê
 3. Quan sát 30 giây ban ngày: thấy người đi bộ, chạy bộ hai chiều, nhóm tập thể dục, người ngồi ghế đá;
    xe hơi, xe máy, xe buýt chạy hai chiều không chồng nhau; ban đêm xe có đèn (SC-013). Cây có tán nhiều tầng,
    có cây ra hoa và hàng cây ven đường.
-4. Bật tự động giảm chi tiết, ép FPS thấp (`?throttle=1`) → thành phố giảm chi tiết trước văn phòng.
+4. Bật tự động giảm chi tiết, chạy `npm run dev` và mở với `?throttle=1` (chỉ có tác dụng ở chế độ dev) để ép
+   FPS thấp → thành phố giảm chi tiết trước văn phòng (mức Thấp bỏ vòng cao ốc xa). Để tìm phần tốn khung
+   hình: `npm run bench:fps -- --off trees,traffic,people,city,kiosk`.
 
 ## Cổng chất lượng (Constitution)
 

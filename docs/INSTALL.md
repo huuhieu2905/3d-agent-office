@@ -92,6 +92,7 @@ rm -rf agent-office "$HOME/Library/Application Support/agent-office"
 | Ngày | Máy | Kết quả |
 |---|---|---|
 | 2026-11-06 | MacBook Pro M1 Pro, macOS, Antigravity App 2.24.0 | Cài Node 22 qua `fnm`: khoảng 1 phút. `git clone` + `./scripts/install.sh` + `npm start` từ bản clone sạch: **6 giây** (npm cache có sẵn). Kết nối App thành công. |
+| 2026-11-07 | MacBook Pro M1 Pro, macOS, Node 26.13 (Homebrew), Antigravity App 2.24.0 | Bản 002 (concept E+, có thêm gói font): `git clone` + `./scripts/install.sh` với **npm cache trống** (giả lập máy mới, tải khoảng 88 MB): **11 giây**. `npm start`: in `Antigravity App 2.24.0: connected`. Lần đầu thử bị lỗi build vì `.gitignore` đã bỏ qua `src/web/ui/build/`; đã sửa trước khi đo. |
 
-> Chưa kiểm chứng: một người dùng mới trên **một máy Mac khác** chưa có cache npm (SC-005: ≤ 15 phút). Lần cài
-> đầu tiên tải khoảng 300 MB thư viện, nên thời gian phụ thuộc tốc độ mạng.
+> Chưa kiểm chứng trên **một máy Mac khác**. Lần đo ngày 2026-11-07 dùng npm cache trống trên cùng máy để giả lập
+> máy mới; thời gian thực tế phụ thuộc tốc độ mạng (khoảng 88 MB tải về, khoảng 370 MB sau khi giải nén).

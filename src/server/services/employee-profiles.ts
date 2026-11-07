@@ -16,6 +16,8 @@ export const APPEARANCES = [
 ] as const;
 
 const RETENTION_MS = 30 * 24 * 3600_000;
+/** Polls in a row a conversation must be absent before its remembered model is forgotten (FR-005). */
+export const MISSING_POLLS = 3;
 
 export function appearanceFor(conversationId: string): string {
   let h = 2166136261;
@@ -27,6 +29,8 @@ export class EmployeeProfiles {
   private store: JsonStore<EmployeeProfilesFile>;
   private data: EmployeeProfilesFile | null = null;
   private dirty = false;
+  /** Consecutive successful polls each conversation with a remembered model was missing from. */
+  private missing = new Map<string, number>();
 
   constructor(dataDir: string) {
     this.store = new JsonStore<EmployeeProfilesFile>(dataDir, {
@@ -93,6 +97,33 @@ export class EmployeeProfiles {
     for (const [id, deskId] of Object.entries(seating)) (await this.get(id)).deskId = deskId;
     this.dirty = true;
     await this.flush();
+  }
+
+  /**
+   * 002 T093 / FR-005: forget the model chosen for a conversation once the App no longer lists it —
+   * after MISSING_POLLS successful polls in a row without it. An empty list is treated as an App hiccup,
+   * not as "every conversation was deleted". The rest of the profile still follows the 30-day rule.
+   */
+  async forgetMissingModels(presentIds: string[]): Promise<void> {
+    if (presentIds.length === 0) return;
+    const data = await this.load();
+    const present = new Set(presentIds);
+    for (const [id, p] of Object.entries(data.profiles)) {
+      if (!p.preferredModel) {
+        this.missing.delete(id);
+        continue;
+      }
+      if (present.has(id)) {
+        this.missing.delete(id);
+        continue;
+      }
+      const n = (this.missing.get(id) ?? 0) + 1;
+      if (n >= MISSING_POLLS) {
+        p.preferredModel = null;
+        this.missing.delete(id);
+        this.dirty = true;
+      } else this.missing.set(id, n);
+    }
   }
 
   /** Mark conversations as seen and drop profiles unseen for 30 days. */

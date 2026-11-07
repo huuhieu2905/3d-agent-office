@@ -94,6 +94,8 @@ export class EmployeesService {
     try {
       const list = await this.o.adapter.listConversations();
       const now = this.o.now?.() ?? Date.now();
+      // FR-005: drop remembered models of conversations the App no longer has (flushed in rebuild()).
+      await this.o.profiles.forgetMissingModels(list.map((c) => c.id));
       this.conversations = new Map(list.map((c) => [c.id, c]));
 
       // Fetch the last step only where something may have changed.

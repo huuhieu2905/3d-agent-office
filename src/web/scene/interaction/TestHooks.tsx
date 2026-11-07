@@ -6,6 +6,9 @@ import { useBuild } from '../../state/build';
 
 // e2e support (002 T029): project a floor-space point (metres from the office's north-west corner) to
 // page coordinates, so tests can press and drag on real objects in the 3D canvas. Read-only.
+// 002 T097: only installed in dev or when the browser is automated (Playwright sets navigator.webdriver),
+// never for a normal user of the production build.
+export const testHooksEnabled = (): boolean => !!import.meta.env?.DEV || (typeof navigator !== 'undefined' && navigator.webdriver === true);
 
 declare global {
   interface Window {
