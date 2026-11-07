@@ -10,6 +10,7 @@ import { ChatPanel } from './ui/chat/ChatPanel';
 import { HireButton, HireDialog } from './ui/chat/HireDialog';
 import { useUi } from './state/ui';
 import { QuotaButton, QuotaPanel } from './ui/quota/QuotaPanel';
+import { ProjectButton } from './ui/projects/ProjectDialog';
 
 function ConnectionBanner() {
   const { app, serverOnline, warnings, dismissWarning } = useConnection();
@@ -56,6 +57,7 @@ export function App() {
       <ConnectionBanner />
       <div className="hud-top-right">
         <QuotaButton />
+        <ProjectButton />
         <HireButton />
       </div>
       <ChatPanel />

@@ -7,6 +7,7 @@ import { healthRoutes } from './health';
 import { employeeRoutes } from './employees';
 import { conversationRoutes } from './conversations';
 import { commandRoutes } from './commands';
+import { projectRoutes } from './projects';
 
 // Every route plugin MUST be registered here (tasks.md conventions).
 
@@ -22,4 +23,5 @@ export async function registerRoutes(app: FastifyInstance, deps: RouteDeps): Pro
   await app.register(employeeRoutes, deps);
   await app.register(conversationRoutes, deps);
   await app.register(commandRoutes, deps);
+  await app.register(projectRoutes, deps);
 }

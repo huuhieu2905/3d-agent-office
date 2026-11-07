@@ -8,6 +8,7 @@ import { LayoutStore } from './layout-store';
 import { UsageService } from './usage';
 import { MentionService } from './mentions';
 import { QuotaService } from './quota';
+import { FolderService } from './folders';
 
 // Registry of long-running server services. Each user story adds its service here.
 
@@ -17,6 +18,8 @@ export interface ServiceDeps {
   log: Logger;
   dataDir?: string;
   pollIntervalMs?: number;
+  /** Root for the project folder browser (defaults to the user's home). */
+  homeDir?: string;
 }
 
 export interface Services {
@@ -27,6 +30,7 @@ export interface Services {
   usage: UsageService;
   mentions: MentionService;
   quota: QuotaService;
+  folders: FolderService;
   start(): Promise<void>;
   stop(): Promise<void>;
 }
@@ -58,6 +62,7 @@ export function createServices(deps: ServiceDeps): Services {
     usage,
     mentions,
     quota,
+    folders: new FolderService(deps.homeDir),
     profiles,
     layout,
     employees,

@@ -5,6 +5,7 @@ import { useEmployees } from '../state/employees';
 import { useUi } from '../state/ui';
 import { useConnection } from '../state/connection';
 import { useShallow } from 'zustand/react/shallow';
+import { PROJECTS_CHANGED } from './projects/ProjectDialog';
 
 // T056 / FR-013: colour legend per project; click to highlight that project's employees.
 
@@ -18,7 +19,10 @@ export function ProjectLegend() {
 
   useEffect(() => {
     if (!connected) return;
-    api<Project[]>('/api/projects').then(setProjects).catch(() => undefined);
+    const load = () => api<Project[]>('/api/projects').then(setProjects).catch(() => undefined);
+    void load();
+    window.addEventListener(PROJECTS_CHANGED, load);
+    return () => window.removeEventListener(PROJECTS_CHANGED, load);
   }, [connected]);
 
   const shown = projects.filter((p) => used.has(p.id));

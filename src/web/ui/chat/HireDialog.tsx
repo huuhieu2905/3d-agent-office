@@ -3,8 +3,11 @@ import type { Project } from '@shared/domain';
 import { api } from '../../api/client';
 import { useUi } from '../../state/ui';
 import { ModelPicker } from './ModelPicker';
+import { PROJECTS_CHANGED, ProjectDialog } from '../projects/ProjectDialog';
 
-// T072 / FR-026: "Tuyển nhân viên mới" — first request, model and project → new conversation at a desk.
+// T072 + T082 / FR-026, FR-032: hire = first request + model + a REQUIRED project (existing or newly created).
+
+const NEW = '__new__';
 
 export function HireButton() {
   const [open, setOpen] = useState(false);
@@ -20,25 +23,23 @@ export function HireButton() {
 
 export function HireDialog({ onClose, deskId }: { onClose(): void; deskId?: string }) {
   const [projects, setProjects] = useState<Project[]>([]);
-  const [projectId, setProjectId] = useState('default-cli-project');
+  const [projectId, setProjectId] = useState('');
+  const [creatingProject, setCreatingProject] = useState(false);
   const [model, setModel] = useState<string | null>(null);
   const [text, setText] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const openConversation = useUi((s) => s.openConversation);
 
-  useEffect(() => {
+  function load() {
     api<Project[]>('/api/projects')
-      .then((p) => {
-        const usable = p.filter((x) => x.id !== 'outside-of-project');
-        setProjects(usable);
-        if (!usable.some((x) => x.id === 'default-cli-project') && usable[0]) setProjectId(usable[0].id);
-      })
+      .then((p) => setProjects(p.filter((x) => x.id !== 'outside-of-project')))
       .catch(() => undefined);
-  }, []);
+  }
+  useEffect(load, []);
 
   async function submit() {
-    if (!text.trim() || !model) return;
+    if (!text.trim() || !model || !projectId) return;
     setBusy(true);
     setError(null);
     try {
@@ -60,18 +61,30 @@ export function HireDialog({ onClose, deskId }: { onClose(): void; deskId?: stri
       <div className="modal panel" role="dialog" aria-label="Tuyển nhân viên mới" onClick={(e) => e.stopPropagation()}>
         <h3>Tuyển nhân viên mới</h3>
         <label>
-          Việc đầu tiên giao cho nhân viên
-          <textarea rows={4} value={text} onChange={(e) => setText(e.target.value)} autoFocus />
-        </label>
-        <label>
-          Dự án
-          <select value={projectId} onChange={(e) => setProjectId(e.target.value)}>
+          Dự án <span className="muted small">(bắt buộc)</span>
+          <select
+            aria-label="Dự án"
+            value={projectId}
+            onChange={(e) => {
+              if (e.target.value === NEW) setCreatingProject(true);
+              else setProjectId(e.target.value);
+            }}
+          >
+            <option value="" disabled>
+              — Chọn dự án —
+            </option>
             {projects.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.name}
+                {p.folderUri ? ` — ${decodeURIComponent(p.folderUri.replace('file://', '')).split('/').slice(-2).join('/')}` : ''}
               </option>
             ))}
+            <option value={NEW}>+ Tạo project mới…</option>
           </select>
+        </label>
+        <label>
+          Việc đầu tiên giao cho nhân viên
+          <textarea rows={4} value={text} onChange={(e) => setText(e.target.value)} autoFocus />
         </label>
         <label>
           Model
@@ -82,11 +95,23 @@ export function HireDialog({ onClose, deskId }: { onClose(): void; deskId?: stri
           <button className="btn" onClick={onClose}>
             Huỷ
           </button>
-          <button className="btn btn-primary" disabled={busy || !text.trim() || !model} onClick={() => void submit()}>
+          <button className="btn btn-primary" disabled={busy || !text.trim() || !model || !projectId} onClick={() => void submit()}>
             {busy ? 'Đang tuyển…' : 'Tuyển'}
           </button>
         </div>
       </div>
+      {creatingProject && (
+        <div onClick={(e) => e.stopPropagation()}>
+          <ProjectDialog
+            onClose={() => setCreatingProject(false)}
+            onCreated={(p) => {
+              setProjects((list) => [...list, p]);
+              setProjectId(p.id);
+              window.dispatchEvent(new CustomEvent(PROJECTS_CHANGED));
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }

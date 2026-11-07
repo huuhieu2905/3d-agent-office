@@ -135,6 +135,8 @@ export interface Project {
   id: string;
   name: string;
   color: string;
+  /** Folder the project is bound to (workspace of its conversations), if any. */
+  folderUri: string | null;
 }
 
 // ---- Office layout (system data, persisted) ------------------------------

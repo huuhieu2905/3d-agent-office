@@ -10,6 +10,7 @@ export class MockApp {
   private generation = 1;
   runningAll = false;
   waiting = false;
+  created: { id: string; name: string; projectResources: unknown }[] = [];
 
   constructor() {
     const t = this.transport;
@@ -23,6 +24,20 @@ export class MockApp {
       this.sent.push({ method: 'StartCascade', body });
       return { cascadeId: '00000000-0000-4000-8000-0000000000e2' };
     };
+    t.handlers.CreateProject = (body) => {
+      const p = (body as { project: MockApp['created'][number] }).project;
+      this.sent.push({ method: 'CreateProject', body });
+      this.created.push(p);
+      return {};
+    };
+    t.handlers.ReadProjects = (body) => {
+      const ids = (body as { ids: string[] }).ids;
+      const base = fixture<{ projects: { id: string }[] }>('ReadProjects').projects;
+      return { projects: [...base, ...this.created].filter((p) => ids.includes(p.id)) };
+    };
+    t.handlers.ListProjects = () => ({
+      projectIds: [...fixture<{ projectIds: string[] }>('ListProjects').projectIds, ...this.created.map((p) => p.id)],
+    });
     t.handlers.GetCascadeTrajectorySteps = () => fixture(this.waiting ? 'waiting-steps' : 'GetCascadeTrajectorySteps');
     t.handlers.HandleCascadeUserInteraction = (body) => {
       this.sent.push({ method: 'HandleCascadeUserInteraction', body });

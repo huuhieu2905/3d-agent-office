@@ -23,6 +23,8 @@ export function mapProjects(response: unknown): Project[] {
     .map((p) => {
       const id = p.id as string;
       const name = typeof p.name === 'string' && p.name ? p.name : (FRIENDLY[id] ?? id);
-      return { id, name, color: colorFor(id) };
+      const res = ((p.projectResources as Raw | undefined)?.resources ?? []) as Raw[];
+      const folder = Array.isArray(res) ? res.find((r) => typeof r.folderUri === 'string')?.folderUri : undefined;
+      return { id, name, color: colorFor(id), folderUri: typeof folder === 'string' ? folder : null };
     });
 }

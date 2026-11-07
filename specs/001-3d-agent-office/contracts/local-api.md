@@ -24,7 +24,7 @@ Server chỉ lắng nghe `http://127.0.0.1:<PORT>` (mặc định `4317`, đổi
 | GET | `/api/employees` | — | `Employee[]` | đã gộp hồ sơ, tối đa 20 người hiển thị cùng `overflow: number` |
 | GET | `/api/conversations/:id/steps?from=` | — | `Step[]` | |
 | POST | `/api/conversations/:id/messages` | `UserInput` | `202 {}` | FR-022 |
-| POST | `/api/conversations` | `UserInput & { projectId?, deskId? }` | `201 { conversationId }` | FR-026 |
+| POST | `/api/conversations` | `UserInput & { projectId, deskId? }` | `201 { conversationId }` | FR-026, FR-032 (`projectId` bắt buộc) |
 | POST | `/api/conversations/:id/cancel` | — | `202 {}` | FR-025 |
 | POST | `/api/conversations/:id/permissions/:requestId` | `{ decision: 'allow' \| 'deny' }` | `202 {}` | FR-029 |
 | GET | `/api/commands?model=` | — | `Command[]` | FR-027 |

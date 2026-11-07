@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import type {
   Command,
   ConnectionState,
@@ -203,6 +204,14 @@ function createInternal(deps: AdapterDeps): { adapter: AppAdapter; rpc: RpcClien
       if (ids.length === 0) return [];
       return mapProjects(await call('ReadProjects', { ids }));
     },
+    async createProject({ name, folderUri }: { name: string; folderUri: string }): Promise<Project> {
+      // Spike 2026-11-07: the App only creates the project when the client supplies the id.
+      const id = randomUUID();
+      await call('CreateProject', { project: { id, name, projectResources: { resources: [{ folderUri }] } } });
+      const created = mapProjects(await call('ReadProjects', { ids: [id] }))[0];
+      if (!created) throw new RpcError('protocol', 'CreateProject did not create the project');
+      return created;
+    },
     async sendMessage(conversationId: string, input: UserInput): Promise<void> {
       // Sent as a USER_INPUT step, exactly like typing in the App (A6) — not agentapi's system message.
       await call('SendUserCascadeMessage', {
@@ -286,6 +295,21 @@ export async function deleteTestConversation(conversationId: string, deps: Adapt
     const isTest = conv.title.includes('[agent-office-test]') || (first?.text ?? '').startsWith('[agent-office-test]');
     if (!isTest) throw new Error('Refusing to delete a conversation that is not marked [agent-office-test]');
     await rpc.call('DeleteCascadeTrajectory', { cascadeId: conversationId });
+    return true;
+  } finally {
+    await adapter.stop();
+  }
+}
+
+/** Test/spike-only cleanup: delete a project, but ONLY if its name starts with "[agent-office-test]". */
+export async function deleteTestProject(projectId: string, deps: AdapterDeps = {}): Promise<boolean> {
+  const { adapter, rpc } = createInternal({ ...deps, healthIntervalMs: 60_000 });
+  await adapter.start();
+  try {
+    const p = (await adapter.listProjects()).find((x) => x.id === projectId);
+    if (!p) return false;
+    if (!p.name.startsWith('[agent-office-test]')) throw new Error('Refusing to delete a project that is not marked [agent-office-test]');
+    await rpc.call('DeleteProject', { id: projectId });
     return true;
   } finally {
     await adapter.stop();

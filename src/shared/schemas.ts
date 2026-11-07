@@ -17,7 +17,8 @@ export const userInputSchema = z.object({
 });
 
 export const newConversationSchema = userInputSchema.extend({
-  projectId: z.string().max(200).optional(),
+  // FR-032: a conversation is always created inside a project.
+  projectId: z.string().min(1).max(200),
   deskId: z.string().max(200).optional(),
 });
 

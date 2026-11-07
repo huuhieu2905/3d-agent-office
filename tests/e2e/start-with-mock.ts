@@ -1,7 +1,7 @@
 // Starts the real Agent Office server wired to an in-process MockApp (used by playwright.config.ts).
 // A control endpoint on E2E_PORT+1 lets tests make the "App" quit, open or restart.
 import { createServer } from 'node:http';
-import { mkdtempSync } from 'node:fs';
+import { mkdirSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createAppAdapter } from '../../src/server/app-adapter/index';
@@ -18,7 +18,10 @@ const mock = new MockApp();
 const log = createLogger();
 const adapter = createAppAdapter({ finder: mock.finder, transport: mock.transport, healthIntervalMs: 500 });
 const hub = new WsHub(log);
-const services = createServices({ adapter, hub, log, dataDir: mkdtempSync(join(tmpdir(), 'ao-e2e-')), pollIntervalMs: 500 });
+const fakeHome = mkdtempSync(join(tmpdir(), 'ao-e2e-home-'));
+mkdirSync(join(fakeHome, 'code', 'website'), { recursive: true });
+mkdirSync(join(fakeHome, 'Documents'));
+const services = createServices({ adapter, hub, log, dataDir: mkdtempSync(join(tmpdir(), 'ao-e2e-')), pollIntervalMs: 500, homeDir: fakeHome });
 const server = await createHttpServer({ adapter, log, sessionToken: E2E_TOKEN, hub, services, port });
 adapter.onConnectionChange((s) => hub.broadcast({ type: 'connection', payload: s }));
 hub.onClientConnect((send) => send({ type: 'connection', payload: adapter.getConnection() }));
@@ -41,6 +44,7 @@ createServer((req, res) => {
     mock.sent = [];
     mock.runningAll = false;
     mock.waiting = false;
+    mock.created = [];
   }
   else if (action === 'sent') {
     res.setHeader('content-type', 'application/json');

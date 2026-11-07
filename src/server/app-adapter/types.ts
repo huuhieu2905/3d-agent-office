@@ -28,6 +28,7 @@ export interface AppAdapter {
   getModels(): Promise<ModelOption[]>;
   getQuota(maxAgeMs?: number): Promise<Quota>;
   listProjects(): Promise<Project[]>;
+  createProject(input: { name: string; folderUri: string }): Promise<Project>;
 
   sendMessage(conversationId: string, input: UserInput): Promise<void>;
   startConversation(input: UserInput & { projectId?: string }): Promise<{ conversationId: string }>;
