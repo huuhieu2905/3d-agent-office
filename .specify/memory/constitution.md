@@ -67,9 +67,10 @@ theo quyết định "go" để tránh bỏ dở và để kiểm chứng sớm 
 
 - Văn phòng và nhân viên PHẢI luôn là trung tâm thị giác. Bối cảnh xung quanh (công viên, cây,
   người, xe, thành phố, thời tiết) chỉ làm nền và KHÔNG ĐƯỢC lấn át hay làm chậm phần chính.
-- Mọi tài nguyên 3D PHẢI theo một phong cách thống nhất (mặc định là low-poly cách điệu, trừ
-  khi spec quyết định khác) và PHẢI có giấy phép cho phép dùng phi thương mại, được ghi lại
-  nguồn và giấy phép.
+- Mọi tài nguyên 3D PHẢI theo một phong cách thống nhất, là concept đã chốt trong
+  `specs/002-realistic-ui-refresh/concept-decision.md` ("Soft Studio · Sài Gòn") trừ khi một spec
+  sau quyết định khác, và PHẢI có giấy phép cho phép dùng phi thương mại, được ghi lại nguồn và
+  giấy phép.
 - Cảnh 3D PHẢI đạt tối thiểu **60 FPS** trên trình duyệt của một máy cấu hình phổ thông (máy
   tham chiếu sẽ được ghi rõ trong plan) với số nhân viên tối đa mà spec cam kết. Tính năng làm
   tụt dưới ngưỡng này PHẢI có cơ chế giảm chi tiết hoặc tắt được.
@@ -124,7 +125,9 @@ App có bản Linux. Cam kết một nền tảng chưa kiểm chứng được 
   3. Kiểm tra không có token, email hay nội dung conversation trong log và file xuất ra
      (Nguyên tắc III).
   4. Kiểm tra ngân sách hiệu năng ≥ 60 FPS trên máy tham chiếu, và mở chat bằng 1 lần bấm
-     (Nguyên tắc V).
+     (Nguyên tắc V). Đo hiệu năng và chạy e2e PHẢI dùng GPU thật (Chromium với ANGLE/Metal);
+     kết quả đo bằng render phần mềm (SwiftShader) không được dùng để kết luận đạt hay không
+     đạt. Lấy kết quả từ lần đo thứ hai trở đi, vì lần đầu sau khi build là lần khởi động nguội.
   5. Hướng dẫn cài đặt được chạy thử trên macOS (Nguyên tắc VI).
 - **Thử nghiệm với App thật**: thao tác ghi (tạo conversation, gửi tin nhắn) khi phát triển
   PHẢI dùng conversation thử nghiệm được đặt tên rõ ràng, và PHẢI được dọn sau khi thử.
@@ -145,4 +148,4 @@ App có bản Linux. Cam kết một nền tảng chưa kiểm chứng được 
   tắc. `/speckit-analyze` PHẢI coi vi phạm constitution là lỗi nghiêm trọng. Khi Antigravity
   App đổi phiên bản mục tiêu, Nguyên tắc II và mục Ràng buộc kỹ thuật PHẢI được xem lại.
 
-**Version**: 2.0.0 | **Ratified**: 2026-11-06 | **Last Amended**: 2026-11-06
+**Version**: 2.0.1 | **Ratified**: 2026-11-06 | **Last Amended**: 2026-11-07

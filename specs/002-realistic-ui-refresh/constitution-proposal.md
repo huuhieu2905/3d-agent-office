@@ -1,7 +1,8 @@
 # Đề xuất sửa Constitution (PATCH) — từ tính năng 002
 
-**Trạng thái**: đề xuất, chờ chủ dự án duyệt qua `/speckit-constitution` (research.md R2-10, task T089).
-File `.specify/memory/constitution.md` **chưa** bị sửa.
+**Trạng thái**: đã duyệt và áp dụng ngày 2026-11-07 qua `/speckit-constitution` (research.md R2-10,
+task T089). Constitution lên bản **2.0.1**; cả hai mục dưới đây đã được đưa vào
+`.specify/memory/constitution.md`.
 
 ## 1. Nguyên tắc V — phong cách tài nguyên 3D
 
@@ -32,4 +33,4 @@ headless rơi về SwiftShader.
 
 ## Phân loại
 
-Cả hai là PATCH (làm rõ câu chữ, không đổi ý nghĩa nguyên tắc): 2.0.0 → 2.0.1.
+Cả hai là PATCH (làm rõ câu chữ, không đổi ý nghĩa nguyên tắc): 2.0.0 → 2.0.1 (đã áp dụng).
