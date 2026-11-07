@@ -255,7 +255,7 @@ Một package: `src/shared`, `src/server`, `src/web`, `tests/{unit,contract,e2e}
   - Font tiêu đề và nội dung, kiểu nhân vật (tỉ lệ thân, đầu, màu trang phục bằng hình học đại diện), kiểu toà nhà và quán
 - [x] T059 [P] [US5] Tạo `concepts/ui-mock.ts` và `concepts/ui-mock.css`: khung chat (2 tin nhắn, ô nhập, model picker), bảng quota, thẻ tên nhân viên dựng bằng HTML/CSS thật theo token của từng preset; font nạp từ Fontsource cài làm devDependency (`@fontsource-variable/be-vietnam-pro`, `inter`, `space-grotesk`, `manrope`, `lexend`, `nunito`, `@fontsource/baloo-2`)
 - [x] T060 [US5] Trang `concepts/index.html` gồm 5 thẻ cạnh nhau (xếp dọc khi màn hẹp). Mỗi thẻ có canvas 3D (chỉ thẻ đang hiện trên màn hình mới render, dùng IntersectionObserver), UI mock và bảng mô tả (vật liệu, ánh sáng, màu, font, nhân vật, thành phố). Thêm nút chuyển ngày/đêm.
-- [~] T061 [US5] Build tĩnh `concepts/` (`npx vite build concepts`); chụp ảnh 5 thẻ (ngày và đêm) vào `specs/002-realistic-ui-refresh/concepts/A..E-{day,night}.png` bằng Playwright; công bố trang dưới dạng artifact riêng tư và gửi link cho người dùng
+- [X] T061 [US5] Build tĩnh `concepts/` (`npx vite build concepts`); chụp ảnh 5 thẻ (ngày và đêm) vào `specs/002-realistic-ui-refresh/concepts/A..E-{day,night}.png` bằng Playwright; công bố trang dưới dạng artifact riêng tư và gửi link cho người dùng — *Bỏ qua theo quyết định người dùng (2026-11-07): concept E+ đã chốt, các mẫu xem qua link artifact; không lưu ảnh chụp vào repo.*
 - [x] T062 [US5] **CỔNG**: chờ người dùng chọn. Ghi `specs/002-realistic-ui-refresh/concept-decision.md`: `status: chosen`, `chosen`, `feedback`, `tokens` (bảng màu sáng/tối, font, bo góc, vật liệu chủ đạo, HDRI, bộ nhân vật). Có góp ý thì làm một vòng chỉnh (lặp T058–T061) trước khi chốt (Acceptance 5.4).
 
 > **Ghi chú thực hiện Phase 7 (2026-11-07)**: trang concept làm thành một file HTML tự chứa
@@ -359,10 +359,10 @@ Một package: `src/shared`, `src/server`, `src/web`, `tests/{unit,contract,e2e}
 > **Ghi chú Polish (2026-11-07)**:
 > - T089: đề xuất ghi ở `constitution-proposal.md`; chưa sửa `constitution.md`, chờ chủ dự án duyệt.
 > - T090: typecheck, lint (0 lỗi), 142 unit/contract test, test:leaks, check-guards, 35 e2e (GPU) đều qua. Đo `bench:fps` mức Vừa: 122,5 và 119,1 FPS. `fonts.spec` chặn mọi request ra ngoài và app vẫn chạy đúng. **Chưa chạy lại** hướng dẫn cài đặt trên một máy Mac sạch (≤ 15 phút).
-> - T091 cần Antigravity App thật và người dùng tự chấm SC-009, SC-015, nên để lại cho chủ dự án.
-> - T061 (ảnh chụp 5 concept trong `specs/.../concepts/`) vẫn chưa làm; các concept xem tại link artifact.
+> - T091: người dùng đã chạy với App thật; SC-009 "rất khớp", SC-015 "đẹp hơn".
+> - T061: bỏ qua theo quyết định người dùng.
 
-- [ ] T091 Chạy quickstart.md từ đầu đến cuối với App thật bằng conversation `[test-002] ...` và dọn sau khi thử; người dùng tự chấm SC-009 và SC-015
+- [X] T091 Chạy quickstart.md từ đầu đến cuối với App thật bằng conversation `[test-002] ...` và dọn sau khi thử; người dùng tự chấm SC-009 và SC-015 — *Người dùng chạy với App thật (2026-11-07): SC-009 "rất khớp", SC-015 "đẹp hơn" giao diện cũ; đã dọn conversation `[test-002]`.*
 
 ---
 
