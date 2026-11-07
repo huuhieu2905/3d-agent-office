@@ -63,7 +63,8 @@ Terminal sẽ in `Antigravity App 2.24.0: connected` khi kết nối thành côn
 | `EADDRINUSE` / cổng 4317 bận | Chạy với cổng khác: `AGENT_OFFICE_PORT=4400 npm start` |
 | Trình duyệt không tự mở | Copy đường link trong terminal vào trình duyệt. |
 | `npm start` báo không tìm thấy `node` | Mở terminal mới (để `fnm` có hiệu lực), hoặc chạy `eval "$(fnm env)"`. |
-| Văn phòng giật, chậm | Mở cài đặt và giảm "Mức chi tiết" (khi có tính năng bối cảnh). |
+| Văn phòng giật, chậm | Bấm ⚙︎ → giảm "Mức chi tiết bối cảnh". Hệ thống cũng tự giảm khi máy chậm (có thể tắt trong cài đặt). |
+| Gõ `@` không gợi ý file | Conversation phải thuộc một project gắn thư mục. Tạo project bằng nút "+ Tạo project", rồi tuyển nhân viên trong project đó. |
 
 ## Dữ liệu và quyền riêng tư
 

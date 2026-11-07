@@ -4,6 +4,19 @@ Biến các conversation của **Antigravity App** thành **nhân viên trong m�
 nhìn là biết ai đang làm, ai rảnh, ai đang chờ bạn. Bấm 1 lần vào nhân viên để trò chuyện, giao việc,
 dừng agent hoặc "tuyển" nhân viên mới.
 
+**Tính năng**
+- 🧑‍💼 Mỗi conversation là một nhân viên robot, chuyển động theo trạng thái thật: gõ phím khi làm, chống
+  cằm khi nghĩ, giơ tay khi **chờ sếp duyệt**, ôm đầu khi lỗi, và thỉnh thoảng vươn vai hoặc đi uống nước
+  khi rảnh
+- 💬 Bấm 1 lần để chat như trong App: lệnh `/`, nhắc file `@`, chọn model (kèm % quota), dừng agent, duyệt
+  hoặc từ chối quyền
+- 📁 Tạo project gắn thư mục trên máy, rồi "tuyển nhân viên" (conversation mới) vào project
+- 📊 Màn hình quota treo tường và bảng quota chi tiết
+- 🛠 Tự xây văn phòng: bàn ghế, tường, vách kính, cây; kéo nhân viên đổi chỗ
+- 🌳 Văn phòng giữa công viên, chọn 1 trong 5 thành phố (Hà Nội, TP.HCM, Singapore, Tokyo, New York),
+  **thời tiết thật**, chế độ sáng/tối, 3 mức chi tiết
+- 🚶 Góc nhìn thứ nhất (phím <kbd>V</kbd>): đi lại trong văn phòng, nhắm vào nhân viên và bấm để chat
+
 - Chạy **local** trên macOS, giao diện trong trình duyệt
 - Kết nối trực tiếp với Antigravity App 2.24.0 trên cùng máy
 - Không lưu nội dung chat, không gửi dữ liệu ra ngoài

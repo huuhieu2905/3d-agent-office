@@ -16,7 +16,7 @@ import { AddDeskHint } from './ui/build/AddDeskHint';
 import { SettingsButton, ThemeToggle, WeatherBadge } from './ui/settings/SettingsPanel';
 import { PerfManager } from './scene/perf/PerfManager';
 import { useEffect } from 'react';
-import { CameraToggle, FirstPersonHelp, useCameraHotkey } from './ui/CameraToggle';
+import { CameraToggle, FirstPersonHelp, useCameraHotkey, userChoseCamera } from './ui/CameraToggle';
 import { Crosshair } from './scene/cameras/FirstPerson';
 
 function ConnectionBanner() {
@@ -60,7 +60,7 @@ export function App() {
   const cameraMode = useUi((s) => s.camera);
   const savedCamera = useSettings((s) => (s.loaded ? s.settings.camera : null));
   useEffect(() => {
-    if (savedCamera) useUi.getState().setCamera(savedCamera);
+    if (savedCamera && !userChoseCamera) useUi.getState().setCamera(savedCamera);
   }, [savedCamera]);
   const hireDeskId = useUi((s) => s.hireDeskId);
   const setHireDesk = useUi((s) => s.setHireDesk);

@@ -18,7 +18,11 @@ export function useCameraHotkey() {
   }, []);
 }
 
+/** Set once the user switches camera, so the saved setting (loaded asynchronously) never overrides it. */
+export let userChoseCamera = false;
+
 export function toggleCamera() {
+  userChoseCamera = true;
   if (useBuild.getState().active) return; // build mode needs the overview
   const next = useUi.getState().camera === 'overview' ? 'first_person' : 'overview';
   useUi.getState().setCamera(next);

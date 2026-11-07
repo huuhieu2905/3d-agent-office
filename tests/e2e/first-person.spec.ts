@@ -20,6 +20,7 @@ test('V switches to first person and back; the choice survives a reload', async 
 
 test('entering build mode returns to the overview camera', async ({ page }) => {
   await page.goto(`/#k=${TOKEN}`);
+  await expect(page.locator('.tag').first()).toBeVisible({ timeout: 20_000 }); // app ready (hotkeys bound)
   await page.keyboard.press('v');
   await expect(page.locator('.crosshair')).toBeVisible();
   await page.getByRole('button', { name: /Xây dựng/ }).click();
