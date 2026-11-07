@@ -19,6 +19,8 @@ const scenarioArg = process.argv.indexOf('--scenario');
 const scenario = scenarioArg > 0 ? process.argv[scenarioArg + 1] : '';
 const floorArg = process.argv.indexOf('--floor');
 const floor = floorArg > 0 ? process.argv[floorArg + 1] : '';
+const offArg = process.argv.indexOf('--off');
+const off = offArg > 0 ? process.argv[offArg + 1] : '';
 const port = 4398;
 
 if (!existsSync('dist/web/index.html')) {
@@ -44,7 +46,7 @@ const browser = await chromium.launch({ headless: !headed, args: [
   ] });
 try {
   const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
-  const extra = (scenario ? `&scenario=${encodeURIComponent(scenario)}` : '') + (floor ? `&floor=${encodeURIComponent(floor)}` : '');
+  const extra = (scenario ? `&scenario=${encodeURIComponent(scenario)}` : '') + (floor ? `&floor=${encodeURIComponent(floor)}` : '') + (off ? `&off=${encodeURIComponent(off)}` : '');
   await page.goto(`http://127.0.0.1:${port}/bench?detail=${detail}${extra}`);
   await page.waitForFunction(() => (window.__bench?.frames.length ?? 0) > 30, null, { timeout: 30_000 });
   await page.evaluate(() => (window.__bench!.frames = []));

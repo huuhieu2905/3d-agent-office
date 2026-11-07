@@ -5,7 +5,8 @@ import { jiggleOf } from './furniture/PropJiggle';
 import type { Employee, OfficeLayout, PlacedItem } from '@shared/domain';
 import { DOOR_WIDTH } from '@shared/domain';
 import { isEdge } from '@shared/catalog';
-import { Desk, Door, EdgePanel, floorToWorld, furnitureFor, itemTransform, palette } from './furniture/Furniture';
+import { Desk, Door, EdgePanel, floorToWorld, furnitureFor, itemTransform } from './furniture/Furniture';
+import { woodFloorTexture } from '../theme/concept';
 import { useUi } from '../state/ui';
 
 // Floor, shell and furniture from the OfficeLayout v2 (FR-050/FR-054, 002 R2-03/R2-05). The shell
@@ -90,12 +91,19 @@ export function Office({
   const shell = useMemo(() => shellPanels(layout), [layout]);
   const door = doorTransform(layout);
   const setHireDesk = useUi((s) => s.setHireDesk);
+  // Light-oak planks (concept A floor); one texture tile ≈ 2 × 2 m whatever the office size.
+  const floorMap = useMemo(() => {
+    const t = woodFloorTexture(theme === 'dark').clone();
+    t.repeat.set(w / 2, d / 2);
+    t.needsUpdate = true;
+    return t;
+  }, [theme, w, d]);
 
   return (
     <group>
       <mesh rotation-x={-Math.PI / 2} receiveShadow>
         <planeGeometry args={[w, d]} />
-        <meshStandardMaterial color={theme === 'dark' ? palette.floorDark : palette.floor} roughness={0.9} />
+        <meshStandardMaterial map={floorMap} roughness={0.7} />
       </mesh>
       {shell.map((p) => (
         <group key={p.key} position={floorToWorld(layout.floor, p.x, p.z)}>

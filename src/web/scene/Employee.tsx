@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Html, useGLTF } from '@react-three/drei';
+import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import type { Employee as EmployeeT, OfficeLayout, VisualState } from '@shared/domain';
 import type { Crowd } from './crowd/crowd';
 import { kickNearest } from './furniture/PropJiggle';
-import { instantiate, play, ROBOT_URL, setFace, type Clip } from './character';
+import { instantiate, play, setFace, setSeated, type Clip } from './character';
 import { EmployeeBrain } from './employee-behaviors';
 import type { OfficeGrid } from './grid/grid';
 import { useUi } from '../state/ui';
@@ -24,7 +24,8 @@ const BADGE: Partial<Record<VisualState, { icon: string; cls: string; label: str
   unknown: { icon: '?', cls: 'unknown', label: 'Không rõ trạng thái' },
 };
 
-const SEAT_DROP = 0.32; // lower the robot onto the chair when seated
+// 002 US6: the cartoon rig bends its own legs to sit, so the group is not lowered any more.
+const SEAT_DROP = 0;
 
 /** ?debug=crowd (dev only): breaks every ~20 s so crowd behaviour can be watched (T047). */
 function debugBreaks(): { breakMeanMs?: number; breakJitterMs?: number } {
@@ -51,8 +52,7 @@ export interface EmployeeProps {
 }
 
 export function Employee({ employee, grid, enter, leaving, lobbySlot, dimmed, onLeft, positions, crowd, layout }: EmployeeProps) {
-  const gltf = useGLTF(ROBOT_URL, false); // false: never load the DRACO decoder from a CDN (FR-082)
-  const character = useMemo(() => instantiate(gltf, employee.appearance), [gltf, employee.appearance]);
+  const character = useMemo(() => instantiate(employee.appearance), [employee.appearance]);
   useEffect(() => () => character.dispose(), [character]);
 
   const seat = employee.deskId ? grid.seatOf(employee.deskId) : null;
@@ -84,6 +84,7 @@ export function Employee({ employee, grid, enter, leaving, lobbySlot, dimmed, on
       onLeft(employee.conversationId);
       return;
     }
+    setSeated(character, pose.seated);
     if (pose.clip !== clipRef.current) {
       play(character, pose.clip, 0.35);
       clipRef.current = pose.clip;
@@ -186,4 +187,3 @@ export function Employee({ employee, grid, enter, leaving, lobbySlot, dimmed, on
   );
 }
 
-useGLTF.preload(ROBOT_URL, false);

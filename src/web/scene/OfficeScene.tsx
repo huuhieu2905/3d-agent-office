@@ -51,6 +51,8 @@ export function OfficeScene({
   const layout = build.active && build.draft ? build.draft : saved;
 
   const grid = useMemo(() => (layout ? new OfficeGrid(layout) : null), [layout]);
+  // Stable size object so the memoised background only re-renders when the office is resized.
+  const floorSize = useMemo(() => ({ width: layout?.floor.width ?? 16, depth: layout?.floor.depth ?? 12 }), [layout?.floor.width, layout?.floor.depth]);
   // One crowd per office grid (US3 T044): employees never overlap and give way to each other.
   const crowd = useMemo(() => (grid ? new Crowd(grid) : null), [grid]);
   useEffect(() => {
@@ -86,7 +88,7 @@ export function OfficeScene({
   return (
     <>
       <OfficeMood disconnected={disconnected} theme={theme} weatherFactor={LIGHT_FACTOR[condition]} floor={layout.floor} />
-      <Surroundings city={city} detail={detailLevel} theme={theme} floor={layout.floor} />
+      <Surroundings city={city} detail={detailLevel} theme={theme} floor={floorSize} />
       {!benchMode && (cameraMode === 'first_person' && !build.active ? <FirstPersonCamera grid={grid} positions={positions} /> : <OverviewCamera size={size} />)}
       <Office
         layout={layout}

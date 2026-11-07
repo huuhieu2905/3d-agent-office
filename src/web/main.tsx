@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
 import { Bench } from './bench/Bench';
+import './fonts.css';
 import './styles.css';
 import { socket } from './api/ws';
 import { useConnection } from './state/connection';

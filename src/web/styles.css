@@ -1,20 +1,58 @@
 :root {
-  --bg: #dfe9f3;
-  --panel: rgba(255, 255, 255, 0.92);
-  --text: #1d2433;
-  --muted: #5b6475;
-  --accent: #2f6fed;
-  --warn: #f3a712;
-  --error: #d64545;
-  --radius: 12px;
-  font-family: ui-sans-serif, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  /* 002 US6: concept E+ "Soft Studio · Sài Gòn" (specs/002-realistic-ui-refresh/concept-decision.md). */
+  --bg: #f5eedf;
+  --panel: rgba(255, 250, 240, 0.95);
+  --panel-solid: #fffaf0;
+  --text: #2a221a;
+  --muted: #74675a;
+  --accent: #1f6f6a;
+  --accent-ink: #ffffff;
+  --accent-2: #c2603a;
+  --line: #e6dac3;
+  --chip: #e4efe7;
+  --shadow: 0 8px 28px rgba(60, 40, 20, 0.14);
+  /* Status colours keep their meaning in every theme (FR-031). */
+  --st-working: #2f9e6b;
+  --st-thinking: #7a6ad8;
+  --st-waiting: #e0a21b;
+  --st-error: #d1453b;
+  --st-stopped: #8a8f98;
+  --st-unknown: #b0a89c;
+  --warn: #e0a21b;
+  --error: #d1453b;
+  --ok: #2f9e6b;
+  --radius: 20px;
+  --radius-sm: 12px;
+  --font-display: 'Baloo 2 Variable', 'Baloo 2', ui-rounded, system-ui, sans-serif;
+  --font-body: 'Nunito Variable', 'Nunito', ui-rounded, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family: var(--font-body);
 }
 
 .theme-dark {
-  --bg: #0f1420;
-  --panel: rgba(24, 30, 44, 0.92);
-  --text: #e6e9ef;
-  --muted: #9aa3b5;
+  --bg: #121819;
+  --panel: rgba(26, 34, 34, 0.95);
+  --panel-solid: #1a2222;
+  --text: #f1e8d8;
+  --muted: #a49a8b;
+  --accent: #5fb3a9;
+  --accent-ink: #0f1a19;
+  --accent-2: #e08a66;
+  --line: #2c3534;
+  --chip: #203130;
+  --shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+}
+
+h1,
+h2,
+h3,
+h4,
+.chat-title strong,
+.build-title,
+.modal h2,
+.panel-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0;
 }
 
 * {
@@ -54,7 +92,7 @@ body,
   padding: 10px 16px;
   border-radius: var(--radius);
   background: var(--panel);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow);
   border-left: 4px solid var(--warn);
   font-size: 14px;
   display: flex;
@@ -77,7 +115,7 @@ body,
 .panel {
   background: var(--panel);
   border-radius: var(--radius);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow);
   padding: 8px 10px;
   font-size: 13px;
 }
@@ -153,12 +191,14 @@ body,
   gap: 6px;
   padding: 3px 8px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.92);
-  color: #1d2433;
-  font-size: 12px;
+  background: var(--panel-solid);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 13px;
   font-weight: 600;
   white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  border: 1px solid var(--line);
+  box-shadow: 0 2px 8px rgba(60, 40, 20, 0.18);
   transition: opacity 0.2s, transform 0.2s;
   user-select: none;
 }
@@ -197,23 +237,23 @@ body,
 }
 
 .badge-working {
-  background: #2f6fed;
+  background: var(--st-working);
 }
 .badge-thinking {
-  background: #8e6c8a;
+  background: var(--st-thinking);
 }
 .badge-waiting {
-  background: #f3a712;
+  background: var(--st-waiting);
   animation: pulse 1s infinite;
 }
 .badge-error {
-  background: #d64545;
+  background: var(--st-error);
 }
 .badge-stopped {
-  background: #8a93a3;
+  background: var(--st-stopped);
 }
 .badge-unknown {
-  background: #b0b7c3;
+  background: var(--st-unknown);
 }
 
 @keyframes pulse {
@@ -230,13 +270,14 @@ body,
 }
 
 .btn {
-  border: 1px solid rgba(127, 127, 127, 0.3);
+  border: 1px solid var(--line);
   background: var(--panel);
   color: var(--text);
-  border-radius: 10px;
-  padding: 7px 14px;
+  border-radius: 999px;
+  padding: 7px 16px;
   font: inherit;
   font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
 }
 .btn:disabled {
@@ -246,7 +287,7 @@ body,
 .btn-primary {
   background: var(--accent);
   border-color: var(--accent);
-  color: white;
+  color: var(--accent-ink);
 }
 .btn-stop {
   background: var(--error);
@@ -254,7 +295,7 @@ body,
   color: white;
 }
 .hire {
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow);
 }
 .icon {
   border: 0;
@@ -408,7 +449,7 @@ code.inline {
 .modal select,
 .model-picker select {
   width: 100%;
-  border: 1px solid rgba(127, 127, 127, 0.3);
+  border: 1px solid var(--line);
   border-radius: 10px;
   padding: 8px 10px;
   font: inherit;
@@ -575,7 +616,7 @@ code.inline {
   color: var(--error);
 }
 .usage .good {
-  color: #2e9d5b;
+  color: var(--ok);
   font-weight: 700;
 }
 .bar {
@@ -589,7 +630,7 @@ code.inline {
 .bar span {
   display: block;
   height: 100%;
-  background: #2ec4b6;
+  background: var(--accent);
 }
 .low .bar span {
   background: var(--error);
@@ -622,7 +663,7 @@ code.inline {
 }
 .modal input {
   width: 100%;
-  border: 1px solid rgba(127, 127, 127, 0.3);
+  border: 1px solid var(--line);
   border-radius: 10px;
   padding: 8px 10px;
   font: inherit;
@@ -652,7 +693,7 @@ code.inline {
   gap: 6px;
 }
 .palette-item {
-  border: 1px solid rgba(127, 127, 127, 0.3);
+  border: 1px solid var(--line);
   background: transparent;
   color: var(--text);
   border-radius: 8px;
@@ -787,4 +828,12 @@ kbd {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   pointer-events: none;
+}
+
+/* 002 US6: links keep the concept accent in both themes (the browser's purple is unreadable on dark). */
+.app a {
+  color: var(--accent);
+}
+.app a:visited {
+  color: var(--accent);
 }

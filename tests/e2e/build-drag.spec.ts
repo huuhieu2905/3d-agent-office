@@ -68,7 +68,9 @@ test.beforeEach(async ({ page }) => {
 
 test('a desk is selected by a click and dragged off the old grid; the spot is saved', async ({ page }) => {
   const before = await getLayout(page);
-  const desk = before.items.find((i) => i.type === 'desk')!;
+  // A desk nobody sits at: a seated employee would be in front of the press point.
+  const used = new Set((await getEmployees(page)).map((e) => e.deskId));
+  const desk = before.items.find((i) => i.type === 'desk' && !used.has(i.id))!;
   await enterArrange(page);
   const c = grip(desk);
   const target = { x: c.x, z: c.z + 0.25 }; // 0.25 m south: impossible on the old 0.5 m grid

@@ -9,7 +9,13 @@ export default defineConfig({
   workers: 1,
   fullyParallel: false,
   timeout: 60_000,
-  use: { baseURL: `http://127.0.0.1:${port}`, viewport: { width: 1920, height: 1080 } },
+  use: {
+    baseURL: `http://127.0.0.1:${port}`,
+    viewport: { width: 1920, height: 1080 },
+    // Render the 3D scene on the GPU like scripts/bench-fps.ts does. Without these flags headless Chromium
+    // falls back to software GL (SwiftShader), which makes the concept E+ scene crawl and tests time out.
+    launchOptions: { args: ['--use-angle=metal', '--enable-gpu-rasterization', '--ignore-gpu-blocklist'] },
+  },
   webServer: {
     command: `npm run build && tsx tests/e2e/start-with-mock.ts`,
     url: `http://127.0.0.1:${port}/api/health-public`,

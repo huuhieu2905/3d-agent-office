@@ -54,8 +54,21 @@ export function treeCandidates(seed: number, count: number): TreeSpot[] {
   });
 }
 
-/** May a tree stand here for this office? Keeps the lawn, the loop path and the spokes free. */
+/**
+ * The park kiosk café (US7, FR-037): on the lawn just outside the loop, north-west of the office, where
+ * the default overview camera sees it.
+ */
+export function kioskSpot(f: ParkFrame): { x: number; z: number; facing: number } {
+  const a = -2.2;
+  const p = onPath(f, a, PATH_WIDTH / 2 + 4);
+  // Face the office (the centre).
+  return { x: p.x, z: p.z, facing: Math.atan2(-p.x, -p.z) };
+}
+
+/** May a tree stand here for this office? Keeps the lawn, the loop path, the spokes and the kiosk free. */
 export function treeAllowed(f: ParkFrame, x: number, z: number): boolean {
+  const k = kioskSpot(f);
+  if (Math.hypot(x - k.x, z - k.z) < 4) return false;
   if (Math.abs(x) < f.hw + CLEAR && Math.abs(z) < f.hd + CLEAR) return false;
   const e = ellipseScale(f, x, z);
   const margin = (PATH_WIDTH / 2 + 1.5) / Math.min(f.rx, f.rz);

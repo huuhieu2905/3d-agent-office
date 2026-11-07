@@ -1,9 +1,13 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import type { City, DetailLevel, WeatherSnapshot } from '@shared/domain';
 import { api } from '../api/client';
 import { Park } from './park/Park';
 import { Ambient } from './park/Ambient';
 import { CitySkyline } from './city/CitySkyline';
+import { Kiosk } from './city/Shops';
+import { TrafficView } from './city/TrafficView';
+import { SHOP_NAMES } from './city/city-layout';
+import { kioskSpot, parkFrame } from './park/park-layout';
 import { Weather } from './weather/Weather';
 import { useWeather } from '../state/weather';
 
@@ -29,7 +33,8 @@ export function useCityWeather(city: City, enabled: boolean) {
   }, [city, enabled, set]);
 }
 
-export function Surroundings({
+/** Memoised: employee updates re-render the office every second; the background must not follow. */
+export const Surroundings = memo(function Surroundings({
   city,
   detail,
   theme,
@@ -45,6 +50,8 @@ export function Surroundings({
   const condition = weather?.condition ?? 'clear';
   const rainy = condition === 'rain' || condition === 'storm';
   const [ready, setReady] = useState(false);
+  // Bench only (/bench?off=trees,traffic,people,city,kiosk): switch parts off to find what costs frames.
+  const off = useMemo(() => (typeof location !== 'undefined' && location.pathname.startsWith('/bench') ? new Set((new URLSearchParams(location.search).get('off') ?? '').split(',')) : new Set<string>()), []);
   // Defer the heavy background one frame so the office appears first.
   useEffect(() => {
     const id = requestAnimationFrame(() => setReady(true));
@@ -55,11 +62,13 @@ export function Surroundings({
       <Weather condition={condition} theme={theme} detail={detail} />
       {ready && (
         <>
-          <Park detail={detail} seed={CITY_SEED[city]} rainy={rainy} dark={theme === 'dark'} floor={floor} />
-          <Ambient detail={detail} seed={CITY_SEED[city]} rainy={rainy} floor={floor} />
-          <CitySkyline city={city} detail={detail} />
+          <Park detail={detail} seed={CITY_SEED[city]} rainy={rainy} dark={theme === 'dark'} floor={floor} city={city} noTrees={off.has('trees')} />
+          {!off.has('people') && <Ambient detail={detail} seed={CITY_SEED[city]} rainy={rainy} floor={floor} />}
+          {!off.has('city') && <CitySkyline city={city} detail={detail} night={theme === 'dark'} />}
+          {!off.has('kiosk') && <Kiosk {...kioskSpot(parkFrame(floor))} name={SHOP_NAMES[city].kiosk} night={theme === 'dark'} />}
+          {!off.has('traffic') && <TrafficView seed={CITY_SEED[city]} detail={detail} night={theme === 'dark'} />}
         </>
       )}
     </>
   );
-}
+});

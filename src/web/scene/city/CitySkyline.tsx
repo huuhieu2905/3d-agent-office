@@ -1,50 +1,17 @@
-import { useLayoutEffect, useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 import * as THREE from 'three';
 import type { City, DetailLevel } from '@shared/domain';
-import { DETAIL, ROAD_RADIUS, rng } from '../park/detail';
+import { ROAD_RADIUS } from '../park/detail';
+import { BuildingKit } from './BuildingKit';
+import { StreetShops } from './Shops';
+import { cityLayout } from './city-layout';
 
-// T110 / FR-062: distant skyline (instanced low-poly blocks) + one recognisable landmark per city,
-// built from primitives (no third-party models). Switching city needs no reload.
-
-const SEEDS: Record<City, number> = { hanoi: 11, hcmc: 23, singapore: 37, tokyo: 41, newyork: 53 };
-const TINT: Record<City, string> = { hanoi: '#c9c2b4', hcmc: '#bfc8cf', singapore: '#d7dde2', tokyo: '#cfd3dc', newyork: '#b7b2aa' };
-
-function Blocks({ city, count }: { city: City; count: number }) {
-  const ref = useRef<THREE.InstancedMesh>(null);
-  useLayoutEffect(() => {
-    const mesh = ref.current;
-    if (!mesh) return;
-    const r = rng(SEEDS[city]);
-    const m = new THREE.Matrix4();
-    const c = new THREE.Color();
-    const tall = city === 'newyork' || city === 'hcmc' ? 1.6 : city === 'hanoi' ? 0.8 : 1.2;
-    for (let i = 0; i < count; i++) {
-      const a = r() * Math.PI * 2;
-      const d = ROAD_RADIUS + 18 + r() * 70;
-      const h = (8 + r() * r() * 55) * tall;
-      const w = 5 + r() * 9;
-      m.compose(
-        new THREE.Vector3(Math.cos(a) * d, h / 2, Math.sin(a) * d),
-        new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), r() * Math.PI),
-        new THREE.Vector3(w, h, w * (0.7 + r() * 0.6)),
-      );
-      mesh.setMatrixAt(i, m);
-      mesh.setColorAt(i, c.set(TINT[city]).offsetHSL(0, 0, (r() - 0.5) * 0.18));
-    }
-    mesh.instanceMatrix.needsUpdate = true;
-    if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
-    mesh.computeBoundingSphere();
-  }, [city, count]);
-  return (
-    <instancedMesh ref={ref} args={[undefined, undefined, count]} key={`${city}-${count}`}>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial roughness={0.85} flatShading />
-    </instancedMesh>
-  );
-}
+// T110 / FR-062 (001) → 002 US7 / T079: the city round the park — a street front of real-looking
+// buildings with cafés and restaurants (only beyond the road, R2-09 round 3), towers further out, and
+// one recognisable landmark per city (kept from 001, materials now PBR). Switching city needs no reload.
 
 const M = {
-  glass: new THREE.MeshStandardMaterial({ color: '#8fb7d6', roughness: 0.25, metalness: 0.4 }),
+  glass: new THREE.MeshStandardMaterial({ color: '#8fb7d6', roughness: 0.2, metalness: 0.5 }),
   concrete: new THREE.MeshStandardMaterial({ color: '#d9d4c7', roughness: 0.8 }),
   red: new THREE.MeshStandardMaterial({ color: '#e04b2b', roughness: 0.6 }),
   white: new THREE.MeshStandardMaterial({ color: '#f4f4f4', roughness: 0.6 }),
@@ -178,11 +145,15 @@ function NewYork() {
 
 const LANDMARK: Record<City, () => React.JSX.Element> = { hanoi: Hanoi, hcmc: Hcmc, singapore: Singapore, tokyo: Tokyo, newyork: NewYork };
 
-export function CitySkyline({ city, detail }: { city: City; detail: DetailLevel }) {
+export function CitySkyline({ city, detail, night = false }: { city: City; detail: DetailLevel; night?: boolean }) {
   const L = LANDMARK[city];
+  const layout = useMemo(() => cityLayout(city, detail), [city, detail]);
+  // Low detail: drop the far ring first (FR-044), the street front and shops stay.
+  const buildings = useMemo(() => (detail === 'low' ? layout.front : [...layout.front, ...layout.back]), [layout, detail]);
   return (
     <group>
-      <Blocks city={city} count={DETAIL[detail].buildings} />
+      <BuildingKit buildings={buildings} night={night} />
+      <StreetShops buildings={layout.front} night={night} />
       {/* Landmark straight across the glass wall (north), so it is seen from inside the office. */}
       <group position={[0, 0, -(ROAD_RADIUS + 34)]}>
         <L />
