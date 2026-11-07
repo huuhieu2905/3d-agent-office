@@ -29,7 +29,7 @@ trong trình duyệt (web).
 **Primary Dependencies**:
 - Server: Fastify 5 (HTTP + `@fastify/websocket`, `@fastify/static`), `undici`/`node:https`, `zod`
   (kiểm tra dữ liệu), `pino` (log, có bộ lọc che thông tin nhạy cảm), `env-paths`.
-- Web: Vite 6, React 19, three.js, @react-three/fiber, @react-three/drei, zustand, react-markdown +
+- Web: Vite 8 (bản ổn định hiện tại; plugin React mới nhất yêu cầu Vite 8), React 19, three.js, @react-three/fiber, @react-three/drei, zustand, react-markdown +
   Shiki.
 
 **Storage**: File JSON có version schema trong thư mục cấu hình người dùng (`layout.json`,
@@ -63,7 +63,7 @@ tiến trình đặt sau một giao diện theo hệ điều hành để thêm L
 - 1 người dùng, 1 máy.
 - ≤ 20 nhân viên hiển thị cùng lúc, số conversation không giới hạn (phần dư xem qua danh sách).
 - 5 thành phố, khoảng 10 loại đồ nội thất, 3 mức chi tiết.
-- 8 user story, 45 yêu cầu chức năng.
+- 8 user story, 43 yêu cầu chức năng.
 
 ## Constitution Check
 
@@ -85,7 +85,7 @@ constitution đã được sửa lên 2.0.0 để phản ánh điều này.
 
 | Đợt | User story | Kết quả dùng được hằng ngày | Cổng chất lượng riêng |
 |---|---|---|---|
-| **1** | US1, US2, US8 (+ spike `StartCascade` và luồng cập nhật) | Văn phòng mặc định, nhân viên theo trạng thái thật, chat 1 lần bấm (gửi, model, dừng, tuyển mới), hướng dẫn cài đặt macOS | V1, V2, V8. Đo SC-001 sau 2–4 tuần |
+| **1** | US1, US2, US8 (+ spike `StartCascade`, luồng cập nhật và nguồn project T028; spike chờ/lỗi T029, **cần người dùng bật chế độ hỏi quyền trong App**) | Văn phòng mặc định, nhân viên theo trạng thái thật, chat 1 lần bấm (gửi, model, dừng, tuyển mới), hướng dẫn cài đặt macOS | V1, V2, V8. Đo SC-001 sau 2–4 tuần |
 | **2** | US3, US4 (+ spike duyệt quyền) | `/`, `@`, duyệt quyền, bảng quota | V3, V4 |
 | **3** | US5, US6 | Tự xây văn phòng, công viên, 5 thành phố, thời tiết, chế độ sáng/tối, mức chi tiết | V5, V6, `bench:fps` với công viên |
 | **4** | US7 | Góc nhìn thứ nhất | V7 |
@@ -117,7 +117,10 @@ package.json                 # một package: scripts start, dev, build, test, t
 tsconfig.json
 vite.config.ts
 scripts/
-└── install.sh               # kiểm tra Node ≥ 22, npm ci, build
+├── install.sh               # kiểm tra Node ≥ 22, npm ci, build
+├── record-fixtures.ts       # ghi fixture App 2.24.0 qua recordRaw() của adapter (chỉ dùng khi phát triển)
+├── bench-fps.ts             # npm run bench:fps (SC-004)
+└── check-guards.sh          # cách ly adapter, chặn URL ngoài, chỉ người dùng gọi lệnh ghi (chạy trong npm test)
 docs/
 └── INSTALL.md               # hướng dẫn cài đặt macOS (US8)
 
@@ -127,6 +130,7 @@ src/
 ├── server/
 │   ├── main.ts              # khởi động, in URL kèm token, mở trình duyệt
 │   ├── http/                # Fastify: REST, WebSocket, file tĩnh, bảo vệ Host/Origin/token
+│   │   └── routes/          # index.ts (registerRoutes), health, employees (+ /api/projects), conversations, commands, quota, layout, settings, weather, usage
 │   ├── app-adapter/         # ⟵ NƠI DUY NHẤT phụ thuộc Antigravity App (contracts/app-adapter.md)
 │   │   ├── discovery/       # process-finder.ts (giao diện), process-darwin.ts, probe.ts (Linux: hoãn)
 │   │   ├── rpc-client.ts
@@ -136,7 +140,8 @@ src/
 │   │   ├── employees.ts     # Conversation + EmployeeProfile → Employee, VisualState, diff/patch
 │   │   ├── quota.ts
 │   │   ├── weather.ts       # Open-Meteo + lưu đệm
-│   │   └── mentions.ts      # dự phòng: tự liệt kê file trong workspace
+│   │   ├── mentions.ts      # dự phòng: tự liệt kê file trong workspace
+│   │   └── usage.ts         # bộ đếm sử dụng (chỉ số đếm) cho SC-001/SC-006
 │   ├── storage/             # đọc/ghi JSON atomic, migrate theo schemaVersion
 │   └── log.ts               # pino + bộ lọc che thông tin nhạy cảm
 └── web/

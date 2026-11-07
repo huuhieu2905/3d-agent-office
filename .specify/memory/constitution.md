@@ -1,34 +1,3 @@
-<!--
-Sync Impact Report
-- Version change: 1.1.0 → 2.0.0 (MAJOR: Principle VI redefined — Linux support removed from the
-  required platforms and deferred; quality gate 5 now macOS-only)
-  - Principle VI: "Cài đặt đơn giản trên macOS và Linux" → "Cài đặt đơn giản trên macOS"; adds a
-    rule that OS-specific code stays behind an OS interface in the App adapter so Linux can be
-    added later via a new amendment
-  - Quality gate 5: "macOS và Linux" → "macOS"
-  - Dependent artifacts updated: specs/001-3d-agent-office/{spec,plan,research,quickstart}.md
-- Previous amendment: 1.0.0 → 1.1.0 (MINOR: performance and interaction thresholds in Principle V
-  materially tightened; no principle removed or redefined)
-  - Principle V: minimum frame rate 30 FPS → 60 FPS; opening a chat "≤ 2 clicks" → "exactly 1
-    click on the employee"
-  - Quality gate 4 updated to match
-- Previous amendment: (template, unversioned) → 1.0.0
-- Modified principles: all placeholders replaced (initial adoption)
-  - [PRINCIPLE_1_NAME] → I. Antigravity App là nguồn sự thật duy nhất
-  - [PRINCIPLE_2_NAME] → II. Lớp kết nối App được cô lập
-  - [PRINCIPLE_3_NAME] → III. Local-first, bảo mật và riêng tư
-  - [PRINCIPLE_4_NAME] → IV. Giao hàng theo từng đợt dùng được
-  - [PRINCIPLE_5_NAME] → V. Trải nghiệm là trọng tâm, có ngân sách hiệu năng
-  - (added) VI. Cài đặt đơn giản trên macOS và Linux
-- Added sections: Ràng buộc kỹ thuật (SECTION_2), Quy trình phát triển & cổng chất lượng (SECTION_3)
-- Removed sections: none
-- Templates requiring updates: none. Templates read the constitution at runtime; not modified
-  by this command.
-- Source of values: .specify/assessments/3d-agent-office/ (intake, research, problem, concept,
-  decision dated 2026-11-06)
-- Deferred TODOs: none
--->
-
 # Simulate Organization (3D Agent Office) Constitution
 
 ## Core Principles

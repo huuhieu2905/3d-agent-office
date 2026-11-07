@@ -24,6 +24,8 @@ interface AppAdapter {
   suggestMentions(conversationId: string, query: string): Promise<Mention[]>
   getModels(): Promise<ModelOption[]>
   getQuota(): Promise<Quota>                   // đã lọc tên và email
+  listProjects(): Promise<Project[]>           // nguồn xác định ở spike T028(d)
+  createProject(input: { name: string; folderUri: string }): Promise<Project>   // FR-031 (spike 2026-11-07)
 
   // Ghi (chỉ gọi khi người dùng chủ động, FR-030)
   sendMessage(conversationId: string, input: UserInput): Promise<void>
@@ -43,6 +45,19 @@ type UserInput = {
 }
 
 type ModelOption = { label: string, modelId: string, quotaGroupKey: string }
+```
+
+### Công cụ chỉ dùng khi phát triển
+
+```ts
+// Chỉ dùng cho scripts/record-fixtures.ts. Chỉ cho phép các RPC đọc trong danh sách trắng,
+// kết quả đã qua redact. Không dùng trong mã chạy thật.
+export function recordRaw(method: ReadOnlyRpc, body: unknown): Promise<unknown>
+
+// Chỉ dùng cho tests/live và spike: xoá conversation, NHƯNG chỉ khi nó được đánh dấu "[agent-office-test]".
+export function deleteTestConversation(conversationId: string): Promise<boolean>
+// Chỉ dùng cho test/spike: xoá project có tên bắt đầu bằng "[agent-office-test]".
+export function deleteTestProject(projectId: string): Promise<boolean>
 ```
 
 ## Hành vi bắt buộc

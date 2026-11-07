@@ -103,6 +103,17 @@ thuật** cho plan. Mỗi quyết định gồm: Quyết định / Lý do / Phư
   | bị dừng | ngồi yên, kèm biểu tượng xám |
   | không rõ | mờ đi, kèm biểu tượng "?" |
 
+- **Cập nhật khi triển khai (2026-11-06, T047)**: trang tải của Kenney chỉ hoạt động qua JavaScript, không có link
+  tải trực tiếp. Thay vào đó:
+  - **Nhân vật**: `RobotExpressive` của Quaternius (CC0 1.0, lấy từ repo three.js r170, 464 KB). Có 14 hoạt ảnh (Idle,
+    Walking, Sitting, Standing, Wave, Yes, No, ThumbsUp…) và 3 biểu cảm (Angry, Surprised, Sad). 8 "ngoại hình" được
+    tạo bằng cách đổi màu vật liệu `Main`.
+  - **Nội thất, tường, kính, cây, máy nước**: dựng **bằng code từ khối low-poly** (`src/web/scene/furniture/`), không
+    dùng file bên thứ ba. Phong cách vẫn thống nhất (Constitution V).
+  - Ánh xạ hoạt ảnh: ngồi = `Sitting` dừng ở khung cuối; đang làm = ngồi kèm nhún người theo nhịp gõ và màn hình sáng;
+    đang nghĩ = ngồi kèm bong bóng "…"; chờ sếp = `Wave` kèm "!" và mặt `Surprised`; lỗi = `No` kèm mặt `Sad` và dấu đỏ;
+    đi lại = `Walking`; vươn vai = `ThumbsUp`; uống nước = `Yes`.
+
 ## R6. Kết nối với Antigravity App: phát hiện, xác thực, phiên bản
 
 - **Quyết định**: Lớp kết nối (`src/server/app-adapter/`) thực hiện các bước sau:
@@ -162,7 +173,7 @@ thuật** cho plan. Mỗi quyết định gồm: Quyết định / Lý do / Phư
   | Gợi ý `@` | thử `GetMatchingContextScopeItems` với workspace của conversation. Nếu vẫn rỗng, **server tự liệt kê file** trong `workspaceUris` (bỏ qua `.git`, `node_modules`, tối đa 5.000 file, lọc theo tên) | đáp ứng FR-028 kể cả khi API không trả kết quả |
   | Chọn model | `GetUserStatus` → `cascadeModelConfigData.clientModelConfigs[]` (`label`, `modelOrAlias.model`, `quotaInfo`) | dùng chung dữ liệu với quota |
   | Dừng | `CancelCascadeInvocation {cascadeId}` | đã chạy thử: về IDLE trong khoảng 1 giây |
-  | Tạo conversation mới | `StartCascade` rồi `SendUserCascadeMessage` | **cần kiểm chứng** tham số của `StartCascade`; dự phòng bằng `agy agentapi new-conversation` |
+  | Tạo conversation mới | `StartCascade` rồi `SendUserCascadeMessage` | ✅ đã kiểm chứng (xem Kết quả spike T028) |
   | Duyệt / từ chối quyền | `HandleCascadeUserInteraction {conversationId, interaction}` | **cần kiểm chứng** định dạng `interaction` (spike) |
 
 - **Lý do**: Đây là đúng các API mà giao diện App dùng, nên kết quả "giống App" (FR-022, FR-027,
@@ -173,6 +184,53 @@ thuật** cho plan. Mỗi quyết định gồm: Quyết định / Lý do / Phư
   cách bật chế độ hỏi quyền trong App; (b) tham số của `StartCascade`; (c) `StreamCascadeReactiveUpdates`.
   Nếu (a) không làm được thì FR-029 rơi về "mở conversation trong App", và ghi lại theo spec
   Assumptions.
+
+### Kết quả spike T028 (2026-11-06, App 2.24.0)
+
+- **(a) Tạo conversation mới**: `StartCascade` với body
+  `{ "source": "CORTEX_TRAJECTORY_SOURCE_INTERACTIVE_CASCADE", "projectEnvConfig": { "projectId": "<id>", "defaultProjectEnvironment": {} } }`
+  trả về `{ cascadeId }`, rồi gọi `SendUserCascadeMessage` để gửi yêu cầu đầu tiên. Conversation được gán đúng
+  `projectId`. Thiếu `source` thì lỗi `CortexTrajectorySource is unspecified`. Thiếu `defaultProjectEnvironment`
+  thì lỗi `unsupported target type in ProjectEnvironmentConfig`. **Không cần** phương án dự phòng `agy agentapi`.
+- **(b) Luồng cập nhật**: `StreamCascadeReactiveUpdates` **đã bị ngừng** ("reactive state is deprecated"). Thay
+  bằng **`StreamAgentStateUpdates`** (Connect server-streaming, `content-type: application/connect+json`, mỗi khung
+  có 5 byte tiền tố) với body `{ conversationId, subscriberId }`. Khung đầu tiên là ảnh chụp đầy đủ, các khung sau
+  là `update.status`/`executorLoopStatus` (đổi sang RUNNING khoảng 1,5 giây sau khi gửi tin) và
+  `update.mainTrajectoryUpdate.stepsUpdate.steps[]`.
+- **(c) Câu trả lời từng phần**: khi đọc định kỳ bằng `GetCascadeTrajectorySteps`, `plannerResponse.response` **rỗng**
+  suốt thời gian `GENERATING` (33/33 lần lấy mẫu). Trong luồng, **`plannerResponse.thinking` lớn dần** (45 → 1439 →
+  2260 → 2452 ký tự, khoảng 2–3 giây một khung), còn `response` chỉ có khi bước chuyển `DONE`. → FR-023 được đáp ứng
+  bằng cách **hiện phần suy nghĩ chạy dần**, rồi câu trả lời hiện khi xong (giống App).
+- **(d) Project**: `ListProjects {}` → `{ projectIds[] }`; `ReadProjects { ids }` → `{ projects[{ id, name,
+  projectResources }] }`. `projectId` của conversation nằm ở `trajectorySummaries[id].trajectoryMetadata.projectId`
+  (conversation tạo bằng `agentapi` không có projectId). Project đặc biệt: `default-cli-project`, `outside-of-project`.
+- **Dọn dẹp**: `DeleteCascadeTrajectory { cascadeId }` xoá conversation thử nghiệm (chỉ dùng trong test/spike).
+
+### Kết quả spike T029 + T084 (2026-11-06, App 2.24.0, chế độ "hỏi trước khi chạy lệnh")
+
+- **Chờ duyệt**: agent xin chạy lệnh → bước mới `CORTEX_STEP_TYPE_GENERIC` với `status = WAITING`, trong khi
+  conversation vẫn `RUNNING`. Bước có `requestedInteraction.permission = { resource: { action: "command", target:
+  "<lệnh>" }, actionDescription, suggestedPersistPattern, shellName }` và `generic.args.CommandLine`. Các loại khác
+  có trong schema: `filePermission`, `runCommand`, `approvalInteraction`, `mcp`…
+- **Duyệt / từ chối**: `HandleCascadeUserInteraction` với body **`{ cascadeId, interaction: { trajectoryId,
+  stepIndex, permission: { allow: true|false } } }`**. Lưu ý: phải dùng `cascadeId`. Nếu dùng `conversationId`
+  sẽ lỗi "conversation id is required" (có hai message cùng tên). `trajectoryId` lấy từ
+  `metadata.sourceTrajectoryStepInfo.trajectoryId` của bước đang chờ.
+  - Cho phép: bước chuyển thành `RUN_COMMAND:DONE` (lệnh chạy, mã thoát 0), rồi agent trả lời tiếp.
+  - Từ chối: bước chuyển thành **`RUN_COMMAND:ERROR`**, rồi agent trả lời tiếp. → đây là tín hiệu "lỗi" quan sát được.
+- **Ánh xạ**: `Step.kind = permission_request`, `permission.requestId = "<trajectoryId>:<stepIndex>:<kind>"`.
+  Fixture: `waiting-steps.json` (bước 6 dựng lại đúng cấu trúc đã quan sát) và `error-steps.json` (ghi thật).
+
+### Kết quả spike tạo project (2026-11-07, App 2.24.0)
+
+- **Tạo**: `CreateProject { project: { id: <UUID tự sinh>, name, projectResources: { resources: [{ folderUri }] } } }`
+  → `{}`. **Bắt buộc tự đặt `id`**: nếu thiếu `id`, App trả `{}` nhưng không tạo project nào.
+- Conversation tạo bằng `StartCascade` với `projectEnvConfig.projectId = <id>` thì **có `workspaceUris` = thư mục
+  của project**. Bộ gợi ý `@` của server (liệt kê file trong workspace) tìm được file ngay. `GetMatchingContextScopeItems`
+  của App vẫn trả `{}`, nên vẫn dùng phương án dự phòng.
+- **Xoá** (chỉ dùng cho test): `DeleteProject { id }`. Dùng `{ projectId }` thì lỗi 400.
+- **Chọn thư mục**: trình duyệt không đọc được hệ thống file, nên server cung cấp `GET /api/fs/dirs`. Route này chỉ
+  liệt kê thư mục con, giới hạn trong home của người dùng (kiểm tra bằng `realpath`), và vẫn yêu cầu session token.
 
 ## R9. Quota
 

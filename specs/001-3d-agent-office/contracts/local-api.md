@@ -24,12 +24,16 @@ Server chỉ lắng nghe `http://127.0.0.1:<PORT>` (mặc định `4317`, đổi
 | GET | `/api/employees` | — | `Employee[]` | đã gộp hồ sơ, tối đa 20 người hiển thị cùng `overflow: number` |
 | GET | `/api/conversations/:id/steps?from=` | — | `Step[]` | |
 | POST | `/api/conversations/:id/messages` | `UserInput` | `202 {}` | FR-022 |
-| POST | `/api/conversations` | `UserInput & { projectId?, deskId? }` | `201 { conversationId }` | FR-026 |
+| POST | `/api/conversations` | `UserInput & { projectId, deskId? }` | `201 { conversationId }` | FR-026, FR-032 (`projectId` bắt buộc) |
 | POST | `/api/conversations/:id/cancel` | — | `202 {}` | FR-025 |
 | POST | `/api/conversations/:id/permissions/:requestId` | `{ decision: 'allow' \| 'deny' }` | `202 {}` | FR-029 |
 | GET | `/api/commands?model=` | — | `Command[]` | FR-027 |
 | GET | `/api/conversations/:id/mentions?q=` | — | `Mention[]` | FR-028 |
 | GET | `/api/models` | — | `ModelOption[]` | FR-024 |
+| GET | `/api/projects` | — | `Project[]` | FR-013, FR-026 |
+| POST | `/api/projects` | `{ name, folderPath }` | `201 Project` | FR-031; `folderPath` phải là thư mục có thật trong home |
+| GET | `/api/fs/dirs?path=` | — | `{ path, parent \| null, home, dirs: { name, path }[] }` | FR-031; chỉ thư mục, chỉ trong home; mặc định là home |
+| GET | `/api/usage` | — | `{ weeks: { weekStart, sentViaOffice, userInputsTotal }[] }` | đo SC-001/SC-006, chỉ là số đếm |
 | GET | `/api/quota` | — | `Quota` | FR-041 |
 | GET | `/api/layout` | — | `OfficeLayout` | |
 | PUT | `/api/layout` | `OfficeLayout` | `200` hoặc `422 { error, invalidItems: string[] }` | kiểm tra theo data-model §5 |

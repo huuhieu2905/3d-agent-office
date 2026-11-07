@@ -1,0 +1,317 @@
+import { randomUUID } from 'node:crypto';
+import type {
+  Command,
+  ConnectionState,
+  Conversation,
+  Mention,
+  ModelOption,
+  Project,
+  Quota,
+  Step,
+  UserInput,
+} from '../../shared/domain';
+import { ConnectionManager } from './connection';
+import { createProcessFinder, type ProcessFinder } from './discovery/process-finder';
+import { mapConversations } from './mappers/conversation';
+import { mapSteps } from './mappers/step';
+import { mapProjectIds, mapProjects } from './mappers/project';
+import { mapModels, toItems } from './mappers/model';
+import { mapCommands } from './mappers/command';
+import { mapQuota } from './mappers/quota';
+import { openStream, type StreamHandle } from './stream';
+import { sanitizeRaw, stripIdentity } from './redact';
+import { HttpsRpcTransport, RpcClient, type RpcTransport } from './rpc-client';
+import { AppUnavailableError, RpcError, type AppAdapter, type Unsubscribe } from './types';
+
+export { AppUnavailableError, AppProtocolError, AppNotSupportedError } from './types';
+export type { AppAdapter, Unsubscribe } from './types';
+
+export interface AdapterDeps {
+  finder?: ProcessFinder;
+  transport?: RpcTransport;
+  healthIntervalMs?: number;
+}
+
+/** Everything the rest of the server knows about the App goes through this object (Constitution II). */
+export function createAppAdapter(deps: AdapterDeps = {}): AppAdapter {
+  return createInternal(deps).adapter;
+}
+
+function createInternal(deps: AdapterDeps): { adapter: AppAdapter; rpc: RpcClient } {
+  const transport = deps.transport ?? new HttpsRpcTransport();
+  const conn = new ConnectionManager({
+    finder: deps.finder ?? createProcessFinder(),
+    transport,
+    intervalMs: deps.healthIntervalMs,
+  });
+  const rpc = new RpcClient(transport, () => conn.getTarget());
+
+  async function call<T>(method: string, body: unknown = {}, timeoutMs?: number): Promise<T> {
+    if (conn.getState().kind !== 'connected') throw new AppUnavailableError();
+    try {
+      return await rpc.call<T>(method, body, timeoutMs);
+    } catch (err) {
+      if (err instanceof RpcError && (err.kind === 'auth' || err.kind === 'unreachable')) {
+        conn.invalidate();
+        throw new AppUnavailableError();
+      }
+      throw err;
+    }
+  }
+
+  // GetUserStatus is large (~25 KB); share one response for models and quota for a few seconds.
+  let statusCache: { at: number; value: Promise<unknown> } | null = null;
+  const commandCache = new Map<string, { at: number; value: Command[] }>();
+  function userStatus(maxAgeMs = 5_000): Promise<unknown> {
+    if (!statusCache || Date.now() - statusCache.at > maxAgeMs) {
+      statusCache = { at: Date.now(), value: call('GetUserStatus', {}).then((r) => stripIdentity(r as Record<string, unknown>)) };
+      statusCache.value.catch(() => (statusCache = null));
+    }
+    return statusCache.value;
+  }
+
+  /**
+   * Live steps for one conversation: StreamAgentStateUpdates signals changes (and carries growing
+   * `thinking`), then steps are re-read. Falls back to polling (500 ms running / 5 s idle).
+   */
+  function watch(conversationId: string, cb: (steps: Step[]) => void): Unsubscribe {
+    let stopped = false;
+    let stream: StreamHandle | null = null;
+    let timer: NodeJS.Timeout | null = null;
+    let pending = false;
+    let lastJson = new Map<number, string>();
+    let liveThinking: string | null = null;
+    let running = false;
+
+    const emitChanged = async () => {
+      if (stopped || pending) return;
+      pending = true;
+      try {
+        const steps = await adapter.getSteps(conversationId);
+        const last = steps.at(-1);
+        if (last && last.status === 'GENERATING' && liveThinking && (last.thinking?.length ?? 0) < liveThinking.length) {
+          last.thinking = liveThinking;
+        }
+        const changed = steps.filter((s) => lastJson.get(s.index) !== JSON.stringify(s));
+        lastJson = new Map(steps.map((s) => [s.index, JSON.stringify(s)]));
+        if (changed.length) cb(changed);
+      } catch {
+        /* transient; next signal retries */
+      } finally {
+        pending = false;
+      }
+    };
+
+    let throttle: NodeJS.Timeout | null = null;
+    const signal = () => {
+      if (throttle) return;
+      throttle = setTimeout(() => {
+        throttle = null;
+        void emitChanged();
+      }, 300);
+    };
+
+    const poll = () => {
+      if (stopped) return;
+      void emitChanged();
+      timer = setTimeout(poll, running ? 500 : 5_000);
+    };
+
+    const startStream = () => {
+      const target = conn.getTarget();
+      if (!target || stopped) return poll();
+      stream = openStream(
+        target,
+        'StreamAgentStateUpdates',
+        { conversationId, subscriberId: `agent-office-${process.pid}` },
+        (msg) => {
+          const update = (msg.update ?? {}) as Record<string, unknown>;
+          running = String(update.status ?? '').endsWith('RUNNING');
+          const steps = ((update.mainTrajectoryUpdate as Record<string, unknown> | undefined)?.stepsUpdate as
+            | { steps?: Record<string, unknown>[] }
+            | undefined)?.steps;
+          const t = steps?.map((s) => (s.plannerResponse as Record<string, unknown> | undefined)?.thinking).filter(Boolean).at(-1);
+          if (typeof t === 'string') liveThinking = t;
+          signal();
+        },
+        (err) => {
+          stream = null;
+          if (stopped) return;
+          // Stream ended or unsupported: poll instead (R7 fallback).
+          void err;
+          poll();
+        },
+      );
+    };
+
+    void emitChanged();
+    startStream();
+    return () => {
+      stopped = true;
+      stream?.close();
+      if (timer) clearTimeout(timer);
+      if (throttle) clearTimeout(throttle);
+    };
+  }
+
+
+  const adapter: AppAdapter = {
+    start: () => conn.start(),
+    stop: async () => conn.stop(),
+    onConnectionChange: (cb: (s: ConnectionState) => void): Unsubscribe => conn.onChange(cb),
+    getConnection: () => conn.getState(),
+
+    async listConversations(): Promise<Conversation[]> {
+      return mapConversations(await call('GetAllCascadeTrajectories', {}));
+    },
+    async getSteps(conversationId: string, fromIndex = 0): Promise<Step[]> {
+      return mapSteps(await call('GetCascadeTrajectorySteps', { cascadeId: conversationId }), fromIndex);
+    },
+    watchConversation(conversationId: string, cb: (steps: Step[]) => void): Unsubscribe {
+      return watch(conversationId, cb);
+    },
+    async getSlashCommands(model: string): Promise<Command[]> {
+      const hit = commandCache.get(model);
+      if (hit && Date.now() - hit.at < 60_000) return hit.value;
+      const value = mapCommands(await call('GetSlashCommands', { cascadeConfig: { plannerConfig: { planModel: model } } }));
+      commandCache.set(model, { at: Date.now(), value });
+      return value;
+    },
+    async suggestMentions(conversationId: string, query: string): Promise<Mention[]> {
+      // App-side search (returns nothing without an IDE workspace in 2.24.0); the server falls back to its own listing.
+      const conv = (await adapter.listConversations()).find((c) => c.id === conversationId);
+      const res = await call<Record<string, unknown>>('GetMatchingContextScopeItems', {
+        query,
+        workspaceUris: conv?.workspaceUris ?? [],
+      }).catch(() => ({}) as Record<string, unknown>);
+      const items = (res.items ?? res.scopeItems ?? []) as Record<string, unknown>[];
+      const out: Mention[] = [];
+      for (const it of Array.isArray(items) ? items : []) {
+        const file = (it.file ?? (it.item as Record<string, unknown> | undefined)?.file) as Record<string, unknown> | undefined;
+        const uri = typeof file?.absoluteUri === 'string' ? file.absoluteUri : null;
+        if (uri) out.push({ kind: 'file', uri, label: uri.split('/').pop() ?? uri });
+      }
+      return out.slice(0, 50);
+    },
+    async getModels(): Promise<ModelOption[]> {
+      return mapModels(await userStatus());
+    },
+    async getQuota(maxAgeMs = 5_000): Promise<Quota> {
+      return mapQuota(await userStatus(maxAgeMs));
+    },
+    async listProjects(): Promise<Project[]> {
+      const ids = mapProjectIds(await call('ListProjects', {}));
+      if (ids.length === 0) return [];
+      return mapProjects(await call('ReadProjects', { ids }));
+    },
+    async createProject({ name, folderUri }: { name: string; folderUri: string }): Promise<Project> {
+      // Spike 2026-11-07: the App only creates the project when the client supplies the id.
+      const id = randomUUID();
+      await call('CreateProject', { project: { id, name, projectResources: { resources: [{ folderUri }] } } });
+      const created = mapProjects(await call('ReadProjects', { ids: [id] }))[0];
+      if (!created) throw new RpcError('protocol', 'CreateProject did not create the project');
+      return created;
+    },
+    async sendMessage(conversationId: string, input: UserInput): Promise<void> {
+      // Sent as a USER_INPUT step, exactly like typing in the App (A6) — not agentapi's system message.
+      await call('SendUserCascadeMessage', {
+        cascadeId: conversationId,
+        items: toItems(input),
+        cascadeConfig: { plannerConfig: { planModel: input.model } },
+      });
+    },
+    async startConversation(input: UserInput & { projectId?: string }): Promise<{ conversationId: string }> {
+      // Spike T028(a): source + projectEnvConfig.defaultProjectEnvironment are required.
+      const res = await call<{ cascadeId?: string }>('StartCascade', {
+        source: 'CORTEX_TRAJECTORY_SOURCE_INTERACTIVE_CASCADE',
+        projectEnvConfig: { projectId: input.projectId ?? 'default-cli-project', defaultProjectEnvironment: {} },
+      });
+      if (!res.cascadeId) throw new RpcError('protocol', 'StartCascade returned no cascadeId');
+      await adapter.sendMessage(res.cascadeId, input);
+      return { conversationId: res.cascadeId };
+    },
+    async cancel(conversationId: string): Promise<void> {
+      await call('CancelCascadeInvocation', { cascadeId: conversationId });
+    },
+    async answerPermission(conversationId: string, requestId: string, decision: 'allow' | 'deny'): Promise<void> {
+      // Spike T084: HandleCascadeUserInteraction {cascadeId, interaction:{trajectoryId, stepIndex, <kind>:{...}}}
+      const [trajectoryId, idx, kind = 'permission'] = requestId.split(':');
+      const stepIndex = Number(idx);
+      if (!trajectoryId || !Number.isInteger(stepIndex)) throw new RpcError('protocol', 'bad permission request id');
+      const allow = decision === 'allow';
+      const answer =
+        kind === 'runCommand' || kind === 'approvalInteraction' ? { confirm: allow } : { allow };
+      await call('HandleCascadeUserInteraction', {
+        cascadeId: conversationId,
+        interaction: { trajectoryId, stepIndex, [kind]: answer },
+      });
+    },
+  };
+  return { adapter, rpc };
+}
+
+// ---- Development-only fixture recording (T023) ----------------------------------
+
+const READ_ONLY_RPCS = [
+  'GetAllCascadeTrajectories',
+  'GetCascadeTrajectorySteps',
+  'GetCascadeTrajectory',
+  'GetUserStatus',
+  'GetSlashCommands',
+  'GetAllSkills',
+  'GetAllWorkflows',
+  'GetAvailableModels',
+  'GetMatchingContextScopeItems',
+  'ListProjects',
+  'ReadProjects',
+] as const;
+export type ReadOnlyRpc = (typeof READ_ONLY_RPCS)[number];
+
+/** Call a whitelisted read-only RPC and return sanitized raw JSON. Only for scripts/record-fixtures.ts. */
+export async function recordRaw(method: ReadOnlyRpc, body: unknown, deps: AdapterDeps = {}): Promise<unknown> {
+  if (!READ_ONLY_RPCS.includes(method)) throw new Error(`RPC ${method} is not whitelisted for recording`);
+  const { adapter, rpc } = createInternal({ ...deps, healthIntervalMs: 60_000 });
+  await adapter.start();
+  try {
+    if (adapter.getConnection().kind !== 'connected') throw new AppUnavailableError();
+    return sanitizeRaw(await rpc.call(method, body, 30_000));
+  } finally {
+    await adapter.stop();
+  }
+}
+
+/**
+ * Development/test-only cleanup: delete a conversation, but ONLY if its title or first message marks it
+ * as a test conversation ("[agent-office-test]"). Used by tests/live and spikes (constitution workflow).
+ */
+export async function deleteTestConversation(conversationId: string, deps: AdapterDeps = {}): Promise<boolean> {
+  const { adapter, rpc } = createInternal({ ...deps, healthIntervalMs: 60_000 });
+  await adapter.start();
+  try {
+    if (adapter.getConnection().kind !== 'connected') throw new AppUnavailableError();
+    const conv = (await adapter.listConversations()).find((c) => c.id === conversationId);
+    if (!conv) return false;
+    const first = (await adapter.getSteps(conversationId)).find((s) => s.kind === 'user');
+    const isTest = conv.title.includes('[agent-office-test]') || (first?.text ?? '').startsWith('[agent-office-test]');
+    if (!isTest) throw new Error('Refusing to delete a conversation that is not marked [agent-office-test]');
+    await rpc.call('DeleteCascadeTrajectory', { cascadeId: conversationId });
+    return true;
+  } finally {
+    await adapter.stop();
+  }
+}
+
+/** Test/spike-only cleanup: delete a project, but ONLY if its name starts with "[agent-office-test]". */
+export async function deleteTestProject(projectId: string, deps: AdapterDeps = {}): Promise<boolean> {
+  const { adapter, rpc } = createInternal({ ...deps, healthIntervalMs: 60_000 });
+  await adapter.start();
+  try {
+    const p = (await adapter.listProjects()).find((x) => x.id === projectId);
+    if (!p) return false;
+    if (!p.name.startsWith('[agent-office-test]')) throw new Error('Refusing to delete a project that is not marked [agent-office-test]');
+    await rpc.call('DeleteProject', { id: projectId });
+    return true;
+  } finally {
+    await adapter.stop();
+  }
+}

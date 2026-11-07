@@ -1,0 +1,1027 @@
+{
+  "steps": [
+    {
+      "type": "CORTEX_STEP_TYPE_USER_INPUT",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-06T07:59:30.928150Z",
+        "source": "CORTEX_STEP_SOURCE_USER_EXPLICIT",
+        "executionId": "4636811c-9cdd-49f6-9ae3-cdea20786bcb",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "6fae0dee-f41d-4d51-93f6-f074134cb79e",
+          "cascadeId": "77ea14f4-bdc6-403f-bdb5-c637f3d2a5fb"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-06T07:59:30.944446Z"
+            }
+          ]
+        }
+      },
+      "userInput": {
+        "items": [
+          {
+            "text": "<text:45>"
+          }
+        ],
+        "userResponse": "<userResponse:45>",
+        "activeUserState": {}
+      }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_PLANNER_RESPONSE",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-06T07:59:30.949443Z",
+        "viewableAt": "2026-11-06T07:59:32.291919Z",
+        "finishedGeneratingAt": "2026-11-06T07:59:32.370014Z",
+        "startedAt": "2026-11-06T07:59:32.370014Z",
+        "completedAt": "2026-11-06T07:59:32.370014Z",
+        "source": "CORTEX_STEP_SOURCE_MODEL",
+        "modelUsage": {
+          "model": "MODEL_PLACEHOLDER_M198",
+          "inputTokens": "9007",
+          "outputTokens": "2",
+          "responseOutputTokens": "2",
+          "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+          "messageId": "bot-2b4bf128-0760-4d69-9afe-1b2a9d97895c",
+          "responseHeader": {
+            "sessionID": "-3750763034362895579"
+          },
+          "responseId": "44jtaq61NPy32roPtJnY2AI"
+        },
+        "generatorModel": "MODEL_PLACEHOLDER_M198",
+        "executionId": "4636811c-9cdd-49f6-9ae3-cdea20786bcb",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "6fae0dee-f41d-4d51-93f6-f074134cb79e",
+          "stepIndex": 1,
+          "cascadeId": "77ea14f4-bdc6-403f-bdb5-c637f3d2a5fb"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_GENERATING",
+              "timestamp": "2026-11-06T07:59:32.291941Z"
+            },
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-06T07:59:32.370031Z"
+            }
+          ]
+        }
+      },
+      "plannerResponse": {
+        "response": "<response:3>",
+        "modifiedResponse": "<modifiedResponse:3>",
+        "thinkingSignature": "<thinkingSignature:140>",
+        "messageId": "bot-2b4bf128-0760-4d69-9afe-1b2a9d97895c",
+        "stopReason": "STOP_REASON_STOP_PATTERN"
+      }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_SYSTEM_MESSAGE",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-06T07:59:44.509563Z",
+        "startedAt": "2026-11-06T07:59:44.509307Z",
+        "completedAt": "2026-11-06T07:59:44.509715Z",
+        "source": "CORTEX_STEP_SOURCE_SYSTEM",
+        "executionId": "8e525a58-2435-408b-9a79-5c217c720d51",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "6fae0dee-f41d-4d51-93f6-f074134cb79e",
+          "stepIndex": 2,
+          "metadataIndex": 1,
+          "cascadeId": "77ea14f4-bdc6-403f-bdb5-c637f3d2a5fb"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-06T07:59:44.509718Z"
+            }
+          ]
+        }
+      },
+      "systemMessage": {
+        "message": "<message:137>",
+        "renderInfo": {
+          "title": "<title:22>",
+          "contentBlocks": [
+            {
+              "markdown": "<markdown:43>"
+            }
+          ]
+        },
+        "agentMessage": {
+          "id": "d690e244-f55f-45e3-b069-812cf9c96897",
+          "recipient": "77ea14f4-bdc6-403f-bdb5-c637f3d2a5fb",
+          "sender": "system",
+          "priority": "MESSAGE_PRIORITY_HIGH",
+          "timestamp": "2026-11-06T07:59:44.495726Z",
+          "renderDetails": {
+            "messageTitle": "3d-agent-office test 2"
+          },
+          "content": "<content:43>"
+        }
+      }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_PLANNER_RESPONSE",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-06T07:59:44.511449Z",
+        "viewableAt": "2026-11-06T07:59:45.741738Z",
+        "finishedGeneratingAt": "2026-11-06T07:59:45.839915Z",
+        "startedAt": "2026-11-06T07:59:45.839915Z",
+        "completedAt": "2026-11-06T07:59:45.839915Z",
+        "source": "CORTEX_STEP_SOURCE_MODEL",
+        "modelUsage": {
+          "model": "MODEL_PLACEHOLDER_M198",
+          "inputTokens": "3035",
+          "outputTokens": "5",
+          "responseOutputTokens": "5",
+          "cacheReadTokens": "6071",
+          "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+          "messageId": "bot-aa7d2c68-08cf-4935-93a9-1f3bc808d0d1",
+          "responseHeader": {
+            "sessionID": "-3750763034362895579"
+          },
+          "responseId": "8YjtaoSCFNq12roPz4WQ0Q0"
+        },
+        "generatorModel": "MODEL_PLACEHOLDER_M198",
+        "executionId": "8e525a58-2435-408b-9a79-5c217c720d51",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "6fae0dee-f41d-4d51-93f6-f074134cb79e",
+          "stepIndex": 3,
+          "metadataIndex": 1,
+          "cascadeId": "77ea14f4-bdc6-403f-bdb5-c637f3d2a5fb"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_GENERATING",
+              "timestamp": "2026-11-06T07:59:45.741750Z"
+            },
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-06T07:59:45.839939Z"
+            }
+          ]
+        }
+      },
+      "plannerResponse": {
+        "response": "<response:5>",
+        "modifiedResponse": "<modifiedResponse:5>",
+        "thinkingSignature": "<thinkingSignature:140>",
+        "messageId": "bot-aa7d2c68-08cf-4935-93a9-1f3bc808d0d1",
+        "stopReason": "STOP_REASON_STOP_PATTERN"
+      }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_SYSTEM_MESSAGE",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-06T08:00:40.857344Z",
+        "startedAt": "2026-11-06T08:00:40.857069Z",
+        "completedAt": "2026-11-06T08:00:40.857512Z",
+        "source": "CORTEX_STEP_SOURCE_SYSTEM",
+        "executionId": "42880868-6c77-441a-b69b-192aaad38b84",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "6fae0dee-f41d-4d51-93f6-f074134cb79e",
+          "stepIndex": 4,
+          "metadataIndex": 2,
+          "cascadeId": "77ea14f4-bdc6-403f-bdb5-c637f3d2a5fb"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-06T08:00:40.857516Z"
+            }
+          ]
+        }
+      },
+      "systemMessage": {
+        "message": "<message:149>",
+        "renderInfo": {
+          "title": "<title:19>",
+          "contentBlocks": [
+            {
+              "markdown": "<markdown:55>"
+            }
+          ]
+        },
+        "agentMessage": {
+          "id": "4e39c2e1-8332-4985-8d8f-ce5d7787ce72",
+          "recipient": "77ea14f4-bdc6-403f-bdb5-c637f3d2a5fb",
+          "sender": "system",
+          "priority": "MESSAGE_PRIORITY_HIGH",
+          "timestamp": "2026-11-06T08:00:40.845918Z",
+          "renderDetails": {
+            "messageTitle": "Message from System"
+          },
+          "content": "<content:55>"
+        }
+      }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_PLANNER_RESPONSE",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-06T08:00:40.858787Z",
+        "viewableAt": "2026-11-06T08:00:42.053271Z",
+        "finishedGeneratingAt": "2026-11-06T08:00:44.756302Z",
+        "startedAt": "2026-11-06T08:00:44.756302Z",
+        "completedAt": "2026-11-06T08:00:44.756302Z",
+        "source": "CORTEX_STEP_SOURCE_MODEL",
+        "modelUsage": {
+          "model": "MODEL_PLACEHOLDER_M198",
+          "inputTokens": "3147",
+          "outputTokens": "541",
+          "responseOutputTokens": "541",
+          "cacheReadTokens": "6064",
+          "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+          "messageId": "bot-e8d163f3-2aee-472e-91c0-5ffdbb28e2ed",
+          "responseHeader": {
+            "sessionID": "-3750763034362895579"
+          },
+          "responseId": "KYntaraAJtSh0-kP05PA0Ag"
+        },
+        "generatorModel": "MODEL_PLACEHOLDER_M198",
+        "executionId": "42880868-6c77-441a-b69b-192aaad38b84",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "6fae0dee-f41d-4d51-93f6-f074134cb79e",
+          "stepIndex": 5,
+          "metadataIndex": 2,
+          "cascadeId": "77ea14f4-bdc6-403f-bdb5-c637f3d2a5fb"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_GENERATING",
+              "timestamp": "2026-11-06T08:00:42.053292Z"
+            },
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-06T08:00:44.756319Z"
+            }
+          ]
+        }
+      },
+      "plannerResponse": {
+        "response": "<response:2715>",
+        "modifiedResponse": "<modifiedResponse:2715>",
+        "thinkingSignature": "<thinkingSignature:140>",
+        "messageId": "bot-e8d163f3-2aee-472e-91c0-5ffdbb28e2ed",
+        "stopReason": "STOP_REASON_STOP_PATTERN"
+      }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_USER_INPUT",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-06T08:39:07.122003Z",
+        "source": "CORTEX_STEP_SOURCE_USER_EXPLICIT",
+        "executionId": "1ddeb69c-82f6-4887-b703-55782556d5ef",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "6fae0dee-f41d-4d51-93f6-f074134cb79e",
+          "stepIndex": 6,
+          "metadataIndex": 3,
+          "cascadeId": "77ea14f4-bdc6-403f-bdb5-c637f3d2a5fb"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-06T08:39:07.133986Z"
+            }
+          ]
+        }
+      },
+      "userInput": {
+        "items": [
+          {
+            "text": "<text:58>"
+          }
+        ],
+        "userResponse": "<userResponse:58>",
+        "activeUserState": {},
+        "userConfig": {
+          "plannerConfig": {
+            "planModel": "MODEL_PLACEHOLDER_M318"
+          }
+        }
+      }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_PLANNER_RESPONSE",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-06T08:39:07.139266Z",
+        "viewableAt": "2026-11-06T08:39:11.466983Z",
+        "finishedGeneratingAt": "2026-11-06T08:39:11.728569Z",
+        "startedAt": "2026-11-06T08:39:11.728569Z",
+        "completedAt": "2026-11-06T08:39:11.728569Z",
+        "source": "CORTEX_STEP_SOURCE_MODEL",
+        "modelUsage": {
+          "model": "MODEL_PLACEHOLDER_M318",
+          "inputTokens": "9907",
+          "outputTokens": "206",
+          "thinkingOutputTokens": "151",
+          "responseOutputTokens": "55",
+          "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+          "messageId": "bot-647ee2ac-31dc-4bc7-b8a1-84c46bbea299",
+          "responseHeader": {
+            "sessionID": "-3750763034362895579"
+          },
+          "responseId": "LJLtat3XE4XLrfcPw9vGyQM"
+        },
+        "generatorModel": "MODEL_PLACEHOLDER_M318",
+        "executionId": "1ddeb69c-82f6-4887-b703-55782556d5ef",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "6fae0dee-f41d-4d51-93f6-f074134cb79e",
+          "stepIndex": 7,
+          "metadataIndex": 3,
+          "cascadeId": "77ea14f4-bdc6-403f-bdb5-c637f3d2a5fb"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_GENERATING",
+              "timestamp": "2026-11-06T08:39:11.467005Z"
+            },
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-06T08:39:11.728574Z"
+            }
+          ]
+        }
+      },
+      "plannerResponse": {
+        "thinking": "<thinking:240>",
+        "messageId": "bot-647ee2ac-31dc-4bc7-b8a1-84c46bbea299",
+        "toolCalls": [
+          {
+            "id": "call_2335949061260683455",
+            "name": "read_file",
+            "argumentsJson": "{}",
+            "thinkingSignature": "<thinkingSignature:984>"
+          }
+        ],
+        "thinkingDuration": "4.385437s",
+        "stopReason": "STOP_REASON_STOP_PATTERN"
+      }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_VIEW_FILE",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-06T08:39:11.524705Z",
+        "viewableAt": "2026-11-06T08:39:11.728066Z",
+        "finishedGeneratingAt": "2026-11-06T08:39:11.728066Z",
+        "startedAt": "2026-11-06T08:39:11.730110Z",
+        "completedAt": "2026-11-06T08:39:11.731712Z",
+        "source": "CORTEX_STEP_SOURCE_MODEL",
+        "toolCall": {
+          "id": "call_2335949061260683455",
+          "name": "read_file",
+          "argumentsJson": "{}",
+          "thinkingSignature": "<thinkingSignature:984>"
+        },
+        "generatorModel": "MODEL_PLACEHOLDER_M318",
+        "executionId": "1ddeb69c-82f6-4887-b703-55782556d5ef",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "6fae0dee-f41d-4d51-93f6-f074134cb79e",
+          "stepIndex": 8,
+          "metadataIndex": 3,
+          "cascadeId": "77ea14f4-bdc6-403f-bdb5-c637f3d2a5fb"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_PENDING",
+              "timestamp": "2026-11-06T08:39:11.728131Z"
+            },
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_RUNNING",
+              "timestamp": "2026-11-06T08:39:11.730116Z"
+            },
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-06T08:39:11.731719Z"
+            }
+          ]
+        },
+        "preToolHookResults": [
+          {
+            "decision": "allow"
+          }
+        ],
+        "toolSource": "CORTEX_COMPONENT_SOURCE_BUILTIN"
+      },
+      "viewFile": {
+        "absolutePathUri": "file:///Users/USER/.gemini/antigravity/builtin/skills/antigravity_guide/SKILL.md",
+        "endLine": 54,
+        "content": "<content:3258>",
+        "lineRangeBytes": 3022,
+        "isSkillFile": true,
+        "numLines": 55,
+        "numBytes": 3023
+      }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_PLANNER_RESPONSE",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-06T08:39:11.736769Z",
+        "viewableAt": "2026-11-06T08:39:15.409140Z",
+        "finishedGeneratingAt": "2026-11-06T08:39:15.486933Z",
+        "startedAt": "2026-11-06T08:39:15.486933Z",
+        "completedAt": "2026-11-06T08:39:15.486933Z",
+        "source": "CORTEX_STEP_SOURCE_MODEL",
+        "modelUsage": {
+          "model": "MODEL_PLACEHOLDER_M318",
+          "inputTokens": "11189",
+          "outputTokens": "190",
+          "thinkingOutputTokens": "135",
+          "responseOutputTokens": "55",
+          "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+          "messageId": "bot-4379498e-b2e7-48f7-90ff-c8af55207edf",
+          "responseHeader": {
+            "sessionID": "-3750763034362895579"
+          },
+          "responseId": "MJLtaqSYJtThrfcPpc7aoAM"
+        },
+        "generatorModel": "MODEL_PLACEHOLDER_M318",
+        "executionId": "1ddeb69c-82f6-4887-b703-55782556d5ef",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "6fae0dee-f41d-4d51-93f6-f074134cb79e",
+          "stepIndex": 9,
+          "metadataIndex": 4,
+          "cascadeId": "77ea14f4-bdc6-403f-bdb5-c637f3d2a5fb"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_GENERATING",
+              "timestamp": "2026-11-06T08:39:15.409153Z"
+            },
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-06T08:39:15.486935Z"
+            }
+          ]
+        }
+      },
+      "plannerResponse": {
+        "thinking": "<thinking:251>",
+        "messageId": "bot-4379498e-b2e7-48f7-90ff-c8af55207edf",
+        "toolCalls": [
+          {
+            "id": "call_2167577025626921870",
+            "name": "read_file",
+            "argumentsJson": "{}",
+            "thinkingSignature": "<thinkingSignature:996>"
+          }
+        ],
+        "thinkingDuration": "3.727845s",
+        "stopReason": "STOP_REASON_STOP_PATTERN"
+      }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_VIEW_FILE",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-06T08:39:15.464616Z",
+        "viewableAt": "2026-11-06T08:39:15.486621Z",
+        "finishedGeneratingAt": "2026-11-06T08:39:15.486621Z",
+        "startedAt": "2026-11-06T08:39:15.487967Z",
+        "completedAt": "2026-11-06T08:39:15.488867Z",
+        "source": "CORTEX_STEP_SOURCE_MODEL",
+        "toolCall": {
+          "id": "call_2167577025626921870",
+          "name": "read_file",
+          "argumentsJson": "{}",
+          "thinkingSignature": "<thinkingSignature:996>"
+        },
+        "generatorModel": "MODEL_PLACEHOLDER_M318",
+        "executionId": "1ddeb69c-82f6-4887-b703-55782556d5ef",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "6fae0dee-f41d-4d51-93f6-f074134cb79e",
+          "stepIndex": 10,
+          "metadataIndex": 4,
+          "cascadeId": "77ea14f4-bdc6-403f-bdb5-c637f3d2a5fb"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_PENDING",
+              "timestamp": "2026-11-06T08:39:15.486648Z"
+            },
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_RUNNING",
+              "timestamp": "2026-11-06T08:39:15.487970Z"
+            },
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-06T08:39:15.488871Z"
+            }
+          ]
+        },
+        "preToolHookResults": [
+          {
+            "decision": "allow"
+          }
+        ],
+        "toolSource": "CORTEX_COMPONENT_SOURCE_BUILTIN"
+      },
+      "viewFile": {
+        "absolutePathUri": "file:///Users/USER/.gemini/antigravity/builtin/skills/antigravity_guide/references/cli.md",
+        "endLine": 40,
+        "content": "<content:1865>",
+        "lineRangeBytes": 1685,
+        "numLines": 41,
+        "numBytes": 1686
+      }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_PLANNER_RESPONSE",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-06T08:39:15.491901Z",
+        "viewableAt": "2026-11-06T08:39:18.618169Z",
+        "finishedGeneratingAt": "2026-11-06T08:39:18.700594Z",
+        "startedAt": "2026-11-06T08:39:18.700594Z",
+        "completedAt": "2026-11-06T08:39:18.700594Z",
+        "source": "CORTEX_STEP_SOURCE_MODEL",
+        "modelUsage": {
+          "model": "MODEL_PLACEHOLDER_M318",
+          "inputTokens": "12023",
+          "outputTokens": "95",
+          "thinkingOutputTokens": "65",
+          "responseOutputTokens": "30",
+          "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+          "messageId": "bot-8ededf1a-7e8b-4ebe-8315-a2375b2bba10",
+          "responseHeader": {
+            "sessionID": "-3750763034362895579"
+          },
+          "responseId": "NJLtaoeCE4Xt2roP5bW3uAI"
+        },
+        "generatorModel": "MODEL_PLACEHOLDER_M318",
+        "executionId": "1ddeb69c-82f6-4887-b703-55782556d5ef",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "6fae0dee-f41d-4d51-93f6-f074134cb79e",
+          "stepIndex": 11,
+          "metadataIndex": 5,
+          "cascadeId": "77ea14f4-bdc6-403f-bdb5-c637f3d2a5fb"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_GENERATING",
+              "timestamp": "2026-11-06T08:39:18.618181Z"
+            },
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-06T08:39:18.700609Z"
+            }
+          ]
+        }
+      },
+      "plannerResponse": {
+        "response": "<response:150>",
+        "modifiedResponse": "<modifiedResponse:150>",
+        "thinkingSignature": "<thinkingSignature:608>",
+        "messageId": "bot-8ededf1a-7e8b-4ebe-8315-a2375b2bba10",
+        "stopReason": "STOP_REASON_STOP_PATTERN"
+      }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_USER_INPUT",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-06T08:40:09.844587Z",
+        "source": "CORTEX_STEP_SOURCE_USER_EXPLICIT",
+        "executionId": "646d065f-cdf8-472d-a554-18c51dff688b",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "6fae0dee-f41d-4d51-93f6-f074134cb79e",
+          "stepIndex": 12,
+          "metadataIndex": 6,
+          "cascadeId": "77ea14f4-bdc6-403f-bdb5-c637f3d2a5fb"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-06T08:40:09.857329Z"
+            }
+          ]
+        }
+      },
+      "userInput": {
+        "items": [
+          {
+            "text": "<text:27>"
+          },
+          {
+            "item": {
+              "file": {
+                "absoluteUri": "file:///tmp/TMP/session/cce43858-38f1-42e9-8ce3-e135e255d62f/scratchpad/mention_test.txt"
+              }
+            }
+          },
+          {
+            "text": "<text:47>"
+          }
+        ],
+        "userResponse": "<userResponse:231>",
+        "activeUserState": {},
+        "userConfig": {
+          "plannerConfig": {
+            "planModel": "MODEL_PLACEHOLDER_M318"
+          }
+        },
+        "lastUserConfig": {
+          "plannerConfig": {
+            "planModel": "MODEL_PLACEHOLDER_M318"
+          }
+        }
+      }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_PLANNER_RESPONSE",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-06T08:40:09.862443Z",
+        "viewableAt": "2026-11-06T08:40:16.998331Z",
+        "finishedGeneratingAt": "2026-11-06T08:42:32.271889Z",
+        "startedAt": "2026-11-06T08:42:32.271889Z",
+        "completedAt": "2026-11-06T08:42:32.271889Z",
+        "source": "CORTEX_STEP_SOURCE_MODEL",
+        "modelUsage": {
+          "model": "MODEL_PLACEHOLDER_M318",
+          "inputTokens": "12470",
+          "outputTokens": "16941",
+          "thinkingOutputTokens": "16909",
+          "responseOutputTokens": "32",
+          "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+          "messageId": "bot-2a6d5aa5-c124-4a90-8968-37f2329d97fd",
+          "responseHeader": {
+            "sessionID": "-3750763034362895579"
+          },
+          "responseId": "apLtarS5K4Xt2roP5bW3uAI"
+        },
+        "generatorModel": "MODEL_PLACEHOLDER_M318",
+        "executionId": "646d065f-cdf8-472d-a554-18c51dff688b",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "6fae0dee-f41d-4d51-93f6-f074134cb79e",
+          "stepIndex": 13,
+          "metadataIndex": 6,
+          "cascadeId": "77ea14f4-bdc6-403f-bdb5-c637f3d2a5fb"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_GENERATING",
+              "timestamp": "2026-11-06T08:40:16.998348Z"
+            },
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-06T08:42:32.271894Z"
+            }
+          ]
+        }
+      },
+      "plannerResponse": {
+        "response": "<response:160>",
+        "modifiedResponse": "<modifiedResponse:160>",
+        "thinking": "<thinking:9999>",
+        "thinkingSignature": "<thinkingSignature:9999>",
+        "messageId": "bot-2a6d5aa5-c124-4a90-8968-37f2329d97fd",
+        "thinkingDuration": "142.007198s",
+        "stopReason": "STOP_REASON_STOP_PATTERN"
+      }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_USER_INPUT",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-06T08:40:09.898733Z",
+        "startedAt": "2026-11-06T08:42:32.277638Z",
+        "completedAt": "2026-11-06T08:42:32.278653Z",
+        "source": "CORTEX_STEP_SOURCE_USER_EXPLICIT",
+        "executionId": "646d065f-cdf8-472d-a554-18c51dff688b",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "6fae0dee-f41d-4d51-93f6-f074134cb79e",
+          "stepIndex": 14,
+          "metadataIndex": 7,
+          "cascadeId": "77ea14f4-bdc6-403f-bdb5-c637f3d2a5fb"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-06T08:42:32.278657Z"
+            }
+          ]
+        },
+        "isInterruptingStep": true
+      },
+      "userInput": {
+        "items": [
+          {
+            "text": "<text:27>"
+          },
+          {
+            "item": {
+              "file": {}
+            }
+          },
+          {
+            "text": "<text:47>"
+          }
+        ],
+        "userResponse": "<userResponse:74>",
+        "activeUserState": {},
+        "userConfig": {
+          "plannerConfig": {
+            "planModel": "MODEL_PLACEHOLDER_M318"
+          }
+        },
+        "lastUserConfig": {
+          "plannerConfig": {
+            "planModel": "MODEL_PLACEHOLDER_M318"
+          }
+        }
+      }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_USER_INPUT",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-06T08:40:09.952618Z",
+        "startedAt": "2026-11-06T08:42:32.277638Z",
+        "completedAt": "2026-11-06T08:42:32.278653Z",
+        "source": "CORTEX_STEP_SOURCE_USER_EXPLICIT",
+        "executionId": "646d065f-cdf8-472d-a554-18c51dff688b",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "6fae0dee-f41d-4d51-93f6-f074134cb79e",
+          "stepIndex": 15,
+          "metadataIndex": 7,
+          "cascadeId": "77ea14f4-bdc6-403f-bdb5-c637f3d2a5fb"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-06T08:42:32.281063Z"
+            }
+          ]
+        },
+        "isInterruptingStep": true
+      },
+      "userInput": {
+        "items": [
+          {
+            "text": "<text:27>"
+          },
+          {
+            "item": {
+              "file": {}
+            }
+          },
+          {
+            "text": "<text:47>"
+          }
+        ],
+        "userResponse": "<userResponse:74>",
+        "activeUserState": {},
+        "userConfig": {
+          "plannerConfig": {
+            "planModel": "MODEL_PLACEHOLDER_M318"
+          }
+        },
+        "lastUserConfig": {
+          "plannerConfig": {
+            "planModel": "MODEL_PLACEHOLDER_M318"
+          }
+        }
+      }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_USER_INPUT",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-06T08:42:45.196322Z",
+        "source": "CORTEX_STEP_SOURCE_USER_EXPLICIT",
+        "executionId": "feab7b9e-b73a-460b-9fc7-b12c8364d9ff",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "6fae0dee-f41d-4d51-93f6-f074134cb79e",
+          "stepIndex": 16,
+          "metadataIndex": 8,
+          "cascadeId": "77ea14f4-bdc6-403f-bdb5-c637f3d2a5fb"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-06T08:42:45.203910Z"
+            }
+          ]
+        }
+      },
+      "userInput": {
+        "items": [
+          {
+            "text": "<text:118>"
+          }
+        ],
+        "userResponse": "<userResponse:118>",
+        "activeUserState": {},
+        "userConfig": {
+          "plannerConfig": {
+            "planModel": "MODEL_PLACEHOLDER_M318"
+          }
+        },
+        "lastUserConfig": {
+          "plannerConfig": {
+            "planModel": "MODEL_PLACEHOLDER_M318"
+          }
+        }
+      }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_PLANNER_RESPONSE",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-06T08:42:45.210367Z",
+        "viewableAt": "2026-11-06T08:42:50.090240Z",
+        "finishedGeneratingAt": "2026-11-06T08:42:50.180059Z",
+        "startedAt": "2026-11-06T08:42:50.180059Z",
+        "completedAt": "2026-11-06T08:42:50.180059Z",
+        "source": "CORTEX_STEP_SOURCE_MODEL",
+        "modelUsage": {
+          "model": "MODEL_PLACEHOLDER_M318",
+          "inputTokens": "34594",
+          "outputTokens": "255",
+          "thinkingOutputTokens": "211",
+          "responseOutputTokens": "44",
+          "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+          "messageId": "bot-7165bb9b-9f98-4c29-92a0-a528734b4365",
+          "responseHeader": {
+            "sessionID": "-3750763034362895579"
+          },
+          "responseId": "BpPtat2eG47IrfcPgrXigQo"
+        },
+        "generatorModel": "MODEL_PLACEHOLDER_M318",
+        "executionId": "feab7b9e-b73a-460b-9fc7-b12c8364d9ff",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "6fae0dee-f41d-4d51-93f6-f074134cb79e",
+          "stepIndex": 17,
+          "metadataIndex": 8,
+          "cascadeId": "77ea14f4-bdc6-403f-bdb5-c637f3d2a5fb"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_GENERATING",
+              "timestamp": "2026-11-06T08:42:50.090260Z"
+            },
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-06T08:42:50.180062Z"
+            }
+          ]
+        }
+      },
+      "plannerResponse": {
+        "thinking": "<thinking:160>",
+        "messageId": "bot-7165bb9b-9f98-4c29-92a0-a528734b4365",
+        "toolCalls": [
+          {
+            "id": "call_4261625953032918735",
+            "name": "run_command",
+            "argumentsJson": "{}",
+            "thinkingSignature": "<thinkingSignature:1368>"
+          }
+        ],
+        "thinkingDuration": "4.936883s",
+        "stopReason": "STOP_REASON_STOP_PATTERN"
+      }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_RUN_COMMAND",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-06T08:42:50.147252Z",
+        "viewableAt": "2026-11-06T08:42:50.179739Z",
+        "finishedGeneratingAt": "2026-11-06T08:42:50.179739Z",
+        "startedAt": "2026-11-06T08:42:50.181158Z",
+        "completedAt": "2026-11-06T08:42:50.212813Z",
+        "source": "CORTEX_STEP_SOURCE_MODEL",
+        "toolCall": {
+          "id": "call_4261625953032918735",
+          "name": "run_command",
+          "argumentsJson": "{}",
+          "thinkingSignature": "<thinkingSignature:1368>"
+        },
+        "generatorModel": "MODEL_PLACEHOLDER_M318",
+        "executionId": "feab7b9e-b73a-460b-9fc7-b12c8364d9ff",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "6fae0dee-f41d-4d51-93f6-f074134cb79e",
+          "stepIndex": 18,
+          "metadataIndex": 8,
+          "cascadeId": "77ea14f4-bdc6-403f-bdb5-c637f3d2a5fb"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_PENDING",
+              "timestamp": "2026-11-06T08:42:50.179778Z"
+            },
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_RUNNING",
+              "timestamp": "2026-11-06T08:42:50.181161Z"
+            },
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-06T08:42:50.212823Z"
+            }
+          ]
+        },
+        "preToolHookResults": [
+          {
+            "decision": "allow"
+          }
+        ],
+        "toolSource": "CORTEX_COMPONENT_SOURCE_BUILTIN"
+      },
+      "runCommand": {
+        "commandLine": "<commandLine:20>",
+        "proposedCommandLine": "<proposedCommandLine:20>",
+        "blocking": true,
+        "exitCode": 0,
+        "combinedOutput": {
+          "full": "Command exited with code 0.\n\nCommand output:\nhello_3d_office\r\n"
+        },
+        "shellName": "zsh",
+        "ranInSandbox": true
+      }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_PLANNER_RESPONSE",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-06T08:42:50.219579Z",
+        "viewableAt": "2026-11-06T08:42:54.375640Z",
+        "finishedGeneratingAt": "2026-11-06T08:42:54.464278Z",
+        "startedAt": "2026-11-06T08:42:54.464278Z",
+        "completedAt": "2026-11-06T08:42:54.464278Z",
+        "source": "CORTEX_STEP_SOURCE_MODEL",
+        "modelUsage": {
+          "model": "MODEL_PLACEHOLDER_M318",
+          "inputTokens": "2786",
+          "outputTokens": "45",
+          "thinkingOutputTokens": "35",
+          "responseOutputTokens": "10",
+          "cacheReadTokens": "32155",
+          "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+          "messageId": "bot-c0cf1aba-72f6-4960-a40b-cbeb8ceaa06c",
+          "responseHeader": {
+            "sessionID": "-3750763034362895579"
+          },
+          "responseId": "CpPtasCUOZHurfcPw_L0-Ag"
+        },
+        "generatorModel": "MODEL_PLACEHOLDER_M318",
+        "executionId": "feab7b9e-b73a-460b-9fc7-b12c8364d9ff",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "6fae0dee-f41d-4d51-93f6-f074134cb79e",
+          "stepIndex": 19,
+          "metadataIndex": 9,
+          "cascadeId": "77ea14f4-bdc6-403f-bdb5-c637f3d2a5fb"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_GENERATING",
+              "timestamp": "2026-11-06T08:42:54.375657Z"
+            },
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-06T08:42:54.464291Z"
+            }
+          ]
+        }
+      },
+      "plannerResponse": {
+        "response": "<response:23>",
+        "modifiedResponse": "<modifiedResponse:23>",
+        "thinkingSignature": "<thinkingSignature:400>",
+        "messageId": "bot-c0cf1aba-72f6-4960-a40b-cbeb8ceaa06c",
+        "stopReason": "STOP_REASON_STOP_PATTERN"
+      }
+    }
+  ]
+}
