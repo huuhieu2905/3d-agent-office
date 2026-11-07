@@ -2,7 +2,6 @@ import { useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import type { OfficeLayout, Quota } from '@shared/domain';
 import { itemTransform } from '../../scene/furniture/Furniture';
-import type { OfficeGrid } from '../../scene/grid/grid';
 import { useQuota } from '../../state/quota';
 
 // T091 / FR-040 / FR-043: the wall screen shows quota bars (canvas texture); one click opens QuotaPanel.
@@ -53,7 +52,7 @@ export function drawQuota(ctx: CanvasRenderingContext2D, quota: Quota | null): v
   }
 }
 
-export function QuotaScreen({ layout, grid }: { layout: OfficeLayout; grid: OfficeGrid }) {
+export function QuotaScreen({ layout }: { layout: OfficeLayout }) {
   const quota = useQuota((s) => s.quota);
   const setOpen = useQuota((s) => s.setPanelOpen);
   const screen = layout.items.find((i) => i.type === 'wall_screen');
@@ -74,7 +73,7 @@ export function QuotaScreen({ layout, grid }: { layout: OfficeLayout; grid: Offi
   useEffect(() => () => texture.dispose(), [texture]);
 
   if (!screen) return null;
-  const t = itemTransform(screen, grid);
+  const t = itemTransform(screen, layout.floor);
   return (
     <group position={t.position} rotation-y={t.rotationY}>
       <mesh

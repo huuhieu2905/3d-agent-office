@@ -1,9 +1,8 @@
 import { useMemo } from 'react';
 import type React from 'react';
 import * as THREE from 'three';
-import type { ItemType, PlacedItem } from '@shared/domain';
-import { rotatedSize } from '@shared/catalog';
-import type { OfficeGrid } from '../grid/grid';
+import type { ItemType, OfficeLayout, PlacedItem } from '@shared/domain';
+import { footprintRect, isEdge } from '@shared/catalog';
 
 // Procedural low-poly furniture (assets/LICENSES.md: no third-party files). Units: metres.
 
@@ -128,36 +127,37 @@ export function Door() {
 
 const WALL_H = 2.6;
 
-/** Walls and glass are drawn as thin panels on the north or west edge of their cell. */
 /** In the overview ("dollhouse") camera, solid walls are cut down so they never hide the office. */
 export const CUTAWAY_WALL_H = 0.45;
 
+/** A wall or glass panel centred on its group; `vertical` runs along z (west/east), else along x. */
 export function EdgePanel({
   type,
-  rotation,
-  cellSize,
+  vertical,
+  length,
   cutaway = true,
 }: {
   type: 'wall' | 'glass_wall';
-  rotation: number;
-  cellSize: number;
+  vertical: boolean;
+  length: number;
   cutaway?: boolean;
 }) {
-  const vertical = rotation === 90 || rotation === 270;
   const h = type === 'wall' && cutaway ? CUTAWAY_WALL_H : WALL_H;
-  const pos: [number, number, number] = vertical ? [-cellSize / 2, h / 2, 0] : [0, h / 2, -cellSize / 2];
-  const size: [number, number, number] = vertical ? [0.08, h, cellSize] : [cellSize, h, 0.08];
-  return <Box size={size} position={pos} material={type === 'glass_wall' ? mats.glass : mats.wall} />;
+  const size: [number, number, number] = vertical ? [0.08, h, length] : [length, h, 0.08];
+  return <Box size={size} position={[0, h / 2, 0]} material={type === 'glass_wall' ? mats.glass : mats.wall} />;
 }
 
-/** Position of an item's group: centre of its rotated footprint. */
-export function itemTransform(item: PlacedItem, grid: OfficeGrid): { position: [number, number, number]; rotationY: number } {
-  const { w, d } = rotatedSize(item.type, item.rotation);
-  const [x0, , z0] = grid.toWorld(item.cell);
-  const s = grid.cellSize;
-  const edge = item.type === 'wall' || item.type === 'glass_wall';
+/** Floor space (metres from the north-west corner) → world (floor centred on the origin). */
+export function floorToWorld(floor: OfficeLayout['floor'], x: number, z: number): [number, number, number] {
+  return [x - floor.width / 2, 0, z - floor.depth / 2];
+}
+
+/** Position of an item's group: centre of its rotated footprint (edge items: centre of the segment). */
+export function itemTransform(item: PlacedItem, floor: OfficeLayout['floor']): { position: [number, number, number]; rotationY: number } {
+  const r = footprintRect(item);
+  const edge = isEdge(item.type);
   return {
-    position: edge ? [x0, 0, z0] : [x0 + ((w - 1) * s) / 2, 0, z0 + ((d - 1) * s) / 2],
+    position: floorToWorld(floor, (r.x0 + r.x1) / 2, (r.z0 + r.z1) / 2),
     rotationY: edge ? 0 : -(item.rotation * Math.PI) / 180,
   };
 }

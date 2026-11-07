@@ -223,8 +223,8 @@ export class EmployeesService {
         const parentDesk = allDesks.find((d) => d.id === parentDeskId);
         if (parentDesk) {
           chosen = options.reduce((best, d) =>
-            Math.hypot(d.cell.x - parentDesk.cell.x, d.cell.z - parentDesk.cell.z) <
-            Math.hypot(best.cell.x - parentDesk.cell.x, best.cell.z - parentDesk.cell.z)
+            Math.hypot(d.pos.x - parentDesk.pos.x, d.pos.z - parentDesk.pos.z) <
+            Math.hypot(best.pos.x - parentDesk.pos.x, best.pos.z - parentDesk.pos.z)
               ? d
               : best,
           );

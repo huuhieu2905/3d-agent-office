@@ -66,7 +66,7 @@ export function OfficeScene({
   }, [visible]);
 
   if (!layout || !grid) return <OfficeMood disconnected theme={theme} />;
-  const size: [number, number] = [layout.floor.widthCells * layout.floor.cellSize, layout.floor.depthCells * layout.floor.cellSize];
+  const size: [number, number] = [layout.floor.width, layout.floor.depth];
   let lobbySlot = 0;
 
   return (
@@ -76,7 +76,6 @@ export function OfficeScene({
       {!benchMode && (cameraMode === 'first_person' && !build.active ? <FirstPersonCamera grid={grid} positions={positions} /> : <OverviewCamera size={size} />)}
       <Office
         layout={layout}
-        grid={grid}
         employeesByDesk={byDesk}
         theme={theme}
         cutaway={cameraMode !== 'first_person' || build.active}
@@ -96,8 +95,8 @@ export function OfficeScene({
           />
         ))}
         <SubagentLinks employees={visible} positions={positions} />
-        {!benchMode && !build.active && <QuotaScreen layout={layout} grid={grid} />}
-        {build.active && <BuildGizmo layout={layout} grid={grid} employees={visible} />}
+        {!benchMode && !build.active && <QuotaScreen layout={layout} />}
+        {build.active && <BuildGizmo layout={layout} employees={visible} />}
       </Office>
     </>
   );

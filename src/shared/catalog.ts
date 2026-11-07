@@ -1,14 +1,16 @@
 import type { ItemType, PlacedItem, Rotation } from './domain';
 
-// Furniture catalog (FR-050). Footprints are in 0.5 m cells, before rotation.
-// `edge` items (walls) block movement across one cell edge instead of occupying the cell.
+// Furniture catalog (FR-050). Footprints are given in 0.5 m cells before rotation; positions are metres
+// (layout v2). `edge` items (walls, glass) are 0.5 m segments that block movement across a line.
+
+export const CELL = 0.5;
 
 export interface CatalogEntry {
   type: ItemType;
   label: string;
   footprint: { w: number; d: number };
   blocks: 'cell' | 'edge' | 'none';
-  /** For desks: where the seat is, relative to the unrotated footprint origin. */
+  /** For desks: where the seat is, relative to the unrotated footprint origin (in cells). */
   seat?: { x: number; z: number };
 }
 
@@ -24,32 +26,70 @@ export const CATALOG: Record<ItemType, CatalogEntry> = {
   wall_screen: { type: 'wall_screen', label: 'Màn hình treo tường', footprint: { w: 3, d: 1 }, blocks: 'none' },
 };
 
+export const isEdge = (type: ItemType): boolean => CATALOG[type].blocks === 'edge';
+
+/** Footprint size in cells after rotation. */
 export function rotatedSize(type: ItemType, rotation: Rotation): { w: number; d: number } {
   const { w, d } = CATALOG[type].footprint;
   return rotation === 90 || rotation === 270 ? { w: d, d: w } : { w, d };
 }
 
-/** All cells covered by an item's footprint. */
-export function footprintCells(item: PlacedItem): { x: number; z: number }[] {
-  const { w, d } = rotatedSize(item.type, item.rotation);
-  const cells: { x: number; z: number }[] = [];
-  for (let dx = 0; dx < w; dx++) for (let dz = 0; dz < d; dz++) cells.push({ x: item.cell.x + dx, z: item.cell.z + dz });
-  return cells;
+/** Footprint size in metres after rotation. */
+export function sizeM(type: ItemType, rotation: Rotation): { w: number; d: number } {
+  const { w, d } = rotatedSize(type, rotation);
+  return { w: w * CELL, d: d * CELL };
 }
 
-/** The cell where an employee sits at a desk, after rotation. */
-export function seatCell(desk: PlacedItem): { x: number; z: number } {
+export interface Rect {
+  x0: number;
+  z0: number;
+  x1: number;
+  z1: number;
+}
+
+/**
+ * Floor-space rectangle of an item (metres). Edge items are a zero-width segment: rotation 0/180 runs
+ * east from `pos` (a north edge), rotation 90/270 runs south from `pos` (a west edge).
+ */
+export function footprintRect(item: Pick<PlacedItem, 'type' | 'pos' | 'rotation'>): Rect {
+  const { x, z } = item.pos;
+  if (isEdge(item.type)) {
+    return item.rotation === 0 || item.rotation === 180 ? { x0: x, z0: z, x1: x + CELL, z1: z } : { x0: x, z0: z, x1: x, z1: z + CELL };
+  }
+  const { w, d } = sizeM(item.type, item.rotation);
+  return { x0: x, z0: z, x1: x + w, z1: z + d };
+}
+
+export function rectsOverlap(a: Rect, b: Rect, eps = 0.001): boolean {
+  return a.x0 < b.x1 - eps && b.x0 < a.x1 - eps && a.z0 < b.z1 - eps && b.z0 < a.z1 - eps;
+}
+
+/** Centre (metres, floor space) of where an employee sits at a desk. */
+export function seatPoint(desk: Pick<PlacedItem, 'pos' | 'rotation'>): { x: number; z: number } {
   const seat = CATALOG.desk.seat!;
   const { w, d } = CATALOG.desk.footprint;
-  const { x, z } = desk.cell;
+  // Same rule as layout v1 (in cells), with a fractional origin so it works for any position.
+  const cx = desk.pos.x / CELL;
+  const cz = desk.pos.z / CELL;
+  let c: { x: number; z: number };
   switch (desk.rotation) {
     case 0:
-      return { x: x + seat.x, z: z + seat.z };
+      c = { x: cx + seat.x, z: cz + seat.z };
+      break;
     case 180:
-      return { x: x + (w - 1 - seat.x), z: z - 1 };
+      c = { x: cx + (w - 1 - seat.x), z: cz - 1 };
+      break;
     case 90:
-      return { x: x - 1, z: z + seat.x };
+      c = { x: cx - 1, z: cz + seat.x };
+      break;
     case 270:
-      return { x: x + d, z: z + (w - 1 - seat.x) };
+      c = { x: cx + d, z: cz + (w - 1 - seat.x) };
+      break;
   }
+  return { x: (c.x + 0.5) * CELL, z: (c.z + 0.5) * CELL };
+}
+
+/** Round to a step without floating-point dust (0.05 → 2 decimals). */
+export function snap(v: number, step: number): number {
+  return Math.round(Math.round(v / step) * step * 1000) / 1000;
 }

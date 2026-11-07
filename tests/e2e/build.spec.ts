@@ -13,13 +13,14 @@ test.beforeEach(async () => {
 
 test('a valid layout is saved and survives reload; an invalid one is refused with the culprit', async ({ request }) => {
   const layout = await (await request.get('/api/layout', { headers: auth })).json();
-  const plus = { ...layout, items: [...layout.items, { id: 'plant-e2e', type: 'plant', cell: { x: 3, z: 21 }, rotation: 0 }] };
+  expect(layout.schemaVersion).toBe(2);
+  const plus = { ...layout, items: [...layout.items, { id: 'plant-e2e', type: 'plant', pos: { x: 1.55, z: 10.45 }, rotation: 0 }] };
   expect((await request.put('/api/layout', { headers: auth, data: plus })).status()).toBe(200);
   const again = await (await request.get('/api/layout', { headers: auth })).json();
   expect(again.items.some((i: { id: string }) => i.id === 'plant-e2e')).toBe(true);
 
   const desk = layout.items.find((i: { type: string }) => i.type === 'desk');
-  const bad = { ...layout, items: [...layout.items, { id: 'on-desk', type: 'plant', cell: desk.cell, rotation: 0 }] };
+  const bad = { ...layout, items: [...layout.items, { id: 'on-desk', type: 'plant', pos: desk.pos, rotation: 0 }] };
   const res = await request.put('/api/layout', { headers: auth, data: bad });
   expect(res.status()).toBe(422);
   expect((await res.json()).invalidItems).toContain('on-desk');

@@ -42,41 +42,41 @@ Một package: `src/shared`, `src/server`, `src/web`, `tests/{unit,contract,e2e}
 
 **⚠️ CRITICAL**: US2, US3, US4 không bắt đầu được cho tới khi phase này xong
 
-- [ ] T004 Định nghĩa kiểu v2 trong `src/shared/domain.ts` theo data-model §3:
+- [X] T004 Định nghĩa kiểu v2 trong `src/shared/domain.ts` theo data-model §3:
   - `OfficeLayout { schemaVersion: 2; floor: { width: number; depth: number }; shell: { glassSide: 'north'; door: { side: 'south'|'east'|'west'; offset: number } }; items: PlacedItem[] }`
   - `PlacedItem { id; type; pos: { x: number; z: number }; rotation: 0|90|180|270 }`; bỏ `'door'` khỏi item đặt được
   - Giữ type `OfficeLayoutV1` / `PlacedItemV1` (có `cell`) chỉ cho việc chuyển đổi
-- [ ] T005 Đổi `src/shared/catalog.ts` sang mét:
+- [X] T005 Đổi `src/shared/catalog.ts` sang mét:
   - Footprint bằng mét: desk 1,5×1, chair 0,5×0,5, plant 0,5×0,5, water_cooler 0,5×0,5, sofa 2×1, wall_screen 1,5×0,5, wall/glass_wall dài 0,5
   - `rotatedSize` trả về mét; thay `footprintCells` bằng `footprintRect(item) → {x0,z0,x1,z1}`
   - `seatPoint(desk)` trả về toạ độ mét của tâm chỗ ngồi theo 4 hướng xoay (chuyển từ logic `seatCell` hiện tại, mỗi ô = 0,5 m, lấy tâm ô)
-- [ ] T006 Cập nhật zod trong `src/shared/schemas.ts`:
+- [X] T006 Cập nhật zod trong `src/shared/schemas.ts`:
   - `officeLayoutV2Schema`: `floor.width`/`floor.depth` từ 6 đến 40 và là bội số của 0,5; `pos` của furniture là bội số 0,05 (sai số 1e-6); `pos` của `wall`/`glass_wall` là bội số 0,5
   - `layoutPutSchema = { layout: OfficeLayoutV2|V1, seating?: Record<conversationId, string|null> }`, đồng thời chấp nhận body là `OfficeLayout` trần (contracts/local-api.md L2-2)
   - `officeLayoutV1Schema` giữ lại để đọc file cũ
-- [ ] T007 Tạo `src/shared/layout-migrate.ts` với `migrateV1toV2(v1)` theo data-model §3 "Chuyển đổi v1 → v2":
+- [X] T007 Tạo `src/shared/layout-migrate.ts` với `migrateV1toV2(v1)` theo data-model §3 "Chuyển đổi v1 → v2":
   - `floor.width = widthCells × 0,5`, `floor.depth = depthCells × 0,5`; furniture `pos = cell × 0,5`
   - Tường hoặc vách kính trên chu vi bị bỏ khỏi `items`; nếu mọi ô cạnh bắc là `glass_wall` thì `glassSide: 'north'`
   - `door` trên chu vi chuyển thành `shell.door`; không có cửa thì đặt cửa giữa cạnh nam
   - Vách trong giữ nguyên; trả về `OfficeLayout` v2
-- [ ] T008 Tạo `src/web/scene/crowd/nav-grid.ts`: lưới điều hướng 0,25 m suy ra từ layout v2. Mỗi footprint chặn được nới thêm bán kính 0,28 m. Vách trong chặn cạnh. API `walkable(x,z)`, `toCell`, `toWorld`, `neighbors`. Chuyển `src/web/scene/grid/astar.ts` sang dùng lưới này qua interface chung.
-- [ ] T009 Viết lại `src/shared/layout-validation.ts` cho v2 theo data-model §3 "Quy tắc kiểm tra" 1–6:
+- [X] T008 Tạo `src/web/scene/crowd/nav-grid.ts`: lưới điều hướng 0,25 m suy ra từ layout v2. Mỗi footprint chặn được nới thêm bán kính 0,28 m. Vách trong chặn cạnh. API `walkable(x,z)`, `toCell`, `toWorld`, `neighbors`. Chuyển `src/web/scene/grid/astar.ts` sang dùng lưới này qua interface chung.
+- [X] T009 Viết lại `src/shared/layout-validation.ts` cho v2 theo data-model §3 "Quy tắc kiểm tra" 1–6:
   - Chồng chữ nhật giữa vật chặn với sai số 1 mm; ghế được chồng vùng ngồi của bàn nó thuộc
   - Mỗi bàn có `seatPoint` đi tới được từ cửa trên lưới 0,25 m; dùng bản thuần của nav-grid, chuyển phần lõi sang `src/shared/nav-core.ts` để server cũng dùng được
   - `shell.door.offset` nằm trong [0, độ dài cạnh − 1]
   - Thêm hàm `minFloorSize(layout) → { width, depth, blockers: string[] }`, trong đó `minWidth = max(6, ceil0.5(max(pos.x + footprint.w) + 0,5))`, tương tự cho depth
-- [ ] T010 Cập nhật `src/server/services/default-layout.ts` để sinh layout v2 tương đương bố cục mặc định hiện tại: 16 × 12 m, 12 bàn và ghế, shell có kính cạnh bắc và cửa cạnh nam ở offset 7, cùng sofa, máy nước, màn hình, cây
-- [ ] T011 Cập nhật `src/server/services/layout-store.ts`:
+- [X] T010 Cập nhật `src/server/services/default-layout.ts` để sinh layout v2 tương đương bố cục mặc định hiện tại: 16 × 12 m, 12 bàn và ghế, shell có kính cạnh bắc và cửa cạnh nam ở offset 7, cùng sofa, máy nước, màn hình, cây
+- [X] T011 Cập nhật `src/server/services/layout-store.ts`:
   - Khi đọc, nếu file là v1 thì sao lưu nguyên văn thành `layout.v1.bak.json` (chỉ khi file backup chưa tồn tại), chạy `migrateV1toV2`, ghi lại v2 (FR-014)
   - Lỗi chuyển đổi được log mà không kèm nội dung file, và trả về bố cục mặc định thay vì crash
-- [ ] T012 Cập nhật các nơi còn dùng `cell`/`widthCells` sang v2:
+- [X] T012 Cập nhật các nơi còn dùng `cell`/`widthCells` sang v2:
   - `src/server/services/employees.ts`, `src/web/scene/grid/grid.ts` (thay bằng nav-grid hoặc adapter)
   - `src/web/scene/Office.tsx`: vẽ sàn theo `floor.width/depth`, vẽ tường bao, mặt kính và cửa từ `shell`
   - `src/web/scene/furniture/Furniture.tsx`: `itemTransform` dùng `pos` theo mét
   - `src/web/scene/OfficeScene.tsx`, `src/web/bench/bench-layout.ts`, `src/web/scene/employee-behaviors.ts` (dùng `seatPoint`)
-- [ ] T013 [P] Unit test `tests/unit/layout-migrate.test.ts`: bố cục mặc định v1 (dựng lại như `default-layout.ts` cũ) chuyển sang v2 thì giữ đủ 12 bàn, 12 ghế và mọi đồ vật khác; tường chu vi chuyển vào shell; cửa ở (14,23) thành `door {side:'south', offset:7}`; chuyển đổi idempotent khi chạy trên dữ liệu đã chuyển qua schema
-- [ ] T014 [P] Unit test `tests/unit/layout-v2.test.ts` (thay `tests/unit/layout-validation.test.ts` và `tests/unit/grid.test.ts`): phát hiện chồng chữ nhật, ra ngoài sàn, `pos` không phải bội 0,05, `floor` ngoài [6,40] hoặc không bội 0,5, bàn bị chắn lối, `minFloorSize` trả đúng blockers
-- [ ] T015 Chạy `npm run typecheck && npm test && npm run test:e2e`; sửa `tests/e2e/build.spec.ts` và `tests/unit/fp-motion.test.ts` cho v2 cho tới khi xanh
+- [X] T013 [P] Unit test `tests/unit/layout-migrate.test.ts`: bố cục mặc định v1 (dựng lại như `default-layout.ts` cũ) chuyển sang v2 thì giữ đủ 12 bàn, 12 ghế và mọi đồ vật khác; tường chu vi chuyển vào shell; cửa ở (14,23) thành `door {side:'south', offset:7}`; chuyển đổi idempotent khi chạy trên dữ liệu đã chuyển qua schema
+- [X] T014 [P] Unit test `tests/unit/layout-v2.test.ts` (thay `tests/unit/layout-validation.test.ts` và `tests/unit/grid.test.ts`): phát hiện chồng chữ nhật, ra ngoài sàn, `pos` không phải bội 0,05, `floor` ngoài [6,40] hoặc không bội 0,5, bàn bị chắn lối, `minFloorSize` trả đúng blockers
+- [X] T015 Chạy `npm run typecheck && npm test && npm run test:e2e`; sửa `tests/e2e/build.spec.ts` và `tests/unit/fp-motion.test.ts` cho v2 cho tới khi xanh
 
 **Checkpoint**: Bố cục v2 chạy được, văn phòng hiển thị như trước, file v1 cũ mở được
 

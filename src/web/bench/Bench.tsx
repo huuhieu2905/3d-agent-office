@@ -56,8 +56,15 @@ function Flight() {
   return null;
 }
 
+function benchFloor(): { width: number; depth: number } | undefined {
+  const m = /^(\d+)x(\d+)$/.exec(new URLSearchParams(location.search).get('floor') ?? '');
+  if (!m) return undefined;
+  const clamp = (v: number) => Math.min(40, Math.max(16, v));
+  return { width: clamp(Number(m[1])), depth: clamp(Number(m[2])) };
+}
+
 export function Bench() {
-  const layout = defaultBenchLayout();
+  const layout = defaultBenchLayout(benchFloor());
   const deskIds = layout.items.filter((i) => i.type === 'desk').map((d) => d.id);
 
   useEffect(() => {

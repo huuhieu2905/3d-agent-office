@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import type { ItemType, OfficeLayout, PlacedItem, Rotation } from '@shared/domain';
 import { validateLayout, type ValidationResult } from '@shared/layout-validation';
-import { seatCell } from '@shared/catalog';
+import { footprintRect, rectsOverlap, seatPoint } from '@shared/catalog';
 
 // Build mode state (T102): draft layout with undo/redo, palette, selection, ghost rotation.
 
@@ -22,7 +22,7 @@ interface BuildStore {
   select(id: string | null): void;
   apply(next: OfficeLayout): void;
   place(item: Omit<PlacedItem, 'id'>): void;
-  move(id: string, cell: { x: number; z: number }): void;
+  move(id: string, pos: { x: number; z: number }): void;
   rotateSelected(): void;
   removeSelected(): void;
   undo(): void;
@@ -61,16 +61,18 @@ export const useBuild = create<BuildStore>((set, get) => ({
     const extra: PlacedItem[] = [];
     // A new desk comes with its chair at the seat (if that cell is free).
     if (item.type === 'desk') {
-      const seat = seatCell(placed);
-      const taken = draft.items.some((i) => i.cell.x === seat.x && i.cell.z === seat.z && i.type !== 'wall' && i.type !== 'glass_wall');
-      if (!taken) extra.push({ id: newId('chair'), type: 'chair', cell: seat, rotation: item.rotation });
+      const seat = seatPoint(placed);
+      const chair: PlacedItem = { id: newId('chair'), type: 'chair', pos: { x: seat.x - 0.25, z: seat.z - 0.25 }, rotation: item.rotation };
+      const cr = footprintRect(chair);
+      const taken = draft.items.some((i) => i.type !== 'wall' && i.type !== 'glass_wall' && rectsOverlap(footprintRect(i), cr));
+      if (!taken) extra.push(chair);
     }
     get().apply({ ...draft, items: [...draft.items, placed, ...extra] });
   },
-  move: (id, cell) => {
+  move: (id, pos) => {
     const { draft } = get();
     if (!draft) return;
-    get().apply({ ...draft, items: draft.items.map((i) => (i.id === id ? { ...i, cell } : i)) });
+    get().apply({ ...draft, items: draft.items.map((i) => (i.id === id ? { ...i, pos } : i)) });
   },
   rotateSelected: () => {
     const { draft, selectedId } = get();

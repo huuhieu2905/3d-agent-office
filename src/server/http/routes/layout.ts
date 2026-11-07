@@ -1,7 +1,8 @@
 import type { FastifyPluginAsync } from 'fastify';
-import { officeLayoutSchema, profilePatchSchema } from '../../../shared/schemas';
+import { layoutPutSchema, profilePatchSchema } from '../../../shared/schemas';
+import { isLayoutV1, migrateV1toV2 } from '../../../shared/layout-migrate';
 import { validateLayout } from '../../../shared/layout-validation';
-import type { OfficeLayout } from '../../../shared/domain';
+import type { OfficeLayout, OfficeLayoutV1 } from '../../../shared/domain';
 import { sendError } from '../security';
 import type { RouteDeps } from './index';
 
@@ -13,9 +14,11 @@ export const layoutRoutes: FastifyPluginAsync<RouteDeps> = async (app, deps) => 
   const { services } = deps;
 
   app.put('/api/layout', async (req, reply) => {
-    const parsed = officeLayoutSchema.safeParse(req.body);
+    const parsed = layoutPutSchema.safeParse(req.body);
     if (!parsed.success) return sendError(reply, 400, 'BAD_REQUEST', 'Bố cục không đúng định dạng');
-    const layout = parsed.data as OfficeLayout;
+    // L2-2: { layout, seating? } or a bare layout; v1 bodies are migrated before validation.
+    const raw = ('layout' in parsed.data ? parsed.data.layout : parsed.data) as OfficeLayout | OfficeLayoutV1;
+    const layout: OfficeLayout = isLayoutV1(raw) ? migrateV1toV2(raw) : raw;
     const v = validateLayout(layout);
     if (!v.ok) {
       return reply.code(422).send({
