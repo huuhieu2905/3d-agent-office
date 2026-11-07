@@ -298,9 +298,9 @@ V). Vì vậy chỉ những test này được đưa vào. Các test khác là t
 
 **Independent Test**: quickstart V7.
 
-- [ ] T116 [US7] Viết camera góc nhìn thứ nhất trong `src/web/scene/cameras/FirstPerson.tsx`: `PointerLockControls` của drei, tầm mắt 1,65 m, WASD/phím mũi tên, Shift để đi nhanh. Va chạm hình tròn (bán kính 0,3 m) với bản đồ ô ở `src/web/scene/grid/grid.ts`, nên không xuyên tường hay đồ vật (FR-071)
-- [ ] T117 [US7] Viết bấm vào nhân viên ở góc nhìn thứ nhất trong `src/web/scene/cameras/FirstPerson.tsx`: hiện tâm ngắm; bấm chuột khi tâm ngắm trỏ vào nhân viên trong phạm vi 4 m thì mở `ChatPanel`, đồng thời tạm thoát pointer lock để gõ
-- [ ] T118 [US7] Viết chuyển camera trong `src/web/ui/CameraToggle.tsx` và `src/web/state/ui.ts`: nút cộng phím `V` để chuyển. Nhớ vị trí toàn cảnh trước đó để quay lại đúng chỗ. Lưu `Settings.camera` (FR-070)
+- [X] T116 [US7] Viết camera góc nhìn thứ nhất trong `src/web/scene/cameras/FirstPerson.tsx`: `PointerLockControls` của drei, tầm mắt 1,65 m, WASD/phím mũi tên, Shift để đi nhanh. Va chạm hình tròn (bán kính 0,2 m — nhỏ hơn nửa ô 0,25 m) với bản đồ ô ở `src/web/scene/grid/grid.ts`, nên không xuyên tường hay đồ vật (FR-071)
+- [X] T117 [US7] Viết bấm vào nhân viên ở góc nhìn thứ nhất trong `src/web/scene/cameras/FirstPerson.tsx`: hiện tâm ngắm; bấm chuột khi tâm ngắm trỏ vào nhân viên trong phạm vi 4 m thì mở `ChatPanel`, đồng thời tạm thoát pointer lock để gõ
+- [X] T118 [US7] Viết chuyển camera trong `src/web/ui/CameraToggle.tsx` và `src/web/state/ui.ts`: nút cộng phím `V` để chuyển. Nhớ vị trí toàn cảnh trước đó để quay lại đúng chỗ. Lưu `Settings.camera` (FR-070)
 
 **Checkpoint**: chạy quickstart V7. **Kết thúc Đợt 4**.
 

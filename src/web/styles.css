@@ -686,3 +686,46 @@ kbd {
 .modal label.check input {
   width: auto;
 }
+
+/* First person */
+.crosshair {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  pointer-events: none;
+  z-index: 3;
+}
+.crosshair::before,
+.crosshair::after {
+  content: '';
+  position: absolute;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+}
+.crosshair::before {
+  left: 6px;
+  top: 0;
+  width: 2px;
+  height: 14px;
+}
+.crosshair::after {
+  top: 6px;
+  left: 0;
+  width: 14px;
+  height: 2px;
+}
+.fp-help {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  z-index: 4;
+}
+.tag-fp {
+  font-size: 11px;
+  padding: 2px 6px;
+  transform: translateY(-6px);
+}

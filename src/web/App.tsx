@@ -16,6 +16,8 @@ import { AddDeskHint } from './ui/build/AddDeskHint';
 import { SettingsButton, ThemeToggle, WeatherBadge } from './ui/settings/SettingsPanel';
 import { PerfManager } from './scene/perf/PerfManager';
 import { useEffect } from 'react';
+import { CameraToggle, FirstPersonHelp, useCameraHotkey } from './ui/CameraToggle';
+import { Crosshair } from './scene/cameras/FirstPerson';
 
 function ConnectionBanner() {
   const { app, serverOnline, warnings, dismissWarning } = useConnection();
@@ -54,6 +56,12 @@ export function App() {
   useEffect(() => {
     if (serverOnline && !loaded) void useSettings.getState().load();
   }, [serverOnline, loaded]);
+  useCameraHotkey();
+  const cameraMode = useUi((s) => s.camera);
+  const savedCamera = useSettings((s) => (s.loaded ? s.settings.camera : null));
+  useEffect(() => {
+    if (savedCamera) useUi.getState().setCamera(savedCamera);
+  }, [savedCamera]);
   const hireDeskId = useUi((s) => s.hireDeskId);
   const setHireDesk = useUi((s) => s.setHireDesk);
   return (
@@ -67,6 +75,7 @@ export function App() {
       </Canvas>
       <ConnectionBanner />
       <div className="hud-top-right">
+        <CameraToggle />
         <ThemeToggle />
         <SettingsButton />
         <BuildButton />
@@ -78,6 +87,8 @@ export function App() {
       <QuotaPanel />
       <BuildMode />
       <WeatherBadge />
+      <FirstPersonHelp />
+      {cameraMode === 'first_person' && <Crosshair />}
       {hireDeskId && <HireDialog deskId={hireDeskId} onClose={() => setHireDesk(null)} />}
       <div className="hud-left">
         <AddDeskHint />

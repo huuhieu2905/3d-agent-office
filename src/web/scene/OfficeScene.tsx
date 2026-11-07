@@ -21,6 +21,7 @@ import { Surroundings, useCityWeather } from './Surroundings';
 import { useSettings } from '../state/settings';
 import { useWeather } from '../state/weather';
 import { LIGHT_FACTOR } from './weather/Weather';
+import { FirstPersonCamera } from './cameras/FirstPerson';
 
 export function OfficeScene({
   theme,
@@ -50,6 +51,7 @@ export function OfficeScene({
   const disconnected = useConnection(isDisconnected);
   const visible = useEmployees(useShallow(selectVisible));
   const highlight = useUi((s) => s.highlightProjectId);
+  const cameraMode = useUi((s) => s.camera);
   const positions = useRef(new Map<string, THREE.Vector3>()).current;
 
   // Subagents without a desk fold into their parent's badge (T057).
@@ -71,8 +73,15 @@ export function OfficeScene({
     <>
       <OfficeMood disconnected={disconnected} theme={theme} weatherFactor={LIGHT_FACTOR[condition]} />
       <Surroundings city={city} detail={detailLevel} theme={theme} />
-      {!benchMode && <OverviewCamera size={size} />}
-      <Office layout={layout} grid={grid} employeesByDesk={byDesk} theme={theme} onItemClick={build.active ? build.select : undefined}>
+      {!benchMode && (cameraMode === 'first_person' && !build.active ? <FirstPersonCamera grid={grid} positions={positions} /> : <OverviewCamera size={size} />)}
+      <Office
+        layout={layout}
+        grid={grid}
+        employeesByDesk={byDesk}
+        theme={theme}
+        cutaway={cameraMode !== 'first_person' || build.active}
+        onItemClick={build.active ? build.select : undefined}
+      >
         {entries.map(({ employee, leaving, enter }) => (
           <Employee
             key={employee.conversationId}

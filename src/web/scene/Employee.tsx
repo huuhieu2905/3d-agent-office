@@ -57,6 +57,7 @@ export function Employee({ employee, grid, enter, leaving, lobbySlot, dimmed, on
   const [hover, setHover] = useState(false);
   const openConversation = useUi((s) => s.openConversation);
   const drag = useEmployeeDrag(employee.conversationId);
+  const firstPerson = useUi((s) => s.camera === 'first_person');
 
   useFrame((_, dt) => {
     const d = Math.min(dt, 0.1);
@@ -117,8 +118,15 @@ export function Employee({ employee, grid, enter, leaving, lobbySlot, dimmed, on
       <mesh position={[0, 0.7, 0]} visible={false}>
         <boxGeometry args={[0.8, 1.5, 0.8]} />
       </mesh>
-      <Html position={[0, 1.65, 0]} center distanceFactor={9} zIndexRange={[5, 0]} style={{ pointerEvents: 'none' }}>
-        <div className={`tag ${dimmed ? 'tag-dim' : ''} ${hover ? 'tag-hover' : ''}`}>
+      <Html
+        position={[0, 1.65, 0]}
+        center
+        // Overview: tags scale with distance. First person: fixed size, otherwise tags fill the screen up close.
+        distanceFactor={firstPerson ? undefined : 9}
+        zIndexRange={[5, 0]}
+        style={{ pointerEvents: 'none' }}
+      >
+        <div className={`tag ${dimmed ? 'tag-dim' : ''} ${hover ? 'tag-hover' : ''} ${firstPerson ? 'tag-fp' : ''}`}>
           <span className="tag-dot" style={{ background: employee.projectColor }} />
           <span className="tag-name">{employee.name}</span>
           {badge && (
