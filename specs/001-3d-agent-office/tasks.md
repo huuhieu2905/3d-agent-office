@@ -310,7 +310,7 @@ V). Vì vậy chỉ những test này được đưa vào. Các test khác là t
 
 **Purpose**: Hoàn thiện, rà soát theo Constitution
 
-- [ ] T119 [P] Rà soát rò rỉ toàn hệ thống: mở rộng `tests/leaks/redaction.test.ts` để chạy toàn bộ e2e rồi quét log, `~/Library/Application Support/agent-office/` và phản hồi API, tìm token, email, tên và nội dung tin nhắn (SC-009, cổng chất lượng 3)
+- [X] T119 [P] Rà soát rò rỉ toàn hệ thống: mở rộng `tests/leaks/redaction.test.ts` để chạy toàn bộ e2e rồi quét log, `~/Library/Application Support/agent-office/` và phản hồi API, tìm token, email, tên và nội dung tin nhắn (SC-009, cổng chất lượng 3)
 - [ ] T120 Chạy toàn bộ `quickstart.md` (V1–V8) trên máy tham chiếu và cập nhật `docs/INSTALL.md` cùng `README.md` theo kết quả cuối
 - [ ] T121 Xoá phần "Sync Impact Report" ở đầu `.specify/memory/constitution.md` trước bản phát hành đầu tiên (theo ghi chú của constitution)
 

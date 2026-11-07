@@ -67,16 +67,18 @@ export function createLogger(destination?: pino.DestinationStream) {
       },
       formatters: {
         log(obj) {
-          // Scrub error messages/stacks, which may echo request bodies.
-          const err = obj.err as { message?: string; stack?: string } | undefined;
+          // Error messages can carry upstream content (chat text, emails, tokens), so only the error's
+          // type, code and where it happened are logged — never its message (FR-081, found by T119).
+          const err = obj.err as { name?: string; code?: unknown; kind?: unknown; status?: unknown; statusCode?: unknown; stack?: string } | undefined;
           if (err && typeof err === 'object') {
+            const at = (err.stack ?? '')
+              .split('\n')
+              .slice(1, 4)
+              .map((l) => redactString(l.trim()))
+              .join(' | ');
             return {
               ...obj,
-              err: {
-                ...err,
-                message: err.message ? redactString(err.message) : err.message,
-                stack: err.stack ? redactString(err.stack) : err.stack,
-              },
+              err: { type: err.name ?? 'Error', code: err.code, kind: err.kind, status: err.status ?? err.statusCode, at },
             };
           }
           return obj;

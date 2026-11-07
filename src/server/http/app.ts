@@ -34,6 +34,15 @@ export async function createHttpServer(opts: HttpServerOptions): Promise<HttpSer
 
   registerSecurity(app, { port: () => boundPort, sessionToken: opts.sessionToken });
 
+  // Registered BEFORE routes so every route plugin inherits it (Fastify encapsulation): never echo
+  // upstream error messages, which may contain tokens, emails or chat content (FR-081, found by T119).
+  app.setErrorHandler((err, _req, reply) => {
+    opts.log.error({ err }, 'request failed');
+    const status = (err as { statusCode?: number }).statusCode ?? 500;
+    void reply.code(status).send({ error: { code: status === 400 ? 'BAD_REQUEST' : 'INTERNAL', message: 'Request failed' } });
+  });
+
+
   await app.register(fastifyWebsocket, { options: { maxPayload: 64 * 1024 } });
   app.get('/ws', { websocket: true }, (socket) => hub.add(socket));
 
@@ -51,11 +60,6 @@ export async function createHttpServer(opts: HttpServerOptions): Promise<HttpSer
     );
   }
 
-  app.setErrorHandler((err, _req, reply) => {
-    opts.log.error({ err }, 'request failed');
-    const status = (err as { statusCode?: number }).statusCode ?? 500;
-    void reply.code(status).send({ error: { code: status === 400 ? 'BAD_REQUEST' : 'INTERNAL', message: 'Request failed' } });
-  });
 
   return {
     app,
