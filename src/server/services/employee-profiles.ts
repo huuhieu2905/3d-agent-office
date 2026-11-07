@@ -79,6 +79,22 @@ export class EmployeeProfiles {
     return p;
   }
 
+  /**
+   * Apply a whole seating plan from arrange mode (002 L2-2): each listed conversation gets its desk
+   * (null = lobby); anyone else still holding one of those desks is sent to the lobby, so no desk is
+   * ever shared. The client already resolved swaps.
+   */
+  async setSeats(seating: Record<string, string | null>): Promise<void> {
+    const data = await this.load();
+    const claimed = new Set(Object.values(seating).filter((d): d is string => !!d));
+    for (const [id, p] of Object.entries(data.profiles)) {
+      if (!(id in seating) && p.deskId && claimed.has(p.deskId)) p.deskId = null;
+    }
+    for (const [id, deskId] of Object.entries(seating)) (await this.get(id)).deskId = deskId;
+    this.dirty = true;
+    await this.flush();
+  }
+
   /** Mark conversations as seen and drop profiles unseen for 30 days. */
   async touch(seenIds: string[], now = Date.now()): Promise<void> {
     const data = await this.load();

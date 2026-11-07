@@ -4,7 +4,20 @@ import * as THREE from 'three';
 
 // T054: lights dim smoothly while the App is disconnected and recover when it reconnects.
 
-export function OfficeMood({ disconnected, theme, weatherFactor = 1 }: { disconnected: boolean; theme: 'light' | 'dark'; weatherFactor?: number }) {
+export function OfficeMood({
+  disconnected,
+  theme,
+  weatherFactor = 1,
+  floor = { width: 16, depth: 12 },
+}: {
+  disconnected: boolean;
+  theme: 'light' | 'dark';
+  weatherFactor?: number;
+  /** Office size: the shadow frustum covers the whole floor (002 US4). */
+  floor?: { width: number; depth: number };
+}) {
+  const sx = Math.max(11, floor.width / 2 + 3);
+  const sz = Math.max(9, floor.depth / 2 + 3);
   const ambient = useRef<THREE.AmbientLight>(null);
   const sun = useRef<THREE.DirectionalLight>(null);
   const hemi = useRef<THREE.HemisphereLight>(null);
@@ -28,10 +41,12 @@ export function OfficeMood({ disconnected, theme, weatherFactor = 1 }: { disconn
         intensity={base.sun}
         castShadow
         shadow-mapSize={[2048, 2048]}
-        shadow-camera-left={-11}
-        shadow-camera-right={11}
-        shadow-camera-top={9}
-        shadow-camera-bottom={-9}
+        key={`${sx}x${sz}`}
+        shadow-camera-left={-sx}
+        shadow-camera-right={sx}
+        shadow-camera-top={sz}
+        shadow-camera-bottom={-sz}
+        shadow-camera-far={Math.max(50, sx * 3)}
         shadow-bias={-0.0005}
       />
       {theme === 'dark' && <pointLight position={[0, 2.4, 0]} intensity={disconnected ? 4 : 14} distance={14} color="#ffe2b0" />}

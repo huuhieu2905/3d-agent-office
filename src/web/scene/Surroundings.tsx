@@ -29,7 +29,18 @@ export function useCityWeather(city: City, enabled: boolean) {
   }, [city, enabled, set]);
 }
 
-export function Surroundings({ city, detail, theme }: { city: City; detail: DetailLevel; theme: 'light' | 'dark' }) {
+export function Surroundings({
+  city,
+  detail,
+  theme,
+  floor = { width: 16, depth: 12 },
+}: {
+  city: City;
+  detail: DetailLevel;
+  theme: 'light' | 'dark';
+  /** Office size: the park reflows around it (002 T055). */
+  floor?: { width: number; depth: number };
+}) {
   const weather = useWeather((s) => (s.weather?.city === city ? s.weather : null));
   const condition = weather?.condition ?? 'clear';
   const rainy = condition === 'rain' || condition === 'storm';
@@ -44,8 +55,8 @@ export function Surroundings({ city, detail, theme }: { city: City; detail: Deta
       <Weather condition={condition} theme={theme} detail={detail} />
       {ready && (
         <>
-          <Park detail={detail} seed={CITY_SEED[city]} rainy={rainy} dark={theme === 'dark'} />
-          <Ambient detail={detail} seed={CITY_SEED[city]} rainy={rainy} />
+          <Park detail={detail} seed={CITY_SEED[city]} rainy={rainy} dark={theme === 'dark'} floor={floor} />
+          <Ambient detail={detail} seed={CITY_SEED[city]} rainy={rainy} floor={floor} />
           <CitySkyline city={city} detail={detail} />
         </>
       )}

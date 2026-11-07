@@ -1,5 +1,8 @@
-import { useMemo } from 'react';
-import type { Employee, OfficeLayout } from '@shared/domain';
+import { useMemo, useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
+import type * as THREE from 'three';
+import { jiggleOf } from './furniture/PropJiggle';
+import type { Employee, OfficeLayout, PlacedItem } from '@shared/domain';
 import { DOOR_WIDTH } from '@shared/domain';
 import { isEdge } from '@shared/catalog';
 import { Desk, Door, EdgePanel, floorToWorld, furnitureFor, itemTransform, palette } from './furniture/Furniture';
@@ -48,20 +51,38 @@ export function doorTransform(layout: OfficeLayout): { position: [number, number
   return { position: floorToWorld(layout.floor, 0.25, mid), rotationY: Math.PI / 2 };
 }
 
+/** Renders the damped wobble of a bumped light prop (T046); never touches the saved position. */
+function Jiggle({ id, children }: { id: string; children: React.ReactNode }) {
+  const g = useRef<THREE.Group>(null);
+  useFrame(() => {
+    const j = jiggleOf(id);
+    const el = g.current;
+    if (!el) return;
+    if (j) {
+      el.position.set(j.dx, 0, j.dz);
+      el.rotation.z = j.tilt;
+    } else if (el.rotation.z !== 0 || el.position.x !== 0) {
+      el.position.set(0, 0, 0);
+      el.rotation.z = 0;
+    }
+  });
+  return <group ref={g}>{children}</group>;
+}
+
 export function Office({
   layout,
   employeesByDesk,
   theme,
   cutaway = true,
-  onItemClick,
+  onItemPress,
   children,
 }: {
   layout: OfficeLayout;
   employeesByDesk: Map<string, Employee>;
   theme: 'light' | 'dark';
   cutaway?: boolean;
-  /** Build mode: clicking any item selects it instead of the normal action. */
-  onItemClick?: (id: string) => void;
+  /** Arrange mode: pressing an item selects it and may start a drag (002 US2). */
+  onItemPress?: (item: PlacedItem, e: PointerEvent) => void;
   children?: React.ReactNode;
 }) {
   const { width: w, depth: d } = layout.floor;
@@ -94,7 +115,7 @@ export function Office({
           content = <Desk screenOn={e?.visualState === 'working' || e?.visualState === 'thinking'} />;
         } else {
           const C = furnitureFor[item.type];
-          content = C ? <C /> : null;
+          content = C ? item.type === 'chair' || item.type === 'plant' ? <Jiggle id={item.id}><C /></Jiggle> : <C /> : null;
         }
         return (
           <group
@@ -102,12 +123,17 @@ export function Office({
             position={t.position}
             rotation-y={t.rotationY}
             userData={{ itemId: item.id }}
-            onClick={
-              onItemClick
+            onPointerDown={
+              onItemPress
                 ? (e) => {
                     e.stopPropagation();
-                    onItemClick(item.id);
+                    onItemPress(item, e.nativeEvent);
                   }
+                : undefined
+            }
+            onClick={
+              onItemPress
+                ? (e) => e.stopPropagation()
                 : item.type === 'desk' && !employeesByDesk.has(item.id)
                 ? (e) => {
                     e.stopPropagation();

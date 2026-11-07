@@ -20,7 +20,7 @@ export function rng(seed: number): () => number {
   };
 }
 
-export const OFFICE_HALF = { x: 9.5, z: 7.5 }; // office footprint + margin (metres)
-export const PARK_RADIUS = 38;
-export const ROAD_RADIUS = 44;
-export const PATH_RADIUS = 13;
+// 002 R2-05: the park must surround even a 40 × 40 m office (loop path ≈ 34 m out, then trees), so the
+// road ring moved out from 44 m to 60 m. Paths and the lawn now follow the office: see park-layout.ts.
+export const PARK_RADIUS = 54;
+export const ROAD_RADIUS = 60;

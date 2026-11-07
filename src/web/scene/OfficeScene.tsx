@@ -22,6 +22,9 @@ import { useSettings } from '../state/settings';
 import { useWeather } from '../state/weather';
 import { LIGHT_FACTOR } from './weather/Weather';
 import { FirstPersonCamera } from './cameras/FirstPerson';
+import { TestHooks } from './interaction/TestHooks';
+import { Crowd } from './crowd/crowd';
+import { DragLayer, beginDrag } from './interaction/DragLayer';
 
 export function OfficeScene({
   theme,
@@ -48,8 +51,19 @@ export function OfficeScene({
   const layout = build.active && build.draft ? build.draft : saved;
 
   const grid = useMemo(() => (layout ? new OfficeGrid(layout) : null), [layout]);
+  // One crowd per office grid (US3 T044): employees never overlap and give way to each other.
+  const crowd = useMemo(() => (grid ? new Crowd(grid) : null), [grid]);
+  useEffect(() => {
+    if (benchMode && crowd) window.__crowd = crowd; // bench: count overlaps (T047)
+  }, [benchMode, crowd]);
   const disconnected = useConnection(isDisconnected);
-  const visible = useEmployees(useShallow(selectVisible));
+  const served = useEmployees(useShallow(selectVisible));
+  // Arrange mode: employees moved in the draft walk to their draft desk before anything is saved (T036).
+  const visible = useMemo(() => {
+    if (!build.active || Object.keys(build.seating).length === 0) return served;
+    return served.map((e) => (e.conversationId in build.seating ? { ...e, deskId: build.seating[e.conversationId] ?? null } : e));
+  }, [served, build.active, build.seating]);
+  const currentDesks = useMemo(() => Object.fromEntries(served.map((e) => [e.conversationId, e.deskId])), [served]);
   const highlight = useUi((s) => s.highlightProjectId);
   const cameraMode = useUi((s) => s.camera);
   const positions = useRef(new Map<string, THREE.Vector3>()).current;
@@ -71,15 +85,22 @@ export function OfficeScene({
 
   return (
     <>
-      <OfficeMood disconnected={disconnected} theme={theme} weatherFactor={LIGHT_FACTOR[condition]} />
-      <Surroundings city={city} detail={detailLevel} theme={theme} />
+      <OfficeMood disconnected={disconnected} theme={theme} weatherFactor={LIGHT_FACTOR[condition]} floor={layout.floor} />
+      <Surroundings city={city} detail={detailLevel} theme={theme} floor={layout.floor} />
       {!benchMode && (cameraMode === 'first_person' && !build.active ? <FirstPersonCamera grid={grid} positions={positions} /> : <OverviewCamera size={size} />)}
       <Office
         layout={layout}
         employeesByDesk={byDesk}
         theme={theme}
         cutaway={cameraMode !== 'first_person' || build.active}
-        onItemClick={build.active ? build.select : undefined}
+        onItemPress={
+          build.active
+            ? (item, e) => {
+                build.select(item.id);
+                beginDrag('item', item.id, item.pos, e);
+              }
+            : undefined
+        }
       >
         {entries.map(({ employee, leaving, enter }) => (
           <Employee
@@ -92,11 +113,15 @@ export function OfficeScene({
             dimmed={!!highlight && employee.projectId !== highlight}
             onLeft={onLeft}
             positions={positions}
+            crowd={crowd ?? undefined}
+            layout={layout}
           />
         ))}
         <SubagentLinks employees={visible} positions={positions} />
         {!benchMode && !build.active && <QuotaScreen layout={layout} />}
-        {build.active && <BuildGizmo layout={layout} employees={visible} />}
+        {build.active && <BuildGizmo layout={layout} />}
+        {build.active && <DragLayer layout={layout} currentDesks={currentDesks} />}
+        <TestHooks layout={layout} />
       </Office>
     </>
   );

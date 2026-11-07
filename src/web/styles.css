@@ -742,3 +742,49 @@ kbd {
   padding: 2px 6px;
   transform: translateY(-6px);
 }
+
+/* 002 US2: toolbar for the item selected in arrange mode (U-3). */
+.build-selected {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+}
+
+/* 002 US4: office size inputs in arrange mode (U-4). */
+.floor-size {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  font-size: 13px;
+}
+.floor-size label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.floor-size input {
+  width: 72px;
+  font: inherit;
+  padding: 4px 6px;
+  border-radius: 8px;
+  border: 1px solid rgba(127, 127, 127, 0.35);
+  background: transparent;
+  color: var(--text);
+}
+.floor-size input.invalid {
+  border-color: var(--error);
+  box-shadow: 0 0 0 1px var(--error);
+}
+.size-label {
+  background: var(--panel);
+  color: var(--text);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  pointer-events: none;
+}

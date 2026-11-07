@@ -14,21 +14,37 @@ import type { DetailLevel } from '@shared/domain';
 
 const STATES: VisualState[] = ['idle', 'working', 'thinking', 'waiting_for_boss', 'error', 'stopped'];
 /** Scenarios understood by ?scenario= (T003). */
-const KNOWN_SCENARIOS: string[] = [];
+const KNOWN_SCENARIOS: string[] = ['crowd'];
 
 const APPEARANCES = ['worker-a', 'worker-b', 'worker-c', 'worker-d', 'worker-e', 'worker-f', 'worker-g', 'worker-h'];
 
 declare global {
   interface Window {
-    __bench?: { frames: number[]; startedAt: number };
+    __bench?: { frames: number[]; startedAt: number; overlaps?: number; crowdMs?: number[] };
+    __crowd?: import('../scene/crowd/crowd').Crowd;
   }
 }
 
-function fakeEmployees(tick: number, deskIds: string[]): Employee[] {
+/** T047: count pairs closer than their radii allow (must stay 0). */
+function countOverlaps(): number {
+  const agents = window.__crowd?.all() ?? [];
+  let n = 0;
+  for (let i = 0; i < agents.length; i++)
+    for (let j = i + 1; j < agents.length; j++) {
+      const a = agents[i]!;
+      const b = agents[j]!;
+      const ra = a.seated ? 0.2 : 0.28;
+      const rb = b.seated ? 0.2 : 0.28;
+      if (Math.hypot(a.x - b.x, a.z - b.z) < ra + rb - 0.01) n++;
+    }
+  return n;
+}
+
+function fakeEmployees(tick: number, deskIds: string[], allIdle = false): Employee[] {
   return Array.from({ length: 20 }, (_, i) => ({
     conversationId: `bench-${i}`,
     name: `Nhân viên ${i + 1}`,
-    visualState: STATES[(i + tick) % STATES.length]!,
+    visualState: allIdle ? 'idle' : STATES[(i + tick) % STATES.length]!,
     appearance: APPEARANCES[i % APPEARANCES.length]!,
     deskId: deskIds[i] ?? null,
     projectId: `p${i % 3}`,
@@ -51,7 +67,10 @@ function Flight() {
     camera.position.set(Math.sin(a) * 15, 9 + Math.sin(t * 0.3) * 3, Math.cos(a) * 13);
     camera.lookAt(0, 0, 0);
     const b = window.__bench;
-    if (b) b.frames.push(performance.now());
+    if (b) {
+      b.frames.push(performance.now());
+      if (b.overlaps !== undefined) b.overlaps += countOverlaps();
+    }
   });
   return null;
 }
@@ -82,11 +101,11 @@ export function Bench() {
     useConnection.getState().setServerOnline(true);
     useConnection.getState().setApp({ kind: 'connected', appVersion: 'bench', versionSupported: true });
     let tick = 0;
-    useEmployees.getState().snapshot(fakeEmployees(tick, deskIds), 0);
-    window.__bench = { frames: [], startedAt: performance.now() };
+    useEmployees.getState().snapshot(fakeEmployees(tick, deskIds, scenario === 'crowd'), 0);
+    window.__bench = { frames: [], startedAt: performance.now(), ...(scenario === 'crowd' ? { overlaps: 0 } : {}) };
     const id = setInterval(() => {
       tick++;
-      useEmployees.getState().snapshot(fakeEmployees(tick, deskIds), 0);
+      useEmployees.getState().snapshot(fakeEmployees(tick, deskIds, scenario === 'crowd'), 0);
     }, 2000);
     return () => clearInterval(id);
   }, []); // eslint-disable-line

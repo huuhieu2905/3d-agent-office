@@ -2,32 +2,37 @@ import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import type { DetailLevel } from '@shared/domain';
-import { DETAIL, PATH_RADIUS, ROAD_RADIUS, rng } from './detail';
+import { DETAIL, ROAD_RADIUS, rng } from './detail';
+import { exerciseSpots, onPath, parkFrame } from './park-layout';
 
 // T109 / FR-061: decorative walkers, joggers, people exercising and cars on fixed loops (no interaction).
 // Low-poly instanced figures — one draw call per part; updated only while the scene is rendering.
 
 type Kind = 'walk' | 'jog' | 'exercise';
 
-export function Ambient({ detail, seed, rainy }: { detail: DetailLevel; seed: number; rainy: boolean }) {
+export function Ambient({ detail, seed, rainy, floor }: { detail: DetailLevel; seed: number; rainy: boolean; floor: { width: number; depth: number } }) {
   const d = DETAIL[detail];
+  // 002 T055: walkers follow the loop path round the office; the exercise group stands just outside it.
+  const frame = useMemo(() => parkFrame(floor), [floor.width, floor.depth]);
   const people = Math.max(2, Math.round(d.walkers * (rainy ? 0.4 : 1))); // fewer people when it rains
   const agents = useMemo(() => {
     const r = rng(seed * 13 + 7);
+    const spots = exerciseSpots(frame, Math.ceil(people / 5));
+    let ex = 0;
     return Array.from({ length: people }, (_, i) => {
       const kind: Kind = i % 5 === 0 ? 'exercise' : i % 3 === 0 ? 'jog' : 'walk';
       return {
         kind,
         angle: r() * Math.PI * 2,
-        lane: PATH_RADIUS + (r() - 0.5) * 1.2,
+        lane: (r() - 0.5) * 1.0,
         speed: (kind === 'jog' ? 2.4 : 1.1) * (r() < 0.5 ? 1 : -1),
         color: new THREE.Color().setHSL(r(), 0.55, 0.55),
         // People exercising stand on the lawn doing jumping jacks.
-        spot: { x: Math.cos(i) * (PATH_RADIUS + 4), z: Math.sin(i) * (PATH_RADIUS + 4) },
+        spot: kind === 'exercise' ? spots[ex++ % spots.length]! : { x: 0, z: 0 },
         phase: r() * 10,
       };
     });
-  }, [people, seed]);
+  }, [people, seed, frame]);
   const cars = useMemo(() => {
     const r = rng(seed * 17 + 3);
     return Array.from({ length: d.cars }, (_, i) => ({
@@ -62,9 +67,10 @@ export function Ambient({ detail, seed, rainy }: { detail: DetailLevel; seed: nu
           bob = Math.abs(Math.sin(t * 4 + a.phase)) * 0.25;
           sy = 1 - Math.abs(Math.sin(t * 4 + a.phase)) * 0.08;
         } else {
-          a.angle += (a.speed / a.lane) * Math.min(dt, 0.1);
-          x = Math.cos(a.angle) * a.lane;
-          z = Math.sin(a.angle) * a.lane;
+          a.angle += (a.speed / ((frame.rx + frame.rz) / 2)) * Math.min(dt, 0.1);
+          const p = onPath(frame, a.angle, a.lane);
+          x = p.x;
+          z = p.z;
           bob = Math.abs(Math.sin(t * (a.kind === 'jog' ? 10 : 6) + a.phase)) * (a.kind === 'jog' ? 0.08 : 0.04);
         }
         q.setFromAxisAngle(y, -a.angle + (a.speed > 0 ? Math.PI : 0));

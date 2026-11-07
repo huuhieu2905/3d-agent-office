@@ -7,7 +7,7 @@ import { chromium } from '@playwright/test';
 
 declare global {
   interface Window {
-    __bench?: { frames: number[]; startedAt: number };
+    __bench?: { frames: number[]; startedAt: number; overlaps?: number };
   }
 }
 
@@ -61,6 +61,14 @@ try {
   });
   console.log(`renderer: ${renderer} · detail: ${detail}${scenario ? ` · scenario: ${scenario}` : ''}${floor ? ` · floor: ${floor}` : ''}`);
   console.log(`frames: ${frames.length} over ${seconds}s — average ${avg.toFixed(1)} FPS, 1% low ${p1.toFixed(1)} FPS`);
+  if (scenario === 'crowd') {
+    const overlaps = await page.evaluate(() => window.__bench!.overlaps ?? 0);
+    console.log(`crowd: ${overlaps} overlap frame-pairs`);
+    if (overlaps > 0) {
+      console.error('✗ SC-005 failed: employees overlapped');
+      process.exitCode = 1;
+    }
+  }
   if (avg < 60) {
     console.error('✗ SC-004 failed: average FPS below 60');
     process.exitCode = 1;

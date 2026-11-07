@@ -121,7 +121,7 @@ Một package: `src/shared`, `src/server`, `src/web`, `tests/{unit,contract,e2e}
 
 ### Tests for User Story 2 (viết trước, phải ĐỎ trên code hiện tại)
 
-- [ ] T029 [US2] E2E `tests/e2e/build-drag.spec.ts`:
+- [X] T029 [US2] E2E `tests/e2e/build-drag.spec.ts`:
   - Bật sắp xếp, kéo nhân viên vào bàn trống → nhân viên ngồi bàn đó; đặt bàn mới chưa lưu rồi kéo nhân viên vào → được (tái hiện R2-02 #1–#3)
   - Kéo bàn sang vị trí lệch 0,25 m so với lưới cũ → sai lệch ≤ 5 cm
   - Kéo chồng lên sofa → về chỗ cũ
@@ -131,37 +131,37 @@ Một package: `src/shared`, `src/server`, `src/web`, `tests/{unit,contract,e2e}
   - Lưu rồi tải lại → giữ nguyên
 
   Commit test này trước, ghi kết quả đỏ vào mô tả commit.
-- [ ] T030 [P] [US2] Unit test `tests/unit/drag-controller.test.ts` cho logic thuần của DragController: ngưỡng 4 px, làm tròn 0,05 m, Shift bám 0,5 m, huỷ khi `pointercancel`/blur, đúng một bước undo cho mỗi lần thả thành công
+- [X] T030 [P] [US2] Unit test `tests/unit/drag-controller.test.ts` cho logic thuần của DragController: ngưỡng 4 px, làm tròn 0,05 m, Shift bám 0,5 m, huỷ khi `pointercancel`/blur, đúng một bước undo cho mỗi lần thả thành công
 
 ### Implementation for User Story 2
 
-- [ ] T031 [US2] Tạo `src/web/scene/interaction/DragController.ts` (thuần, không React), theo R2-02 và U-2:
+- [X] T031 [US2] Tạo `src/web/scene/interaction/DragController.ts` (thuần, không React), theo R2-02 và U-2:
   - `begin(target, pointerId, screenPt)`, `move(screenPt, ray)`, `end()`, `cancel()`
   - Giao tia với `THREE.Plane(y=0)`; ngưỡng 4 px; làm tròn 0,05 m, giữ Shift thì 0,5 m
   - Callback `onPreview` / `onCommit` / `onCancel`
-- [ ] T032 [US2] Tạo `src/web/scene/interaction/useDrag.ts`: hook R3F gắn DragController vào đối tượng; gọi `setPointerCapture` trên `pointerdown`; tắt `CameraControls` (lấy từ `useThree().controls`) trong lúc kéo và bật lại khi kết thúc; nghe `keydown Escape` và `window blur` để huỷ; chỉ hoạt động khi `useBuild().active` (FR-010)
-- [ ] T033 [US2] Mở rộng `src/web/state/build.ts` theo data-model §4:
+- [X] T032 [US2] Tạo `src/web/scene/interaction/useDrag.ts`: hook R3F gắn DragController vào đối tượng; gọi `setPointerCapture` trên `pointerdown`; tắt `CameraControls` (lấy từ `useThree().controls`) trong lúc kéo và bật lại khi kết thúc; nghe `keydown Escape` và `window blur` để huỷ; chỉ hoạt động khi `useBuild().active` (FR-010)
+- [X] T033 [US2] Mở rộng `src/web/state/build.ts` theo data-model §4:
   - Thêm `seating: Record<string, string|null>`, `drag`, `resizeBlockers`
   - Đổi `move(id, pos)` sang mét; `assignSeat(conversationId, deskId)` với luật đổi chỗ khi bàn có người
   - Undo/redo bao cả `draft` lẫn `seating`
   - `place` cho bàn mới tự thêm ghế tại `seatPoint`
   - Khi dời bàn, dời ghế thuộc bàn cùng `delta` (FR-015)
-- [ ] T034 [US2] Viết lại `src/web/scene/BuildGizmo.tsx` dùng `useDrag`:
+- [X] T034 [US2] Viết lại `src/web/scene/BuildGizmo.tsx` dùng `useDrag`:
   - Bấm đồ vật → `select` (viền và thanh công cụ Xoay/Xoá/Bỏ chọn)
   - Bóng xanh/đỏ dùng `validateLayout` v2
   - Bấm chỗ trống → bỏ chọn; phím `R`, `Delete`/`Backspace`, mũi tên ±0,05 m (Shift ±0,5 m) theo U-3
   - Bỏ mặt phẳng `onPointerUp` cũ
-- [ ] T035 [US2] Thêm kéo nhân viên trong `src/web/scene/Employee.tsx` bằng `useDrag` (chỉ khi `build.active`):
+- [X] T035 [US2] Thêm kéo nhân viên trong `src/web/scene/Employee.tsx` bằng `useDrag` (chỉ khi `build.active`):
   - Hình nhân viên mờ đi theo con trỏ; bàn dưới con trỏ sáng xanh nếu trống, vàng nếu có người (U-2)
   - Thả → `assignSeat`; ngoài chế độ sắp xếp thì `onClick` mở chat như cũ
   - Trong chế độ sắp xếp, bấm không mở chat. Xoá `src/web/scene/EmployeeDrag.tsx`.
-- [ ] T036 [US2] Hiển thị chỗ ngồi theo bản nháp: khi `build.active`, `src/web/scene/OfficeScene.tsx` truyền `seating` của bản nháp (ghi đè `employee.deskId`) cho `Employee`, để nhân viên đi tới bàn mới ngay trước khi lưu
-- [ ] T037 [US2] Server, trong `src/server/http/routes/layout.ts`, `PUT /api/layout` nhận `{ layout, seating }` theo L2-2:
+- [X] T036 [US2] Hiển thị chỗ ngồi theo bản nháp: khi `build.active`, `src/web/scene/OfficeScene.tsx` truyền `seating` của bản nháp (ghi đè `employee.deskId`) cho `Employee`, để nhân viên đi tới bàn mới ngay trước khi lưu
+- [X] T037 [US2] Server, trong `src/server/http/routes/layout.ts`, `PUT /api/layout` nhận `{ layout, seating }` theo L2-2:
   - Body v1 thì chuyển đổi trước; kiểm tra bằng `validateLayout` v2
   - Seating: deskId phải là `desk` trong `layout` gửi kèm, không trùng, nếu sai thì `422 INVALID_SEATING`
   - Lưu layout trước rồi cập nhật `deskId` trong `employee-profiles.ts` (luật đổi chỗ có sẵn); trả `{ layout, seating }`
-- [ ] T038 [US2] Trong `src/web/ui/build/BuildMode.tsx`, nút Lưu gửi `{ layout: draft, seating }`; hiện lỗi 422 rõ ràng (đồ vật lỗi được tô đỏ); không còn `.catch(() => undefined)`. Gắn `data-testid` `build-toggle`, `item-<id>`, `employee-<id>`, `desk-drop-<deskId>`.
-- [ ] T039 [US2] Chạy T029 và T030 cho tới khi xanh; thử tay quickstart §US2 bước 8 với file v1 thật (khôi phục `layout.before.json`)
+- [X] T038 [US2] Trong `src/web/ui/build/BuildMode.tsx`, nút Lưu gửi `{ layout: draft, seating }`; hiện lỗi 422 rõ ràng (đồ vật lỗi được tô đỏ); không còn `.catch(() => undefined)`. Gắn `data-testid` `build-toggle`, `item-<id>`, `employee-<id>`, `desk-drop-<deskId>`.
+- [X] T039 [US2] Chạy T029 và T030 cho tới khi xanh; thử tay quickstart §US2 bước 8 với file v1 thật (khôi phục `layout.before.json`)
 
 **Checkpoint**: US2 dùng được (đợt A2). Đo SC-002/003/004 bằng tay: mỗi thao tác ≤ 5 giây, 10/10 lần.
 
@@ -175,7 +175,7 @@ Một package: `src/shared`, `src/server`, `src/web`, `tests/{unit,contract,e2e}
 
 ### Tests for User Story 3
 
-- [ ] T040 [P] [US3] Unit test `tests/unit/crowd.test.ts`. Mô phỏng 10 phút (dt = 1/60, rng cố định) với 20 agent trong bố cục chật 8 × 6 m, đi liên tục giữa bàn, máy nước và sofa. Kiểm tra:
+- [X] T040 [P] [US3] Unit test `tests/unit/crowd.test.ts`. Mô phỏng 10 phút (dt = 1/60, rng cố định) với 20 agent trong bố cục chật 8 × 6 m, đi liên tục giữa bàn, máy nước và sofa. Kiểm tra:
   - (a) bất biến `|pᵢ − pⱼ| ≥ rᵢ + rⱼ − 0,01` ở mọi bước
   - (b) không agent nào nằm trong ô bị chặn của nav-grid
   - (c) mọi lần chạm với `|Δv| > 0,3` sinh `bump`
@@ -185,17 +185,24 @@ Một package: `src/shared`, `src/server`, `src/web`, `tests/{unit,contract,e2e}
 
 ### Implementation for User Story 3
 
-- [ ] T041 [US3] Tạo `src/web/scene/crowd/crowd.ts` (thuần) theo R2-04 và data-model §5:
+- [X] T041 [US3] Tạo `src/web/scene/crowd/crowd.ts` (thuần) theo R2-04 và data-model §5:
   - Agent có `pos`, `vel`, `radius = 0,28`, `state`, `priority`, `path`, `blockedFor`, `reaction`
   - Mỗi bước: đi theo path → lực tách → luật nhường (đi về bàn ưu tiên hơn đi rảnh; hoà thì so hash id; bên thấp hơn dừng hoặc bước sang bên) → giải ràng buộc chồng lấn 4 lần → kẹp vào ô đi được
   - Phát sự kiện `bump_person` / `bump_object`; agent `seated` có khối lượng vô hạn
-- [ ] T042 [US3] Tạo hàng chờ điểm đến chung (máy nước, sofa) trong `src/web/scene/crowd/destinations.ts`: các ô xếp hàng trước điểm, cấp lượt theo thứ tự tới
-- [ ] T043 [US3] Sửa `src/web/scene/employee-behaviors.ts`: `EmployeeBrain` chỉ chọn đích và trạng thái; chuyển động do crowd thực hiện. Thêm mode `reacting`: chơi phản ứng 0,6–1,0 giây rồi quay lại mode trước. Bị chặn > 5 s thì tìm đường lại, không được thì về bàn hoặc đứng chờ (FR-021). Cập nhật `tests/unit/employee-behaviors.test.ts`.
-- [ ] T044 [US3] Tạo `src/web/scene/crowd/CrowdProvider.tsx`: một instance crowd cho cả văn phòng, `useFrame` với độ ưu tiên chạy trước các Employee; dựng lại nav-grid khi layout hoặc kích thước đổi. Sửa `src/web/scene/Employee.tsx` để đọc pose từ crowd.
-- [ ] T045 [US3] Tạo `src/web/scene/crowd/reactions.ts` và sửa `src/web/scene/character.ts`: phản ứng bump là khựng, ngả thân về sau ~8°, quay đầu về phía va chạm, mặt "Surprised" (morph có sẵn), dùng clip `No` ngắn hoặc procedural. Không đổi badge hay trạng thái hiển thị (FR-020).
-- [ ] T046 [P] [US3] Tạo `src/web/scene/furniture/PropJiggle.ts` theo data-model §6: lò xo tắt dần ≈ 0,8 s cho `chair` và `plant` khi có `bump_object`; chỉ cộng offset vào transform hiển thị trong `Furniture.tsx`, không ghi vào layout (FR-019)
-- [ ] T047 [US3] Thêm kịch bản `crowd` vào `src/web/bench/Bench.tsx`: 20 nhân viên đi liên tục, đếm vi phạm chồng lấn và in ra; thêm chế độ `?debug=crowd` rút ngắn chu kỳ nghỉ (chỉ khi dev)
-- [ ] T048 [US3] Chạy T040 cho tới khi xanh; chạy `npm run bench:fps -- --scenario crowd` với kỳ vọng ≥ 60 FPS, crowd ≤ 0,2 ms mỗi khung hình
+- [X] T042 [US3] Tạo hàng chờ điểm đến chung (máy nước, sofa) trong `src/web/scene/crowd/destinations.ts`: các ô xếp hàng trước điểm, cấp lượt theo thứ tự tới
+- [X] T043 [US3] Sửa `src/web/scene/employee-behaviors.ts`: `EmployeeBrain` chỉ chọn đích và trạng thái; chuyển động do crowd thực hiện. Thêm mode `reacting`: chơi phản ứng 0,6–1,0 giây rồi quay lại mode trước. Bị chặn > 5 s thì tìm đường lại, không được thì về bàn hoặc đứng chờ (FR-021). Cập nhật `tests/unit/employee-behaviors.test.ts`.
+- [X] T044 [US3] Tạo `src/web/scene/crowd/CrowdProvider.tsx`: một instance crowd cho cả văn phòng, `useFrame` với độ ưu tiên chạy trước các Employee; dựng lại nav-grid khi layout hoặc kích thước đổi. Sửa `src/web/scene/Employee.tsx` để đọc pose từ crowd.
+- [X] T045 [US3] Tạo `src/web/scene/crowd/reactions.ts` và sửa `src/web/scene/character.ts`: phản ứng bump là khựng, ngả thân về sau ~8°, quay đầu về phía va chạm, mặt "Surprised" (morph có sẵn), dùng clip `No` ngắn hoặc procedural. Không đổi badge hay trạng thái hiển thị (FR-020).
+- [X] T046 [P] [US3] Tạo `src/web/scene/furniture/PropJiggle.ts` theo data-model §6: lò xo tắt dần ≈ 0,8 s cho `chair` và `plant` khi có `bump_object`; chỉ cộng offset vào transform hiển thị trong `Furniture.tsx`, không ghi vào layout (FR-019)
+- [X] T047 [US3] Thêm kịch bản `crowd` vào `src/web/bench/Bench.tsx`: 20 nhân viên đi liên tục, đếm vi phạm chồng lấn và in ra; thêm chế độ `?debug=crowd` rút ngắn chu kỳ nghỉ (chỉ khi dev)
+- [X] T048 [US3] Chạy T040 cho tới khi xanh; chạy `npm run bench:fps -- --scenario crowd` với kỳ vọng ≥ 60 FPS, crowd ≤ 0,2 ms mỗi khung hình
+
+> **Ghi chú thực hiện US3 (2026-11-07)**:
+> - Crowd giải từng người một (Gauss–Seidel): mỗi bước chỉ được chấp nhận khi vẫn cách mọi người khác ≥ r₁ + r₂, nên bất biến "không chồng lấn" đúng sau *mọi* bước. Bán kính: đi 0,28 m, ngồi 0,2 m.
+> - Gỡ kẹt: chỉ nhường đường tối đa 1,5 s; kẹt quá 1 s được bước lùi hoặc chéo; bỏ qua một điểm giữa đường đang có người đứng (chỉ khi đã ở cách dưới 0,6 m); tìm đường lại sau 2 s (FR-021 cho phép tới 5 s), tránh cả người ngồi lẫn người đang đứng yên.
+> - T042: thay module hàng đợi riêng bằng cách "tới gần là được". Đích dùng chung (máy nước) được coi là đã tới khi ở trong 1,4 m mà bị chặn quá 1,5 s.
+> - Va chạm chỉ tính một lần khi hai người *bắt đầu* chạm nhau, nên không đứng khựng liên tục khi đứng sát nhau.
+> - Kiểm chứng: `tests/unit/crowd.test.ts` mô phỏng 10 phút với 4 seed: 0 chồng lấn, không vào ô bị chặn, người ngồi không bị đẩy, có phản ứng va chạm, và cả 6 người về bàn khi có việc. Đo `npm run bench:fps -- --scenario crowd`: 153 FPS trung bình, 0 chồng lấn.
 
 **Checkpoint**: US3 dùng được
 
@@ -209,23 +216,23 @@ Một package: `src/shared`, `src/server`, `src/web`, `tests/{unit,contract,e2e}
 
 ### Tests for User Story 4
 
-- [ ] T049 [P] [US4] Unit test `tests/unit/resize-limits.test.ts`: chấp nhận 6, 40, 23,5; từ chối 5,5, 40,5, 10,3; thu nhỏ dưới `minFloorSize` cho blockers đúng; đổi kích thước không đổi `pos` của item; `shell.door.offset` được kẹp khi cạnh nam ngắn lại
-- [ ] T050 [P] [US4] E2E `tests/e2e/office-resize.spec.ts`: nhập 24 × 18 rồi lưu, tải lại thì giữ; kéo `resize-handle-east` +3 m thì nhãn hiển thị 27; nhập 5 hoặc 41 thì báo lỗi và văn phòng không đổi; thu nhỏ khi có bàn ở sát cạnh đông thì bị chặn và hiển thị số blockers (Acceptance 4.1–4.5)
+- [X] T049 [P] [US4] Unit test `tests/unit/resize-limits.test.ts`: chấp nhận 6, 40, 23,5; từ chối 5,5, 40,5, 10,3; thu nhỏ dưới `minFloorSize` cho blockers đúng; đổi kích thước không đổi `pos` của item; `shell.door.offset` được kẹp khi cạnh nam ngắn lại
+- [X] T050 [P] [US4] E2E `tests/e2e/office-resize.spec.ts`: nhập 24 × 18 rồi lưu, tải lại thì giữ; kéo `resize-handle-east` +3 m thì nhãn hiển thị 27; nhập 5 hoặc 41 thì báo lỗi và văn phòng không đổi; thu nhỏ khi có bàn ở sát cạnh đông thì bị chặn và hiển thị số blockers (Acceptance 4.1–4.5)
 
 ### Implementation for User Story 4
 
-- [ ] T051 [US4] Thêm `resizeFloor(width, depth)` vào `src/web/state/build.ts`: kiểm tra [6,40] và bội 0,5; nếu nhỏ hơn `minFloorSize` thì không đổi và gán `resizeBlockers`; kẹp `shell.door.offset`; một bước undo
-- [ ] T052 [US4] Trong `src/web/ui/build/BuildMode.tsx`, thêm ô "Chiều dài (m)" (`floor-width-input`) và "Chiều rộng (m)" (`floor-depth-input`) với min 6, max 40, step 0,5. Giá trị sai thì viền đỏ và hiện "Từ 6 đến 40 m, bước 0,5 m". Bị chặn thì hiện thông báo kèm số đồ vật; bấm vào thông báo để chọn lần lượt từng blocker (U-4).
-- [ ] T053 [US4] Trong `src/web/scene/BuildGizmo.tsx`, thêm tay kéo `resize-handle-east` và `resize-handle-south` dùng `useDrag`, làm tròn 0,5 m, hiện nhãn kích thước khi kéo; blockers nhấp nháy đỏ
-- [ ] T054 [US4] Server, trong `src/server/http/routes/layout.ts`: nếu item nằm ngoài sàn mới thì trả `422 { error: 'FLOOR_TOO_SMALL', blockers, min: {width, depth} }` (L2-2)
-- [ ] T055 [US4] Cho cảnh tự co giãn (FR-025, FR-026):
+- [X] T051 [US4] Thêm `resizeFloor(width, depth)` vào `src/web/state/build.ts`: kiểm tra [6,40] và bội 0,5; nếu nhỏ hơn `minFloorSize` thì không đổi và gán `resizeBlockers`; kẹp `shell.door.offset`; một bước undo
+- [X] T052 [US4] Trong `src/web/ui/build/BuildMode.tsx`, thêm ô "Chiều dài (m)" (`floor-width-input`) và "Chiều rộng (m)" (`floor-depth-input`) với min 6, max 40, step 0,5. Giá trị sai thì viền đỏ và hiện "Từ 6 đến 40 m, bước 0,5 m". Bị chặn thì hiện thông báo kèm số đồ vật; bấm vào thông báo để chọn lần lượt từng blocker (U-4).
+- [X] T053 [US4] Trong `src/web/scene/BuildGizmo.tsx`, thêm tay kéo `resize-handle-east` và `resize-handle-south` dùng `useDrag`, làm tròn 0,5 m, hiện nhãn kích thước khi kéo; blockers nhấp nháy đỏ
+- [X] T054 [US4] Server, trong `src/server/http/routes/layout.ts`: nếu item nằm ngoài sàn mới thì trả `422 { error: 'FLOOR_TOO_SMALL', blockers, min: {width, depth} }` (L2-2)
+- [X] T055 [US4] Cho cảnh tự co giãn (FR-025, FR-026):
   - `src/web/scene/Office.tsx` sinh tường, kính và cửa từ `shell` và `floor`
   - Tạo `src/web/scene/park/park-layout.ts` (thuần) theo R2-05: từ kích thước văn phòng tính lối đi vòng (elip qua góc văn phòng: `rx = w/2·1,414 + 4,5`, `rz = d/2·1,414 + 4,5`), vị trí ghế, bồn hoa, ki-ốt, hồ, nhóm tập thể dục ngoài lối đi; cây lấy từ một tập cố định theo seed và chỉ ẩn những cây nằm trong dải cỏ trống (mép văn phòng + 8 m), trên lối đi, hồ, ki-ốt hoặc chắn tầm nhìn camera
   - Đổi `PARK_RADIUS` 38 → 54 và `ROAD_RADIUS` 44 → 60 trong `src/web/scene/park/detail.ts` để văn phòng 40 × 40 m vẫn có công viên ≥ 15 m tới đường (FR-036); dời skyline theo
   - `src/web/scene/park/Park.tsx` và `src/web/scene/park/Ambient.tsx` dùng `park-layout.ts`; tham chiếu dựng hình: `buildParkLife` trong `concepts/index.html`
   - Unit test `tests/unit/park-layout.test.ts`: ở các kích thước 6×6, 16×12, 28×20, 40×40 không vật nào của công viên chồng lên văn phòng; khoảng cách mép văn phòng tới lối đi ≥ 5 m, tới cây ≥ 8 m; tập cây hiện là tập con của tập cố định
   - `src/web/scene/cameras/Overview.tsx` và `src/web/scene/cameras/FirstPerson.tsx` nhận kích thước mới (FP đi được hết văn phòng)
-- [ ] T056 [US4] Thêm kịch bản `--floor 40x40` vào bench (`src/web/bench/bench-layout.ts` sinh bố cục 40 × 40 có 20 bàn); chạy T049, T050 và bench với kỳ vọng ≥ 60 FPS (SC-008)
+- [X] T056 [US4] Thêm kịch bản `--floor 40x40` vào bench (`src/web/bench/bench-layout.ts` sinh bố cục 40 × 40 có 20 bàn); chạy T049, T050 và bench với kỳ vọng ≥ 60 FPS (SC-008)
 
 **Checkpoint**: Đợt A xong (US1–US4), dùng hằng ngày được với giao diện hiện tại. Đối chiếu Constitution IV.
 
