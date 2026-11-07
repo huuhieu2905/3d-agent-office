@@ -17,7 +17,7 @@ export function OverviewCamera({ size }: { size: [number, number] }) {
       ref={ref}
       makeDefault
       minDistance={4}
-      maxDistance={r * 2.2}
+      maxDistance={r * 4}
       minPolarAngle={0.15}
       maxPolarAngle={Math.PI / 2.25}
       dollySpeed={0.6}

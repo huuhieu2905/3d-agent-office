@@ -17,6 +17,10 @@ import { QuotaScreen } from '../ui/quota/QuotaScreen';
 import { BuildGizmo } from './BuildGizmo';
 import { useBuild } from '../state/build';
 import { LAYOUT_CHANGED } from '../ui/build/BuildMode';
+import { Surroundings, useCityWeather } from './Surroundings';
+import { useSettings } from '../state/settings';
+import { useWeather } from '../state/weather';
+import { LIGHT_FACTOR } from './weather/Weather';
 
 export function OfficeScene({
   theme,
@@ -37,6 +41,9 @@ export function OfficeScene({
     return () => window.removeEventListener(LAYOUT_CHANGED, load);
   }, [serverOnline, layoutOverride]);
   const build = useBuild();
+  const { city, detailLevel } = useSettings((s) => s.settings);
+  useCityWeather(city, !benchMode && serverOnline);
+  const condition = useWeather((s) => (s.weather?.city === city ? s.weather.condition : 'clear'));
   const layout = build.active && build.draft ? build.draft : saved;
 
   const grid = useMemo(() => (layout ? new OfficeGrid(layout) : null), [layout]);
@@ -62,7 +69,8 @@ export function OfficeScene({
 
   return (
     <>
-      <OfficeMood disconnected={disconnected} theme={theme} />
+      <OfficeMood disconnected={disconnected} theme={theme} weatherFactor={LIGHT_FACTOR[condition]} />
+      <Surroundings city={city} detail={detailLevel} theme={theme} />
       {!benchMode && <OverviewCamera size={size} />}
       <Office layout={layout} grid={grid} employeesByDesk={byDesk} theme={theme} onItemClick={build.active ? build.select : undefined}>
         {entries.map(({ employee, leaving, enter }) => (

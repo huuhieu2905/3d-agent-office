@@ -13,6 +13,9 @@ import { QuotaButton, QuotaPanel } from './ui/quota/QuotaPanel';
 import { ProjectButton } from './ui/projects/ProjectDialog';
 import { BuildButton, BuildMode } from './ui/build/BuildMode';
 import { AddDeskHint } from './ui/build/AddDeskHint';
+import { SettingsButton, ThemeToggle, WeatherBadge } from './ui/settings/SettingsPanel';
+import { PerfManager } from './scene/perf/PerfManager';
+import { useEffect } from 'react';
 
 function ConnectionBanner() {
   const { app, serverOnline, warnings, dismissWarning } = useConnection();
@@ -46,18 +49,26 @@ function ConnectionBanner() {
 
 export function App() {
   const theme = useSettings((s) => s.settings.theme);
+  const serverOnline = useConnection((s) => s.serverOnline);
+  const loaded = useSettings((s) => s.loaded);
+  useEffect(() => {
+    if (serverOnline && !loaded) void useSettings.getState().load();
+  }, [serverOnline, loaded]);
   const hireDeskId = useUi((s) => s.hireDeskId);
   const setHireDesk = useUi((s) => s.setHireDesk);
   return (
     <div className={`app theme-${theme}`}>
-      <Canvas shadows dpr={[1, 2]} camera={{ position: [10, 12, 14], fov: 45 }}>
-        <color attach="background" args={[theme === 'dark' ? '#0f1420' : '#dfe9f3']} />
-        <Suspense fallback={null}>
-          <OfficeScene theme={theme} />
-        </Suspense>
+      <Canvas shadows dpr={[1, 2]} camera={{ position: [10, 12, 14], fov: 45, far: 600 }}>
+        <PerfManager>
+          <Suspense fallback={null}>
+            <OfficeScene theme={theme} />
+          </Suspense>
+        </PerfManager>
       </Canvas>
       <ConnectionBanner />
       <div className="hud-top-right">
+        <ThemeToggle />
+        <SettingsButton />
         <BuildButton />
         <QuotaButton />
         <ProjectButton />
@@ -66,6 +77,7 @@ export function App() {
       <ChatPanel />
       <QuotaPanel />
       <BuildMode />
+      <WeatherBadge />
       {hireDeskId && <HireDialog deskId={hireDeskId} onClose={() => setHireDesk(null)} />}
       <div className="hud-left">
         <AddDeskHint />

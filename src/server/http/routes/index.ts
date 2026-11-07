@@ -9,6 +9,7 @@ import { conversationRoutes } from './conversations';
 import { commandRoutes } from './commands';
 import { projectRoutes } from './projects';
 import { layoutRoutes } from './layout';
+import { settingsRoutes } from './settings';
 
 // Every route plugin MUST be registered here (tasks.md conventions).
 
@@ -26,4 +27,5 @@ export async function registerRoutes(app: FastifyInstance, deps: RouteDeps): Pro
   await app.register(commandRoutes, deps);
   await app.register(projectRoutes, deps);
   await app.register(layoutRoutes, deps);
+  await app.register(settingsRoutes, deps);
 }

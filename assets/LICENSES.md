@@ -9,3 +9,8 @@ non-commercial personal project.
 
 Furniture, walls, glass, plants and the water cooler are built procedurally from low-poly primitives in
 `src/web/scene/furniture/` (no third-party files).
+
+The park (lawn, paths, trees, flowers), walkers, cars, the distant skyline and the five city landmarks
+(Hà Nội: Lotte Center + Tháp Rùa; TP.HCM: Landmark 81; Singapore: Marina Bay Sands; Tokyo: Tokyo Tower;
+New York: Empire State Building) are simplified low-poly shapes generated in code
+(`src/web/scene/park/`, `src/web/scene/city/`, `src/web/scene/weather/`) — no third-party files.

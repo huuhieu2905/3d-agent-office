@@ -13,6 +13,8 @@ declare global {
 
 const seconds = Number(process.argv[process.argv.indexOf('--seconds') + 1]) || 60;
 const headed = process.argv.includes('--headed');
+const detailArg = process.argv.indexOf('--detail');
+const detail = detailArg > 0 ? process.argv[detailArg + 1] : 'medium';
 const port = 4398;
 
 if (!existsSync('dist/web/index.html')) {
@@ -38,7 +40,7 @@ const browser = await chromium.launch({ headless: !headed, args: [
   ] });
 try {
   const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
-  await page.goto(`http://127.0.0.1:${port}/bench`);
+  await page.goto(`http://127.0.0.1:${port}/bench?detail=${detail}`);
   await page.waitForFunction(() => (window.__bench?.frames.length ?? 0) > 30, null, { timeout: 30_000 });
   await page.evaluate(() => (window.__bench!.frames = []));
   await page.waitForTimeout(seconds * 1000);
@@ -52,7 +54,7 @@ try {
     const ext = gl?.getExtension('WEBGL_debug_renderer_info');
     return ext && gl ? String(gl.getParameter(ext.UNMASKED_RENDERER_WEBGL)) : 'unknown';
   });
-  console.log(`renderer: ${renderer}`);
+  console.log(`renderer: ${renderer} · detail: ${detail}`);
   console.log(`frames: ${frames.length} over ${seconds}s — average ${avg.toFixed(1)} FPS, 1% low ${p1.toFixed(1)} FPS`);
   if (avg < 60) {
     console.error('✗ SC-004 failed: average FPS below 60');

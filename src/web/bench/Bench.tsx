@@ -5,6 +5,9 @@ import { defaultBenchLayout } from './bench-layout';
 import { OfficeScene } from '../scene/OfficeScene';
 import { useEmployees } from '../state/employees';
 import { useConnection } from '../state/connection';
+import { useSettings } from '../state/settings';
+import { useWeather } from '../state/weather';
+import type { DetailLevel } from '@shared/domain';
 
 // T058 / SC-004: 20 fake employees whose state changes every 2 s in the default office, with a fixed
 // camera flight. Exposes window.__bench = { frames: number[] } for scripts/bench-fps.ts.
@@ -53,6 +56,11 @@ export function Bench() {
   const deskIds = layout.items.filter((i) => i.type === 'desk').map((d) => d.id);
 
   useEffect(() => {
+    // T115: full scene — park, people, cars, skyline and rain — at ?detail= (default medium).
+    const q = new URLSearchParams(location.search).get('detail');
+    const detail: DetailLevel = q === 'low' || q === 'high' ? q : 'medium';
+    useSettings.getState().set({ detailLevel: detail, city: 'hanoi', theme: 'light', autoLowerDetail: false });
+    useWeather.getState().set({ city: 'hanoi', condition: 'rain', isDay: true, temperatureC: 26, fetchedAt: new Date().toISOString(), source: 'open-meteo' });
     useConnection.getState().setServerOnline(true);
     useConnection.getState().setApp({ kind: 'connected', appVersion: 'bench', versionSupported: true });
     let tick = 0;
@@ -67,8 +75,7 @@ export function Bench() {
 
   return (
     <div className="app theme-light">
-      <Canvas shadows dpr={[1, 2]} camera={{ position: [10, 12, 14], fov: 45 }}>
-        <color attach="background" args={['#dfe9f3']} />
+      <Canvas shadows dpr={[1, 2]} camera={{ position: [10, 12, 14], fov: 45, far: 600 }}>
         <Suspense fallback={null}>
           <OfficeScene theme="light" layoutOverride={layout} benchMode />
           <Flight />

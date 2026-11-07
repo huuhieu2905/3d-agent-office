@@ -9,6 +9,8 @@ import { UsageService } from './usage';
 import { MentionService } from './mentions';
 import { QuotaService } from './quota';
 import { FolderService } from './folders';
+import { WeatherService } from './weather';
+import { SettingsStore } from './settings';
 
 // Registry of long-running server services. Each user story adds its service here.
 
@@ -31,6 +33,8 @@ export interface Services {
   mentions: MentionService;
   quota: QuotaService;
   folders: FolderService;
+  weather: WeatherService;
+  settings: SettingsStore;
   start(): Promise<void>;
   stop(): Promise<void>;
 }
@@ -63,6 +67,8 @@ export function createServices(deps: ServiceDeps): Services {
     mentions,
     quota,
     folders: new FolderService(deps.homeDir),
+    weather: new WeatherService(dataDir, deps.log),
+    settings: new SettingsStore(dataDir),
     profiles,
     layout,
     employees,
