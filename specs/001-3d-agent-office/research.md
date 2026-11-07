@@ -206,7 +206,7 @@ thuật** cho plan. Mỗi quyết định gồm: Quyết định / Lý do / Phư
   (conversation tạo bằng `agentapi` không có projectId). Project đặc biệt: `default-cli-project`, `outside-of-project`.
 - **Dọn dẹp**: `DeleteCascadeTrajectory { cascadeId }` xoá conversation thử nghiệm (chỉ dùng trong test/spike).
 
-### Kết quả spike T029 + T079 (2026-11-06, App 2.24.0, chế độ "hỏi trước khi chạy lệnh")
+### Kết quả spike T029 + T084 (2026-11-06, App 2.24.0, chế độ "hỏi trước khi chạy lệnh")
 
 - **Chờ duyệt**: agent xin chạy lệnh → bước mới `CORTEX_STEP_TYPE_GENERIC` với `status = WAITING`, trong khi
   conversation vẫn `RUNNING`. Bước có `requestedInteraction.permission = { resource: { action: "command", target:
@@ -220,6 +220,17 @@ thuật** cho plan. Mỗi quyết định gồm: Quyết định / Lý do / Phư
   - Từ chối: bước chuyển thành **`RUN_COMMAND:ERROR`**, rồi agent trả lời tiếp. → đây là tín hiệu "lỗi" quan sát được.
 - **Ánh xạ**: `Step.kind = permission_request`, `permission.requestId = "<trajectoryId>:<stepIndex>:<kind>"`.
   Fixture: `waiting-steps.json` (bước 6 dựng lại đúng cấu trúc đã quan sát) và `error-steps.json` (ghi thật).
+
+### Kết quả spike tạo project (2026-11-07, App 2.24.0)
+
+- **Tạo**: `CreateProject { project: { id: <UUID tự sinh>, name, projectResources: { resources: [{ folderUri }] } } }`
+  → `{}`. **Bắt buộc tự đặt `id`**: nếu thiếu `id`, App trả `{}` nhưng không tạo project nào.
+- Conversation tạo bằng `StartCascade` với `projectEnvConfig.projectId = <id>` thì **có `workspaceUris` = thư mục
+  của project**. Bộ gợi ý `@` của server (liệt kê file trong workspace) tìm được file ngay. `GetMatchingContextScopeItems`
+  của App vẫn trả `{}`, nên vẫn dùng phương án dự phòng.
+- **Xoá** (chỉ dùng cho test): `DeleteProject { id }`. Dùng `{ projectId }` thì lỗi 400.
+- **Chọn thư mục**: trình duyệt không đọc được hệ thống file, nên server cung cấp `GET /api/fs/dirs`. Route này chỉ
+  liệt kê thư mục con, giới hạn trong home của người dùng (kiểm tra bằng `realpath`), và vẫn yêu cầu session token.
 
 ## R9. Quota
 

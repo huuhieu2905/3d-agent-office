@@ -200,21 +200,37 @@ V). Vì vậy chỉ những test này được đưa vào. Các test khác là t
 
 ---
 
+## Phase 5b: US2 bổ sung — Tạo project gắn thư mục (FR-031, FR-032) (Priority: P1, bổ sung 2026-11-07)
+
+**Goal**: Tạo project mới trong App bằng cách chọn thư mục trên máy. Tuyển nhân viên bắt buộc chọn project có sẵn hoặc tạo mới.
+
+**Independent Test**: Tạo project trỏ vào một thư mục, tuyển nhân viên trong project đó, gõ `@` và thấy file của thư mục.
+
+- [X] T079 [US2] Spike tạo project với App thật (CreateProject cần `id` tự sinh, `projectResources.resources[{folderUri}]`; conversation trong project có `workspaceUris`; xoá bằng `DeleteProject {id}`), ghi vào `specs/001-3d-agent-office/research.md`
+- [ ] T080 [US2] Cài `createProject({ name, folderUri })` (sinh UUID, gọi `CreateProject`, đọc lại qua `ReadProjects`) và bổ sung `folderUri` vào `Project` trong `src/server/app-adapter/index.ts`, `src/server/app-adapter/mappers/project.ts`, `src/shared/domain.ts`; thêm `deleteTestProject` (chỉ xoá project tên bắt đầu bằng "[agent-office-test]"); contract test trong `tests/contract/adapter-project.test.ts`
+- [ ] T081 [US2] Viết `src/server/services/folders.ts` + route `GET /api/fs/dirs?path=` và `POST /api/projects { name, folderPath }` trong `src/server/http/routes/projects.ts`: chỉ liệt kê **thư mục** (bỏ thư mục ẩn), chỉ trong **home** (so `realpath`, từ chối symlink trỏ ra ngoài), sắp xếp theo tên, tối đa 500 mục; unit test trong `tests/unit/folders.test.ts`
+- [ ] T082 [US2] Viết `src/web/ui/projects/ProjectDialog.tsx` (tên project + trình duyệt thư mục: đường dẫn hiện tại, nút lên thư mục cha, danh sách thư mục con, chọn thư mục hiện tại) và sửa `src/web/ui/chat/HireDialog.tsx`: project là trường bắt buộc (không chọn sẵn), có lựa chọn "+ Tạo project mới…" mở `ProjectDialog`, tạo xong thì tự chọn project vừa tạo; thêm nút "Tạo project" trên thanh công cụ
+- [ ] T083 [US2] E2E trong `tests/e2e/projects.spec.ts` với App giả lập: duyệt thư mục, tạo project (App giả lập nhận `CreateProject` có `folderUri`), nút "Tuyển" bị khoá khi chưa chọn project
+
+**Checkpoint**: tạo project → tuyển nhân viên trong project → `@` gợi ý file của thư mục.
+
+---
+
 ## Phase 6: User Story 3 - Ra lệnh bằng `/` và `@`, duyệt quyền (Priority: P2)
 
 **Goal**: Gõ `/` hiện danh sách lệnh và skill giống App. `@` gợi ý file và gửi như mục nhắc tới. Duyệt hoặc từ chối quyền ngay trong chat.
 
 **Independent Test**: quickstart V3.
 
-- [X] T079 [US3] **Spike duyệt quyền (R8)**: dùng cấu trúc bước `WAITING` đã ghi ở spike T029 (Phase 2). Nhờ người dùng tạm bật lại chế độ hỏi quyền, cho conversation `[agent-office-test] perm` chạy một lệnh, rồi tìm định dạng `interaction` của `HandleCascadeUserInteraction` để **cho phép** và **từ chối**. Ghi kết quả vào `specs/001-3d-agent-office/research.md` (R8, "Kết quả spike"), thêm fixture đã làm sạch vào `tests/contract/fixtures/app-2.24.0/permission-*.json`, rồi dọn conversation
-- [X] T080 [P] [US3] Cài `getSlashCommands(model)` (gọi `GetSlashCommands` với `{cascadeConfig:{plannerConfig:{planModel}}}`, lưu đệm 60 giây theo từng model, ánh xạ `SLASH_COMMAND_TYPE_SYSTEM`→`system`, `SLASH_COMMAND_TYPE_SKILL`→`skill`) trong `src/server/app-adapter/mappers/command.ts` và `src/server/app-adapter/index.ts`
-- [X] T081 [P] [US3] Viết dịch vụ gợi ý file trong `src/server/services/mentions.ts`: thử `adapter.suggestMentions` (dựa trên `GetMatchingContextScopeItems`). Nếu rỗng thì tự liệt kê file trong `workspaceUris` của conversation: bỏ qua `.git`, `node_modules`, `dist`; tối đa 5.000 file mỗi workspace, lưu đệm 30 giây; lọc mờ theo tên; trả tối đa 50 kết quả trong ≤ 300 ms (A9)
-- [X] T082 [US3] Cài `answerPermission` trong `src/server/app-adapter/index.ts` theo kết quả spike T079, và ánh xạ bước xin quyền thành `Step.kind = 'permission_request'` với `permission: { requestId, description, options }` trong `src/server/app-adapter/mappers/step.ts`. Nếu spike thất bại: chuyển FR-029 sang nút "Mở trong Antigravity App" và ghi lại trong spec Assumptions
-- [X] T083 [US3] Viết các route `GET /api/commands?model=`, `GET /api/conversations/:id/mentions?q=`, `POST /api/conversations/:id/permissions/:requestId` (`{ decision: 'allow' | 'deny' }`) trong `src/server/http/routes/commands.ts`
-- [X] T084 [P] [US3] Contract test trong `tests/contract/adapter-commands.test.ts`: ánh xạ lệnh `/` từ fixture; `sendMessage` có mục nhắc file tạo `{item:{file:{absoluteUri}}}`; `answerPermission` gửi đúng định dạng đã tìm được ở spike
-- [X] T085 [US3] Thêm menu `/` vào `Composer` trong `src/web/ui/chat/SlashMenu.tsx`: mở khi `/` là ký tự đầu, lọc khi gõ tiếp, điều hướng bằng phím mũi tên và Enter, hiện nhãn system hoặc skill cùng mô tả (FR-027)
-- [X] T086 [US3] Thêm menu `@` vào `Composer` trong `src/web/ui/chat/MentionMenu.tsx`: gọi `/mentions?q=` (debounce 120 ms). Mục được chọn hiện thành "chip" trong ô nhập và được gửi như phần `{ mention }` của `UserInput`, không phải văn bản thường (FR-028)
-- [X] T087 [US3] Viết `PermissionPrompt` trong `src/web/ui/chat/PermissionPrompt.tsx`: hiện trong chat khi có `permission_request` chưa trả lời, kèm nút "Cho phép" và "Từ chối". Nhân viên rời `waiting_for_boss` sau khi trả lời (FR-029)
+- [X] T084 [US3] **Spike duyệt quyền (R8)**: dùng cấu trúc bước `WAITING` đã ghi ở spike T029 (Phase 2). Nhờ người dùng tạm bật lại chế độ hỏi quyền, cho conversation `[agent-office-test] perm` chạy một lệnh, rồi tìm định dạng `interaction` của `HandleCascadeUserInteraction` để **cho phép** và **từ chối**. Ghi kết quả vào `specs/001-3d-agent-office/research.md` (R8, "Kết quả spike"), thêm fixture đã làm sạch vào `tests/contract/fixtures/app-2.24.0/permission-*.json`, rồi dọn conversation
+- [X] T085 [P] [US3] Cài `getSlashCommands(model)` (gọi `GetSlashCommands` với `{cascadeConfig:{plannerConfig:{planModel}}}`, lưu đệm 60 giây theo từng model, ánh xạ `SLASH_COMMAND_TYPE_SYSTEM`→`system`, `SLASH_COMMAND_TYPE_SKILL`→`skill`) trong `src/server/app-adapter/mappers/command.ts` và `src/server/app-adapter/index.ts`
+- [X] T086 [P] [US3] Viết dịch vụ gợi ý file trong `src/server/services/mentions.ts`: thử `adapter.suggestMentions` (dựa trên `GetMatchingContextScopeItems`). Nếu rỗng thì tự liệt kê file trong `workspaceUris` của conversation: bỏ qua `.git`, `node_modules`, `dist`; tối đa 5.000 file mỗi workspace, lưu đệm 30 giây; lọc mờ theo tên; trả tối đa 50 kết quả trong ≤ 300 ms (A9)
+- [X] T087 [US3] Cài `answerPermission` trong `src/server/app-adapter/index.ts` theo kết quả spike T084, và ánh xạ bước xin quyền thành `Step.kind = 'permission_request'` với `permission: { requestId, description, options }` trong `src/server/app-adapter/mappers/step.ts`. Nếu spike thất bại: chuyển FR-029 sang nút "Mở trong Antigravity App" và ghi lại trong spec Assumptions
+- [X] T088 [US3] Viết các route `GET /api/commands?model=`, `GET /api/conversations/:id/mentions?q=`, `POST /api/conversations/:id/permissions/:requestId` (`{ decision: 'allow' | 'deny' }`) trong `src/server/http/routes/commands.ts`
+- [X] T089 [P] [US3] Contract test trong `tests/contract/adapter-commands.test.ts`: ánh xạ lệnh `/` từ fixture; `sendMessage` có mục nhắc file tạo `{item:{file:{absoluteUri}}}`; `answerPermission` gửi đúng định dạng đã tìm được ở spike
+- [X] T090 [US3] Thêm menu `/` vào `Composer` trong `src/web/ui/chat/SlashMenu.tsx`: mở khi `/` là ký tự đầu, lọc khi gõ tiếp, điều hướng bằng phím mũi tên và Enter, hiện nhãn system hoặc skill cùng mô tả (FR-027)
+- [X] T091 [US3] Thêm menu `@` vào `Composer` trong `src/web/ui/chat/MentionMenu.tsx`: gọi `/mentions?q=` (debounce 120 ms). Mục được chọn hiện thành "chip" trong ô nhập và được gửi như phần `{ mention }` của `UserInput`, không phải văn bản thường (FR-028)
+- [X] T092 [US3] Viết `PermissionPrompt` trong `src/web/ui/chat/PermissionPrompt.tsx`: hiện trong chat khi có `permission_request` chưa trả lời, kèm nút "Cho phép" và "Từ chối". Nhân viên rời `waiting_for_boss` sau khi trả lời (FR-029)
 
 **Checkpoint**: chạy quickstart V3.
 
@@ -226,11 +242,11 @@ V). Vì vậy chỉ những test này được đưa vào. Các test khác là t
 
 **Independent Test**: quickstart V4. Đối chiếu từng con số với App.
 
-- [X] T088 [P] [US4] Viết mapper quota trong `src/server/app-adapter/mappers/quota.ts`: từ `GetUserStatus`, **xoá `name` và `email` ngay lập tức**; `planName` lấy từ `userTier.name`; gom `clientModelConfigs[]` theo cặp `quotaInfo.remainingFraction` + `quotaInfo.resetTime` thành `QuotaGroup { models[{label, modelId}], remainingPercent: 0–100, resetAt, low: remainingPercent < 10 }`; `credits` lấy từ `planStatus.availablePromptCredits/availableFlowCredits` và `planInfo.monthlyPromptCredits/monthlyFlowCredits`
-- [X] T089 [P] [US4] Contract test quota trong `tests/contract/adapter-quota.test.ts`: dùng fixture `GetUserStatus`, khẳng định không có `name`/`email` trong kết quả, gom nhóm đúng, `low` khi dưới 10% (A8)
-- [X] T090 [US4] Viết `QuotaService` trong `src/server/services/quota.ts`: làm mới mỗi **5 phút** và ngay khi một conversation chuyển từ `RUNNING` sang `IDLE` (nghe sự kiện từ `EmployeesService`) (FR-042). Phát `quota` qua ws-hub. Kèm route `GET /api/quota` trong `src/server/http/routes/quota.ts`
-- [X] T091 [US4] Viết `QuotaScreen` trong `src/web/ui/quota/QuotaScreen.tsx`: một màn hình 3D gắn trên vật `wall_screen` của bố cục, hiện thanh % của các nhóm model (vẽ texture bằng canvas). Đổi sang màu cảnh báo khi có nhóm `low` (FR-040, FR-043). Bấm 1 lần mở bảng chi tiết
-- [X] T092 [US4] Viết `QuotaPanel` trong `src/web/ui/quota/QuotaPanel.tsx`: gói tài khoản, bảng các nhóm model (tên model, % còn lại, thời điểm làm mới theo giờ địa phương và dạng "còn x giờ"), credits, thời điểm cập nhật (FR-041). Kèm nút quota nhỏ trên thanh công cụ, dự phòng khi bố cục không có `wall_screen`
+- [X] T093 [P] [US4] Viết mapper quota trong `src/server/app-adapter/mappers/quota.ts`: từ `GetUserStatus`, **xoá `name` và `email` ngay lập tức**; `planName` lấy từ `userTier.name`; gom `clientModelConfigs[]` theo cặp `quotaInfo.remainingFraction` + `quotaInfo.resetTime` thành `QuotaGroup { models[{label, modelId}], remainingPercent: 0–100, resetAt, low: remainingPercent < 10 }`; `credits` lấy từ `planStatus.availablePromptCredits/availableFlowCredits` và `planInfo.monthlyPromptCredits/monthlyFlowCredits`
+- [X] T094 [P] [US4] Contract test quota trong `tests/contract/adapter-quota.test.ts`: dùng fixture `GetUserStatus`, khẳng định không có `name`/`email` trong kết quả, gom nhóm đúng, `low` khi dưới 10% (A8)
+- [X] T095 [US4] Viết `QuotaService` trong `src/server/services/quota.ts`: làm mới mỗi **5 phút** và ngay khi một conversation chuyển từ `RUNNING` sang `IDLE` (nghe sự kiện từ `EmployeesService`) (FR-042). Phát `quota` qua ws-hub. Kèm route `GET /api/quota` trong `src/server/http/routes/quota.ts`
+- [X] T096 [US4] Viết `QuotaScreen` trong `src/web/ui/quota/QuotaScreen.tsx`: một màn hình 3D gắn trên vật `wall_screen` của bố cục, hiện thanh % của các nhóm model (vẽ texture bằng canvas). Đổi sang màu cảnh báo khi có nhóm `low` (FR-040, FR-043). Bấm 1 lần mở bảng chi tiết
+- [X] T097 [US4] Viết `QuotaPanel` trong `src/web/ui/quota/QuotaPanel.tsx`: gói tài khoản, bảng các nhóm model (tên model, % còn lại, thời điểm làm mới theo giờ địa phương và dạng "còn x giờ"), credits, thời điểm cập nhật (FR-041). Kèm nút quota nhỏ trên thanh công cụ, dự phòng khi bố cục không có `wall_screen`
 
 **Checkpoint**: chạy quickstart V4. **Kết thúc Đợt 2**, chạy cổng chất lượng.
 
@@ -242,13 +258,13 @@ V). Vì vậy chỉ những test này được đưa vào. Các test khác là t
 
 **Independent Test**: quickstart V5.
 
-- [ ] T093 [P] [US5] Viết danh mục đồ vật trong `src/shared/catalog.ts`: mỗi `type` (`desk`, `chair`, `wall`, `glass_wall`, `door`, `plant`, `water_cooler`, `sofa`, `wall_screen`) có footprint (số ô), vật chặn ô hay chặn cạnh, và mô hình 3D tương ứng (FR-050)
-- [ ] T094 [US5] Viết hàm kiểm tra bố cục trong `src/shared/layout-validation.ts`, áp dụng các quy tắc ở data-model §5 nguyên văn: "Mọi ô trong footprint đều nằm trong `floor`"; "Không có hai vật chặn nhau chiếm cùng một ô. Tường và vách kính chỉ chặn cạnh ô"; "Mỗi `desk` có đúng một ô ngồi đi tới được từ cửa (kiểm tra bằng A*)". Trả danh sách `invalidItems`
-- [ ] T095 [P] [US5] Unit test kiểm tra bố cục trong `tests/unit/layout-validation.test.ts` (chồng vật, ra ngoài sàn, bàn bị chắn lối, bố cục mặc định hợp lệ)
-- [ ] T096 [US5] Viết route `PUT /api/layout` (kiểm tra bằng `layout-validation`, trả `422 { error, invalidItems }` nếu sai, ghi atomic `layout.json`) và `PUT /api/employees/:conversationId/profile` (`{ deskId?, appearance? }`) trong `src/server/http/routes/layout.ts`
-- [ ] T097 [US5] Viết chế độ xây dựng trong `src/web/ui/build/BuildMode.tsx` và `src/web/scene/BuildGizmo.tsx`: thanh đồ vật theo danh mục; xem trước vật đặt khớp lưới, xanh khi hợp lệ và đỏ khi không; phím R để xoay 90°; kéo để di chuyển; phím Delete để xoá; hoàn tác/làm lại (Cmd+Z / Cmd+Shift+Z); nút "Lưu" và "Huỷ"
-- [ ] T098 [US5] Viết kéo thả nhân viên vào bàn trong `src/web/scene/EmployeeDrag.tsx` (FR-052): thả vào bàn trống thì gọi `PUT profile`; thả vào bàn có người thì hai người đổi chỗ. Bàn được gán phải đúng là bàn nhân viên quay về sau hành động ngẫu nhiên
-- [ ] T099 [US5] Hiển thị khu chờ và gợi ý "Thêm bàn" khi số nhân viên nhiều hơn số bàn, trong `src/web/scene/employee-lifecycle.ts` và `src/web/ui/build/AddDeskHint.tsx`
+- [ ] T098 [P] [US5] Viết danh mục đồ vật trong `src/shared/catalog.ts`: mỗi `type` (`desk`, `chair`, `wall`, `glass_wall`, `door`, `plant`, `water_cooler`, `sofa`, `wall_screen`) có footprint (số ô), vật chặn ô hay chặn cạnh, và mô hình 3D tương ứng (FR-050)
+- [ ] T099 [US5] Viết hàm kiểm tra bố cục trong `src/shared/layout-validation.ts`, áp dụng các quy tắc ở data-model §5 nguyên văn: "Mọi ô trong footprint đều nằm trong `floor`"; "Không có hai vật chặn nhau chiếm cùng một ô. Tường và vách kính chỉ chặn cạnh ô"; "Mỗi `desk` có đúng một ô ngồi đi tới được từ cửa (kiểm tra bằng A*)". Trả danh sách `invalidItems`
+- [ ] T100 [P] [US5] Unit test kiểm tra bố cục trong `tests/unit/layout-validation.test.ts` (chồng vật, ra ngoài sàn, bàn bị chắn lối, bố cục mặc định hợp lệ)
+- [ ] T101 [US5] Viết route `PUT /api/layout` (kiểm tra bằng `layout-validation`, trả `422 { error, invalidItems }` nếu sai, ghi atomic `layout.json`) và `PUT /api/employees/:conversationId/profile` (`{ deskId?, appearance? }`) trong `src/server/http/routes/layout.ts`
+- [ ] T102 [US5] Viết chế độ xây dựng trong `src/web/ui/build/BuildMode.tsx` và `src/web/scene/BuildGizmo.tsx`: thanh đồ vật theo danh mục; xem trước vật đặt khớp lưới, xanh khi hợp lệ và đỏ khi không; phím R để xoay 90°; kéo để di chuyển; phím Delete để xoá; hoàn tác/làm lại (Cmd+Z / Cmd+Shift+Z); nút "Lưu" và "Huỷ"
+- [ ] T103 [US5] Viết kéo thả nhân viên vào bàn trong `src/web/scene/EmployeeDrag.tsx` (FR-052): thả vào bàn trống thì gọi `PUT profile`; thả vào bàn có người thì hai người đổi chỗ. Bàn được gán phải đúng là bàn nhân viên quay về sau hành động ngẫu nhiên
+- [ ] T104 [US5] Hiển thị khu chờ và gợi ý "Thêm bàn" khi số nhân viên nhiều hơn số bàn, trong `src/web/scene/employee-lifecycle.ts` và `src/web/ui/build/AddDeskHint.tsx`
 
 **Checkpoint**: chạy quickstart V5.
 
@@ -260,17 +276,17 @@ V). Vì vậy chỉ những test này được đưa vào. Các test khác là t
 
 **Independent Test**: quickstart V6 và `npm run bench:fps`.
 
-- [ ] T100 [P] [US6] Viết `WeatherService` trong `src/server/services/weather.ts`: gọi `https://api.open-meteo.com/v1/forecast?latitude=..&longitude=..&current=temperature_2m,weather_code,cloud_cover,precipitation,wind_speed_10m,is_day` với tọa độ cố định của `hanoi`, `hcmc`, `singapore`, `tokyo`, `newyork`. Lưu đệm **30 phút** mỗi thành phố vào `weather-cache.json`. Ánh xạ mã WMO thành `'clear' | 'cloudy' | 'rain' | 'storm' | 'fog_snow'`. Lỗi mạng thì trả `clear` và không ném lỗi. Kèm route `GET /api/weather?city=` trong `src/server/http/routes/weather.ts`
-- [ ] T101 [P] [US6] Viết route `GET/PUT /api/settings` trong `src/server/http/routes/settings.ts` với mặc định `city: 'hanoi'`, `theme` theo hệ điều hành ở lần đầu, `detailLevel: 'medium'`, `autoLowerDetail: true`, `camera: 'overview'`, `defaultModel: null`
-- [ ] T102 [P] [US6] Thêm tài nguyên CC0 cho công viên và thành phố vào `assets/models/park/` và `assets/models/city/`: Kenney Nature Kit (nhiều loại cây và hoa), City Kit, Car Kit, nhân vật đi bộ/chạy/tập thể dục của Quaternius. Dựng khối low-poly cảnh đặc trưng (Hà Nội: Tháp Rùa/Lotte; TP.HCM: Landmark 81; Singapore: Marina Bay Sands; Tokyo: Tokyo Tower/Skytree; New York: Empire State). Nén và cập nhật `assets/LICENSES.md`
-- [ ] T103 [US6] Viết công viên trong `src/web/scene/park/Park.tsx`: thảm cỏ, lối đi, cây và hoa vẽ bằng `Instances` của drei, có LOD 2–3 cấp (R4). Số lượng theo mức chi tiết (Thấp/Vừa/Cao)
-- [ ] T104 [US6] Viết người và xe trong `src/web/scene/park/Ambient.tsx`: người đi dạo, chạy bộ, tập thể dục và xe cộ đi theo **lối định sẵn** (spline), không tương tác. Số lượng theo mức chi tiết. Chỉ cập nhật hoạt ảnh khi ở trong tầm nhìn
-- [ ] T105 [US6] Viết cảnh thành phố trong `src/web/scene/city/CitySkyline.tsx`: mô hình cảnh đặc trưng phía xa cộng skybox hoặc impostor cho từng thành phố (FR-062). Đổi thành phố không cần tải lại trang
-- [ ] T106 [US6] Viết hiệu ứng thời tiết trong `src/web/scene/weather/Weather.tsx`: bầu trời, mây, mưa (hạt instanced), giông (chớp), sương. Khi mưa thì giảm số người trong công viên hoặc cho cầm ô. Hiển thị dòng "Weather data by Open-Meteo.com" kèm liên kết (FR-063)
-- [ ] T107 [US6] Viết chế độ sáng/tối trong `src/web/scene/Lighting.tsx` và `src/web/ui/settings/ThemeToggle.tsx`: ánh sáng mặt trời ban ngày hoặc đèn văn phòng và đèn đường ban đêm cho cảnh 3D, cùng tông màu giao diện 2D. Lưu vào `Settings.theme` (FR-064)
-- [ ] T108 [US6] Viết bảng cài đặt trong `src/web/ui/settings/SettingsPanel.tsx`: chọn thành phố (FR-060), mức chi tiết Thấp/Vừa/Cao (FR-065), tự giảm chi tiết bật/tắt, model mặc định (`Settings.defaultModel`, danh sách từ `GET /api/models`), và mục thống kê sử dụng (`UsageStats`)
-- [ ] T109 [US6] Viết quản lý hiệu năng trong `src/web/scene/perf/PerfManager.tsx`: `PerformanceMonitor` của drei. Hạ mức chi tiết **bối cảnh** khi FPS dưới 60 liên tục 3 giây (nếu `autoLowerDetail`) và phát cảnh báo `DETAIL_LOWERED`. **Không bao giờ** hạ chi tiết văn phòng và nhân viên. Dừng vòng lặp vẽ khi tab bị ẩn
-- [ ] T110 [US6] **Mở rộng** benchmark (lõi đã có từ US1) trong `src/web/bench/Bench.tsx`: thêm công viên, người, xe, thành phố và hiệu ứng mưa ở mức chi tiết mặc định ("Vừa"); thêm tuỳ chọn `?detail=low|medium|high`. Vẫn yêu cầu FPS trung bình ≥ 60 ở mức mặc định (SC-004)
+- [ ] T105 [P] [US6] Viết `WeatherService` trong `src/server/services/weather.ts`: gọi `https://api.open-meteo.com/v1/forecast?latitude=..&longitude=..&current=temperature_2m,weather_code,cloud_cover,precipitation,wind_speed_10m,is_day` với tọa độ cố định của `hanoi`, `hcmc`, `singapore`, `tokyo`, `newyork`. Lưu đệm **30 phút** mỗi thành phố vào `weather-cache.json`. Ánh xạ mã WMO thành `'clear' | 'cloudy' | 'rain' | 'storm' | 'fog_snow'`. Lỗi mạng thì trả `clear` và không ném lỗi. Kèm route `GET /api/weather?city=` trong `src/server/http/routes/weather.ts`
+- [ ] T106 [P] [US6] Viết route `GET/PUT /api/settings` trong `src/server/http/routes/settings.ts` với mặc định `city: 'hanoi'`, `theme` theo hệ điều hành ở lần đầu, `detailLevel: 'medium'`, `autoLowerDetail: true`, `camera: 'overview'`, `defaultModel: null`
+- [ ] T107 [P] [US6] Thêm tài nguyên CC0 cho công viên và thành phố vào `assets/models/park/` và `assets/models/city/`: Kenney Nature Kit (nhiều loại cây và hoa), City Kit, Car Kit, nhân vật đi bộ/chạy/tập thể dục của Quaternius. Dựng khối low-poly cảnh đặc trưng (Hà Nội: Tháp Rùa/Lotte; TP.HCM: Landmark 81; Singapore: Marina Bay Sands; Tokyo: Tokyo Tower/Skytree; New York: Empire State). Nén và cập nhật `assets/LICENSES.md`
+- [ ] T108 [US6] Viết công viên trong `src/web/scene/park/Park.tsx`: thảm cỏ, lối đi, cây và hoa vẽ bằng `Instances` của drei, có LOD 2–3 cấp (R4). Số lượng theo mức chi tiết (Thấp/Vừa/Cao)
+- [ ] T109 [US6] Viết người và xe trong `src/web/scene/park/Ambient.tsx`: người đi dạo, chạy bộ, tập thể dục và xe cộ đi theo **lối định sẵn** (spline), không tương tác. Số lượng theo mức chi tiết. Chỉ cập nhật hoạt ảnh khi ở trong tầm nhìn
+- [ ] T110 [US6] Viết cảnh thành phố trong `src/web/scene/city/CitySkyline.tsx`: mô hình cảnh đặc trưng phía xa cộng skybox hoặc impostor cho từng thành phố (FR-062). Đổi thành phố không cần tải lại trang
+- [ ] T111 [US6] Viết hiệu ứng thời tiết trong `src/web/scene/weather/Weather.tsx`: bầu trời, mây, mưa (hạt instanced), giông (chớp), sương. Khi mưa thì giảm số người trong công viên hoặc cho cầm ô. Hiển thị dòng "Weather data by Open-Meteo.com" kèm liên kết (FR-063)
+- [ ] T112 [US6] Viết chế độ sáng/tối trong `src/web/scene/Lighting.tsx` và `src/web/ui/settings/ThemeToggle.tsx`: ánh sáng mặt trời ban ngày hoặc đèn văn phòng và đèn đường ban đêm cho cảnh 3D, cùng tông màu giao diện 2D. Lưu vào `Settings.theme` (FR-064)
+- [ ] T113 [US6] Viết bảng cài đặt trong `src/web/ui/settings/SettingsPanel.tsx`: chọn thành phố (FR-060), mức chi tiết Thấp/Vừa/Cao (FR-065), tự giảm chi tiết bật/tắt, model mặc định (`Settings.defaultModel`, danh sách từ `GET /api/models`), và mục thống kê sử dụng (`UsageStats`)
+- [ ] T114 [US6] Viết quản lý hiệu năng trong `src/web/scene/perf/PerfManager.tsx`: `PerformanceMonitor` của drei. Hạ mức chi tiết **bối cảnh** khi FPS dưới 60 liên tục 3 giây (nếu `autoLowerDetail`) và phát cảnh báo `DETAIL_LOWERED`. **Không bao giờ** hạ chi tiết văn phòng và nhân viên. Dừng vòng lặp vẽ khi tab bị ẩn
+- [ ] T115 [US6] **Mở rộng** benchmark (lõi đã có từ US1) trong `src/web/bench/Bench.tsx`: thêm công viên, người, xe, thành phố và hiệu ứng mưa ở mức chi tiết mặc định ("Vừa"); thêm tuỳ chọn `?detail=low|medium|high`. Vẫn yêu cầu FPS trung bình ≥ 60 ở mức mặc định (SC-004)
 
 **Checkpoint**: chạy quickstart V6 và `bench:fps` trên máy tham chiếu (MacBook Pro M1 Pro, 1920×1080, Chrome). **Kết thúc Đợt 3**, chạy cổng chất lượng.
 
@@ -282,9 +298,9 @@ V). Vì vậy chỉ những test này được đưa vào. Các test khác là t
 
 **Independent Test**: quickstart V7.
 
-- [ ] T111 [US7] Viết camera góc nhìn thứ nhất trong `src/web/scene/cameras/FirstPerson.tsx`: `PointerLockControls` của drei, tầm mắt 1,65 m, WASD/phím mũi tên, Shift để đi nhanh. Va chạm hình tròn (bán kính 0,3 m) với bản đồ ô ở `src/web/scene/grid/grid.ts`, nên không xuyên tường hay đồ vật (FR-071)
-- [ ] T112 [US7] Viết bấm vào nhân viên ở góc nhìn thứ nhất trong `src/web/scene/cameras/FirstPerson.tsx`: hiện tâm ngắm; bấm chuột khi tâm ngắm trỏ vào nhân viên trong phạm vi 4 m thì mở `ChatPanel`, đồng thời tạm thoát pointer lock để gõ
-- [ ] T113 [US7] Viết chuyển camera trong `src/web/ui/CameraToggle.tsx` và `src/web/state/ui.ts`: nút cộng phím `V` để chuyển. Nhớ vị trí toàn cảnh trước đó để quay lại đúng chỗ. Lưu `Settings.camera` (FR-070)
+- [ ] T116 [US7] Viết camera góc nhìn thứ nhất trong `src/web/scene/cameras/FirstPerson.tsx`: `PointerLockControls` của drei, tầm mắt 1,65 m, WASD/phím mũi tên, Shift để đi nhanh. Va chạm hình tròn (bán kính 0,3 m) với bản đồ ô ở `src/web/scene/grid/grid.ts`, nên không xuyên tường hay đồ vật (FR-071)
+- [ ] T117 [US7] Viết bấm vào nhân viên ở góc nhìn thứ nhất trong `src/web/scene/cameras/FirstPerson.tsx`: hiện tâm ngắm; bấm chuột khi tâm ngắm trỏ vào nhân viên trong phạm vi 4 m thì mở `ChatPanel`, đồng thời tạm thoát pointer lock để gõ
+- [ ] T118 [US7] Viết chuyển camera trong `src/web/ui/CameraToggle.tsx` và `src/web/state/ui.ts`: nút cộng phím `V` để chuyển. Nhớ vị trí toàn cảnh trước đó để quay lại đúng chỗ. Lưu `Settings.camera` (FR-070)
 
 **Checkpoint**: chạy quickstart V7. **Kết thúc Đợt 4**.
 
@@ -294,9 +310,9 @@ V). Vì vậy chỉ những test này được đưa vào. Các test khác là t
 
 **Purpose**: Hoàn thiện, rà soát theo Constitution
 
-- [ ] T114 [P] Rà soát rò rỉ toàn hệ thống: mở rộng `tests/leaks/redaction.test.ts` để chạy toàn bộ e2e rồi quét log, `~/Library/Application Support/agent-office/` và phản hồi API, tìm token, email, tên và nội dung tin nhắn (SC-009, cổng chất lượng 3)
-- [ ] T115 Chạy toàn bộ `quickstart.md` (V1–V8) trên máy tham chiếu và cập nhật `docs/INSTALL.md` cùng `README.md` theo kết quả cuối
-- [ ] T116 Xoá phần "Sync Impact Report" ở đầu `.specify/memory/constitution.md` trước bản phát hành đầu tiên (theo ghi chú của constitution)
+- [ ] T119 [P] Rà soát rò rỉ toàn hệ thống: mở rộng `tests/leaks/redaction.test.ts` để chạy toàn bộ e2e rồi quét log, `~/Library/Application Support/agent-office/` và phản hồi API, tìm token, email, tên và nội dung tin nhắn (SC-009, cổng chất lượng 3)
+- [ ] T120 Chạy toàn bộ `quickstart.md` (V1–V8) trên máy tham chiếu và cập nhật `docs/INSTALL.md` cùng `README.md` theo kết quả cuối
+- [ ] T121 Xoá phần "Sync Impact Report" ở đầu `.specify/memory/constitution.md` trước bản phát hành đầu tiên (theo ghi chú của constitution)
 
 ---
 
@@ -309,10 +325,10 @@ V). Vì vậy chỉ những test này được đưa vào. Các test khác là t
 - **US1 (Phase 3)**: phụ thuộc Foundational.
 - **US2 (Phase 4)**: phụ thuộc Foundational và T028. Dùng `Employee.tsx` của US1 để bấm (T066 sau T050).
 - **US8 (Phase 5)**: phụ thuộc US1 + US2 (hướng dẫn mô tả bản đã chạy được).
-- **US3 (Phase 6)**: phụ thuộc US2 (`Composer`, `ChatPanel`). T079 cần người dùng bật chế độ hỏi quyền.
-- **US4 (Phase 7)**: phụ thuộc Foundational. Chỉ T091 cần `wall_screen` của bố cục (T044). **Có thể làm song song với US3.**
+- **US3 (Phase 6)**: phụ thuộc US2 (`Composer`, `ChatPanel`). T084 cần người dùng bật chế độ hỏi quyền.
+- **US4 (Phase 7)**: phụ thuộc Foundational. Chỉ T096 cần `wall_screen` của bố cục (T044). **Có thể làm song song với US3.**
 - **US5 (Phase 8)**: phụ thuộc US1 (bố cục, lưới, nhân viên).
-- **US6 (Phase 9)**: phụ thuộc US1 (cảnh, lõi benchmark T058). Độc lập với US5. T109/T110 nên làm sớm trong phase để đo FPS liên tục.
+- **US6 (Phase 9)**: phụ thuộc US1 (cảnh, lõi benchmark T058). Độc lập với US5. T114/T115 nên làm sớm trong phase để đo FPS liên tục.
 - **US7 (Phase 10)**: phụ thuộc US1 (lưới, va chạm) và US2 (mở chat).
 - **Polish (Phase 11)**: sau các đợt mong muốn.
 
@@ -337,8 +353,8 @@ V). Vì vậy chỉ những test này được đưa vào. Các test khác là t
 - Foundational: T012, T013, T014, T015 song song; T017, T018, T019 song song; T024, T025 song song; T027, T035, T036, T037, T038 song song.
 - US1: T041, T042, T043, T044, T047, T048, T055, T056 song song (khác file); T060 song song với T058/T059.
 - US2: T061, T062, T069, T070, T071, T074 song song.
-- US3 ∥ US4 (khác người hoặc khác phiên làm việc); trong US4, T088 ∥ T089.
-- US5 ∥ US6; trong US6, T100, T101, T102 song song.
+- US3 ∥ US4 (khác người hoặc khác phiên làm việc); trong US4, T093 ∥ T094.
+- US5 ∥ US6; trong US6, T105, T106, T107 song song.
 
 ---
 
@@ -385,5 +401,5 @@ Task: "T071 [US2] ModelPicker trong src/web/ui/chat/ModelPicker.tsx"
 - [P] tasks = different files, no dependencies
 - [Story] label maps task to specific user story for traceability
 - Commit sau mỗi task hoặc mỗi nhóm logic (git đã khởi tạo, branch `001-3d-agent-office`)
-- Spike T028, T029 và T079 có thể làm thay đổi cách cài đặt của T026, T063 và T082. Luôn cập nhật research.md trước khi viết mã
+- Spike T028, T029 và T084 có thể làm thay đổi cách cài đặt của T026, T063 và T087. Luôn cập nhật research.md trước khi viết mã
 - Linux được hoãn: chỉ có `DarwinProcessFinder`. Không viết mã cho Linux trong tính năng này

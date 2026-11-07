@@ -153,6 +153,7 @@ Xét theo thứ tự ưu tiên, điều kiện đúng đầu tiên thắng:
 |---|---|---|
 | `id` | string | khoá, khớp `Conversation.projectId` |
 | `name` | string | hiện trong chú giải và hộp thoại tuyển nhân viên |
+| `folderUri` | string \| null | `projectResources.resources[0].folderUri` — thư mục gắn với project (FR-031) |
 | `color` | màu | hệ thống tính ổn định từ hash(id), không lưu |
 
 ## 8c. UsageStats *(hệ thống, lưu `usage.json`, chỉ số đếm)*

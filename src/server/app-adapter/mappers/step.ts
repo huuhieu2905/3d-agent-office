@@ -47,7 +47,7 @@ function userText(input: Raw): string | null {
   return str(input.userResponse);
 }
 
-// Spike T029/T079 (2026-11-06): a pending approval is a step with status WAITING and
+// Spike T029/T084 (2026-11-06): a pending approval is a step with status WAITING and
 // `requestedInteraction.{permission|filePermission|runCommand|...}`. Answering needs the step's
 // trajectoryId + stepIndex, so requestId = "<trajectoryId>:<stepIndex>:<interactionKind>".
 const INTERACTION_KINDS = ['permission', 'filePermission', 'runCommand', 'approvalInteraction', 'mcp'] as const;

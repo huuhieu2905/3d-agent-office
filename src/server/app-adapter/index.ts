@@ -225,7 +225,7 @@ function createInternal(deps: AdapterDeps): { adapter: AppAdapter; rpc: RpcClien
       await call('CancelCascadeInvocation', { cascadeId: conversationId });
     },
     async answerPermission(conversationId: string, requestId: string, decision: 'allow' | 'deny'): Promise<void> {
-      // Spike T079: HandleCascadeUserInteraction {cascadeId, interaction:{trajectoryId, stepIndex, <kind>:{...}}}
+      // Spike T084: HandleCascadeUserInteraction {cascadeId, interaction:{trajectoryId, stepIndex, <kind>:{...}}}
       const [trajectoryId, idx, kind = 'permission'] = requestId.split(':');
       const stepIndex = Number(idx);
       if (!trajectoryId || !Number.isInteger(stepIndex)) throw new RpcError('protocol', 'bad permission request id');

@@ -31,6 +31,8 @@ Server chỉ lắng nghe `http://127.0.0.1:<PORT>` (mặc định `4317`, đổi
 | GET | `/api/conversations/:id/mentions?q=` | — | `Mention[]` | FR-028 |
 | GET | `/api/models` | — | `ModelOption[]` | FR-024 |
 | GET | `/api/projects` | — | `Project[]` | FR-013, FR-026 |
+| POST | `/api/projects` | `{ name, folderPath }` | `201 Project` | FR-031; `folderPath` phải là thư mục có thật trong home |
+| GET | `/api/fs/dirs?path=` | — | `{ path, parent \| null, home, dirs: { name, path }[] }` | FR-031; chỉ thư mục, chỉ trong home; mặc định là home |
 | GET | `/api/usage` | — | `{ weeks: { weekStart, sentViaOffice, userInputsTotal }[] }` | đo SC-001/SC-006, chỉ là số đếm |
 | GET | `/api/quota` | — | `Quota` | FR-041 |
 | GET | `/api/layout` | — | `OfficeLayout` | |

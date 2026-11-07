@@ -5,7 +5,7 @@ import { computeVisualState } from '../../src/server/services/visual-state';
 import type { Conversation } from '../../src/shared/domain';
 import { FakeFinder, FakeTransport, fixture } from './helpers';
 
-// Spikes T029/T079 (2026-11-06): waiting-for-approval and error steps observed on App 2.24.0.
+// Spikes T029/T084 (2026-11-06): waiting-for-approval and error steps observed on App 2.24.0.
 
 const stops: (() => Promise<void>)[] = [];
 afterEach(async () => {

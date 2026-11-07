@@ -83,6 +83,13 @@ agent dừng lại.
    tiếp theo được chạy bằng model đó.
 6. **Given** cuộc trò chuyện có kết quả là code, lệnh hoặc thay đổi file, **When** người dùng
    xem, **Then** nội dung được trình bày dễ đọc (định dạng văn bản, khối code, kết quả lệnh).
+7. **Given** người dùng chọn "Tạo project", **When** người dùng duyệt danh sách thư mục trên máy, chọn
+   một thư mục và đặt tên, **Then** một project mới gắn với thư mục đó được tạo trong Antigravity App và
+   xuất hiện trong danh sách project.
+8. **Given** người dùng "tuyển nhân viên mới", **When** chưa chọn project, **Then** không thể xác nhận;
+   người dùng phải chọn một project có sẵn hoặc tạo project mới ngay trong hộp thoại.
+9. **Given** conversation thuộc một project có thư mục, **When** người dùng gõ `@`, **Then** các file trong
+   thư mục đó được gợi ý.
 
 ---
 
@@ -317,6 +324,11 @@ có bấm giờ.
   gửi như một mục nhắc tới (giống App), không phải văn bản thường.
 - **FR-029**: Người dùng PHẢI duyệt hoặc từ chối được các yêu cầu xin quyền của agent ngay trong
   khung trò chuyện.
+- **FR-031** (bổ sung 2026-11-07): Người dùng PHẢI tạo được **project** mới trong Antigravity App bằng
+  cách chọn một thư mục trên máy từ trình duyệt thư mục (danh sách các thư mục, đi vào hoặc ra thư mục cha),
+  và đặt tên cho project. Tạo project tách biệt với tạo conversation.
+- **FR-032** (bổ sung 2026-11-07): Khi tạo conversation, người dùng PHẢI chọn một project có sẵn hoặc tạo
+  project mới. Không cho phép tạo conversation khi chưa chọn project.
 - **FR-030**: Mọi thao tác thay đổi trạng thái agent (gửi, tạo, dừng, duyệt) PHẢI do người dùng
   chủ động thực hiện. Hệ thống KHÔNG ĐƯỢC tự gửi lệnh tới agent.
 
@@ -379,8 +391,9 @@ có bấm giờ.
 - **Cuộc trò chuyện (Conversation)**: dữ liệu của App. Gồm chuỗi các bước: tin nhắn người dùng,
   câu trả lời, suy nghĩ, công cụ, lệnh, thay đổi file, yêu cầu xin quyền. Có trạng thái chạy và
   model đang dùng.
-- **Project**: nhóm conversation trong App. Trong văn phòng, project chỉ được thể hiện bằng
-  nhãn màu trên nhân viên và bộ lọc, không phải một khu vực riêng (FR-013).
+- **Project**: nhóm conversation trong App, có thể gắn với một **thư mục trên máy** (workspace của các
+  conversation trong project; dùng cho gợi ý `@`). Trong văn phòng, project chỉ được thể hiện bằng nhãn màu
+  trên nhân viên và bộ lọc, không phải một khu vực riêng (FR-013). Người dùng tạo được project mới (FR-031).
 - **Văn phòng (Office Layout)**: dữ liệu riêng của hệ thống. Gồm mặt bằng tầng, danh sách đồ vật
   (loại, vị trí, hướng) và danh sách bàn với nhân viên được gán.
 - **Bối cảnh (Scene Settings)**: dữ liệu riêng của hệ thống. Gồm thành phố đã chọn, chế độ
@@ -419,6 +432,8 @@ có bấm giờ.
 
 ## Assumptions
 
+- Trình duyệt thư mục khi tạo project chỉ hiển thị **thư mục** (không hiển thị file) nằm trong **thư mục home**
+  của người dùng, không đi ra ngoài home (an toàn và đủ cho nhu cầu).
 - Không gom nhân viên theo project vào phòng ban hay tầng riêng, vì người dùng tự sắp xếp chỗ
   ngồi và bàn ghế (quyết định của người dùng ngày 2026-11-06).
 - Chỉ chủ dự án sử dụng, trên một máy mỗi lần. Không có tài khoản, đăng nhập hay phân quyền
