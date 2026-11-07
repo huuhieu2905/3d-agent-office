@@ -438,6 +438,19 @@ code.inline {
   color: var(--error);
   font-size: 12px;
 }
+/* 002 US1: remembered model no longer usable; confirmation after saving a model choice. */
+.model-picker-bad select {
+  border-color: var(--error);
+  box-shadow: 0 0 0 1px var(--error);
+}
+.composer-bar {
+  flex-wrap: wrap;
+}
+.model-saved {
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
 .modal-backdrop {
   position: absolute;
   inset: 0;

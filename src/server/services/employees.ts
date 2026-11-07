@@ -1,4 +1,5 @@
 import type { ConnectionState, Conversation, Employee, Step } from '../../shared/domain';
+import { latestRequestedModel } from '../../shared/model';
 import type { AppAdapter } from '../app-adapter/index';
 import type { WsHub } from '../http/ws-hub';
 import type { Logger } from '../log';
@@ -29,6 +30,8 @@ export class EmployeesService {
   private polling = false;
   private employees = new Map<string, Employee>();
   private lastSteps = new Map<string, Step | null>();
+  /** A2-1: the model each conversation's latest user turn asked for, as seen in fetched steps. */
+  private lastModel = new Map<string, string>();
   private lastStepCount = new Map<string, number>();
   private lastRun = new Map<string, Conversation['runStatus']>();
   private candidate = new Map<string, Employee['visualState']>();
@@ -105,6 +108,8 @@ export class EmployeesService {
             const steps = await this.o.adapter.getSteps(c.id, Math.max(0, (prevCount ?? c.stepCount) - 1));
             if (this.primed && prevCount !== undefined) newUserInputs += steps.filter((s) => s.kind === 'user' && s.index >= prevCount).length;
             this.lastSteps.set(c.id, steps.at(-1) ?? this.lastSteps.get(c.id) ?? null);
+            const model = latestRequestedModel(steps);
+            if (model) this.lastModel.set(c.id, model);
           } catch {
             /* keep previous */
           }
@@ -168,6 +173,8 @@ export class EmployeesService {
         parentId: c.parentId,
         visible: visibleIds.has(c.id),
         lastActivityAt: c.lastActivityAt,
+        preferredModel: p.preferredModel?.modelId ?? null,
+        currentModel: this.lastModel.get(c.id) ?? c.currentModel ?? null,
       });
     }
     await profiles.flush();
@@ -183,6 +190,7 @@ export class EmployeesService {
     this.employees = next;
     for (const id of removed) {
       this.lastSteps.delete(id);
+      this.lastModel.delete(id);
       this.lastStepCount.delete(id);
       this.lastRun.delete(id);
     }

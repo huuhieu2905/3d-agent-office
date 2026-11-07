@@ -34,6 +34,8 @@ export const layoutRoutes: FastifyPluginAsync<RouteDeps> = async (app, deps) => 
     if (!ID.test(req.params.conversationId)) return sendError(reply, 400, 'BAD_REQUEST', 'bad id');
     const body = profilePatchSchema.safeParse(req.body);
     if (!body.success) return sendError(reply, 400, 'BAD_REQUEST', 'invalid profile');
+    // L2-3: only conversations the App knows about have a profile to change.
+    if (!services.employees.conversation(req.params.conversationId)) return sendError(reply, 404, 'NOT_FOUND', 'Không có cuộc trò chuyện này');
     if (body.data.deskId) {
       const layout = await services.layout.get();
       if (!layout.items.some((i) => i.id === body.data.deskId && i.type === 'desk')) {

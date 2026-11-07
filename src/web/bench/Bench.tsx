@@ -13,6 +13,9 @@ import type { DetailLevel } from '@shared/domain';
 // camera flight. Exposes window.__bench = { frames: number[] } for scripts/bench-fps.ts.
 
 const STATES: VisualState[] = ['idle', 'working', 'thinking', 'waiting_for_boss', 'error', 'stopped'];
+/** Scenarios understood by ?scenario= (T003). */
+const KNOWN_SCENARIOS: string[] = [];
+
 const APPEARANCES = ['worker-a', 'worker-b', 'worker-c', 'worker-d', 'worker-e', 'worker-f', 'worker-g', 'worker-h'];
 
 declare global {
@@ -34,6 +37,8 @@ function fakeEmployees(tick: number, deskIds: string[]): Employee[] {
     parentId: null,
     visible: true,
     lastActivityAt: new Date().toISOString(),
+    preferredModel: null,
+    currentModel: null,
   }));
 }
 
@@ -57,7 +62,13 @@ export function Bench() {
 
   useEffect(() => {
     // T115: full scene — park, people, cars, skyline and rain — at ?detail= (default medium).
-    const q = new URLSearchParams(location.search).get('detail');
+    const params = new URLSearchParams(location.search);
+    const q = params.get('detail');
+    // T003: scenarios and floor sizes are added by later phases (crowd: US3, floor: US4).
+    const scenario = params.get('scenario');
+    if (scenario && !KNOWN_SCENARIOS.includes(scenario)) console.warn(`bench: unknown scenario "${scenario}", using default`);
+    const floor = params.get('floor');
+    if (floor && !/^\d+x\d+$/.test(floor)) console.warn(`bench: bad floor "${floor}", expected WxD in metres`);
     const detail: DetailLevel = q === 'low' || q === 'high' ? q : 'medium';
     useSettings.getState().set({ detailLevel: detail, city: 'hanoi', theme: 'light', autoLowerDetail: false });
     useWeather.getState().set({ city: 'hanoi', condition: 'rain', isDay: true, temperatureC: 26, fetchedAt: new Date().toISOString(), source: 'open-meteo' });

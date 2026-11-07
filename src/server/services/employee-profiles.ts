@@ -52,7 +52,11 @@ export class EmployeeProfiles {
     return p;
   }
 
-  async update(conversationId: string, patch: Partial<Pick<EmployeeProfile, 'deskId' | 'appearance'>>): Promise<EmployeeProfile> {
+  async update(
+    conversationId: string,
+    patch: Partial<Pick<EmployeeProfile, 'deskId' | 'appearance'>> & { preferredModel?: string | null },
+    now = Date.now(),
+  ): Promise<EmployeeProfile> {
     const p = await this.get(conversationId);
     if (patch.deskId !== undefined) {
       // A desk belongs to one employee: whoever had it swaps to this employee's old desk.
@@ -65,6 +69,11 @@ export class EmployeeProfiles {
       p.deskId = patch.deskId;
     }
     if (patch.appearance !== undefined) p.appearance = patch.appearance;
+    // 002 US1: remember the model picked for this conversation (null forgets it). The profile — and so
+    // the choice — is dropped with the rest of the profile when the conversation disappears (touch()).
+    if (patch.preferredModel !== undefined) {
+      p.preferredModel = patch.preferredModel ? { modelId: patch.preferredModel, chosenAt: new Date(now).toISOString() } : null;
+    }
     this.dirty = true;
     await this.flush();
     return p;

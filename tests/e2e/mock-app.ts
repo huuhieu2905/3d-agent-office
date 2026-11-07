@@ -11,6 +11,8 @@ export class MockApp {
   runningAll = false;
   waiting = false;
   created: { id: string; name: string; projectResources: unknown }[] = [];
+  /** 002 US1: model ids the "App" no longer offers (to test a remembered model going away). */
+  hiddenModels = new Set<string>();
 
   constructor() {
     const t = this.transport;
@@ -38,6 +40,12 @@ export class MockApp {
     t.handlers.ListProjects = () => ({
       projectIds: [...fixture<{ projectIds: string[] }>('ListProjects').projectIds, ...this.created.map((p) => p.id)],
     });
+    t.handlers.GetUserStatus = () => {
+      const data = fixture<{ userStatus: { cascadeModelConfigData: { clientModelConfigs: { modelOrAlias?: { model?: string } }[] } } }>('GetUserStatus');
+      const cfg = data.userStatus.cascadeModelConfigData;
+      cfg.clientModelConfigs = cfg.clientModelConfigs.filter((m) => !this.hiddenModels.has(m.modelOrAlias?.model ?? ''));
+      return data;
+    };
     t.handlers.GetCascadeTrajectorySteps = () => fixture(this.waiting ? 'waiting-steps' : 'GetCascadeTrajectorySteps');
     t.handlers.HandleCascadeUserInteraction = (body) => {
       this.sent.push({ method: 'HandleCascadeUserInteraction', body });

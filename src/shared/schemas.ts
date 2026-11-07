@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { MODEL_ID_RE } from './model';
 import { CITIES, ITEM_TYPES } from './domain';
 
 // Validation for data crossing the local API and for persisted JSON files.
@@ -55,6 +56,7 @@ export const employeeProfileSchema = z.object({
   appearance: z.string().max(100),
   deskId: z.string().max(100).nullable(),
   lastSeenAt: z.string(),
+  preferredModel: z.object({ modelId: z.string().regex(MODEL_ID_RE), chosenAt: z.string() }).nullable().optional(),
 });
 
 export const employeeProfilesFileSchema = z.object({
@@ -65,6 +67,7 @@ export const employeeProfilesFileSchema = z.object({
 export const profilePatchSchema = z.object({
   deskId: z.string().max(100).nullable().optional(),
   appearance: z.string().max(100).optional(),
+  preferredModel: z.string().regex(MODEL_ID_RE).nullable().optional(),
 });
 
 export const usageFileSchema = z.object({

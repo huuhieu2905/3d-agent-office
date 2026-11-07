@@ -99,6 +99,8 @@ export interface Step {
   permission: PermissionRequest | null;
   /** Raw App step type, kept only so `other` steps can be shown collapsed. */
   rawType: string;
+  /** User turns only: the model the user asked for on this turn (A2-1). Null when unknown. */
+  model: string | null;
 }
 
 // ---- Employees (combined) --------------------------------------------------
@@ -117,11 +119,22 @@ export interface Employee {
   parentId: string | null;
   visible: boolean;
   lastActivityAt: ISODateTime;
+  /** Model the user picked for this conversation in the office (002 US1); null if never picked. */
+  preferredModel: string | null;
+  /** Model the conversation used last according to the App (A2-1); null when unknown. */
+  currentModel: string | null;
+}
+
+export interface PreferredModel {
+  modelId: string;
+  chosenAt: ISODateTime;
 }
 
 export interface EmployeeProfile {
   appearance: AppearanceId;
   deskId: string | null;
+  /** Model chosen for this conversation (002 data-model §1). Optional so older files still load. */
+  preferredModel?: PreferredModel | null;
   /** When this conversation was last seen in the App; used for 30-day cleanup. */
   lastSeenAt: ISODateTime;
 }
