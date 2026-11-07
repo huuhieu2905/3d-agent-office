@@ -46,7 +46,7 @@ export function registerSecurity(app: FastifyInstance, opts: SecurityOptions): v
     if (!isApi && !isWs) return; // static web assets
     if (publicPrefixes.some((p) => url.startsWith(p))) return;
 
-    let presented = '';
+    let presented: string;
     if (isWs) {
       presented = new URL(url, 'http://local').searchParams.get('k') ?? '';
     } else {

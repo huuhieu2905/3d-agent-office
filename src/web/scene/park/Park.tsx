@@ -68,7 +68,7 @@ function useInstances(count: number, setter: (i: number, m: THREE.Matrix4, c: TH
     mesh.instanceMatrix.needsUpdate = true;
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
     mesh.computeBoundingSphere();
-  }, deps); // eslint-disable-line react-hooks/exhaustive-deps
+  }, deps); // re-filled only when the caller's inputs change
   return ref;
 }
 

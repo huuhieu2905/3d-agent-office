@@ -108,7 +108,7 @@ export function Bench() {
       useEmployees.getState().snapshot(fakeEmployees(tick, deskIds, scenario === 'crowd'), 0);
     }, 2000);
     return () => clearInterval(id);
-  }, []); // eslint-disable-line
+  }, []); // once, on mount
 
   return (
     <div className="app theme-light">

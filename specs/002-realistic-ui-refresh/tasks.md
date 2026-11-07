@@ -353,9 +353,15 @@ Một package: `src/shared`, `src/server`, `src/web`, `tests/{unit,contract,e2e}
 
 ## Phase 10: Polish & Cross-Cutting Concerns
 
-- [ ] T088 [P] Cập nhật `README.md` và hướng dẫn cài đặt (INSTALL): chế độ sắp xếp mới (kéo thả, phím tắt, đổi kích thước), model theo conversation, concept mới, `layout.v1.bak.json`
-- [ ] T089 [P] Đề xuất sửa PATCH Constitution Nguyên tắc V qua `/speckit-constitution` (R2-10). Chỉ đề xuất, chờ chủ dự án duyệt.
-- [ ] T090 Chạy toàn bộ cổng chất lượng: `npm run typecheck && npm run lint && npm test && npm run test:e2e && npm run test:leaks && npm run bench:fps`; kiểm tra Network không có request ra ngoài trừ Open-Meteo; chạy lại hướng dẫn cài đặt trên macOS ≤ 15 phút
+- [X] T088 [P] Cập nhật `README.md` và hướng dẫn cài đặt (INSTALL): chế độ sắp xếp mới (kéo thả, phím tắt, đổi kích thước), model theo conversation, concept mới, `layout.v1.bak.json`
+- [X] T089 [P] Đề xuất sửa PATCH Constitution Nguyên tắc V qua `/speckit-constitution` (R2-10). Chỉ đề xuất, chờ chủ dự án duyệt.
+- [X] T090 Chạy toàn bộ cổng chất lượng: `npm run typecheck && npm run lint && npm test && npm run test:e2e && npm run test:leaks && npm run bench:fps`; kiểm tra Network không có request ra ngoài trừ Open-Meteo; chạy lại hướng dẫn cài đặt trên macOS ≤ 15 phút
+> **Ghi chú Polish (2026-11-07)**:
+> - T089: đề xuất ghi ở `constitution-proposal.md`; chưa sửa `constitution.md`, chờ chủ dự án duyệt.
+> - T090: typecheck, lint (0 lỗi), 142 unit/contract test, test:leaks, check-guards, 35 e2e (GPU) đều qua. Đo `bench:fps` mức Vừa: 122,5 và 119,1 FPS. `fonts.spec` chặn mọi request ra ngoài và app vẫn chạy đúng. **Chưa chạy lại** hướng dẫn cài đặt trên một máy Mac sạch (≤ 15 phút).
+> - T091 cần Antigravity App thật và người dùng tự chấm SC-009, SC-015, nên để lại cho chủ dự án.
+> - T061 (ảnh chụp 5 concept trong `specs/.../concepts/`) vẫn chưa làm; các concept xem tại link artifact.
+
 - [ ] T091 Chạy quickstart.md từ đầu đến cuối với App thật bằng conversation `[test-002] ...` và dọn sau khi thử; người dùng tự chấm SC-009 và SC-015
 
 ---

@@ -19,7 +19,7 @@ export class DarwinProcessFinder implements ProcessFinder {
   }
 
   async listListeningPorts(pid: number): Promise<number[]> {
-    let stdout = '';
+    let stdout: string;
     try {
       ({ stdout } = await run('/usr/sbin/lsof', ['-nP', '-a', '-p', String(pid), '-iTCP', '-sTCP:LISTEN']));
     } catch (err) {

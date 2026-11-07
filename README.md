@@ -5,16 +5,21 @@ nhìn là biết ai đang làm, ai rảnh, ai đang chờ bạn. Bấm 1 lần v
 dừng agent hoặc "tuyển" nhân viên mới.
 
 **Tính năng**
-- 🧑‍💼 Mỗi conversation là một nhân viên robot, chuyển động theo trạng thái thật: gõ phím khi làm, chống
-  cằm khi nghĩ, giơ tay khi **chờ sếp duyệt**, ôm đầu khi lỗi, và thỉnh thoảng vươn vai hoặc đi uống nước
-  khi rảnh
+- 🧑‍💼 Mỗi conversation là một nhân viên (nhân vật hoạt hình 3D, concept **Soft Studio · Sài Gòn**), chuyển
+  động theo trạng thái thật: gõ phím khi làm, vẫy tay khi **chờ sếp duyệt**, lắc đầu khi lỗi, và thỉnh
+  thoảng vươn vai hoặc đi uống nước khi rảnh. Nhân viên không bao giờ đứng chồng lên nhau: họ nhường đường,
+  khựng lại khi va vào nhau hoặc vào đồ vật
 - 💬 Bấm 1 lần để chat như trong App: lệnh `/`, nhắc file `@`, chọn model (kèm % quota), dừng agent, duyệt
-  hoặc từ chối quyền
+  hoặc từ chối quyền. **Model bạn chọn được nhớ riêng cho từng cuộc trò chuyện**
 - 📁 Tạo project gắn thư mục trên máy, rồi "tuyển nhân viên" (conversation mới) vào project
 - 📊 Màn hình quota treo tường và bảng quota chi tiết
-- 🛠 Tự xây văn phòng: bàn ghế, tường, vách kính, cây; kéo nhân viên đổi chỗ
-- 🌳 Văn phòng giữa công viên, chọn 1 trong 5 thành phố (Hà Nội, TP.HCM, Singapore, Tokyo, New York),
-  **thời tiết thật**, chế độ sáng/tối, 3 mức chi tiết
+- 🛠 Chế độ sắp xếp (nút **Xây dựng**): bấm một đồ vật để chọn, giữ chuột kéo tới bất kỳ chỗ nào (bước 5 cm,
+  giữ <kbd>Shift</kbd> để bám lưới 0,5 m, phím mũi tên dời 5 cm, <kbd>R</kbd> xoay, <kbd>Delete</kbd> xoá,
+  <kbd>Esc</kbd> huỷ thao tác kéo); kéo nhân viên thả vào bàn để xếp chỗ hoặc đổi chỗ; đổi kích thước văn
+  phòng 6–40 m (ô nhập hoặc kéo cạnh), công viên tự giãn theo
+- 🌳 Văn phòng giữa công viên (cây phượng, hàng dừa, ki-ốt cà phê, người đi bộ, chạy bộ, tập thể dục); phố
+  với quán cà phê, quán ăn, xe hơi, xe máy, xe buýt ở xa phía sau. Chọn 1 trong 5 thành phố (Hà Nội, TP.HCM,
+  Singapore, Tokyo, New York), **thời tiết thật**, chế độ sáng/tối, 3 mức chi tiết
 - 🚶 Góc nhìn thứ nhất (phím <kbd>V</kbd>): đi lại trong văn phòng, nhắm vào nhân viên và bấm để chat
 
 - Chạy **local** trên macOS, giao diện trong trình duyệt
@@ -34,10 +39,11 @@ dừng agent hoặc "tuyển" nhân viên mới.
 ```bash
 npm run dev          # server + Vite dev server
 npm test             # unit + contract + leak tests + static guards
-npm run test:e2e     # Playwright với App giả lập
-npm run bench:fps    # benchmark 60 FPS (SC-004)
+npm run test:e2e     # Playwright với App giả lập (chạy trên GPU, cần một Mac thật)
+npm run bench:fps    # benchmark 60 FPS (SC-004); thêm --scenario crowd, --floor 40x40, --off trees,city…
 AGENT_OFFICE_LIVE=1 npm run test:live   # test với App thật (tự dọn conversation [agent-office-test])
 ```
 
-Tài liệu thiết kế: `specs/001-3d-agent-office/`. Nguyên tắc dự án: `.specify/memory/constitution.md`.
-Giấy phép tài nguyên 3D: `assets/LICENSES.md`.
+Tài liệu thiết kế: `specs/001-3d-agent-office/`, `specs/002-realistic-ui-refresh/` (concept đã chọn:
+`concept-decision.md`). Nguyên tắc dự án: `.specify/memory/constitution.md`. Giấy phép font và tài nguyên:
+`assets/LICENSES.md`.

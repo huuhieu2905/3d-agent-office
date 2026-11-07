@@ -63,15 +63,23 @@ Terminal sẽ in `Antigravity App 2.24.0: connected` khi kết nối thành côn
 | `EADDRINUSE` / cổng 4317 bận | Chạy với cổng khác: `AGENT_OFFICE_PORT=4400 npm start` |
 | Trình duyệt không tự mở | Copy đường link trong terminal vào trình duyệt. |
 | `npm start` báo không tìm thấy `node` | Mở terminal mới (để `fnm` có hiệu lực), hoặc chạy `eval "$(fnm env)"`. |
-| Văn phòng giật, chậm | Bấm ⚙︎ → giảm "Mức chi tiết bối cảnh". Hệ thống cũng tự giảm khi máy chậm (có thể tắt trong cài đặt). |
+| Văn phòng giật, chậm | Bấm ⚙︎ → giảm "Mức chi tiết bối cảnh". Hệ thống cũng tự giảm khi máy chậm (có thể tắt trong cài đặt). Mức "Thấp" bỏ các toà cao ốc ở xa, giữ phố và quán. |
+| Kéo đồ vật hoặc nhân viên không được | Phải bật chế độ sắp xếp (nút **Xây dựng**). Ngoài chế độ này, bấm vào nhân viên chỉ mở chat. |
+| Không thu nhỏ được văn phòng | Có đồ vật nằm ở phần sẽ bị cắt; bấm vào thông báo "Không thu nhỏ được" để chọn lần lượt từng đồ vật và dời chúng vào trong. |
+| `npm run test:e2e` rất chậm hoặc treo | E2E vẽ cảnh 3D trên GPU (Metal). Hãy chạy trên Mac thật, không qua máy ảo hoặc phiên SSH không có GPU. |
 | Gõ `@` không gợi ý file | Conversation phải thuộc một project gắn thư mục. Tạo project bằng nút "+ Tạo project", rồi tuyển nhân viên trong project đó. |
 
 ## Dữ liệu và quyền riêng tư
 
-- Bố cục văn phòng, chỗ ngồi và cài đặt được lưu ở `~/Library/Application Support/agent-office/`.
+- Bố cục văn phòng, chỗ ngồi, model đã chọn cho từng cuộc trò chuyện và cài đặt được lưu ở
+  `~/Library/Application Support/agent-office/`.
+- Khi nâng cấp từ bản đầu tiên, bố cục cũ được tự chuyển sang định dạng mới; bản gốc được giữ ở
+  `layout.v1.bak.json` trong cùng thư mục (không bao giờ bị ghi đè). Muốn quay lại bố cục cũ thì đổi tên file
+  này thành `layout.json` khi hệ thống đang tắt.
 - Hệ thống **không** lưu nội dung chat, mã xác thực hay email. Nội dung chat chỉ đọc trực tiếp từ Antigravity App.
 - Server chỉ lắng nghe trên `127.0.0.1`, máy khác trong mạng không truy cập được.
-- Kết nối ra Internet duy nhất là lấy dữ liệu thời tiết công khai (Open-Meteo).
+- Kết nối ra Internet duy nhất là lấy dữ liệu thời tiết công khai (Open-Meteo). Font chữ, nhân vật, nội thất
+  và cảnh vật đều đi kèm hệ thống, không tải từ mạng.
 
 ## Gỡ cài đặt
 
