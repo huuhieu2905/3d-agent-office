@@ -14,6 +14,9 @@ import { OfficeMood } from './OfficeMood';
 import { OverviewCamera } from './cameras/Overview';
 import { SubagentLinks, subagentOverflow } from './SubagentLinks';
 import { QuotaScreen } from '../ui/quota/QuotaScreen';
+import { BuildGizmo } from './BuildGizmo';
+import { useBuild } from '../state/build';
+import { LAYOUT_CHANGED } from '../ui/build/BuildMode';
 
 export function OfficeScene({
   theme,
@@ -24,12 +27,17 @@ export function OfficeScene({
   layoutOverride?: OfficeLayout;
   benchMode?: boolean;
 }) {
-  const [layout, setLayout] = useState<OfficeLayout | null>(layoutOverride ?? null);
+  const [saved, setSaved] = useState<OfficeLayout | null>(layoutOverride ?? null);
   const serverOnline = useConnection((s) => s.serverOnline);
   useEffect(() => {
     if (layoutOverride || !serverOnline) return;
-    api<OfficeLayout>('/api/layout').then(setLayout).catch(() => undefined);
+    const load = () => api<OfficeLayout>('/api/layout').then(setSaved).catch(() => undefined);
+    void load();
+    window.addEventListener(LAYOUT_CHANGED, load);
+    return () => window.removeEventListener(LAYOUT_CHANGED, load);
   }, [serverOnline, layoutOverride]);
+  const build = useBuild();
+  const layout = build.active && build.draft ? build.draft : saved;
 
   const grid = useMemo(() => (layout ? new OfficeGrid(layout) : null), [layout]);
   const disconnected = useConnection(isDisconnected);
@@ -56,7 +64,7 @@ export function OfficeScene({
     <>
       <OfficeMood disconnected={disconnected} theme={theme} />
       {!benchMode && <OverviewCamera size={size} />}
-      <Office layout={layout} grid={grid} employeesByDesk={byDesk} theme={theme}>
+      <Office layout={layout} grid={grid} employeesByDesk={byDesk} theme={theme} onItemClick={build.active ? build.select : undefined}>
         {entries.map(({ employee, leaving, enter }) => (
           <Employee
             key={employee.conversationId}
@@ -71,7 +79,8 @@ export function OfficeScene({
           />
         ))}
         <SubagentLinks employees={visible} positions={positions} />
-        {!benchMode && <QuotaScreen layout={layout} grid={grid} />}
+        {!benchMode && !build.active && <QuotaScreen layout={layout} grid={grid} />}
+        {build.active && <BuildGizmo layout={layout} grid={grid} employees={visible} />}
       </Office>
     </>
   );

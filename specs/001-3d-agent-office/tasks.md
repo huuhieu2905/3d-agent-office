@@ -258,13 +258,13 @@ V). Vì vậy chỉ những test này được đưa vào. Các test khác là t
 
 **Independent Test**: quickstart V5.
 
-- [ ] T098 [P] [US5] Viết danh mục đồ vật trong `src/shared/catalog.ts`: mỗi `type` (`desk`, `chair`, `wall`, `glass_wall`, `door`, `plant`, `water_cooler`, `sofa`, `wall_screen`) có footprint (số ô), vật chặn ô hay chặn cạnh, và mô hình 3D tương ứng (FR-050)
-- [ ] T099 [US5] Viết hàm kiểm tra bố cục trong `src/shared/layout-validation.ts`, áp dụng các quy tắc ở data-model §5 nguyên văn: "Mọi ô trong footprint đều nằm trong `floor`"; "Không có hai vật chặn nhau chiếm cùng một ô. Tường và vách kính chỉ chặn cạnh ô"; "Mỗi `desk` có đúng một ô ngồi đi tới được từ cửa (kiểm tra bằng A*)". Trả danh sách `invalidItems`
-- [ ] T100 [P] [US5] Unit test kiểm tra bố cục trong `tests/unit/layout-validation.test.ts` (chồng vật, ra ngoài sàn, bàn bị chắn lối, bố cục mặc định hợp lệ)
-- [ ] T101 [US5] Viết route `PUT /api/layout` (kiểm tra bằng `layout-validation`, trả `422 { error, invalidItems }` nếu sai, ghi atomic `layout.json`) và `PUT /api/employees/:conversationId/profile` (`{ deskId?, appearance? }`) trong `src/server/http/routes/layout.ts`
-- [ ] T102 [US5] Viết chế độ xây dựng trong `src/web/ui/build/BuildMode.tsx` và `src/web/scene/BuildGizmo.tsx`: thanh đồ vật theo danh mục; xem trước vật đặt khớp lưới, xanh khi hợp lệ và đỏ khi không; phím R để xoay 90°; kéo để di chuyển; phím Delete để xoá; hoàn tác/làm lại (Cmd+Z / Cmd+Shift+Z); nút "Lưu" và "Huỷ"
-- [ ] T103 [US5] Viết kéo thả nhân viên vào bàn trong `src/web/scene/EmployeeDrag.tsx` (FR-052): thả vào bàn trống thì gọi `PUT profile`; thả vào bàn có người thì hai người đổi chỗ. Bàn được gán phải đúng là bàn nhân viên quay về sau hành động ngẫu nhiên
-- [ ] T104 [US5] Hiển thị khu chờ và gợi ý "Thêm bàn" khi số nhân viên nhiều hơn số bàn, trong `src/web/scene/employee-lifecycle.ts` và `src/web/ui/build/AddDeskHint.tsx`
+- [X] T098 [P] [US5] Viết danh mục đồ vật trong `src/shared/catalog.ts`: mỗi `type` (`desk`, `chair`, `wall`, `glass_wall`, `door`, `plant`, `water_cooler`, `sofa`, `wall_screen`) có footprint (số ô), vật chặn ô hay chặn cạnh, và mô hình 3D tương ứng (FR-050)
+- [X] T099 [US5] Viết hàm kiểm tra bố cục trong `src/shared/layout-validation.ts`, áp dụng các quy tắc ở data-model §5 nguyên văn: "Mọi ô trong footprint đều nằm trong `floor`"; "Không có hai vật chặn nhau chiếm cùng một ô. Tường và vách kính chỉ chặn cạnh ô"; "Mỗi `desk` có đúng một ô ngồi đi tới được từ cửa (kiểm tra bằng A*)". Trả danh sách `invalidItems`
+- [X] T100 [P] [US5] Unit test kiểm tra bố cục trong `tests/unit/layout-validation.test.ts` (chồng vật, ra ngoài sàn, bàn bị chắn lối, bố cục mặc định hợp lệ)
+- [X] T101 [US5] Viết route `PUT /api/layout` (kiểm tra bằng `layout-validation`, trả `422 { error, invalidItems }` nếu sai, ghi atomic `layout.json`) và `PUT /api/employees/:conversationId/profile` (`{ deskId?, appearance? }`) trong `src/server/http/routes/layout.ts`
+- [X] T102 [US5] Viết chế độ xây dựng trong `src/web/ui/build/BuildMode.tsx` và `src/web/scene/BuildGizmo.tsx`: thanh đồ vật theo danh mục; xem trước vật đặt khớp lưới, xanh khi hợp lệ và đỏ khi không; phím R để xoay 90°; kéo để di chuyển; phím Delete để xoá; hoàn tác/làm lại (Cmd+Z / Cmd+Shift+Z); nút "Lưu" và "Huỷ"
+- [X] T103 [US5] Viết kéo thả nhân viên vào bàn trong `src/web/scene/EmployeeDrag.tsx` (FR-052): thả vào bàn trống thì gọi `PUT profile`; thả vào bàn có người thì hai người đổi chỗ. Bàn được gán phải đúng là bàn nhân viên quay về sau hành động ngẫu nhiên
+- [X] T104 [US5] Hiển thị khu chờ và gợi ý "Thêm bàn" khi số nhân viên nhiều hơn số bàn, trong `src/web/scene/employee-lifecycle.ts` và `src/web/ui/build/AddDeskHint.tsx`
 
 **Checkpoint**: chạy quickstart V5.
 

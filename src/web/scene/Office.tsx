@@ -12,6 +12,7 @@ export function Office({
   employeesByDesk,
   theme,
   cutaway = true,
+  onItemClick,
   children,
 }: {
   layout: OfficeLayout;
@@ -19,6 +20,8 @@ export function Office({
   employeesByDesk: Map<string, Employee>;
   theme: 'light' | 'dark';
   cutaway?: boolean;
+  /** Build mode: clicking any item selects it instead of the normal action. */
+  onItemClick?: (id: string) => void;
   children?: React.ReactNode;
 }) {
   const w = layout.floor.widthCells * layout.floor.cellSize;
@@ -51,7 +54,12 @@ export function Office({
             rotation-y={t.rotationY}
             userData={{ itemId: item.id }}
             onClick={
-              item.type === 'desk' && !employeesByDesk.has(item.id)
+              onItemClick
+                ? (e) => {
+                    e.stopPropagation();
+                    onItemClick(item.id);
+                  }
+                : item.type === 'desk' && !employeesByDesk.has(item.id)
                 ? (e) => {
                     e.stopPropagation();
                     setHireDesk(item.id); // empty desk → hire a new employee here (FR-026)

@@ -11,6 +11,8 @@ import { HireButton, HireDialog } from './ui/chat/HireDialog';
 import { useUi } from './state/ui';
 import { QuotaButton, QuotaPanel } from './ui/quota/QuotaPanel';
 import { ProjectButton } from './ui/projects/ProjectDialog';
+import { BuildButton, BuildMode } from './ui/build/BuildMode';
+import { AddDeskHint } from './ui/build/AddDeskHint';
 
 function ConnectionBanner() {
   const { app, serverOnline, warnings, dismissWarning } = useConnection();
@@ -56,14 +58,17 @@ export function App() {
       </Canvas>
       <ConnectionBanner />
       <div className="hud-top-right">
+        <BuildButton />
         <QuotaButton />
         <ProjectButton />
         <HireButton />
       </div>
       <ChatPanel />
       <QuotaPanel />
+      <BuildMode />
       {hireDeskId && <HireDialog deskId={hireDeskId} onClose={() => setHireDesk(null)} />}
       <div className="hud-left">
+        <AddDeskHint />
         <ProjectLegend />
         <OverflowList />
       </div>

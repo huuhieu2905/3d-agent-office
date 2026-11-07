@@ -7,6 +7,7 @@ import { instantiate, play, ROBOT_URL, setFace, type Clip } from './character';
 import { EmployeeBrain } from './employee-behaviors';
 import type { OfficeGrid } from './grid/grid';
 import { useUi } from '../state/ui';
+import { useEmployeeDrag } from './EmployeeDrag';
 
 // One employee (FR-010/011/020): animated robot at its desk, name tag with project colour, status badge,
 // one click opens the conversation.
@@ -55,6 +56,7 @@ export function Employee({ employee, grid, enter, leaving, lobbySlot, dimmed, on
   const t = useRef(0);
   const [hover, setHover] = useState(false);
   const openConversation = useUi((s) => s.openConversation);
+  const drag = useEmployeeDrag(employee.conversationId);
 
   useFrame((_, dt) => {
     const d = Math.min(dt, 0.1);
@@ -97,8 +99,9 @@ export function Employee({ employee, grid, enter, leaving, lobbySlot, dimmed, on
       ref={group}
       onClick={(e) => {
         e.stopPropagation();
-        openConversation(employee.conversationId);
+        if (!drag.buildActive) openConversation(employee.conversationId);
       }}
+      onPointerDown={drag.onPointerDown}
       onPointerOver={(e) => {
         e.stopPropagation();
         setHover(true);

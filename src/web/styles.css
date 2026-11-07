@@ -616,3 +616,48 @@ code.inline {
   background: transparent;
   color: var(--text);
 }
+
+/* Build mode */
+.build {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  width: min(760px, 94vw);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 8;
+}
+.build-title {
+  font-weight: 700;
+}
+.palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.palette-item {
+  border: 1px solid rgba(127, 127, 127, 0.3);
+  background: transparent;
+  color: var(--text);
+  border-radius: 8px;
+  padding: 5px 10px;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.palette-item.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+kbd {
+  border: 1px solid rgba(127, 127, 127, 0.4);
+  border-radius: 4px;
+  padding: 0 4px;
+  font-size: 11px;
+}
+.hint {
+  border-left: 4px solid var(--warn);
+}
