@@ -44,8 +44,16 @@ contract.
 - Model không khả dụng → picker có viền cảnh báo, ghi "<tên> không còn khả dụng — chọn model khác",
   nút gửi bị khoá cho tới khi chọn lại.
 
-## U-6 · Thuộc tính kiểm thử (data-testid)
+## U-6 · Cách e2e tìm phần tử
 
-`office-floor`, `build-toggle`, `item-<id>`, `employee-<conversationId>`, `desk-drop-<deskId>`,
-`floor-width-input`, `floor-depth-input`, `resize-handle-east`, `resize-handle-south`,
-`model-picker`, `model-unavailable`. Thêm vào hệ thống `data-testid` hiện có của e2e.
+**Phần tử DOM** dùng `data-testid` (hằng số trong `tests/e2e/testids.ts`):
+`build-toggle`, `floor-width-input`, `floor-depth-input`, `model-picker`, `model-unavailable`.
+
+**Vật thể 3D** (sàn, đồ vật, nhân viên, bàn đích, tay kéo đổi kích thước) được vẽ trên canvas WebGL nên
+không mang `data-testid`. E2E tìm chúng bằng:
+- `window.__agentOffice.project(x, z, y)`: đổi một điểm trên sàn (mét, tính từ góc tây bắc) ra toạ độ trên
+  trang, để nhấn và kéo đúng vật thể; `window.__agentOffice.arrange()` đọc trạng thái chế độ sắp xếp.
+  Hook này chỉ có khi chạy dev hoặc khi trình duyệt bị điều khiển tự động (`navigator.webdriver`), không có
+  trong bản production cho người dùng (T097).
+- Thẻ tên `.tag` của nhân viên (theo tên conversation) để bấm hoặc kéo nhân viên.
+- Tay kéo đổi kích thước là mesh có tên `resize-handle-east` / `resize-handle-south` trong `BuildGizmo.tsx`.
