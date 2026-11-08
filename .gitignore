@@ -6,7 +6,8 @@ coverage/
 playwright-report/
 test-results/
 .env
-build/
+# Only the top-level build output; src/web/ui/build/ is source code.
+/build/
 *.tmp
 *.swp
 .vscode/

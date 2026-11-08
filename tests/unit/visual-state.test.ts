@@ -30,6 +30,7 @@ const step = (status: StepStatus, kind: Step['kind'] = 'agent', createdAt = '202
   file: null,
   permission: kind === 'permission_request' ? { requestId: 'r', description: 'd', options: [] } : null,
   rawType: 'PLANNER_RESPONSE',
+  model: null,
 });
 
 const NOW = Date.parse('2026-11-06T10:01:00Z');

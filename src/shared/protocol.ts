@@ -24,6 +24,8 @@ export type ErrorCode =
   | 'MISDIRECTED_HOST'
   | 'NOT_FOUND'
   | 'INVALID_LAYOUT'
+  | 'INVALID_SEATING'
+  | 'FLOOR_TOO_SMALL'
   | 'NOT_SUPPORTED'
   | 'INTERNAL';
 

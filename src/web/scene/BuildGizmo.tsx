@@ -1,120 +1,133 @@
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { ThreeEvent } from '@react-three/fiber';
-import type { Employee, OfficeLayout, PlacedItem } from '@shared/domain';
-import { footprintCells, rotatedSize } from '@shared/catalog';
+import { Html } from '@react-three/drei';
+import { beginDrag } from './interaction/DragLayer';
+import type { OfficeLayout, PlacedItem } from '@shared/domain';
+import { POS_STEP } from '@shared/domain';
+import { footprintRect, isEdge, sizeM, snap } from '@shared/catalog';
 import { insideFloor, validateLayout } from '@shared/layout-validation';
 import { useBuild } from '../state/build';
-import type { OfficeGrid } from './grid/grid';
-import { itemTransform } from './furniture/Furniture';
-import { api } from '../api/client';
+import { floorToWorld } from './furniture/Furniture';
 
-// T102 + T103: snapping preview (green = valid, red = invalid), place on click, drag to move items,
-// drop an employee on a desk to seat them there.
+// Arrange mode overlay (001 T102, reworked for 002 US2): the palette ghost follows the pointer in
+// 0.05 m steps (Shift: 0.5 m; walls always 0.5 m) and a click places it; the selected item gets an
+// outline; while dragging, a ghost shows the drop (green = valid, red = not) and the desk under a dragged
+// employee lights up (green = free, amber = occupied → swap). Dragging itself lives in DragLayer.
 
 function ghostValid(layout: OfficeLayout, ghost: PlacedItem): boolean {
   if (!insideFloor(layout, ghost)) return false;
   const v = validateLayout({ ...layout, items: [...layout.items, ghost] });
-  return !v.invalidItems.includes(ghost.id);
+  return !v.invalidItems.includes(ghost.id) && !v.reasons['__door__'];
 }
 
-export function BuildGizmo({ layout, grid, employees }: { layout: OfficeLayout; grid: OfficeGrid; employees: Employee[] }) {
-  const { palette, rotation, place, selectedId, move, draggingEmployee, setDraggingEmployee } = useBuild();
+export function BuildGizmo({ layout }: { layout: OfficeLayout }) {
+  const { palette, rotation, place, selectedId, drag, select, resizeBlockers } = useBuild();
   const [hover, setHover] = useState<{ x: number; z: number } | null>(null);
-  const dragItem = useRef<string | null>(null);
-  const w = layout.floor.widthCells * layout.floor.cellSize;
-  const d = layout.floor.depthCells * layout.floor.cellSize;
+  const { width: w, depth: d } = layout.floor;
 
-  const ghost: PlacedItem | null = useMemo(() => {
-    if (!hover || !palette) return null;
-    return { id: '__ghost__', type: palette, cell: hover, rotation };
-  }, [hover, palette, rotation]);
-  const valid = ghost ? ghostValid(layout, ghost) : false;
-
-  const cellAt = (e: ThreeEvent<PointerEvent>) => {
-    const c = grid.toCell(e.point.x, e.point.z);
-    // Centre multi-cell footprints under the cursor.
-    if (palette) {
-      const { w: fw, d: fd } = rotatedSize(palette, rotation);
-      return { x: c.x - Math.floor((fw - 1) / 2), z: c.z - Math.floor((fd - 1) / 2) };
-    }
-    return c;
+  const posAt = (e: ThreeEvent<PointerEvent | MouseEvent>, type: PlacedItem['type'], rot: PlacedItem['rotation']) => {
+    const p = { x: e.point.x + w / 2, z: e.point.z + d / 2 };
+    if (isEdge(type)) return { x: snap(p.x - 0.25, 0.5), z: snap(p.z, 0.5) };
+    const step = e.nativeEvent.shiftKey ? 0.5 : POS_STEP;
+    const s = sizeM(type, rot);
+    return { x: snap(p.x - s.w / 2, step), z: snap(p.z - s.d / 2, step) };
   };
 
-  const deskAtCell = (c: { x: number; z: number }) =>
-    layout.items.find((i) => i.type === 'desk' && footprintCells(i).some((k) => k.x === c.x && k.z === c.z));
+  const ghost: PlacedItem | null = useMemo(() => (hover && palette ? { id: '__ghost__', type: palette, pos: hover, rotation } : null), [hover, palette, rotation]);
+  const valid = ghost ? ghostValid(layout, ghost) : false;
+  const selected = selectedId ? layout.items.find((i) => i.id === selectedId) : undefined;
+  const dragged = drag?.kind === 'item' ? layout.items.find((i) => i.id === drag.id) : undefined;
+  const targetDesk = drag?.kind === 'employee' && drag.deskId ? layout.items.find((i) => i.id === drag.deskId) : undefined;
 
   return (
     <group>
-      {/* Pointer-catching floor (slightly above the real floor). */}
+      {/* Pointer-catching floor (slightly above the real floor): palette ghost + click to place / deselect. */}
       <mesh
         rotation-x={-Math.PI / 2}
         position={[0, 0.01, 0]}
         onPointerMove={(e) => {
-          e.stopPropagation();
-          const c = cellAt(e);
-          setHover(c);
-          if (dragItem.current) {
-            const it = layout.items.find((i) => i.id === dragItem.current);
-            if (it && (it.cell.x !== c.x || it.cell.z !== c.z)) move(it.id, c);
-          }
+          if (palette) setHover(posAt(e, palette, rotation));
         }}
         onPointerOut={() => setHover(null)}
-        onPointerDown={(e) => {
-          if (!palette && selectedId) {
-            const c = grid.toCell(e.point.x, e.point.z);
-            const it = layout.items.find((i) => i.id === selectedId);
-            if (it && footprintCells(it).some((k) => k.x === c.x && k.z === c.z)) {
-              e.stopPropagation();
-              dragItem.current = selectedId;
-            }
-          }
-        }}
-        onPointerUp={(e) => {
-          dragItem.current = null;
-          if (draggingEmployee) {
-            e.stopPropagation();
-            const desk = deskAtCell(grid.toCell(e.point.x, e.point.z));
-            const id = draggingEmployee;
-            setDraggingEmployee(null);
-            if (desk) void api(`/api/employees/${id}/profile`, { method: 'PUT', json: { deskId: desk.id } }).catch(() => undefined);
-          }
-        }}
         onClick={(e) => {
-          if (!ghost) return;
           e.stopPropagation();
-          if (valid) place({ type: ghost.type, cell: ghost.cell, rotation: ghost.rotation });
+          // Place from the click position itself, not from the hover ghost: on a slow frame the click can
+          // arrive before the ghost has been drawn.
+          if (palette) {
+            const pos = posAt(e, palette, rotation);
+            const g: PlacedItem = { id: '__ghost__', type: palette, pos, rotation };
+            if (ghostValid(layout, g)) place({ type: g.type, pos, rotation: g.rotation });
+          } else if (!drag) select(null); // click on empty floor deselects (U-3)
         }}
       >
         <planeGeometry args={[w, d]} />
         <meshBasicMaterial transparent opacity={0} depthWrite={false} />
       </mesh>
-      {/* Grid lines */}
-      <gridHelper args={[Math.max(w, d), Math.max(layout.floor.widthCells, layout.floor.depthCells), '#7c8db5', '#b8c2d6']} position={[0, 0.005, 0]} />
-      {ghost && <GhostBox item={ghost} grid={grid} valid={valid} />}
-      {selectedId && (() => {
-        const it = layout.items.find((i) => i.id === selectedId);
-        return it ? <GhostBox item={it} grid={grid} valid outline /> : null;
-      })()}
-      {draggingEmployee && hover && (() => {
-        const desk = deskAtCell(hover);
-        return desk ? <GhostBox item={desk} grid={grid} valid outline /> : null;
-      })()}
-      {employees.length === 0 ? null : null}
+      <gridHelper args={[Math.max(w, d), Math.max(w, d) * 2, '#7c8db5', '#b8c2d6']} position={[0, 0.005, 0]} />
+      {ghost && <GhostBox item={ghost} layout={layout} color={valid ? 'ok' : 'bad'} />}
+      {selected && !dragged && <GhostBox item={selected} layout={layout} color="ok" outline />}
+      {dragged && drag && <GhostBox item={{ ...dragged, pos: drag.pos }} layout={layout} color={drag.valid ? 'ok' : 'bad'} />}
+      {targetDesk && <GhostBox item={targetDesk} layout={layout} color={drag?.occupied ? 'swap' : 'ok'} />}
+      {/* US4 / U-4: edge handles (east, south) resize the office in 0.5 m steps. */}
+      {(['east', 'south'] as const).map((side) => {
+        const at = side === 'east' ? { x: w, z: d / 2 } : { x: w / 2, z: d };
+        return (
+          <mesh
+            key={side}
+            name={`resize-handle-${side}`}
+            position={floorToWorld(layout.floor, at.x, at.z).map((v, i) => (i === 1 ? 0.15 : v)) as [number, number, number]}
+            rotation-y={side === 'east' ? Math.PI / 2 : 0}
+            onPointerDown={(e) => {
+              e.stopPropagation();
+              beginDrag('handle', side, at, e.nativeEvent);
+            }}
+            onPointerOver={() => (document.body.style.cursor = side === 'east' ? 'ew-resize' : 'ns-resize')}
+            onPointerOut={() => (document.body.style.cursor = '')}
+          >
+            <boxGeometry args={[1.2, 0.3, 0.3]} />
+            <meshBasicMaterial color={drag?.kind === 'handle' && drag.id === side ? '#2f6fed' : '#5b7db1'} />
+          </mesh>
+        );
+      })}
+      {drag?.kind === 'handle' && drag.size && (
+        <group>
+          <mesh position={floorToWorld(layout.floor, drag.size.width / 2, drag.size.depth / 2).map((v, i) => (i === 1 ? 0.02 : v)) as [number, number, number]} rotation-x={-Math.PI / 2}>
+            <planeGeometry args={[drag.size.width, drag.size.depth]} />
+            <meshBasicMaterial color={drag.valid ? COLORS.ok : COLORS.bad} transparent opacity={0.18} depthWrite={false} />
+          </mesh>
+          <Html position={floorToWorld(layout.floor, drag.size.width / 2, drag.size.depth / 2).map((v, i) => (i === 1 ? 1.5 : v)) as [number, number, number]} center>
+            <div className="size-label">
+              {String(drag.size.width).replace('.', ',')} × {String(drag.size.depth).replace('.', ',')} m
+            </div>
+          </Html>
+        </group>
+      )}
+      {resizeBlockers.map((id) => {
+        const it = layout.items.find((i) => i.id === id);
+        return it ? <GhostBox key={id} item={it} layout={layout} color="bad" /> : null;
+      })}
+      {drag?.kind === 'employee' && (
+        <mesh position={floorToWorld(layout.floor, drag.pos.x, drag.pos.z).map((v, i) => (i === 1 ? 0.75 : v)) as [number, number, number]}>
+          <capsuleGeometry args={[0.22, 1.0, 6, 12]} />
+          <meshBasicMaterial color="#ffffff" transparent opacity={0.45} depthWrite={false} />
+        </mesh>
+      )}
     </group>
   );
 }
 
-function GhostBox({ item, grid, valid, outline = false }: { item: PlacedItem; grid: OfficeGrid; valid: boolean; outline?: boolean }) {
-  const { w, d } = rotatedSize(item.type, item.rotation);
-  const t = itemTransform({ ...item, rotation: 0, type: item.type }, grid);
-  const s = grid.cellSize;
-  const [x0, , z0] = grid.toWorld(item.cell);
-  const pos: [number, number, number] =
-    item.type === 'wall' || item.type === 'glass_wall' ? [t.position[0], 0.6, t.position[2]] : [x0 + ((w - 1) * s) / 2, 0.6, z0 + ((d - 1) * s) / 2];
+const COLORS = { ok: '#2ec4b6', bad: '#d64545', swap: '#e0a21b' } as const;
+
+function GhostBox({ item, layout, color, outline = false }: { item: PlacedItem; layout: OfficeLayout; color: keyof typeof COLORS; outline?: boolean }) {
+  const r = footprintRect(item);
+  const edge = isEdge(item.type);
+  const w = Math.max(r.x1 - r.x0, edge ? 0.1 : 0);
+  const d = Math.max(r.z1 - r.z0, edge ? 0.1 : 0);
+  const [x, , z] = floorToWorld(layout.floor, (r.x0 + r.x1) / 2, (r.z0 + r.z1) / 2);
   return (
-    <mesh position={pos}>
-      <boxGeometry args={[w * s * 0.98, 1.2, d * s * 0.98]} />
-      <meshBasicMaterial color={valid ? '#2ec4b6' : '#d64545'} transparent opacity={outline ? 0.18 : 0.35} depthWrite={false} wireframe={outline} />
+    <mesh position={[x, 0.6, z]}>
+      <boxGeometry args={[w * 0.98 + (outline ? 0.06 : 0), 1.2, d * 0.98 + (outline ? 0.06 : 0)]} />
+      <meshBasicMaterial color={COLORS[color]} transparent opacity={outline ? 0.18 : 0.35} depthWrite={false} wireframe={outline} />
     </mesh>
   );
 }

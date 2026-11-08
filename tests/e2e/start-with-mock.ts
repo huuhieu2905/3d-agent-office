@@ -45,7 +45,9 @@ createServer((req, res) => {
     mock.runningAll = false;
     mock.waiting = false;
     mock.created = [];
+    mock.hiddenModels.clear();
   }
+  else if (action?.startsWith('hide-model/')) mock.hiddenModels.add(action.slice('hide-model/'.length));
   else if (action === 'sent') {
     res.setHeader('content-type', 'application/json');
     return res.end(JSON.stringify(mock.sent));

@@ -13,19 +13,38 @@ import type { DetailLevel } from '@shared/domain';
 // camera flight. Exposes window.__bench = { frames: number[] } for scripts/bench-fps.ts.
 
 const STATES: VisualState[] = ['idle', 'working', 'thinking', 'waiting_for_boss', 'error', 'stopped'];
+/** Scenarios understood by ?scenario= (T003). */
+const KNOWN_SCENARIOS: string[] = ['crowd'];
+
 const APPEARANCES = ['worker-a', 'worker-b', 'worker-c', 'worker-d', 'worker-e', 'worker-f', 'worker-g', 'worker-h'];
 
 declare global {
   interface Window {
-    __bench?: { frames: number[]; startedAt: number };
+    __bench?: { frames: number[]; startedAt: number; overlaps?: number; crowdMs?: number[] };
+    __crowd?: import('../scene/crowd/crowd').Crowd;
   }
 }
 
-function fakeEmployees(tick: number, deskIds: string[]): Employee[] {
+/** T047: count pairs closer than their radii allow (must stay 0). */
+function countOverlaps(): number {
+  const agents = window.__crowd?.all() ?? [];
+  let n = 0;
+  for (let i = 0; i < agents.length; i++)
+    for (let j = i + 1; j < agents.length; j++) {
+      const a = agents[i]!;
+      const b = agents[j]!;
+      const ra = a.seated ? 0.2 : 0.28;
+      const rb = b.seated ? 0.2 : 0.28;
+      if (Math.hypot(a.x - b.x, a.z - b.z) < ra + rb - 0.01) n++;
+    }
+  return n;
+}
+
+function fakeEmployees(tick: number, deskIds: string[], allIdle = false): Employee[] {
   return Array.from({ length: 20 }, (_, i) => ({
     conversationId: `bench-${i}`,
     name: `Nhân viên ${i + 1}`,
-    visualState: STATES[(i + tick) % STATES.length]!,
+    visualState: allIdle ? 'idle' : STATES[(i + tick) % STATES.length]!,
     appearance: APPEARANCES[i % APPEARANCES.length]!,
     deskId: deskIds[i] ?? null,
     projectId: `p${i % 3}`,
@@ -34,6 +53,8 @@ function fakeEmployees(tick: number, deskIds: string[]): Employee[] {
     parentId: null,
     visible: true,
     lastActivityAt: new Date().toISOString(),
+    preferredModel: null,
+    currentModel: null,
   }));
 }
 
@@ -46,32 +67,48 @@ function Flight() {
     camera.position.set(Math.sin(a) * 15, 9 + Math.sin(t * 0.3) * 3, Math.cos(a) * 13);
     camera.lookAt(0, 0, 0);
     const b = window.__bench;
-    if (b) b.frames.push(performance.now());
+    if (b) {
+      b.frames.push(performance.now());
+      if (b.overlaps !== undefined) b.overlaps += countOverlaps();
+    }
   });
   return null;
 }
 
+function benchFloor(): { width: number; depth: number } | undefined {
+  const m = /^(\d+)x(\d+)$/.exec(new URLSearchParams(location.search).get('floor') ?? '');
+  if (!m) return undefined;
+  const clamp = (v: number) => Math.min(40, Math.max(16, v));
+  return { width: clamp(Number(m[1])), depth: clamp(Number(m[2])) };
+}
+
 export function Bench() {
-  const layout = defaultBenchLayout();
+  const layout = defaultBenchLayout(benchFloor());
   const deskIds = layout.items.filter((i) => i.type === 'desk').map((d) => d.id);
 
   useEffect(() => {
     // T115: full scene — park, people, cars, skyline and rain — at ?detail= (default medium).
-    const q = new URLSearchParams(location.search).get('detail');
+    const params = new URLSearchParams(location.search);
+    const q = params.get('detail');
+    // T003: scenarios and floor sizes are added by later phases (crowd: US3, floor: US4).
+    const scenario = params.get('scenario');
+    if (scenario && !KNOWN_SCENARIOS.includes(scenario)) console.warn(`bench: unknown scenario "${scenario}", using default`);
+    const floor = params.get('floor');
+    if (floor && !/^\d+x\d+$/.test(floor)) console.warn(`bench: bad floor "${floor}", expected WxD in metres`);
     const detail: DetailLevel = q === 'low' || q === 'high' ? q : 'medium';
     useSettings.getState().set({ detailLevel: detail, city: 'hanoi', theme: 'light', autoLowerDetail: false });
     useWeather.getState().set({ city: 'hanoi', condition: 'rain', isDay: true, temperatureC: 26, fetchedAt: new Date().toISOString(), source: 'open-meteo' });
     useConnection.getState().setServerOnline(true);
     useConnection.getState().setApp({ kind: 'connected', appVersion: 'bench', versionSupported: true });
     let tick = 0;
-    useEmployees.getState().snapshot(fakeEmployees(tick, deskIds), 0);
-    window.__bench = { frames: [], startedAt: performance.now() };
+    useEmployees.getState().snapshot(fakeEmployees(tick, deskIds, scenario === 'crowd'), 0);
+    window.__bench = { frames: [], startedAt: performance.now(), ...(scenario === 'crowd' ? { overlaps: 0 } : {}) };
     const id = setInterval(() => {
       tick++;
-      useEmployees.getState().snapshot(fakeEmployees(tick, deskIds), 0);
+      useEmployees.getState().snapshot(fakeEmployees(tick, deskIds, scenario === 'crowd'), 0);
     }, 2000);
     return () => clearInterval(id);
-  }, []); // eslint-disable-line
+  }, []); // once, on mount
 
   return (
     <div className="app theme-light">

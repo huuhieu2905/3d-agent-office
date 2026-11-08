@@ -1,16 +1,26 @@
 # Third-party assets
 
-Every asset shipped in `assets/` and its license (Constitution V). All assets are usable for this
-non-commercial personal project.
+Every asset shipped with the app and its license (Constitution V). All of them are usable for this
+non-commercial personal project. Nothing is downloaded at run time (Constitution III).
 
-| File | Asset | Author | Source | License |
+## Fonts (concept E+, feature 002)
+
+| Font | Use | Author | Source | License |
 |---|---|---|---|---|
-| `models/characters/robot.glb` | RobotExpressive (animated low-poly robot: Idle, Walking, Sitting, Standing, Wave, Yes, No, ThumbsUp, Jump, Dance, Death, Punch, Running, WalkJump; morph targets Angry/Surprised/Sad) | Tomás Laulhé ([Quaternius](https://quaternius.com)); glTF conversion by Don McCurdy | [three.js repository r170](https://github.com/mrdoob/three.js/tree/r170/examples/models/gltf/RobotExpressive) | CC0 1.0 |
+| Baloo 2 (variable, latin / latin-ext / vietnamese) | Headings, name tags | Ek Type | npm `@fontsource-variable/baloo-2@5.3.0` (Fontsource, from Google Fonts) | SIL Open Font License 1.1 |
+| Nunito (variable, latin / latin-ext / vietnamese) | Body text | Vernon Adams, Jacques Le Bailly, Manvel Shmavonyan, Alexei Vanyashin | npm `@fontsource-variable/nunito@5.3.0` | SIL Open Font License 1.1 |
 
-Furniture, walls, glass, plants and the water cooler are built procedurally from low-poly primitives in
-`src/web/scene/furniture/` (no third-party files).
+The woff2 files are bundled by Vite from `node_modules` (see `src/web/fonts.css`); the OFL text ships in
+each package's `LICENSE` file.
 
-The park (lawn, paths, trees, flowers), walkers, cars, the distant skyline and the five city landmarks
-(Hà Nội: Lotte Center + Tháp Rùa; TP.HCM: Landmark 81; Singapore: Marina Bay Sands; Tokyo: Tokyo Tower;
-New York: Empire State Building) are simplified low-poly shapes generated in code
-(`src/web/scene/park/`, `src/web/scene/city/`, `src/web/scene/weather/`) — no third-party files.
+## Generated in code (no third-party files)
+
+- **Employees**: soft cartoon figures (concept E+) built from primitives with procedural animation —
+  `src/web/scene/character.ts`. (Feature 001's CC0 robot model, RobotExpressive by Tomás Laulhé /
+  Quaternius, is no longer shipped.)
+- **Furniture, walls, glass, door mat, plants, water cooler**: `src/web/scene/furniture/`.
+- **Floor and wall textures** (light-oak planks, lime-wash): canvas textures in `src/web/theme/concept.ts`.
+- **Lighting environment**: three.js `RoomEnvironment` (part of the three.js package, MIT) rendered into a
+  PMREM at start-up instead of an HDRI file — `src/web/scene/OfficeMood.tsx`.
+- **Park, walkers, cars, skyline, city landmarks, weather**: `src/web/scene/park/`, `src/web/scene/city/`,
+  `src/web/scene/weather/`.

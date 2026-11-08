@@ -44,7 +44,7 @@ export function ProjectDialog({ onClose, onCreated }: { onClose(): void; onCreat
   }
   useEffect(() => {
     void go();
-  }, []); // eslint-disable-line
+  }, []); // once, on mount
 
   async function create() {
     if (!listing || !name.trim()) return;

@@ -99,6 +99,8 @@ export interface Step {
   permission: PermissionRequest | null;
   /** Raw App step type, kept only so `other` steps can be shown collapsed. */
   rawType: string;
+  /** User turns only: the model the user asked for on this turn (A2-1). Null when unknown. */
+  model: string | null;
 }
 
 // ---- Employees (combined) --------------------------------------------------
@@ -117,11 +119,22 @@ export interface Employee {
   parentId: string | null;
   visible: boolean;
   lastActivityAt: ISODateTime;
+  /** Model the user picked for this conversation in the office (002 US1); null if never picked. */
+  preferredModel: string | null;
+  /** Model the conversation used last according to the App (A2-1); null when unknown. */
+  currentModel: string | null;
+}
+
+export interface PreferredModel {
+  modelId: string;
+  chosenAt: ISODateTime;
 }
 
 export interface EmployeeProfile {
   appearance: AppearanceId;
   deskId: string | null;
+  /** Model chosen for this conversation (002 data-model §1). Optional so older files still load. */
+  preferredModel?: PreferredModel | null;
   /** When this conversation was last seen in the App; used for 30-day cleanup. */
   lastSeenAt: ISODateTime;
 }
@@ -154,19 +167,58 @@ export const ITEM_TYPES = [
 ] as const;
 export type ItemType = (typeof ITEM_TYPES)[number];
 
+/** Item types that can be placed in a v2 layout ('door' lives in the office shell). */
+export const PLACEABLE_TYPES = ITEM_TYPES.filter((t) => t !== 'door') as Exclude<ItemType, 'door'>[];
+
 export type Rotation = 0 | 90 | 180 | 270;
 
+// Layout v2 (specs/002-realistic-ui-refresh/data-model.md §3). Coordinates are metres from the
+// north-west corner of the floor: x grows east, z grows south. The floor is drawn centred on the origin.
+
+export const FLOOR_MIN = 6;
+export const FLOOR_MAX = 40;
+export const FLOOR_STEP = 0.5;
+/** Furniture position granularity (FR-007). */
+export const POS_STEP = 0.05;
+/** Interior walls and glass stay on the 0.5 m edge grid. */
+export const WALL_STEP = 0.5;
+export const DOOR_WIDTH = 1;
+
 export interface PlacedItem {
+  id: string;
+  type: ItemType;
+  pos: { x: number; z: number };
+  rotation: Rotation;
+}
+
+export type DoorSide = 'south' | 'east' | 'west';
+
+export interface OfficeShell {
+  /** The park-facing glass façade. */
+  glassSide: 'north';
+  /** Main door; `offset` = metres from the west (south side) or north (east/west sides) end of that side. */
+  door: { side: DoorSide; offset: number };
+}
+
+export interface OfficeLayout {
+  schemaVersion: 2;
+  floor: { width: number; depth: number };
+  shell: OfficeShell;
+  items: PlacedItem[];
+}
+
+/** Layout v1 (feature 001): 0.5 m cells, perimeter walls as items. Read only, for migration. */
+export interface PlacedItemV1 {
   id: string;
   type: ItemType;
   cell: { x: number; z: number };
   rotation: Rotation;
 }
 
-export interface OfficeLayout {
+export interface OfficeLayoutV1 {
   schemaVersion: 1;
   floor: { widthCells: number; depthCells: number; cellSize: 0.5 };
-  items: PlacedItem[];
+  items: PlacedItemV1[];
 }
 
 // ---- Quota (App data, personal info removed) ----------------------------

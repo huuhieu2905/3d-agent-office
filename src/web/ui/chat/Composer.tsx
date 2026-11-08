@@ -2,21 +2,26 @@ import { useRef, useState } from 'react';
 import type { ModelOption, UserInputPart } from '@shared/domain';
 import { ModelPicker, quotaState } from './ModelPicker';
 
+// 002 US1: the model is controlled by the chat panel (remembered per conversation), not kept here.
+
 // T070: multi-line input, Enter sends, Shift+Enter newline; keeps text and offers "Gửi lại" on failure;
 // shows "Dừng" while the employee is working. `/` and `@` menus plug in via `extensions` (US3).
 
 export interface ComposerProps {
   busy: boolean;
-  defaultModel: string | null;
+  model: string | null;
+  modelInfo: ModelOption | undefined;
+  modelUnavailable: boolean;
+  onModelChange(modelId: string): void;
+  /** Short confirmation or error shown under the picker after a model change. */
+  modelNote?: { kind: 'saved' | 'error'; text: string } | null;
   onSend(parts: UserInputPart[], model: string): Promise<void>;
   onStop(): Promise<void>;
   renderExtensions?: (ctx: { text: string; setText(t: string): void; model: string | null; addPart(p: UserInputPart): void }) => React.ReactNode;
 }
 
-export function Composer({ busy, defaultModel, onSend, onStop, renderExtensions }: ComposerProps) {
+export function Composer({ busy, model, modelInfo, modelUnavailable, onModelChange, modelNote, onSend, onStop, renderExtensions }: ComposerProps) {
   const [text, setText] = useState('');
-  const [model, setModel] = useState<string | null>(defaultModel);
-  const [modelInfo, setModelInfo] = useState<ModelOption | undefined>();
   const [mentions, setMentions] = useState<UserInputPart[]>([]);
   const [sending, setSending] = useState(false);
   const [failed, setFailed] = useState<string | null>(null);
@@ -25,7 +30,7 @@ export function Composer({ busy, defaultModel, onSend, onStop, renderExtensions 
 
   async function send() {
     const trimmed = text.trim();
-    if (!trimmed || !model || sending || qs === 'empty') return;
+    if (!trimmed || !model || sending || qs === 'empty' || modelUnavailable) return;
     if (qs === 'low' && !confirm('Quota của model này còn dưới 10%. Vẫn gửi?')) return;
     setSending(true);
     setFailed(null);
@@ -80,19 +85,18 @@ export function Composer({ busy, defaultModel, onSend, onStop, renderExtensions 
         </div>
       )}
       <div className="composer-bar">
-        <ModelPicker
-          value={model}
-          onChange={(id, m) => {
-            setModel(id);
-            setModelInfo(m);
-          }}
-        />
+        <ModelPicker value={model} unavailable={modelUnavailable} autoSelectFirst={false} onChange={(id) => onModelChange(id)} />
+        {modelNote && (
+          <span className={modelNote.kind === 'saved' ? 'model-saved' : 'send-failed'} role="status">
+            {modelNote.text}
+          </span>
+        )}
         {busy ? (
           <button className="btn btn-stop" onClick={() => void onStop()}>
             ■ Dừng
           </button>
         ) : null}
-        <button className="btn btn-primary" disabled={!text.trim() || sending || qs === 'empty'} onClick={() => void send()}>
+        <button className="btn btn-primary" disabled={!text.trim() || sending || qs === 'empty' || modelUnavailable || !model} onClick={() => void send()}>
           {sending ? 'Đang gửi…' : 'Gửi'}
         </button>
       </div>

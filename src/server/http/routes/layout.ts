@@ -1,7 +1,8 @@
 import type { FastifyPluginAsync } from 'fastify';
-import { officeLayoutSchema, profilePatchSchema } from '../../../shared/schemas';
-import { validateLayout } from '../../../shared/layout-validation';
-import type { OfficeLayout } from '../../../shared/domain';
+import { layoutPutSchema, profilePatchSchema } from '../../../shared/schemas';
+import { isLayoutV1, migrateV1toV2 } from '../../../shared/layout-migrate';
+import { insideFloor, minFloorSize, validateLayout } from '../../../shared/layout-validation';
+import type { OfficeLayout, OfficeLayoutV1 } from '../../../shared/domain';
 import { sendError } from '../security';
 import type { RouteDeps } from './index';
 
@@ -13,9 +14,20 @@ export const layoutRoutes: FastifyPluginAsync<RouteDeps> = async (app, deps) => 
   const { services } = deps;
 
   app.put('/api/layout', async (req, reply) => {
-    const parsed = officeLayoutSchema.safeParse(req.body);
+    const parsed = layoutPutSchema.safeParse(req.body);
     if (!parsed.success) return sendError(reply, 400, 'BAD_REQUEST', 'Bố cục không đúng định dạng');
-    const layout = parsed.data as OfficeLayout;
+    // L2-2: { layout, seating? } or a bare layout; v1 bodies are migrated before validation.
+    const raw = ('layout' in parsed.data ? parsed.data.layout : parsed.data) as OfficeLayout | OfficeLayoutV1;
+    const layout: OfficeLayout = isLayoutV1(raw) ? migrateV1toV2(raw) : raw;
+    const seating = 'layout' in parsed.data ? (parsed.data.seating ?? {}) : {};
+    // L2-2: shrinking the office below its furniture is its own error, with the items in the way.
+    const saved = await services.layout.get();
+    const shrank = layout.floor.width < saved.floor.width || layout.floor.depth < saved.floor.depth;
+    const blockers = shrank ? layout.items.filter((i) => !insideFloor(layout, i)).map((i) => i.id) : [];
+    if (blockers.length) {
+      const m = minFloorSize(layout);
+      return reply.code(422).send({ error: { code: 'FLOOR_TOO_SMALL', message: 'Văn phòng nhỏ hơn chỗ đồ vật đang chiếm' }, blockers, min: { width: m.width, depth: m.depth } });
+    }
     const v = validateLayout(layout);
     if (!v.ok) {
       return reply.code(422).send({
@@ -24,16 +36,31 @@ export const layoutRoutes: FastifyPluginAsync<RouteDeps> = async (app, deps) => 
         reasons: v.reasons,
       });
     }
+    // Seating must point at desks of this layout, one employee per desk, known conversations only.
+    const deskIds = new Set(layout.items.filter((i) => i.type === 'desk').map((i) => i.id));
+    const badSeats = Object.entries(seating)
+      .filter(([id, desk], i, all) => {
+        if (!ID.test(id) || !services.employees.conversation(id)) return true;
+        if (desk === null) return false;
+        return !deskIds.has(desk) || all.findIndex(([, d]) => d === desk) !== i;
+      })
+      .map(([id]) => id);
+    if (badSeats.length) {
+      return reply.code(422).send({ error: { code: 'INVALID_SEATING', message: 'Chỗ ngồi không hợp lệ' }, conversationIds: badSeats });
+    }
     await services.layout.save(layout);
+    if (Object.keys(seating).length) await services.profiles.setSeats(seating);
     // Employees whose desk disappeared go back to the lobby; others keep their seats.
     void services.employees.refresh();
-    return layout;
+    return { layout, seating };
   });
 
   app.put<{ Params: { conversationId: string } }>('/api/employees/:conversationId/profile', async (req, reply) => {
     if (!ID.test(req.params.conversationId)) return sendError(reply, 400, 'BAD_REQUEST', 'bad id');
     const body = profilePatchSchema.safeParse(req.body);
     if (!body.success) return sendError(reply, 400, 'BAD_REQUEST', 'invalid profile');
+    // L2-3: only conversations the App knows about have a profile to change.
+    if (!services.employees.conversation(req.params.conversationId)) return sendError(reply, 404, 'NOT_FOUND', 'Không có cuộc trò chuyện này');
     if (body.data.deskId) {
       const layout = await services.layout.get();
       if (!layout.items.some((i) => i.id === body.data.deskId && i.type === 'desk')) {

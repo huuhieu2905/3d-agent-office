@@ -42,7 +42,7 @@ export interface Services {
 export function createServices(deps: ServiceDeps): Services {
   const dataDir = deps.dataDir ?? defaultDataDir();
   const profiles = new EmployeeProfiles(dataDir);
-  const layout = new LayoutStore(dataDir);
+  const layout = new LayoutStore(dataDir, deps.log);
   const employees = new EmployeesService({
     adapter: deps.adapter,
     hub: deps.hub,

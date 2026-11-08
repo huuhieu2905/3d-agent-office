@@ -9,21 +9,21 @@ const grid = new OfficeGrid(layout);
 describe('first-person collision (FR-071)', () => {
   it('cannot walk into a desk', () => {
     const desk = layout.items.find((i) => i.type === 'desk')!;
-    const [x, , z] = grid.toWorld({ x: desk.cell.x + 1, z: desk.cell.z });
+    const [x, , z] = grid.toWorld(grid.floorToCell(desk.pos.x + 0.75, desk.pos.z + 0.5));
     expect(freeAt(grid, x, z)).toBe(false);
   });
 
-  it('cannot walk through the south wall except at the door', () => {
-    const [x0, , z0] = grid.toWorld({ x: 5, z: 22 });
+  it('cannot walk out through the south side except at the door', () => {
+    const [x0, , z0] = grid.toWorld(grid.floorToCell(2.6, 11.4));
     let p = { x: x0, z: z0 };
     for (let i = 0; i < 40; i++) p = slide(grid, p.x, p.z, 0, 0.1);
-    expect(grid.toCell(p.x, p.z).z).toBe(22);
+    expect(p.z).toBeLessThan(layout.floor.depth / 2);
   });
 
-  it('slides along a wall instead of stopping', () => {
-    const [x0, , z0] = grid.toWorld({ x: 5, z: 22 });
+  it('slides along the side instead of stopping', () => {
+    const [x0, , z0] = grid.toWorld(grid.floorToCell(2.6, 11.6));
     const p = slide(grid, x0, z0, 0.2, 0.2);
     expect(p.x).toBeGreaterThan(x0);
-    expect(grid.toCell(p.x, p.z).z).toBe(22);
+    expect(p.z).toBeLessThan(layout.floor.depth / 2);
   });
 });

@@ -69,6 +69,17 @@ function permissionFrom(raw: Raw, index: number): Step['permission'] {
   };
 }
 
+// A2-1 (2.24.0): the model the user picked for a turn is userInput.userConfig.plannerConfig.planModel
+// (lastUserConfig as a fallback). Anything that is not a non-empty string is treated as unknown.
+function requestedModel(input: Raw): string | null {
+  for (const key of ['userConfig', 'lastUserConfig']) {
+    const planner = ((input[key] as Raw | undefined)?.plannerConfig ?? undefined) as Raw | undefined;
+    const m = str(planner?.planModel);
+    if (m) return m;
+  }
+  return null;
+}
+
 export function mapStep(raw: Raw, index: number): Step {
   const rawType = typeof raw.type === 'string' ? raw.type.replace(/^CORTEX_STEP_TYPE_/, '') : 'UNKNOWN';
   const status = mapStepStatus(raw.status);
@@ -88,6 +99,7 @@ export function mapStep(raw: Raw, index: number): Step {
     file: null,
     permission: null,
     rawType,
+    model: null,
   };
 
   switch (rawType) {
@@ -95,6 +107,7 @@ export function mapStep(raw: Raw, index: number): Step {
       const ui = (raw.userInput ?? {}) as Raw;
       step.text = userText(ui);
       step.mentions = mapMentions(ui.items);
+      step.model = requestedModel(ui);
       break;
     }
     case 'PLANNER_RESPONSE': {
