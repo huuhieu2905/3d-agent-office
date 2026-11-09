@@ -112,7 +112,20 @@ Máy: MacBook Pro M1 Pro, macOS, Node 26.13, Antigravity App **2.29.0**. Ngày 2
 | M3–M6 | ✅ ở mức adapter qua các test live project/permission/chat, và trên giao diện thật (chủ dự án, 2026-11-09) |
 | Câu hỏi trên giao diện thật (T037: 2 tab → 409, ≤ 2 s, ≤ 3 lần bấm) | ✅ chủ dự án kiểm tay trên App thật, 2026-11-09; cũng có e2e trên mock App |
 | SC-001: 10 lần khởi động không cảnh báo | ✅ 10/10 `Antigravity App 2.29.0: connected`, 0 cảnh báo (sau cổng T019, 2026-11-09) |
-| Hướng dẫn cài đặt từ bản clone sạch (T051) | ⏳ sau commit cổng (bản clone cần các thay đổi đã commit) |
+| Hướng dẫn cài đặt từ bản clone sạch (T051) | ✅ commit `6d614ca`: `git clone` + `./scripts/install.sh` + `npm start` = 10 giây (npm cache có sẵn), in `Antigravity App 2.29.0: connected`, không cảnh báo |
+
+**Success criteria (T052, 2026-11-09)**
+
+| SC | Kết quả |
+|---|---|
+| SC-001 | ✅ Live test đọc + ghi đều pass trên 2.29.0, không test nào bị bỏ qua. 10/10 lần khởi động không cảnh báo phiên bản. |
+| SC-002 | ✅ Contract test chạy trên cả hai bộ fixture với assert như nhau; live chat/permission/project pass; chủ dự án kiểm tay M1–M6. |
+| SC-003 | ✅ Chủ dự án kiểm tay trên giao diện thật (≤ 2 s, ≤ 3 lần bấm, 2 tab → 409); e2e `question.spec` trên mock App. |
+| SC-004 | ✅ Quét toàn bộ conversation: 0 bước lỗi trống, 0 câu hỏi/tìm kiếm web bị hiện là `other`. |
+| SC-005 | ✅ `check:compat` cho kết luận trong 1 giây. |
+| SC-006 | ✅ `npm run test:leaks` 5/5 trên fixture mới; báo cáo compat chỉ có tên khoá, tên RPC và số đếm. |
+
+Bỏ qua: 1 contract test (`it.skipIf`) chờ fixture bước lỗi thật. Lý do: chưa gặp bước lỗi thật để ghi; `error-message-variants.json` đã thay thế (T038).
 
 **Ghi chú**
 1. **Phát hiện mới trên 2.29.0:** App từ chối tạo project **trùng tên** (`CreateProject: HTTP 409 already_exists`).

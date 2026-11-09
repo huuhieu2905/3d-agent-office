@@ -517,9 +517,9 @@ conversation/project trong App không đổi trước và sau khi chạy.
   - `npm run test:e2e` trên GPU thật.
   - `npm run bench:fps` một lần (lấy lần đo thứ hai), xác nhận ≥ 60 FPS không giảm.
   - Ghi kết quả vào `quickstart.md`.
-- [ ] T051 Chạy lại hướng dẫn `docs/INSTALL.md` từ bản clone sạch trên App 2.29.0, xác nhận ≤ 15
+- [X] T051 Chạy lại hướng dẫn `docs/INSTALL.md` từ bản clone sạch trên App 2.29.0, xác nhận ≤ 15
   phút, và ghi một dòng vào nhật ký chạy thử (Nguyên tắc VI).
-- [ ] T052 Đánh dấu các success criteria đã đạt (SC-001…SC-006) trong
+- [X] T052 Đánh dấu các success criteria đã đạt (SC-001…SC-006) trong
   `specs/003-antigravity-2-29-compat/quickstart.md` mục "Kết quả kiểm chứng". Ghi lại mọi phần bỏ
   qua kèm lý do.
 
