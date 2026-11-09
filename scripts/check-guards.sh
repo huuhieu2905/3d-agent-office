@@ -28,7 +28,7 @@ if [ -d dist/web ]; then
 fi
 
 # (c) Agent-changing adapter calls must only appear in HTTP routes.
-if hits=$(grep -RInE '\.(sendMessage|startConversation|cancel|answerPermission|answerQuestion)\(' src/server \
+if hits=$(grep -RInE '\.(sendMessage|startConversation|cancel|answerPermission|answerQuestion|deleteConversation)\(' src/server \
   --include='*.ts' | grep -v '^src/server/http/routes/' | grep -v '^src/server/app-adapter/'); then
   echo "✗ (c) Agent write calls outside src/server/http/routes/:"; echo "$hits"; fail=1
 fi

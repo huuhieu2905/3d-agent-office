@@ -1,11 +1,14 @@
 import { useMemo, useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
+import { Html } from '@react-three/drei';
 import type * as THREE from 'three';
 import { jiggleOf } from './furniture/PropJiggle';
 import type { Employee, OfficeLayout, PlacedItem } from '@shared/domain';
 import { DOOR_WIDTH } from '@shared/domain';
 import { isEdge } from '@shared/catalog';
-import { Desk, Door, EdgePanel, floorToWorld, furnitureFor, itemTransform } from './furniture/Furniture';
+import { Desk, Door, EdgePanel, floorToWorld, furnitureFor, itemTransform, WallScreenFrame } from './furniture/Furniture';
+import { NO_IDS, useSettings } from '../state/settings';
+import { toggledScreens } from './interaction/interactables';
 import { woodFloorTexture } from '../theme/concept';
 import { useUi } from '../state/ui';
 
@@ -53,12 +56,43 @@ export function doorTransform(layout: OfficeLayout): { position: [number, number
 }
 
 /** Renders the damped wobble of a bumped light prop (T046); never touches the saved position. */
+/**
+ * 004 FR-031: a small power button under a wall screen in the overview. A click on the quota screen itself
+ * still opens the quota panel (001 FR-043), so switching on / off has its own button.
+ */
+function ScreenPower({ on, onToggle }: { on: boolean; onToggle(): void }) {
+  return (
+    <Html position={[0.62, 1.12, 0.06]} center zIndexRange={[4, 0]} distanceFactor={9}>
+      <button
+        className={`screen-power ${on ? 'on' : ''}`}
+        data-testid="screen-power"
+        aria-pressed={on}
+        title={on ? 'Tắt màn hình' : 'Bật màn hình'}
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggle();
+        }}
+      >
+        ⏻
+      </button>
+    </Html>
+  );
+}
+
 function Jiggle({ id, children }: { id: string; children: React.ReactNode }) {
   const g = useRef<THREE.Group>(null);
   useFrame(() => {
     const j = jiggleOf(id);
     const el = g.current;
     if (!el) return;
+    // 004 US4: a freshly watered plant stands a little taller and sways gently for a minute.
+    const fresh = (useUi.getState().freshPlants[id] ?? 0) > Date.now();
+    const s = fresh ? 1.06 : 1;
+    if (el.scale.y !== s) el.scale.set(s, s, s);
+    if (fresh && !j) {
+      el.rotation.z = Math.sin(performance.now() / 380) * 0.035;
+      return;
+    }
     if (j) {
       el.position.set(j.dx, 0, j.dz);
       el.rotation.z = j.tilt;
@@ -77,7 +111,10 @@ export function Office({
   cutaway = true,
   onItemPress,
   children,
+  positions,
 }: {
+  /** 004 US4: where employees are, so the door opens for them (FR-034). */
+  positions?: Map<string, THREE.Vector3>;
   layout: OfficeLayout;
   employeesByDesk: Map<string, Employee>;
   theme: 'light' | 'dark';
@@ -91,6 +128,20 @@ export function Office({
   const shell = useMemo(() => shellPanels(layout), [layout]);
   const door = doorTransform(layout);
   const setHireDesk = useUi((s) => s.setHireDesk);
+  const screensOff = useSettings((s) => s.settings.screensOff) ?? NO_IDS;
+  const camera = useThree((s) => s.camera);
+  const quotaScreenId = items.find((i) => i.type === 'wall_screen')?.id;
+  const toggleScreen = (id: string) => {
+    const cur = useSettings.getState().settings.screensOff ?? [];
+    useSettings.getState().update({ screensOff: toggledScreens(cur, id, layout) });
+  };
+  // World centre of the door gap: open while anyone (an employee, or the user in first person) is near.
+  const doorNear = () => {
+    const [dx, , dz] = door.position;
+    if (useUi.getState().camera === 'first_person' && Math.hypot(camera.position.x - dx, camera.position.z - dz) < 1.5) return true;
+    for (const p of positions?.values() ?? []) if (Math.hypot(p.x - dx, p.z - dz) < 1.5) return true;
+    return false;
+  };
   // Light-oak planks (concept A floor); one texture tile ≈ 2 × 2 m whatever the office size.
   const floorMap = useMemo(() => {
     const t = woodFloorTexture(theme === 'dark').clone();
@@ -111,13 +162,22 @@ export function Office({
         </group>
       ))}
       <group position={door.position} rotation-y={door.rotationY}>
-        <Door />
+        <Door cutaway={cutaway} isNear={doorNear} />
       </group>
       {items.map((item) => {
         const t = itemTransform(item, layout.floor);
         let content: React.ReactNode;
         if (isEdge(item.type)) {
           content = <EdgePanel type={item.type as 'wall' | 'glass_wall'} vertical={item.rotation === 90 || item.rotation === 270} length={0.5} cutaway={cutaway} />;
+        } else if (item.type === 'wall_screen') {
+          // The first screen's content is the quota (QuotaScreen); the others show a status board.
+          const on = !screensOff.includes(item.id);
+          content = (
+            <>
+              <WallScreenFrame on={on && item.id !== quotaScreenId} />
+              {!onItemPress && cutaway && <ScreenPower on={on} onToggle={() => toggleScreen(item.id)} />}
+            </>
+          );
         } else if (item.type === 'desk') {
           const e = employeesByDesk.get(item.id);
           content = <Desk screenOn={e?.visualState === 'working' || e?.visualState === 'thinking'} />;

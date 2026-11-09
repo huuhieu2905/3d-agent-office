@@ -13,6 +13,21 @@ import { computeVisualState } from './visual-state';
 
 export const MAX_VISIBLE = 20;
 
+/** 004 FR-016: a conversation and all its subagents (any depth). The App deletes them together. */
+export function subtreeIds(rootId: string, conversations: Pick<Conversation, 'id' | 'parentId'>[]): string[] {
+  const out = new Set([rootId]);
+  for (let grew = true; grew; ) {
+    grew = false;
+    for (const c of conversations) {
+      if (c.parentId && out.has(c.parentId) && !out.has(c.id)) {
+        out.add(c.id);
+        grew = true;
+      }
+    }
+  }
+  return [...out];
+}
+
 export interface EmployeesServiceOptions {
   adapter: AppAdapter;
   hub: WsHub;

@@ -4,16 +4,15 @@ import { api } from '../api/client';
 import { Park } from './park/Park';
 import { Ambient } from './park/Ambient';
 import { CitySkyline } from './city/CitySkyline';
-import { Kiosk } from './city/Shops';
 import { TrafficView } from './city/TrafficView';
-import { SHOP_NAMES } from './city/city-layout';
-import { kioskSpot, parkFrame } from './park/park-layout';
+import { parkFrame, parkShops } from './park/park-layout';
+import { ParkShops } from './park/ParkShops';
 import { Weather } from './weather/Weather';
 import { useWeather } from '../state/weather';
 
 // US6: everything outside the office. Weather is refreshed every 30 minutes (FR-063).
 
-const CITY_SEED: Record<City, number> = { hanoi: 1, hcmc: 2, singapore: 3, tokyo: 4, newyork: 5 };
+export const CITY_SEED: Record<City, number> = { hanoi: 1, hcmc: 2, singapore: 3, tokyo: 4, newyork: 5 };
 
 export function useCityWeather(city: City, enabled: boolean) {
   const set = useWeather((s) => s.set);
@@ -66,7 +65,7 @@ export const Surroundings = memo(function Surroundings({
           <Park detail={detail} seed={CITY_SEED[city]} rainy={rainy} dark={theme === 'dark'} floor={floor} city={city} noTrees={off.has('trees')} />
           {!off.has('people') && <Ambient detail={detail} seed={CITY_SEED[city]} rainy={rainy} floor={floor} />}
           {!off.has('city') && <CitySkyline city={city} detail={detail} night={theme === 'dark'} />}
-          {!off.has('kiosk') && <Kiosk {...kioskSpot(parkFrame(floor))} name={SHOP_NAMES[city].kiosk} night={theme === 'dark'} />}
+          {!off.has('kiosk') && <ParkShops shops={parkShops(parkFrame(floor))} city={city} night={theme === 'dark'} detail={detail} />}
           {!off.has('traffic') && <TrafficView seed={CITY_SEED[city]} detail={detail} night={theme === 'dark'} />}
         </>
       )}

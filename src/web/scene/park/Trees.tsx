@@ -2,7 +2,7 @@ import { useLayoutEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import type { City, DetailLevel } from '@shared/domain';
 import { DETAIL, ROAD_RADIUS, rng } from './detail';
-import { treeAllowed, treeCandidates, type ParkFrame } from './park-layout';
+import { visibleTrees, type ParkFrame } from './park-layout';
 
 // 002 US7 / T082 / FR-039: trees that read as trees — broad canopies made of several leaf clumps in four
 // greens on a trunk, flowering trees (phượng in Việt Nam, cherry in Tokyo…), and a row of the city's
@@ -49,10 +49,7 @@ export function Trees({ city, detail, seed, frame }: { city: City; detail: Detai
   const trees = useMemo<Tree[]>(() => {
     const r = rng(seed * 59 + 5);
     const count = DETAIL[detail].trees;
-    const park = treeCandidates(seed * 31, count * 2)
-      .filter((t) => treeAllowed(frame, t.x, t.z))
-      .slice(0, count)
-      .map((t) => {
+    const park = visibleTrees(frame, seed, count).map((t) => {
         const k = r();
         const kind: Kind = k < 0.65 ? 'canopy' : k < 0.85 || !PALMS[city] ? 'flower' : 'palm';
         return { ...t, kind, h: 2.3 + r() * 1.2 };

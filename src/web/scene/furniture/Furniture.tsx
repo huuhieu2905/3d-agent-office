@@ -1,5 +1,7 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { RoundedBox } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import { useEmployees } from '../../state/employees';
 import { CONCEPT, limewashTexture } from '../../theme/concept';
 import type React from 'react';
 import * as THREE from 'three';
@@ -160,12 +162,93 @@ export function Sofa() {
   );
 }
 
-export function WallScreenFrame() {
-  return <Box size={[1.4, 0.8, 0.05]} position={[0, 1.6, 0]} material={mats.monitor} radius={0.03} />;
+/** 004 US4 (FR-031): off = a dark panel (as before); on = a glowing board with the time and the team. */
+export function WallScreenFrame({ on = false }: { on?: boolean }) {
+  return (
+    <group>
+      <Box size={[1.4, 0.8, 0.05]} position={[0, 1.6, 0]} material={mats.monitor} radius={0.03} />
+      {on && <ScreenBoard />}
+    </group>
+  );
 }
 
-export function Door() {
-  return <Box size={[0.95, 0.03, 0.5]} position={[0, 0.015, 0]} material={mats.mat} radius={0.01} />;
+function ScreenBoard() {
+  const byId = useEmployees((s) => s.byId);
+  const canvas = useMemo(() => {
+    const c = document.createElement('canvas');
+    c.width = 512;
+    c.height = 288;
+    return c;
+  }, []);
+  const tex = useMemo(() => {
+    const t = new THREE.CanvasTexture(canvas);
+    t.colorSpace = THREE.SRGBColorSpace;
+    return t;
+  }, [canvas]);
+  // Redraw the clock every 30 s.
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setTick((t) => t + 1), 30_000);
+    return () => clearInterval(id);
+  }, []);
+  useEffect(() => {
+    const g = canvas.getContext('2d')!;
+    const list = Object.values(byId);
+    const count = (f: (s: string) => boolean) => list.filter((e) => f(e.visualState)).length;
+    g.fillStyle = '#123a3a';
+    g.fillRect(0, 0, 512, 288);
+    g.fillStyle = '#fff4e0';
+    g.font = '700 84px "Baloo 2 Variable", sans-serif';
+    g.textBaseline = 'top';
+    g.fillText(new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }), 28, 18);
+    g.font = '600 34px "Baloo 2 Variable", sans-serif';
+    const rows: [string, number, string][] = [
+      ['Đang làm', count((s) => s === 'working' || s === 'thinking'), '#9ccfb4'],
+      ['Chờ sếp', count((s) => s === 'waiting_for_boss'), '#f2c94c'],
+      ['Đang rảnh', count((s) => s === 'idle'), '#efe4cc'],
+    ];
+    rows.forEach(([label, n, color], i) => {
+      g.fillStyle = color;
+      g.fillText(`${label}: ${n}`, 32, 130 + i * 48);
+    });
+    tex.needsUpdate = true;
+  }, [byId, tick, canvas, tex]);
+  useEffect(() => () => tex.dispose(), [tex]);
+  return (
+    <mesh position={[0, 1.6, 0.027]}>
+      <planeGeometry args={[1.3, 0.72]} />
+      <meshStandardMaterial map={tex} emissiveMap={tex} emissive="#ffffff" emissiveIntensity={0.85} roughness={0.3} />
+    </mesh>
+  );
+}
+
+/**
+ * 004 US4 (FR-034): a sliding glass door in the door gap. Opens when someone is within 1.5 m (`isNear`),
+ * closes again. Visual only: walking through is decided by the navigation grid.
+ */
+export function Door({ cutaway = true, isNear }: { cutaway?: boolean; isNear?: () => boolean }) {
+  const left = useRef<THREE.Mesh>(null);
+  const right = useRef<THREE.Mesh>(null);
+  const open = useRef(0);
+  const h = cutaway ? CUTAWAY_WALL_H : 2.2;
+  useFrame((_, dt) => {
+    const target = isNear?.() ? 1 : 0;
+    open.current += (target - open.current) * Math.min(1, dt * 6);
+    const off = 0.24 + open.current * 0.46;
+    if (left.current) left.current.position.x = -off;
+    if (right.current) right.current.position.x = off;
+  });
+  return (
+    <group>
+      <Box size={[0.95, 0.03, 0.5]} position={[0, 0.015, 0]} material={mats.mat} radius={0.01} />
+      <mesh ref={left} position={[-0.24, h / 2, 0]} material={mats.glass}>
+        <boxGeometry args={[0.47, h, 0.04]} />
+      </mesh>
+      <mesh ref={right} position={[0.24, h / 2, 0]} material={mats.glass}>
+        <boxGeometry args={[0.47, h, 0.04]} />
+      </mesh>
+    </group>
+  );
 }
 
 const WALL_H = 2.6;
@@ -205,7 +288,7 @@ export function itemTransform(item: PlacedItem, floor: OfficeLayout['floor']): {
   };
 }
 
-export const furnitureFor: Partial<Record<ItemType, () => React.JSX.Element>> = {
+export const furnitureFor: Partial<Record<ItemType, React.ComponentType>> = {
   chair: Chair,
   plant: Plant,
   water_cooler: WaterCooler,

@@ -38,12 +38,12 @@ const COLORS: Record<BuildingStyle, string[]> = {
 };
 
 /** Fictional names in each city's language (no real brands). */
-export const SHOP_NAMES: Record<City, { cafe: [string, string]; resto: [string, string]; kiosk: string }> = {
-  hanoi: { cafe: ['Cà Phê Gió', 'Cà Phê Phố Cổ'], resto: ['Quán Phở Sớm', 'Bún Chả Hàng Mây'], kiosk: 'Cà Phê Công Viên' },
-  hcmc: { cafe: ['Cà Phê Vỉa Hè', 'Cà Phê Sữa Đá'], resto: ['Cơm Tấm Cô Ba', 'Hủ Tiếu Đêm'], kiosk: 'Cà Phê Công Viên' },
-  singapore: { cafe: ['Kopi Corner', 'Tiong Bahru Brew'], resto: ['Laksa House', 'Hawker 88'], kiosk: 'Park Kopi' },
-  tokyo: { cafe: ['Kissa Hoshi', 'Café Sakura'], resto: ['Ramen Kaze', 'Izakaya Tsuki'], kiosk: 'Kōen Café' },
-  newyork: { cafe: ['Corner Roast', 'Bean & Bagel'], resto: ['Liberty Diner', "Tony's Slice"], kiosk: 'Park Coffee Cart' },
+export const SHOP_NAMES: Record<City, { cafe: [string, string]; resto: [string, string]; kiosk: string; grocery: string; sugarcane: string; banhmi: string }> = {
+  hanoi: { cafe: ['Cà Phê Gió', 'Cà Phê Phố Cổ'], resto: ['Quán Phở Sớm', 'Bún Chả Hàng Mây'], kiosk: 'Cà Phê Công Viên', grocery: 'Tạp Hoá Cô Lan', sugarcane: 'Nước Mía Hồ Tây', banhmi: 'Bánh Mì Sáng' },
+  hcmc: { cafe: ['Cà Phê Vỉa Hè', 'Cà Phê Sữa Đá'], resto: ['Cơm Tấm Cô Ba', 'Hủ Tiếu Đêm'], kiosk: 'Cà Phê Công Viên', grocery: 'Tạp Hoá Bà Tư', sugarcane: 'Nước Mía Siêu Sạch', banhmi: 'Bánh Mì Nóng' },
+  singapore: { cafe: ['Kopi Corner', 'Tiong Bahru Brew'], resto: ['Laksa House', 'Hawker 88'], kiosk: 'Park Kopi', grocery: 'Mama Shop', sugarcane: 'Cane Juice', banhmi: 'Kaya Toast' },
+  tokyo: { cafe: ['Kissa Hoshi', 'Café Sakura'], resto: ['Ramen Kaze', 'Izakaya Tsuki'], kiosk: 'Kōen Café', grocery: 'Konbini Mori', sugarcane: 'Ocha Stand', banhmi: 'Onigiri Ya' },
+  newyork: { cafe: ['Corner Roast', 'Bean & Bagel'], resto: ['Liberty Diner', "Tony's Slice"], kiosk: 'Park Coffee Cart', grocery: 'Corner Bodega', sugarcane: 'Lemonade Stand', banhmi: 'Pretzel Cart' },
 };
 
 const SEED: Record<City, number> = { hanoi: 11, hcmc: 23, singapore: 37, tokyo: 41, newyork: 53 };

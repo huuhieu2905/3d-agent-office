@@ -14,6 +14,8 @@ import { StepView } from './StepView';
 import { ComposerExtensions } from './extensions';
 import { PermissionPrompt } from './PermissionPrompt';
 import { QuestionPrompt } from './QuestionPrompt';
+import { ConfirmDeleteDialog } from './ConfirmDeleteDialog';
+import type { Employee } from '@shared/domain';
 
 // T067: right-hand chat for the clicked employee — full history, live updates, send, stop.
 
@@ -28,10 +30,33 @@ const STATE_LABEL: Record<string, string> = {
   disconnected: 'Mất kết nối',
 };
 
+/** 004 FR-015: states that block deleting (the server re-checks; this only disables the button). */
+const BUSY = new Set(['working', 'thinking', 'waiting_for_boss']);
+
+/** Subagents of `id` (any depth) among the employees the client knows. */
+// shortcut: counts only employees on screen (≤ MAX_VISIBLE); the server checks the full tree before deleting.
+function subagentsOf(id: string, byId: Record<string, Employee>): Employee[] {
+  const out: Employee[] = [];
+  const ids = new Set([id]);
+  for (let grew = true; grew; ) {
+    grew = false;
+    for (const e of Object.values(byId)) {
+      if (e.parentId && ids.has(e.parentId) && !ids.has(e.conversationId)) {
+        ids.add(e.conversationId);
+        out.push(e);
+        grew = true;
+      }
+    }
+  }
+  return out;
+}
+
 export function ChatPanel() {
   const id = useUi((s) => s.openConversationId);
   const close = useUi((s) => s.closeConversation);
   const employee = useEmployees((s) => (id ? s.byId[id] : undefined));
+  const byId = useEmployees((s) => s.byId);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const steps = useSteps((s) => (id ? s.byConversation[id] : undefined));
   const merge = useSteps((s) => s.merge);
   const defaultModel = useSettings((s) => s.settings.defaultModel);
@@ -68,6 +93,8 @@ export function ChatPanel() {
 
   if (!id) return null;
   const busy = employee?.visualState === 'working' || employee?.visualState === 'thinking';
+  const subagents = subagentsOf(id, byId);
+  const deleteBlocked = [employee, ...subagents].some((e) => !!e && BUSY.has(e.visualState));
   const pending = steps?.filter((s) => s.kind === 'permission_request' && s.status === 'WAITING').at(-1);
   const questionStep =
     steps
@@ -109,6 +136,16 @@ export function ChatPanel() {
           <strong>{employee?.name ?? 'Nhân viên'}</strong>
           <span className={`state state-${employee?.visualState}`}>{STATE_LABEL[employee?.visualState ?? 'unknown']}</span>
         </div>
+        <button
+          className="icon"
+          data-testid="employee-delete"
+          aria-label="Xoá nhân viên"
+          disabled={deleteBlocked}
+          title={deleteBlocked ? 'Dừng agent trước khi xoá' : 'Xoá nhân viên (xoá vĩnh viễn conversation trong App)'}
+          onClick={() => setConfirmDelete(true)}
+        >
+          🗑
+        </button>
         <button className="icon" onClick={close} aria-label="Đóng">
           ×
         </button>
@@ -155,6 +192,18 @@ export function ChatPanel() {
         }}
         renderExtensions={(ctx) => <ComposerExtensions conversationId={id} {...ctx} />}
       />
+      {confirmDelete && (
+        <ConfirmDeleteDialog
+          conversationId={id}
+          name={employee?.name ?? 'Nhân viên'}
+          subagents={subagents.length}
+          onCancel={() => setConfirmDelete(false)}
+          onDeleted={() => {
+            setConfirmDelete(false);
+            close();
+          }}
+        />
+      )}
     </aside>
   );
 }

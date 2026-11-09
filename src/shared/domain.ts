@@ -320,6 +320,11 @@ export interface Settings {
   autoLowerDetail: boolean;
   camera: 'overview' | 'first_person';
   defaultModel: string | null;
+  /** 004 US1: project legend collapsed. Optional so older settings.json files still parse. */
+  legendCollapsed?: boolean;
+  /** 004 US4: ids of wall screens switched OFF (≤ 50 ids, each ≤ 100 chars). Screens are on by default
+   * — the first one shows the quota (001 FR-040). */
+  screensOff?: string[];
 }
 
 export type WeatherCondition = 'clear' | 'cloudy' | 'rain' | 'storm' | 'fog_snow';

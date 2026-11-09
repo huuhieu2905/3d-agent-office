@@ -128,6 +128,22 @@ export class Crowd {
     return null;
   }
 
+  /**
+   * Who would `a` stand too close to at (x, z)? Someone already too close does not block a step that moves
+   * away from them (004 T066: a colleague sitting down next to a walker otherwise froze the walker for good).
+   */
+  private blockedBy(a: Agent, x: number, z: number, r: number): Agent | null {
+    for (const o of this.agents.values()) {
+      if (o.id === a.id) continue;
+      const min = r + this.radius(o) - 1e-9;
+      const dNew = Math.hypot(o.x - x, o.z - z);
+      if (dNew >= min) continue;
+      if (dNew > Math.hypot(o.x - a.x, o.z - a.z) + 1e-6) continue; // moving apart
+      return o;
+    }
+    return null;
+  }
+
   /** Centre on walkable cells, and no blocked edge between the current cell and the next. */
   clearOfObjects(fromX: number, fromZ: number, x: number, z: number): boolean {
     const a = this.grid.toCell(fromX, fromZ);
@@ -190,7 +206,7 @@ export class Crowd {
         objectRefused ??= { x: nx, z: nz };
         continue;
       }
-      const hit = this.clearOfPeople(id, nx, nz, r);
+      const hit = this.blockedBy(a, nx, nz, r);
       if (hit) {
         blocker ??= hit;
         continue;
@@ -247,10 +263,10 @@ export class Crowd {
    * Cells a walker should not plan through: too close to a seated employee (except the walker's own seat),
    * and — when re-planning after being stuck — too close to anyone standing still.
    */
-  occupiedCells(exceptId: string, seat: Cell | null, includeStanding = false): Set<number> {
+  occupiedCells(exceptId: string, seat: Cell | null, includeStanding = false, everyone = false): Set<number> {
     const out = new Set<number>();
     for (const o of this.agents.values()) {
-      if (o.id === exceptId || (!o.seated && !(includeStanding && o.speed < 0.05))) continue;
+      if (o.id === exceptId || (!o.seated && !everyone && !(includeStanding && o.speed < 0.05))) continue;
       const min = RADIUS_WALKING + this.radius(o);
       const c = this.grid.toCell(o.x, o.z);
       for (let dz = -3; dz <= 3; dz++)

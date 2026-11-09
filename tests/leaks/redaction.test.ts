@@ -114,3 +114,32 @@ describe('sanitizeRaw: content keys added for App 2.29.0', () => {
     expect(out).toContain('keep-id'); // structure and ids stay usable for contract tests
   });
 });
+
+// 004 T012 (L4-1): deleting a conversation logs ids and outcome codes only, never its title.
+describe('DELETE /api/conversations/:id logging', () => {
+  it('does not log the conversation title', async () => {
+    const TITLE = 'PRIVATE-CONVERSATION-TITLE-9d2e';
+    const ID = '00000000-0000-4000-8000-0000000000e9';
+    const { lines, logger } = capture();
+    const transport = new FakeTransport();
+    let gone = false;
+    transport.handlers.GetAllCascadeTrajectories = () => ({
+      trajectorySummaries: gone ? {} : { [ID]: { summary: TITLE, status: 'CASCADE_RUN_STATUS_IDLE' } },
+    });
+    transport.handlers.GetCascadeTrajectorySteps = () => ({ steps: [] });
+    transport.handlers.DeleteCascadeTrajectory = () => ((gone = true), {});
+    const adapter = createAppAdapter({ finder: new FakeFinder(), transport, healthIntervalMs: 60_000 });
+    await adapter.start();
+    const services = { employees: { refresh: async () => undefined }, profiles: { update: async () => undefined } } as never;
+    const server = await createHttpServer({ adapter, log: logger, sessionToken: SESSION, port: 0, webRoot: '/nonexistent', services });
+    const port = await server.listen();
+    const res = await fetch(`http://127.0.0.1:${port}/api/conversations/${ID}`, { method: 'DELETE', headers: { authorization: `Bearer ${SESSION}` } });
+    await server.close();
+    await adapter.stop();
+    await new Promise((r) => setTimeout(r, 20));
+    expect(res.status).toBe(200);
+    const out = lines.join('\n');
+    expect(out).toContain(ID);
+    expect(out).not.toContain(TITLE);
+  });
+});

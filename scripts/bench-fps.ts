@@ -63,7 +63,7 @@ try {
   });
   console.log(`renderer: ${renderer} · detail: ${detail}${scenario ? ` · scenario: ${scenario}` : ''}${floor ? ` · floor: ${floor}` : ''}`);
   console.log(`frames: ${frames.length} over ${seconds}s — average ${avg.toFixed(1)} FPS, 1% low ${p1.toFixed(1)} FPS`);
-  if (scenario === 'crowd') {
+  if (scenario === 'crowd' || scenario === 'outing') {
     const overlaps = await page.evaluate(() => window.__bench!.overlaps ?? 0);
     console.log(`crowd: ${overlaps} overlap frame-pairs`);
     if (overlaps > 0) {

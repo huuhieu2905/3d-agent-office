@@ -2,12 +2,14 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
-import type { Employee as EmployeeT, OfficeLayout, VisualState } from '@shared/domain';
+import type { Employee as EmployeeT, OfficeLayout, VisualState, WeatherCondition } from '@shared/domain';
+import type { SiteGrid } from '@shared/site-nav';
+import type { SpotBook } from './break-spots';
+import type { ParkFrame, ParkShop } from './park/park-layout';
 import type { Crowd } from './crowd/crowd';
 import { kickNearest } from './furniture/PropJiggle';
-import { instantiate, play, setFace, setSeated, type Clip } from './character';
+import { instantiate, play, setFace, setSeated, setUmbrella, type Clip } from './character';
 import { EmployeeBrain } from './employee-behaviors';
-import type { OfficeGrid } from './grid/grid';
 import { useUi } from '../state/ui';
 import { beginDrag } from './interaction/DragLayer';
 import { useBuild } from '../state/build';
@@ -27,6 +29,9 @@ const BADGE: Partial<Record<VisualState, { icon: string; cls: string; label: str
 // 002 US6: the cartoon rig bends its own legs to sit, so the group is not lowered any more.
 const SEAT_DROP = 0;
 
+/** Live brains by conversation id, for window.__agentOffice (dev / webdriver only, 004 U4-4). */
+export const BRAINS = new Map<string, EmployeeBrain>();
+
 /** ?debug=crowd (dev only): breaks every ~20 s so crowd behaviour can be watched (T047). */
 function debugBreaks(): { breakMeanMs?: number; breakJitterMs?: number } {
   if (typeof location === 'undefined') return {};
@@ -42,7 +47,13 @@ export interface EmployeeProps {
   /** Layout, to find the prop an employee bumped into (US3 T046). */
   layout?: OfficeLayout;
   employee: EmployeeT;
-  grid: OfficeGrid;
+  /** Office + park (004): employees can walk out of the door to the park shops. */
+  grid: SiteGrid;
+  /** 004 US3: break-spot bookings, park shops and frame, current weather. */
+  spots?: SpotBook;
+  shops?: ParkShop[];
+  frame?: ParkFrame;
+  weather?: WeatherCondition;
   enter: boolean;
   leaving: boolean;
   lobbySlot: number;
@@ -51,22 +62,28 @@ export interface EmployeeProps {
   positions: Map<string, THREE.Vector3>;
 }
 
-export function Employee({ employee, grid, enter, leaving, lobbySlot, dimmed, onLeft, positions, crowd, layout }: EmployeeProps) {
+export function Employee({ employee, grid, enter, leaving, lobbySlot, dimmed, onLeft, positions, crowd, layout, spots, shops, frame, weather = 'clear' }: EmployeeProps) {
   const character = useMemo(() => instantiate(employee.appearance), [employee.appearance]);
   useEffect(() => () => character.dispose(), [character]);
 
   const seat = employee.deskId ? grid.seatOf(employee.deskId) : null;
   const brain = useMemo(
-    () => new EmployeeBrain({ grid, seat, enter, lobbySlot, crowd, id: employee.conversationId, ...debugBreaks() }),
+    () => new EmployeeBrain({ grid, seat, enter, lobbySlot, crowd, spots, shops, frame, id: employee.conversationId, ...debugBreaks() }),
     // The brain survives desk/state changes; it is recreated only if the office grid changes.
     [grid],
   );
   useEffect(() => () => brain.dispose(), [brain]);
+  // Test hooks (004 U4-4) read every live brain.
+  useEffect(() => {
+    BRAINS.set(employee.conversationId, brain);
+    return () => void BRAINS.delete(employee.conversationId);
+  }, [brain, employee.conversationId]);
   useEffect(() => brain.setSeat(seat), [brain, seat?.x, seat?.z]);
   useEffect(() => brain.setVisual(employee.visualState), [brain, employee.visualState]);
   useEffect(() => {
     if (leaving) brain.leave();
   }, [brain, leaving]);
+  useEffect(() => brain.setWeather(weather), [brain, weather]);
 
   const group = useRef<THREE.Group>(null);
   const clipRef = useRef<Clip | null>(null);
@@ -76,6 +93,12 @@ export function Employee({ employee, grid, enter, leaving, lobbySlot, dimmed, on
   const openConversation = useUi((s) => s.openConversation);
   const arranging = useBuild((s) => s.active);
   const firstPerson = useUi((s) => s.camera === 'first_person');
+  // 004 FR-028 / edge case: arranging the office calls everyone back from their break.
+  useEffect(() => {
+    if (arranging) brain.recall();
+  }, [brain, arranging]);
+  const speedRef = useRef(1);
+  const umbrellaRef = useRef(false);
 
   useFrame((_, dt) => {
     const d = Math.min(dt, 0.1);
@@ -85,9 +108,15 @@ export function Employee({ employee, grid, enter, leaving, lobbySlot, dimmed, on
       return;
     }
     setSeated(character, pose.seated);
-    if (pose.clip !== clipRef.current) {
-      play(character, pose.clip, 0.35);
+    const speed = pose.speedScale ?? 1;
+    if (pose.clip !== clipRef.current || speed !== speedRef.current) {
+      play(character, pose.clip, 0.35, speed);
       clipRef.current = pose.clip;
+      speedRef.current = speed;
+    }
+    if (!!pose.umbrella !== umbrellaRef.current) {
+      umbrellaRef.current = !!pose.umbrella;
+      setUmbrella(character, umbrellaRef.current);
     }
     t.current += d;
     const g = group.current;

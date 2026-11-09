@@ -13,6 +13,8 @@ export const DEFAULT_SETTINGS: Settings = {
   autoLowerDetail: true,
   camera: 'overview',
   defaultModel: null,
+  legendCollapsed: false,
+  screensOff: [],
 };
 
 export class SettingsStore {

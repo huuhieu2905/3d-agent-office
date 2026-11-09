@@ -17,7 +17,7 @@ import { SettingsButton, ThemeToggle, WeatherBadge } from './ui/settings/Setting
 import { PerfManager } from './scene/perf/PerfManager';
 import { useEffect } from 'react';
 import { CameraToggle, FirstPersonHelp, useCameraHotkey, userChoseCamera } from './ui/CameraToggle';
-import { Crosshair } from './scene/cameras/FirstPerson';
+import { Crosshair, FirstPersonHint } from './scene/cameras/FirstPerson';
 
 function ConnectionBanner() {
   const { app, serverOnline, warnings, dismissWarning } = useConnection();
@@ -89,6 +89,7 @@ export function App() {
       <WeatherBadge />
       <FirstPersonHelp />
       {cameraMode === 'first_person' && <Crosshair />}
+      {cameraMode === 'first_person' && <FirstPersonHint />}
       {hireDeskId && <HireDialog deskId={hireDeskId} onClose={() => setHireDesk(null)} />}
       <div className="hud-left">
         <AddDeskHint />

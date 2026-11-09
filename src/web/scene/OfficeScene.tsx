@@ -17,7 +17,11 @@ import { QuotaScreen } from '../ui/quota/QuotaScreen';
 import { BuildGizmo } from './BuildGizmo';
 import { useBuild } from '../state/build';
 import { LAYOUT_CHANGED } from '../ui/build/BuildMode';
-import { Surroundings, useCityWeather } from './Surroundings';
+import { CITY_SEED, Surroundings, useCityWeather } from './Surroundings';
+import { SiteGrid } from '@shared/site-nav';
+import { parkFrame, parkShops, visibleTrees } from './park/park-layout';
+import { DETAIL, PARK_RADIUS } from './park/detail';
+import { SpotBook } from './break-spots';
 import { useSettings } from '../state/settings';
 import { useWeather } from '../state/weather';
 import { LIGHT_FACTOR } from './weather/Weather';
@@ -53,8 +57,27 @@ export function OfficeScene({
   const grid = useMemo(() => (layout ? new OfficeGrid(layout) : null), [layout]);
   // Stable size object so the memoised background only re-renders when the office is resized.
   const floorSize = useMemo(() => ({ width: layout?.floor.width ?? 16, depth: layout?.floor.depth ?? 12 }), [layout?.floor.width, layout?.floor.depth]);
+  // 004 US3 (R4-03): the park around the office — its shops and the trees actually drawn — and one grid
+  // for office + park, so employees (and the first-person user) can walk out of the door.
+  const frame = useMemo(() => parkFrame(floorSize), [floorSize]);
+  const shops = useMemo(() => parkShops(frame), [frame]);
+  // Round obstacles: shop tables and the trees drawn at the current detail level / city.
+  const circles = useMemo(
+    () => [...shops.flatMap((s) => s.tables), ...visibleTrees(frame, CITY_SEED[city], DETAIL[detailLevel].trees).map((t) => ({ x: t.x, z: t.z, r: 0.35 }))],
+    [frame, shops, city, detailLevel],
+  );
+  const circlesRef = useRef(circles);
+  circlesRef.current = circles;
+  // The grid (and so every employee brain) is rebuilt only when the office itself changes (T062).
+  const site = useMemo(
+    () => (grid ? new SiteGrid(grid, { radius: PARK_RADIUS - 1, boxes: shops.map((s) => s.box), circles: circlesRef.current }) : null),
+    [grid, shops],
+  );
+  useEffect(() => site?.setCircles(circles), [site, circles]);
+  // One booking table for sofa seats, shop stools and outing slots, kept across layout edits.
+  const spots = useMemo(() => new SpotBook(), []);
   // One crowd per office grid (US3 T044): employees never overlap and give way to each other.
-  const crowd = useMemo(() => (grid ? new Crowd(grid) : null), [grid]);
+  const crowd = useMemo(() => (site ? new Crowd(site) : null), [site]);
   useEffect(() => {
     if (benchMode && crowd) window.__crowd = crowd; // bench: count overlaps (T047)
   }, [benchMode, crowd]);
@@ -74,6 +97,7 @@ export function OfficeScene({
   const onStage = useMemo(() => visible.filter((e) => !(e.isSubagent && !e.deskId)), [visible]);
   const folded = useMemo(() => subagentOverflow(visible), [visible]);
   const { entries, onLeft } = useEmployeeStage(onStage, !!grid);
+  useEffect(() => spots.setPopulation(onStage.length), [spots, onStage.length]);
 
   const byDesk = useMemo(() => {
     const m = new Map<string, EmployeeT>();
@@ -81,7 +105,7 @@ export function OfficeScene({
     return m;
   }, [visible]);
 
-  if (!layout || !grid) return <OfficeMood disconnected theme={theme} />;
+  if (!layout || !grid || !site) return <OfficeMood disconnected theme={theme} />;
   const size: [number, number] = [layout.floor.width, layout.floor.depth];
   let lobbySlot = 0;
 
@@ -89,9 +113,10 @@ export function OfficeScene({
     <>
       <OfficeMood disconnected={disconnected} theme={theme} weatherFactor={LIGHT_FACTOR[condition]} floor={layout.floor} />
       <Surroundings city={city} detail={detailLevel} theme={theme} floor={floorSize} />
-      {!benchMode && (cameraMode === 'first_person' && !build.active ? <FirstPersonCamera grid={grid} positions={positions} /> : <OverviewCamera size={size} />)}
+      {!benchMode && (cameraMode === 'first_person' && !build.active ? <FirstPersonCamera site={site} positions={positions} layout={layout} crowd={crowd ?? undefined} spots={spots} /> : <OverviewCamera size={size} />)}
       <Office
         layout={layout}
+        positions={positions}
         employeesByDesk={byDesk}
         theme={theme}
         cutaway={cameraMode !== 'first_person' || build.active}
@@ -108,7 +133,11 @@ export function OfficeScene({
           <Employee
             key={employee.conversationId}
             employee={folded.has(employee.conversationId) ? { ...employee, name: `${employee.name} (+${folded.get(employee.conversationId)})` } : employee}
-            grid={grid}
+            grid={site}
+            spots={spots}
+            shops={shops}
+            frame={frame}
+            weather={condition}
             enter={enter}
             leaving={leaving}
             lobbySlot={employee.deskId ? 0 : lobbySlot++}
