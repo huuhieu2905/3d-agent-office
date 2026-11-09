@@ -99,7 +99,7 @@ export function Bench() {
     useSettings.getState().set({ detailLevel: detail, city: 'hanoi', theme: 'light', autoLowerDetail: false });
     useWeather.getState().set({ city: 'hanoi', condition: 'rain', isDay: true, temperatureC: 26, fetchedAt: new Date().toISOString(), source: 'open-meteo' });
     useConnection.getState().setServerOnline(true);
-    useConnection.getState().setApp({ kind: 'connected', appVersion: 'bench', versionSupported: true });
+    useConnection.getState().setApp({ kind: 'connected', appVersion: 'bench', versionSupported: true, verifiedVersions: [] });
     let tick = 0;
     useEmployees.getState().snapshot(fakeEmployees(tick, deskIds, scenario === 'crowd'), 0);
     window.__bench = { frames: [], startedAt: performance.now(), ...(scenario === 'crowd' ? { overlaps: 0 } : {}) };

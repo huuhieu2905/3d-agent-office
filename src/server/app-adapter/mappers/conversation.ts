@@ -1,6 +1,6 @@
 import { RUN_STATUSES, type Conversation, type RunStatus } from '../../../shared/domain';
 
-// GetAllCascadeTrajectories → Conversation[] (App 2.24.0 JSON). Tolerant to missing fields (A5).
+// GetAllCascadeTrajectories → Conversation[] (App JSON, see recorded fixtures). Tolerant to missing fields (A5).
 
 type Raw = Record<string, unknown>;
 

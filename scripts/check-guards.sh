@@ -3,6 +3,7 @@
 #  (a) Constitution II — App specifics only inside src/server/app-adapter/
 #  (b) FR-082 — no outbound URLs except localhost and Open-Meteo
 #  (c) FR-030 — adapter write calls only from HTTP routes (i.e. user-initiated)
+#  (d) Constitution II v2.1.1 / spec 003 A3-1d — App version literals only in app-adapter/versions.ts
 set -euo pipefail
 cd "$(dirname "$0")/.."
 fail=0
@@ -27,10 +28,23 @@ if [ -d dist/web ]; then
 fi
 
 # (c) Agent-changing adapter calls must only appear in HTTP routes.
-if hits=$(grep -RInE '\.(sendMessage|startConversation|cancel|answerPermission)\(' src/server \
+if hits=$(grep -RInE '\.(sendMessage|startConversation|cancel|answerPermission|answerQuestion)\(' src/server \
   --include='*.ts' | grep -v '^src/server/http/routes/' | grep -v '^src/server/app-adapter/'); then
   echo "✗ (c) Agent write calls outside src/server/http/routes/:"; echo "$hits"; fail=1
 fi
 
-if [ "$fail" -eq 0 ]; then echo "✓ check-guards: adapter isolation, outbound URLs, user-initiated writes"; fi
+# (d) App version numbers are named only in the verified-version list.
+if hits=$(grep -RInE '\b2\.(24|29)\.0\b' src --include='*.ts' --include='*.tsx' | grep -v '^src/server/app-adapter/versions.ts:'); then
+  echo "✗ (d) App version literal outside versions.ts:"; echo "$hits"; fail=1
+fi
+
+# (e) Spec 003 US4: the compat script only uses inspectCompat, and nothing in the app runs it (FR-016a).
+if bad=$(grep -E '^import' scripts/check-compat.ts | grep -vE "^import \{ inspectCompat \} from '../src/server/app-adapter/index';$|^import \{ writeFile \} from 'node:fs/promises';$"); then
+  echo "✗ (e) scripts/check-compat.ts may only import inspectCompat:"; echo "$bad"; fail=1
+fi
+if hits=$(grep -RInE "inspectCompat|from '\./compat'|app-adapter/compat" src --include='*.ts' --include='*.tsx' | grep -vE '^src/server/app-adapter/(index|compat)\.ts:'); then
+  echo "✗ (e) inspectCompat / compat.ts used outside the adapter (Agent Office must not run it):"; echo "$hits"; fail=1
+fi
+
+if [ "$fail" -eq 0 ]; then echo "✓ check-guards: adapter isolation, outbound URLs, user-initiated writes, version literals, compat isolation"; fi
 exit "$fail"

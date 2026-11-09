@@ -1,0 +1,101 @@
+{
+  "projects": [
+    {
+      "id": "02889233-6108-4d56-a785-dd244945139c",
+      "name": "<name>",
+      "projectResources": {
+        "resources": [
+          {
+            "folderUri": "file:///Users/USER/folder-b0ded34e"
+          }
+        ]
+      },
+      "permissionGrants": {
+        "v2Migrated": true
+      }
+    },
+    {
+      "id": "35a91681-3803-4f71-ad47-7d81acaa2f6c",
+      "name": "<name>",
+      "projectResources": {
+        "resources": [
+          {
+            "folderUri": "file:///tmp/TMP/folder-db8bca60"
+          }
+        ]
+      }
+    },
+    {
+      "id": "68248219-9db6-4c44-9ad6-ea28c29524d3",
+      "name": "<name>",
+      "projectResources": {
+        "resources": [
+          {
+            "folderUri": "file:///tmp/TMP/folder-db4b4e5a"
+          }
+        ]
+      },
+      "permissionGrants": {
+        "v2Migrated": true
+      }
+    },
+    {
+      "id": "95bcfba9-2875-4e99-afe2-74e92ec0eed0",
+      "name": "<name>",
+      "projectResources": {
+        "resources": [
+          {
+            "folderUri": "file:///Users/USER/folder-51a92ec0"
+          }
+        ]
+      },
+      "permissionGrants": {
+        "v2Migrated": true
+      }
+    },
+    {
+      "id": "a29f16ef-8c9a-4e45-a3dd-f337011d952b",
+      "name": "<name>",
+      "projectResources": {
+        "resources": [
+          {
+            "folderUri": "file:///Users/USER/folder-430a3265"
+          }
+        ]
+      },
+      "permissionGrants": {
+        "v2Migrated": true
+      }
+    },
+    {
+      "id": "a7e11e00-1106-4000-8000-000000000001",
+      "name": "<name>",
+      "projectResources": {
+        "resources": [
+          {
+            "folderUri": "file:///tmp/TMP/folder-db8bca60"
+          }
+        ]
+      },
+      "permissionGrants": {
+        "v2Migrated": true
+      },
+      "settings": {
+        "autoExecutionPolicy": "CASCADE_COMMANDS_AUTO_EXECUTION_OFF"
+      }
+    },
+    {
+      "id": "default-cli-project",
+      "name": "<name>",
+      "projectResources": {},
+      "permissionGrants": {
+        "v2Migrated": true
+      },
+      "settings": {}
+    },
+    {
+      "id": "outside-of-project",
+      "name": "<name>"
+    }
+  ]
+}

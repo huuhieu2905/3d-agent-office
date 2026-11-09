@@ -2,16 +2,17 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { AppUnavailableError, createAppAdapter } from '../../src/server/app-adapter/index';
 import { mapSteps } from '../../src/server/app-adapter/mappers/step';
 import { mapConversations } from '../../src/server/app-adapter/mappers/conversation';
-import { FakeFinder, FakeTransport, fixture, serverArgs } from './helpers';
+import { verifiedVersionList } from '../../src/server/app-adapter/versions';
+import { FakeFinder, FakeTransport, FIXTURE_SETS, fixtureFrom, serverArgs } from './helpers';
 
 const adapters: { stop(): Promise<void> }[] = [];
 afterEach(async () => {
   while (adapters.length) await adapters.pop()!.stop();
 });
 
-function setup() {
+function setup(fixtureSet?: string) {
   const finder = new FakeFinder();
-  const transport = new FakeTransport();
+  const transport = new FakeTransport(fixtureSet);
   const adapter = createAppAdapter({ finder, transport, healthIntervalMs: 50 });
   adapters.push(adapter);
   return { finder, transport, adapter };
@@ -41,7 +42,12 @@ describe('connection', () => {
   it('connects to the port that answers JSON, not the gRPC-only one', async () => {
     const { adapter, transport } = setup();
     await adapter.start();
-    expect(adapter.getConnection()).toEqual({ kind: 'connected', appVersion: '2.24.0', versionSupported: true });
+    expect(adapter.getConnection()).toEqual({
+      kind: 'connected',
+      appVersion: '2.24.0',
+      versionSupported: true,
+      verifiedVersions: verifiedVersionList(),
+    });
     await adapter.listConversations();
     expect(transport.calls.at(-1)!.port).toBe(50002);
   });
@@ -65,18 +71,26 @@ describe('connection', () => {
     await until(() => adapter.getConnection().kind === 'searching');
   });
 
-  it('A3 — flags an unsupported App version but keeps working', async () => {
-    const { adapter, finder } = setup();
+  it('A3-1 — flags an unverified App version, lists the verified ones, and keeps reading and writing', async () => {
+    const { adapter, finder, transport } = setup();
     finder.proc = { pid: 1000, args: serverArgs({ version: '2.30.0' }) };
     await adapter.start();
-    expect(adapter.getConnection()).toEqual({ kind: 'connected', appVersion: '2.30.0', versionSupported: false });
+    expect(adapter.getConnection()).toEqual({
+      kind: 'connected',
+      appVersion: '2.30.0',
+      versionSupported: false,
+      verifiedVersions: verifiedVersionList(),
+    });
     await expect(adapter.listConversations()).resolves.not.toHaveLength(0);
+    // A3-1c: writes are not blocked on an unverified version.
+    transport.handlers.CancelCascadeInvocation = () => ({});
+    await expect(adapter.cancel('6fae0dee-f41d-4d51-93f6-f074134cb79e')).resolves.toBeUndefined();
   });
 });
 
-describe('mappers on recorded fixtures (App 2.24.0)', () => {
+describe.each(FIXTURE_SETS)('mappers on recorded fixtures (App %s)', (version) => {
   it('maps conversations with ids, status and project', () => {
-    const list = mapConversations(fixture('GetAllCascadeTrajectories'));
+    const list = mapConversations(fixtureFrom(version, 'GetAllCascadeTrajectories'));
     expect(list.length).toBeGreaterThan(0);
     for (const c of list) {
       expect(c.id).toMatch(/[0-9a-f-]{36}/);
@@ -86,7 +100,7 @@ describe('mappers on recorded fixtures (App 2.24.0)', () => {
   });
 
   it('maps steps into known kinds', () => {
-    const steps = mapSteps(fixture('GetCascadeTrajectorySteps'));
+    const steps = mapSteps(fixtureFrom(version, 'GetCascadeTrajectorySteps'));
     expect(steps.length).toBeGreaterThan(0);
     expect(steps.map((s) => s.kind)).toContain('user');
     expect(steps.map((s) => s.kind)).toContain('agent');
@@ -94,7 +108,7 @@ describe('mappers on recorded fixtures (App 2.24.0)', () => {
   });
 
   it('lists projects', async () => {
-    const { adapter } = setup();
+    const { adapter } = setup(version);
     await adapter.start();
     const projects = await adapter.listProjects();
     expect(projects.map((p) => p.id)).toContain('default-cli-project');

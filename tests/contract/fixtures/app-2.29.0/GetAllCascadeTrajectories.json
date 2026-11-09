@@ -1,0 +1,1782 @@
+{
+  "trajectorySummaries": {
+    "0571b7b9-0a15-4569-b564-0d8870ac8d70": {
+      "trajectoryId": "3e7fcd9c-14ee-49af-976a-764b7f3637ad",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T09:43:41.452984Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T09:43:41.452984Z",
+        "initializationStateId": "d35f49df-4780-4cc8-a1ca-117f06d6be49",
+        "rootConversationId": "0571b7b9-0a15-4569-b564-0d8870ac8d70",
+        "workspaceUris": [
+          "file:///Users/USER/folder-430a3265"
+        ],
+        "projectId": "a29f16ef-8c9a-4e45-a3dd-f337011d952b"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "0630820a-7110-49d7-811f-07b6d921b563": {
+      "trajectoryId": "8ebcdcb7-b237-4158-b47d-657daeee9ab1",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-08T05:09:01.562699Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-08T05:09:01.562699Z",
+        "initializationStateId": "95e63840-4163-4c5d-b295-67f0c459406b",
+        "rootConversationId": "0630820a-7110-49d7-811f-07b6d921b563",
+        "workspaceUris": [
+          "file:///Users/USER/folder-b0ded34e"
+        ],
+        "projectId": "02889233-6108-4d56-a785-dd244945139c"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "07d530ca-0394-4857-acd0-08f3c94cea85": {
+      "summary": "<summary:21>",
+      "stepCount": 10,
+      "lastModifiedTime": "2026-11-07T04:07:21.105635Z",
+      "trajectoryId": "73605a2d-7da1-4c2e-8842-d3b14ab53b9a",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T01:37:56.598701Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+          "repository": {}
+        }
+      ],
+      "lastUserInputTime": "2026-11-07T04:07:17.457652Z",
+      "lastUserInputStepIndex": 8,
+      "annotations": {
+        "title": "<title:21>"
+      },
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T01:37:56.598701Z",
+        "initializationStateId": "58b8e7d5-6cc7-4960-9c4a-8a4be842a054",
+        "rootConversationId": "07d530ca-0394-4857-acd0-08f3c94cea85",
+        "workspaceUris": [
+          "file:///Users/USER/folder-b0ded34e"
+        ],
+        "projectId": "02889233-6108-4d56-a785-dd244945139c"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+      "latestExecutorTerminationReason": "EXECUTOR_TERMINATION_REASON_NO_TOOL_CALL"
+    },
+    "0b24d585-8ebc-4bfd-a40e-0ce48227776f": {
+      "trajectoryId": "52ce636c-3ade-45c1-9a81-a45003edc2a4",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T01:37:57.021008Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T01:37:57.021008Z",
+        "initializationStateId": "0f227b34-edf7-4015-96e5-9edd0a2f079f",
+        "rootConversationId": "0b24d585-8ebc-4bfd-a40e-0ce48227776f",
+        "workspaceUris": [
+          "file:///Users/USER/folder-b0ded34e"
+        ],
+        "projectId": "02889233-6108-4d56-a785-dd244945139c"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "145d9656-850e-40e3-9357-67e681b5ecbd": {
+      "trajectoryId": "3602a60f-9b98-4452-aeec-fb143278ab28",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-08T05:09:01.161388Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-08T05:09:01.161388Z",
+        "initializationStateId": "b6fcb939-80f1-4513-8b29-66fb1915bc9f",
+        "rootConversationId": "145d9656-850e-40e3-9357-67e681b5ecbd",
+        "workspaceUris": [
+          "file:///Users/USER/folder-b0ded34e"
+        ],
+        "projectId": "02889233-6108-4d56-a785-dd244945139c"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "1c0ec2ff-ca3b-4331-b309-714a53b217e4": {
+      "trajectoryId": "2c737faf-306b-4a3c-bb15-7ba40eb3b4eb",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T04:33:02.947247Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T04:33:02.947247Z",
+        "initializationStateId": "5c1eef20-e2d1-475b-845f-d48c5e9cdea7",
+        "rootConversationId": "1c0ec2ff-ca3b-4331-b309-714a53b217e4",
+        "workspaceUris": [
+          "file:///Users/USER/folder-b0ded34e"
+        ],
+        "projectId": "02889233-6108-4d56-a785-dd244945139c"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "1e045386-45e3-44c0-913a-f17abd3e9022": {
+      "summary": "<summary:25>",
+      "stepCount": 91,
+      "lastModifiedTime": "2026-11-08T05:12:10.226073Z",
+      "trajectoryId": "a9d641ac-58f3-4d4d-bbab-fe1f4141eee4",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-08T04:25:01.906873Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+          "repository": {}
+        }
+      ],
+      "lastUserInputTime": "2026-11-08T05:12:08.531597Z",
+      "lastUserInputStepIndex": 89,
+      "annotations": {
+        "title": "<title:25>"
+      },
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-08T04:25:01.906873Z",
+        "initializationStateId": "867a8bb2-cf3a-464f-97c1-61a34ad3d12a",
+        "rootConversationId": "1e045386-45e3-44c0-913a-f17abd3e9022",
+        "workspaceUris": [
+          "file:///Users/USER/folder-b0ded34e"
+        ],
+        "projectId": "02889233-6108-4d56-a785-dd244945139c"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+      "latestExecutorTerminationReason": "EXECUTOR_TERMINATION_REASON_NO_TOOL_CALL"
+    },
+    "2caa5288-e29b-42eb-902a-9fd153eebdc6": {
+      "summary": "<summary:23>",
+      "stepCount": 18,
+      "lastModifiedTime": "2026-11-07T03:29:22.433466Z",
+      "trajectoryId": "4b1ff8a0-1967-4930-91a6-22cd7600c00b",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T02:35:39.196006Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-51a92ec0",
+          "gitRootAbsoluteUri": "file:///Users/USER/code/sample-project",
+          "repository": {
+            "computedName": "example/sample-project",
+            "gitOriginUrl": "https://github.com/example/sample-project.git"
+          },
+          "branchName": "main"
+        }
+      ],
+      "lastUserInputTime": "2026-11-07T03:29:20.078381Z",
+      "lastUserInputStepIndex": 16,
+      "annotations": {
+        "title": "<title:23>"
+      },
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-51a92ec0",
+            "gitRootAbsoluteUri": "file:///Users/USER/code/sample-project",
+            "repository": {
+              "computedName": "example/sample-project",
+              "gitOriginUrl": "https://github.com/example/sample-project.git"
+            },
+            "branchName": "main"
+          }
+        ],
+        "createdAt": "2026-11-07T02:35:39.196006Z",
+        "initializationStateId": "e716ffdd-cf00-44e0-9347-79e788bde151",
+        "rootConversationId": "2caa5288-e29b-42eb-902a-9fd153eebdc6",
+        "workspaceUris": [
+          "file:///Users/USER/folder-51a92ec0"
+        ],
+        "projectId": "95bcfba9-2875-4e99-afe2-74e92ec0eed0"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+      "latestExecutorTerminationReason": "EXECUTOR_TERMINATION_REASON_NO_TOOL_CALL"
+    },
+    "2de1d128-e5a9-47f8-a871-b4d56d14dea5": {
+      "trajectoryId": "79afa43f-c818-4845-8704-12a035bd4b74",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T01:37:56.924744Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T01:37:56.924744Z",
+        "initializationStateId": "7b1c3544-387a-491d-b42e-f8594eba9d20",
+        "rootConversationId": "2de1d128-e5a9-47f8-a871-b4d56d14dea5",
+        "workspaceUris": [
+          "file:///Users/USER/folder-430a3265"
+        ],
+        "projectId": "a29f16ef-8c9a-4e45-a3dd-f337011d952b"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "346940f8-abd9-47d2-a067-cc083eabed31": {
+      "trajectoryId": "e8b83d36-15db-406b-ac8e-0945033e4e2d",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-08T05:09:03.061331Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-08T05:09:03.061331Z",
+        "initializationStateId": "ed4685a3-e8de-48fe-aca2-9f92f3157845",
+        "rootConversationId": "346940f8-abd9-47d2-a067-cc083eabed31",
+        "workspaceUris": [
+          "file:///Users/USER/folder-b0ded34e"
+        ],
+        "projectId": "02889233-6108-4d56-a785-dd244945139c"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "355206b0-0c28-4f99-8f44-39a34f1ccffb": {
+      "trajectoryId": "d0523106-fefc-45fa-9fb4-4d5165298220",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T09:43:52.361202Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T09:43:52.361202Z",
+        "initializationStateId": "4dda8eda-5daa-4d5e-a745-95184a677a53",
+        "rootConversationId": "355206b0-0c28-4f99-8f44-39a34f1ccffb",
+        "workspaceUris": [
+          "file:///Users/USER/folder-430a3265"
+        ],
+        "projectId": "a29f16ef-8c9a-4e45-a3dd-f337011d952b"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "3567094b-6431-4138-904b-31f6c38b4c4d": {
+      "trajectoryId": "efadfff9-05e8-415f-934b-b677584da762",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-08T05:09:01.762342Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-08T05:09:01.762342Z",
+        "initializationStateId": "879d2b3b-fb32-4d93-ba5c-4e0eaccd2648",
+        "rootConversationId": "3567094b-6431-4138-904b-31f6c38b4c4d",
+        "workspaceUris": [
+          "file:///Users/USER/folder-b0ded34e"
+        ],
+        "projectId": "02889233-6108-4d56-a785-dd244945139c"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "3578c6fc-76bd-4683-8f6d-8a729c3c2547": {
+      "trajectoryId": "6c07a65e-0e7f-4108-8bfa-f841b0f7d3d8",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T09:43:52.990664Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T09:43:52.990664Z",
+        "initializationStateId": "e277691b-7257-45f2-98a7-ea682ee78e40",
+        "rootConversationId": "3578c6fc-76bd-4683-8f6d-8a729c3c2547",
+        "workspaceUris": [
+          "file:///Users/USER/folder-430a3265"
+        ],
+        "projectId": "a29f16ef-8c9a-4e45-a3dd-f337011d952b"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "40447e38-d934-4cd4-b43c-1e9a41faffb2": {
+      "trajectoryId": "56061d74-b5a0-4a43-bb47-caa6d86e982a",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T09:43:42.376962Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T09:43:42.376962Z",
+        "initializationStateId": "70714f51-0771-45e2-bf54-ef7b786243e8",
+        "rootConversationId": "40447e38-d934-4cd4-b43c-1e9a41faffb2",
+        "workspaceUris": [
+          "file:///Users/USER/folder-430a3265"
+        ],
+        "projectId": "a29f16ef-8c9a-4e45-a3dd-f337011d952b"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "47c6ddc5-48d7-4d23-a6c9-71b0ebcb0ac7": {
+      "trajectoryId": "2983221e-f90d-4fd5-8969-d2e83871835d",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T01:37:56.958023Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T01:37:56.958023Z",
+        "initializationStateId": "f511ce68-a0f2-4429-b5af-cf98be1077fa",
+        "rootConversationId": "47c6ddc5-48d7-4d23-a6c9-71b0ebcb0ac7",
+        "workspaceUris": [
+          "file:///Users/USER/folder-b0ded34e"
+        ],
+        "projectId": "02889233-6108-4d56-a785-dd244945139c"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "538d6474-d374-4476-aabe-db3f7b04512e": {
+      "trajectoryId": "8c053761-9519-41ba-8939-a79ee5acadb6",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T01:37:56.727062Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T01:37:56.727062Z",
+        "initializationStateId": "f31fe23c-e214-4e1e-b5dd-0428f0a0ab67",
+        "rootConversationId": "538d6474-d374-4476-aabe-db3f7b04512e",
+        "workspaceUris": [
+          "file:///Users/USER/folder-430a3265"
+        ],
+        "projectId": "a29f16ef-8c9a-4e45-a3dd-f337011d952b"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "5a14268b-ed93-495d-bc6f-58c690104677": {
+      "trajectoryId": "3c39b788-39e3-4a62-a52f-6e83227e4146",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T09:43:51.749511Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T09:43:51.749511Z",
+        "initializationStateId": "11f414aa-1ef1-4855-adff-f809cbbef392",
+        "rootConversationId": "5a14268b-ed93-495d-bc6f-58c690104677",
+        "workspaceUris": [
+          "file:///Users/USER/folder-430a3265"
+        ],
+        "projectId": "a29f16ef-8c9a-4e45-a3dd-f337011d952b"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "5edf99c4-2656-4daf-a2fd-86020e2572b1": {
+      "summary": "<summary:23>",
+      "stepCount": 10,
+      "lastModifiedTime": "2026-11-07T04:07:24.665407Z",
+      "trajectoryId": "773e99c2-d590-49be-be84-389b444f3ba4",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T01:37:56.572173Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+          "repository": {}
+        }
+      ],
+      "lastUserInputTime": "2026-11-07T04:07:21.444247Z",
+      "lastUserInputStepIndex": 8,
+      "annotations": {
+        "title": "<title:23>"
+      },
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T01:37:56.572173Z",
+        "initializationStateId": "43213f5a-31b7-4ecd-af87-15568feb5b91",
+        "rootConversationId": "5edf99c4-2656-4daf-a2fd-86020e2572b1",
+        "workspaceUris": [
+          "file:///Users/USER/folder-430a3265"
+        ],
+        "projectId": "a29f16ef-8c9a-4e45-a3dd-f337011d952b"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+      "latestExecutorTerminationReason": "EXECUTOR_TERMINATION_REASON_NO_TOOL_CALL"
+    },
+    "62b3179b-af4a-4ae9-a2f7-41ef9b4d03a1": {
+      "summary": "<summary:37>",
+      "stepCount": 2,
+      "lastModifiedTime": "2026-11-07T02:06:28.866101Z",
+      "trajectoryId": "92daa552-bd62-471c-a86c-ccc3ed5af2c0",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T01:37:56.494576Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+          "repository": {}
+        }
+      ],
+      "lastUserInputTime": "2026-11-07T02:06:26.022435Z",
+      "lastUserInputStepIndex": 0,
+      "annotations": {
+        "title": "<title:37>"
+      },
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T01:37:56.494576Z",
+        "initializationStateId": "8979da8c-d915-4fa8-9cc2-8825c892624f",
+        "rootConversationId": "62b3179b-af4a-4ae9-a2f7-41ef9b4d03a1",
+        "workspaceUris": [
+          "file:///Users/USER/folder-b0ded34e"
+        ],
+        "projectId": "02889233-6108-4d56-a785-dd244945139c"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+      "latestExecutorTerminationReason": "EXECUTOR_TERMINATION_REASON_NO_TOOL_CALL"
+    },
+    "6699b9e9-b40d-41c9-999c-1f2bbbf23075": {
+      "trajectoryId": "e0b02f3c-491e-467c-9a0d-0b959068c475",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-08T05:09:00.853030Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-08T05:09:00.853030Z",
+        "initializationStateId": "680bc557-a79f-406d-8074-af584eceb605",
+        "rootConversationId": "6699b9e9-b40d-41c9-999c-1f2bbbf23075",
+        "workspaceUris": [
+          "file:///Users/USER/folder-b0ded34e"
+        ],
+        "projectId": "02889233-6108-4d56-a785-dd244945139c"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "6a4ac55b-64ce-45f5-80b5-24afa6f50744": {
+      "trajectoryId": "059d730a-83e6-4c96-b3b4-b033913cfb0a",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-08T05:09:02.246318Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-08T05:09:02.246318Z",
+        "initializationStateId": "482ba997-837b-469f-9fb8-bd0218958826",
+        "rootConversationId": "6a4ac55b-64ce-45f5-80b5-24afa6f50744",
+        "workspaceUris": [
+          "file:///Users/USER/folder-b0ded34e"
+        ],
+        "projectId": "02889233-6108-4d56-a785-dd244945139c"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "7044f186-37b2-4572-aff5-5b12e0acd37f": {
+      "summary": "<summary:21>",
+      "stepCount": 4,
+      "lastModifiedTime": "2026-11-07T02:56:57.395605Z",
+      "trajectoryId": "ccf972db-e739-4338-b90f-16abeb4493f3",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T02:56:49.262421Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+          "repository": {}
+        }
+      ],
+      "lastUserInputTime": "2026-11-07T02:56:52.674998Z",
+      "lastUserInputStepIndex": 2,
+      "annotations": {
+        "title": "<title:21>"
+      },
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T02:56:49.262421Z",
+        "initializationStateId": "f9a8350b-a5ca-48b0-a5b5-0f99db7cdbf5",
+        "rootConversationId": "7044f186-37b2-4572-aff5-5b12e0acd37f",
+        "workspaceUris": [
+          "file:///Users/USER/folder-430a3265"
+        ],
+        "projectId": "a29f16ef-8c9a-4e45-a3dd-f337011d952b"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+      "latestExecutorTerminationReason": "EXECUTOR_TERMINATION_REASON_USER_CANCELED"
+    },
+    "706e748c-336d-4a8b-ae60-947b90cdd8e1": {
+      "summary": "<summary:19>",
+      "stepCount": 2,
+      "lastModifiedTime": "2026-11-07T02:33:04.071535Z",
+      "trajectoryId": "529eeb33-0597-42d2-976f-c0abc0608f18",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T01:37:56.890139Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+          "repository": {}
+        }
+      ],
+      "lastUserInputTime": "2026-11-07T02:33:01.044555Z",
+      "lastUserInputStepIndex": 0,
+      "annotations": {
+        "title": "<title:19>"
+      },
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T01:37:56.890139Z",
+        "initializationStateId": "c985bcb2-2323-4f4d-a6ac-bcbfe2b8c66a",
+        "rootConversationId": "706e748c-336d-4a8b-ae60-947b90cdd8e1",
+        "workspaceUris": [
+          "file:///Users/USER/folder-b0ded34e"
+        ],
+        "projectId": "02889233-6108-4d56-a785-dd244945139c"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+      "latestExecutorTerminationReason": "EXECUTOR_TERMINATION_REASON_NO_TOOL_CALL"
+    },
+    "70a58e95-1e48-47d3-83a0-03d0c85401d3": {
+      "trajectoryId": "798d2ec5-a756-4964-b5c2-28b1478dfa0b",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T09:43:41.777168Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T09:43:41.777168Z",
+        "initializationStateId": "b7090388-01a1-4f77-b04a-e4f1fac654dc",
+        "rootConversationId": "70a58e95-1e48-47d3-83a0-03d0c85401d3",
+        "workspaceUris": [
+          "file:///Users/USER/folder-430a3265"
+        ],
+        "projectId": "a29f16ef-8c9a-4e45-a3dd-f337011d952b"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "76ba36bc-b548-48c2-b463-893438091b55": {
+      "summary": "<summary:35>",
+      "stepCount": 334,
+      "lastModifiedTime": "2026-11-08T05:15:38.766814Z",
+      "trajectoryId": "76f2ef1e-f785-4c90-b4b1-22ffaa590698",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T09:19:19.973268Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+          "repository": {}
+        }
+      ],
+      "lastUserInputTime": "2026-11-08T05:15:33.220010Z",
+      "lastUserInputStepIndex": 330,
+      "annotations": {
+        "title": "<title:35>"
+      },
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T09:19:19.973268Z",
+        "initializationStateId": "969e5d95-b005-4296-83e8-16a354490b73",
+        "rootConversationId": "76ba36bc-b548-48c2-b463-893438091b55",
+        "workspaceUris": [
+          "file:///Users/USER/folder-430a3265"
+        ],
+        "projectId": "a29f16ef-8c9a-4e45-a3dd-f337011d952b"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+      "latestExecutorTerminationReason": "EXECUTOR_TERMINATION_REASON_NO_TOOL_CALL"
+    },
+    "77ea14f4-bdc6-403f-bdb5-c637f3d2a5fb": {
+      "summary": "<summary:20>",
+      "stepCount": 20,
+      "lastModifiedTime": "2026-11-06T08:42:54.464278Z",
+      "trajectoryId": "6fae0dee-f41d-4d51-93f6-f074134cb79e",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-06T07:59:30.916535Z",
+      "lastUserInputTime": "2026-11-06T08:42:45.196322Z",
+      "lastUserInputStepIndex": 16,
+      "annotations": {
+        "title": "<title:20>",
+        "lastUserViewTime": "2026-11-06T08:46:10.681Z"
+      },
+      "trajectoryMetadata": {
+        "createdAt": "2026-11-06T07:59:30.916535Z",
+        "initializationStateId": "637c8c81-9534-4cf1-8fc1-91a98c23f824",
+        "rootConversationId": "77ea14f4-bdc6-403f-bdb5-c637f3d2a5fb"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+      "latestExecutorTerminationReason": "EXECUTOR_TERMINATION_REASON_NO_TOOL_CALL"
+    },
+    "78c05a78-766b-48ff-a950-19ca921d4be4": {
+      "trajectoryId": "d1cd95d1-d62c-44a0-bbeb-29a6c03508da",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-08T05:09:01.363403Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-08T05:09:01.363403Z",
+        "initializationStateId": "9937687a-cbd8-4095-a08e-05cdcc92f45f",
+        "rootConversationId": "78c05a78-766b-48ff-a950-19ca921d4be4",
+        "workspaceUris": [
+          "file:///Users/USER/folder-b0ded34e"
+        ],
+        "projectId": "02889233-6108-4d56-a785-dd244945139c"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "828e1960-b2ed-4aa7-b165-6ff02b6f9e9f": {
+      "trajectoryId": "4be90cd0-5581-4a00-a184-352e0f6cd7e4",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-08T05:09:02.547002Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-08T05:09:02.547002Z",
+        "initializationStateId": "1be39124-1525-4e28-8ea8-6573959401ad",
+        "rootConversationId": "828e1960-b2ed-4aa7-b165-6ff02b6f9e9f",
+        "workspaceUris": [
+          "file:///Users/USER/folder-b0ded34e"
+        ],
+        "projectId": "02889233-6108-4d56-a785-dd244945139c"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "8a248354-874c-4dc5-a541-fa1501191b9d": {
+      "trajectoryId": "7c74ecd9-f55e-4f6f-880e-dbbc3c52de3e",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T01:37:56.817989Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T01:37:56.817989Z",
+        "initializationStateId": "e2c2fbad-4ad7-4e83-9d2d-b6fbb3aa803c",
+        "rootConversationId": "8a248354-874c-4dc5-a541-fa1501191b9d",
+        "workspaceUris": [
+          "file:///Users/USER/folder-b0ded34e"
+        ],
+        "projectId": "02889233-6108-4d56-a785-dd244945139c"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "8aa78017-b6ce-4cf3-a2c7-f05103157fba": {
+      "summary": "<summary:37>",
+      "stepCount": 2,
+      "lastModifiedTime": "2026-11-07T02:07:39.015714Z",
+      "trajectoryId": "700a8104-f906-4c86-98c3-8c76c8dd2c76",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T01:37:56.517172Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+          "repository": {}
+        }
+      ],
+      "lastUserInputTime": "2026-11-07T02:07:35.726294Z",
+      "lastUserInputStepIndex": 0,
+      "annotations": {
+        "title": "<title:37>"
+      },
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T01:37:56.517172Z",
+        "initializationStateId": "4ac0a87c-4335-4fda-8875-a3a7730959f1",
+        "rootConversationId": "8aa78017-b6ce-4cf3-a2c7-f05103157fba",
+        "workspaceUris": [
+          "file:///Users/USER/folder-430a3265"
+        ],
+        "projectId": "a29f16ef-8c9a-4e45-a3dd-f337011d952b"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+      "latestExecutorTerminationReason": "EXECUTOR_TERMINATION_REASON_NO_TOOL_CALL"
+    },
+    "9047a8af-5582-4187-a36b-f13fd2cbc8d6": {
+      "trajectoryId": "0b2da18b-6274-492d-baca-6a9c9c193ae3",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-08T05:09:01.964017Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-08T05:09:01.964017Z",
+        "initializationStateId": "fd4dd709-5ca0-4b0f-ac65-66e60fb17042",
+        "rootConversationId": "9047a8af-5582-4187-a36b-f13fd2cbc8d6",
+        "workspaceUris": [
+          "file:///Users/USER/folder-b0ded34e"
+        ],
+        "projectId": "02889233-6108-4d56-a785-dd244945139c"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "983d0a36-1170-4e35-87d9-bad986d7d005": {
+      "trajectoryId": "f66309fa-5fa6-423f-8fd7-2c2f0b63e3c9",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T09:43:42.695977Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T09:43:42.695977Z",
+        "initializationStateId": "2228d1a3-00a1-4306-8e4c-12b57d3c1093",
+        "rootConversationId": "983d0a36-1170-4e35-87d9-bad986d7d005",
+        "workspaceUris": [
+          "file:///Users/USER/folder-430a3265"
+        ],
+        "projectId": "a29f16ef-8c9a-4e45-a3dd-f337011d952b"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "a02624b2-e290-49af-9536-25c490c77a7d": {
+      "summary": "<summary:25>",
+      "stepCount": 4,
+      "lastModifiedTime": "2026-11-08T13:19:03.306055Z",
+      "trajectoryId": "8960af89-a3fc-4157-9bce-d4f72f3faf93",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-08T13:18:51.763857Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///tmp/TMP/folder-db4b4e5a",
+          "repository": {}
+        }
+      ],
+      "lastUserInputTime": "2026-11-08T13:18:51.768284Z",
+      "lastUserInputStepIndex": 0,
+      "annotations": {
+        "title": "<title:25>"
+      },
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///tmp/TMP/folder-db4b4e5a",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-08T13:18:51.763857Z",
+        "initializationStateId": "856e8ec6-9325-44df-b0c5-ea65d6c6a7c6",
+        "rootConversationId": "a02624b2-e290-49af-9536-25c490c77a7d",
+        "workspaceUris": [
+          "file:///tmp/TMP/folder-db4b4e5a"
+        ],
+        "projectId": "68248219-9db6-4c44-9ad6-ea28c29524d3"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+      "latestExecutorTerminationReason": "EXECUTOR_TERMINATION_REASON_NO_TOOL_CALL"
+    },
+    "a7e11e00-1106-4000-8000-000000000002": {
+      "summary": "<summary:23>",
+      "stepCount": 10,
+      "lastModifiedTime": "2026-11-06T08:56:56.795689Z",
+      "trajectoryId": "b42cfb16-c795-458b-8944-708403c8d099",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-06T08:54:54.584388Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///tmp/TMP/folder-db8bca60",
+          "repository": {}
+        }
+      ],
+      "lastUserInputTime": "2026-11-06T08:56:48.081232Z",
+      "lastUserInputStepIndex": 6,
+      "annotations": {
+        "title": "<title:23>"
+      },
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///tmp/TMP/folder-db8bca60",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-06T08:54:54.584388Z",
+        "initializationStateId": "83aa8d8f-5334-47d5-befa-a7d9338b77a6",
+        "rootConversationId": "a7e11e00-1106-4000-8000-000000000002",
+        "workspaceUris": [
+          "file:///tmp/TMP/folder-db8bca60"
+        ],
+        "projectId": "a7e11e00-1106-4000-8000-000000000001"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+      "latestExecutorTerminationReason": "EXECUTOR_TERMINATION_REASON_NO_TOOL_CALL"
+    },
+    "a7e11e00-1106-4000-8000-000000000003": {
+      "summary": "<summary:39>",
+      "stepCount": 1,
+      "lastModifiedTime": "2026-11-06T08:58:04.337668Z",
+      "trajectoryId": "c106db6c-23c2-4b46-b683-5d1bc2c96ff0",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-06T08:58:04.329099Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///tmp/TMP/folder-db8bca60",
+          "repository": {}
+        }
+      ],
+      "lastUserInputTime": "2026-11-06T08:58:04.337668Z",
+      "lastUserInputStepIndex": 0,
+      "annotations": {
+        "title": "<title:39>"
+      },
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///tmp/TMP/folder-db8bca60",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-06T08:58:04.329099Z",
+        "initializationStateId": "290e74b1-73b8-487e-888f-e3d01a4cabaa",
+        "rootConversationId": "a7e11e00-1106-4000-8000-000000000003",
+        "workspaceUris": [
+          "file:///tmp/TMP/folder-db8bca60"
+        ],
+        "projectId": "a7e11e00-1106-4000-8000-000000000001"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+      "latestExecutorTerminationReason": "EXECUTOR_TERMINATION_REASON_USER_CANCELED"
+    },
+    "a7e11e00-1106-4000-8000-000000000004": {
+      "summary": "<summary:32>",
+      "stepCount": 8,
+      "lastModifiedTime": "2026-11-06T09:01:56.353106Z",
+      "trajectoryId": "bb934612-0881-4f62-a27e-31bf2f224c82",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-06T08:58:41.300827Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///tmp/TMP/folder-db8bca60",
+          "repository": {}
+        }
+      ],
+      "lastUserInputTime": "2026-11-06T09:01:48.574994Z",
+      "lastUserInputStepIndex": 4,
+      "annotations": {
+        "title": "<title:32>"
+      },
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///tmp/TMP/folder-db8bca60",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-06T08:58:41.300827Z",
+        "initializationStateId": "3d758f73-14b9-4ea0-b9fd-f16e4969e112",
+        "rootConversationId": "a7e11e00-1106-4000-8000-000000000004",
+        "workspaceUris": [
+          "file:///tmp/TMP/folder-db8bca60"
+        ],
+        "projectId": "a7e11e00-1106-4000-8000-000000000001"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+      "latestExecutorTerminationReason": "EXECUTOR_TERMINATION_REASON_NO_TOOL_CALL"
+    },
+    "a7e11e00-1106-4000-8000-000000000005": {
+      "summary": "<summary:39>",
+      "stepCount": 3,
+      "lastModifiedTime": "2026-11-06T09:36:37.146486Z",
+      "trajectoryId": "79e02be5-22e3-4db3-aa10-4e4597d8f965",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-06T09:36:07.809904Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///tmp/TMP/folder-db8bca60",
+          "repository": {}
+        }
+      ],
+      "lastUserInputTime": "2026-11-06T09:36:07.814882Z",
+      "lastUserInputStepIndex": 0,
+      "annotations": {
+        "title": "<title:39>"
+      },
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///tmp/TMP/folder-db8bca60",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-06T09:36:07.809904Z",
+        "initializationStateId": "5d80ed88-f846-474e-90ea-4622495989f4",
+        "rootConversationId": "a7e11e00-1106-4000-8000-000000000005",
+        "workspaceUris": [
+          "file:///tmp/TMP/folder-db8bca60"
+        ],
+        "projectId": "a7e11e00-1106-4000-8000-000000000001"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+      "latestExecutorTerminationReason": "EXECUTOR_TERMINATION_REASON_USER_CANCELED"
+    },
+    "a7e11e00-1106-4000-8000-000000000006": {
+      "summary": "<summary:37>",
+      "stepCount": 2,
+      "lastModifiedTime": "2026-11-06T09:36:41.670694Z",
+      "trajectoryId": "3bab9f44-0ab2-4452-a5d5-a814650e7756",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-06T09:36:37.160440Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///tmp/TMP/folder-db8bca60",
+          "repository": {}
+        }
+      ],
+      "lastUserInputTime": "2026-11-06T09:36:37.167856Z",
+      "lastUserInputStepIndex": 0,
+      "annotations": {
+        "title": "<title:37>"
+      },
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///tmp/TMP/folder-db8bca60",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-06T09:36:37.160440Z",
+        "initializationStateId": "1c8e5e0c-f0db-472c-b049-424ce4702659",
+        "rootConversationId": "a7e11e00-1106-4000-8000-000000000006",
+        "workspaceUris": [
+          "file:///tmp/TMP/folder-db8bca60"
+        ],
+        "projectId": "a7e11e00-1106-4000-8000-000000000001"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+      "latestExecutorTerminationReason": "EXECUTOR_TERMINATION_REASON_NO_TOOL_CALL"
+    },
+    "a7e11e00-1106-4000-8000-000000000007": {
+      "summary": "<summary:41>",
+      "stepCount": 11,
+      "lastModifiedTime": "2026-11-06T09:36:58.344889Z",
+      "trajectoryId": "d17edc2c-b690-4fc9-9e2c-d331b3ae3008",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-06T09:36:41.683634Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///tmp/TMP/folder-db8bca60",
+          "repository": {}
+        }
+      ],
+      "lastUserInputTime": "2026-11-06T09:36:41.689064Z",
+      "lastUserInputStepIndex": 0,
+      "annotations": {
+        "title": "<title:41>"
+      },
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///tmp/TMP/folder-db8bca60",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-06T09:36:41.683634Z",
+        "initializationStateId": "fe4061ba-6316-4d94-a68c-23f1480a97f4",
+        "rootConversationId": "a7e11e00-1106-4000-8000-000000000007",
+        "workspaceUris": [
+          "file:///tmp/TMP/folder-db8bca60"
+        ],
+        "projectId": "a7e11e00-1106-4000-8000-000000000001"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+      "latestExecutorTerminationReason": "EXECUTOR_TERMINATION_REASON_USER_CANCELED"
+    },
+    "a7e11e00-1106-4000-8000-000000000008": {
+      "summary": "<summary:30>",
+      "stepCount": 4,
+      "lastModifiedTime": "2026-11-06T09:38:19.471261Z",
+      "trajectoryId": "f7d50a6b-c7c7-4fd4-a630-3accfce3920f",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-06T09:38:11.978379Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///tmp/TMP/folder-db8bca60",
+          "repository": {}
+        }
+      ],
+      "lastUserInputTime": "2026-11-06T09:38:11.983245Z",
+      "lastUserInputStepIndex": 0,
+      "annotations": {
+        "title": "<title:30>"
+      },
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///tmp/TMP/folder-db8bca60",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-06T09:38:11.978379Z",
+        "initializationStateId": "e2e8177f-3899-49d8-ab7a-137563a0bc4c",
+        "rootConversationId": "a7e11e00-1106-4000-8000-000000000008",
+        "workspaceUris": [
+          "file:///tmp/TMP/folder-db8bca60"
+        ],
+        "projectId": "a7e11e00-1106-4000-8000-000000000001"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+      "latestExecutorTerminationReason": "EXECUTOR_TERMINATION_REASON_NO_TOOL_CALL"
+    },
+    "a82d9f06-7516-4700-af6b-3b8fdb388594": {
+      "trajectoryId": "31379583-79c4-4a7a-a925-304bf6601ae0",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T01:37:57.054568Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T01:37:57.054568Z",
+        "initializationStateId": "f0893cd4-c998-4e20-933b-945401a04b52",
+        "rootConversationId": "a82d9f06-7516-4700-af6b-3b8fdb388594",
+        "workspaceUris": [
+          "file:///Users/USER/folder-430a3265"
+        ],
+        "projectId": "a29f16ef-8c9a-4e45-a3dd-f337011d952b"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "aac99d79-9e00-46a8-aabe-b50eda60cc12": {
+      "trajectoryId": "ae6a7cd2-4e57-4006-86f4-921d91da827a",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-08T05:09:02.780458Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-08T05:09:02.780458Z",
+        "initializationStateId": "c9523e19-4439-4096-8d88-97af1d86c1f3",
+        "rootConversationId": "aac99d79-9e00-46a8-aabe-b50eda60cc12",
+        "workspaceUris": [
+          "file:///Users/USER/folder-b0ded34e"
+        ],
+        "projectId": "02889233-6108-4d56-a785-dd244945139c"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "acf6a3e3-b053-42af-a4c9-64489d82d5ae": {
+      "summary": "<summary:37>",
+      "stepCount": 2,
+      "lastModifiedTime": "2026-11-07T02:56:49.227820Z",
+      "trajectoryId": "eaf6e7e0-d013-4635-97ce-d3a158c8c1e2",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T02:56:19.489349Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+          "repository": {}
+        }
+      ],
+      "lastUserInputTime": "2026-11-07T02:56:19.515898Z",
+      "lastUserInputStepIndex": 0,
+      "annotations": {
+        "title": "<title:37>"
+      },
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T02:56:19.489349Z",
+        "initializationStateId": "4b08ca08-9941-4746-83ab-072837cfbb33",
+        "rootConversationId": "acf6a3e3-b053-42af-a4c9-64489d82d5ae",
+        "workspaceUris": [
+          "file:///Users/USER/folder-430a3265"
+        ],
+        "projectId": "a29f16ef-8c9a-4e45-a3dd-f337011d952b"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+      "latestExecutorTerminationReason": "EXECUTOR_TERMINATION_REASON_NO_TOOL_CALL"
+    },
+    "b0d6c763-a562-4b69-a957-89e8145e82cb": {
+      "trajectoryId": "016dfdf7-dd8d-4516-9368-8e69446f39d7",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T01:37:56.649463Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T01:37:56.649463Z",
+        "initializationStateId": "8c384041-3247-4026-9de3-a4ef43689e43",
+        "rootConversationId": "b0d6c763-a562-4b69-a957-89e8145e82cb",
+        "workspaceUris": [
+          "file:///Users/USER/folder-b0ded34e"
+        ],
+        "projectId": "02889233-6108-4d56-a785-dd244945139c"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "b9469d5d-3061-43c1-8b3e-280bfce86109": {
+      "summary": "<summary:23>",
+      "stepCount": 10,
+      "lastModifiedTime": "2026-11-07T09:23:12.034217Z",
+      "trajectoryId": "9bb3cc95-c044-4b44-a8f8-ab998f28d9ef",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T04:19:40.560677Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+          "repository": {}
+        }
+      ],
+      "lastUserInputTime": "2026-11-07T09:18:10.896166Z",
+      "lastUserInputStepIndex": 6,
+      "annotations": {
+        "title": "<title:23>"
+      },
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T04:19:40.560677Z",
+        "initializationStateId": "023d3ccf-4663-4097-8288-ed4b6fd12596",
+        "rootConversationId": "b9469d5d-3061-43c1-8b3e-280bfce86109",
+        "workspaceUris": [
+          "file:///Users/USER/folder-430a3265"
+        ],
+        "projectId": "a29f16ef-8c9a-4e45-a3dd-f337011d952b"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+      "latestExecutorTerminationReason": "EXECUTOR_TERMINATION_REASON_NO_TOOL_CALL"
+    },
+    "bd3c9d0e-c40e-4c76-abe8-0f616d7da639": {
+      "trajectoryId": "6224c24e-f6f9-4cb8-9000-d662269b5605",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T01:37:56.761740Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T01:37:56.761740Z",
+        "initializationStateId": "d4d5ef81-9ebf-4358-94c0-e01433a9c9e7",
+        "rootConversationId": "bd3c9d0e-c40e-4c76-abe8-0f616d7da639",
+        "workspaceUris": [
+          "file:///Users/USER/folder-b0ded34e"
+        ],
+        "projectId": "02889233-6108-4d56-a785-dd244945139c"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "c1234feb-7afa-4385-a201-3f51e4ce2afa": {
+      "trajectoryId": "35d8796f-6491-4fd3-a774-ac8a024f5201",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T09:43:52.029370Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T09:43:52.029370Z",
+        "initializationStateId": "ca9d708d-0025-473e-b142-c76f4b82c433",
+        "rootConversationId": "c1234feb-7afa-4385-a201-3f51e4ce2afa",
+        "workspaceUris": [
+          "file:///Users/USER/folder-430a3265"
+        ],
+        "projectId": "a29f16ef-8c9a-4e45-a3dd-f337011d952b"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "c1589c38-9361-40c7-aac0-2a300de12643": {
+      "summary": "<summary:30>",
+      "stepCount": 6,
+      "lastModifiedTime": "2026-11-07T02:33:02.316899Z",
+      "trajectoryId": "8601628f-d65e-4f1a-accb-8c54f7e5ccfe",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T01:37:56.855438Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+          "repository": {}
+        }
+      ],
+      "lastUserInputTime": "2026-11-07T02:32:46.338307Z",
+      "lastUserInputStepIndex": 2,
+      "annotations": {
+        "title": "<title:30>"
+      },
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T01:37:56.855438Z",
+        "initializationStateId": "aa09c629-b802-4ffa-8f05-d843d23592f5",
+        "rootConversationId": "c1589c38-9361-40c7-aac0-2a300de12643",
+        "workspaceUris": [
+          "file:///Users/USER/folder-430a3265"
+        ],
+        "projectId": "a29f16ef-8c9a-4e45-a3dd-f337011d952b"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+      "latestExecutorTerminationReason": "EXECUTOR_TERMINATION_REASON_NO_TOOL_CALL"
+    },
+    "c194037b-24d7-4dba-8b45-8574d93e2fdb": {
+      "trajectoryId": "f7d52018-4fb5-4868-bf86-9c7a6161908b",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T09:43:42.076444Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T09:43:42.076444Z",
+        "initializationStateId": "9072a8b5-0ef7-4bfd-8d0b-0c49d2faf632",
+        "rootConversationId": "c194037b-24d7-4dba-8b45-8574d93e2fdb",
+        "workspaceUris": [
+          "file:///Users/USER/folder-430a3265"
+        ],
+        "projectId": "a29f16ef-8c9a-4e45-a3dd-f337011d952b"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "c7d54186-bd05-4fcb-a14d-ee5cdf4f66a3": {
+      "trajectoryId": "45c24006-4f66-4a0e-b121-773cb63ddea3",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T01:37:56.791817Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T01:37:56.791817Z",
+        "initializationStateId": "d91dfb38-52e7-4781-a08b-a846a85c9122",
+        "rootConversationId": "c7d54186-bd05-4fcb-a14d-ee5cdf4f66a3",
+        "workspaceUris": [
+          "file:///Users/USER/folder-430a3265"
+        ],
+        "projectId": "a29f16ef-8c9a-4e45-a3dd-f337011d952b"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "c9e9b935-4bcb-466a-a8f2-5c3aa0a2dd8a": {
+      "summary": "<summary:40>",
+      "stepCount": 14,
+      "lastModifiedTime": "2026-11-07T03:35:55.361289Z",
+      "trajectoryId": "2fee8145-5b3f-41c9-8b1f-5de4466a539c",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T01:37:56.547261Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+          "repository": {}
+        }
+      ],
+      "lastUserInputTime": "2026-11-07T03:35:38.452345Z",
+      "lastUserInputStepIndex": 11,
+      "annotations": {
+        "title": "<title:40>"
+      },
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T01:37:56.547261Z",
+        "initializationStateId": "1945cbac-1139-4d73-94b9-8d2b6b9f2d33",
+        "rootConversationId": "c9e9b935-4bcb-466a-a8f2-5c3aa0a2dd8a",
+        "workspaceUris": [
+          "file:///Users/USER/folder-b0ded34e"
+        ],
+        "projectId": "02889233-6108-4d56-a785-dd244945139c"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+      "latestExecutorTerminationReason": "EXECUTOR_TERMINATION_REASON_USER_CANCELED"
+    },
+    "ca48f553-56c9-43b0-b8cc-b344c50639a0": {
+      "trajectoryId": "69bcf5fa-8d42-43f0-bb2e-f946698adddf",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T09:43:52.661118Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T09:43:52.661118Z",
+        "initializationStateId": "1efc0756-c375-4aec-bd78-9174958bb298",
+        "rootConversationId": "ca48f553-56c9-43b0-b8cc-b344c50639a0",
+        "workspaceUris": [
+          "file:///Users/USER/folder-430a3265"
+        ],
+        "projectId": "a29f16ef-8c9a-4e45-a3dd-f337011d952b"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "d2ea48d7-1ee7-4f86-af37-41c26445477b": {
+      "trajectoryId": "c954dce8-6c2c-4143-978f-ac645e226da5",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T01:37:56.623227Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T01:37:56.623227Z",
+        "initializationStateId": "42902004-19af-4338-8eab-8b6f513d1da6",
+        "rootConversationId": "d2ea48d7-1ee7-4f86-af37-41c26445477b",
+        "workspaceUris": [
+          "file:///Users/USER/folder-430a3265"
+        ],
+        "projectId": "a29f16ef-8c9a-4e45-a3dd-f337011d952b"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "d446b440-364c-4f7b-a72a-3b705e0c93e9": {
+      "trajectoryId": "1f36b6b6-8090-4ec6-ba11-17d1f5c2c620",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T01:37:56.993046Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T01:37:56.993046Z",
+        "initializationStateId": "c5332707-e4e9-427a-95e3-e9ae87344cc4",
+        "rootConversationId": "d446b440-364c-4f7b-a72a-3b705e0c93e9",
+        "workspaceUris": [
+          "file:///Users/USER/folder-430a3265"
+        ],
+        "projectId": "a29f16ef-8c9a-4e45-a3dd-f337011d952b"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "df3b1e0b-7a43-46df-aa9a-6b62cb6be5be": {
+      "trajectoryId": "ddd0e531-cff6-4b8c-8fc0-7101eb173086",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T01:37:56.699038Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-b0ded34e",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T01:37:56.699038Z",
+        "initializationStateId": "4ede9401-3b5f-4e8c-a1c8-73d701fc390d",
+        "rootConversationId": "df3b1e0b-7a43-46df-aa9a-6b62cb6be5be",
+        "workspaceUris": [
+          "file:///Users/USER/folder-b0ded34e"
+        ],
+        "projectId": "02889233-6108-4d56-a785-dd244945139c"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "ee82656b-5a14-45f6-a94a-96fe7e86f624": {
+      "trajectoryId": "ed626f6e-1256-41a3-80f5-4c681eed9e34",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T01:37:56.672619Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+          "repository": {}
+        }
+      ],
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T01:37:56.672619Z",
+        "initializationStateId": "794eb86c-e0d4-4682-8575-66f63f27a4db",
+        "rootConversationId": "ee82656b-5a14-45f6-a94a-96fe7e86f624",
+        "workspaceUris": [
+          "file:///Users/USER/folder-430a3265"
+        ],
+        "projectId": "a29f16ef-8c9a-4e45-a3dd-f337011d952b"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE"
+    },
+    "f549d917-f13a-4079-a21e-e195ef508ce7": {
+      "summary": "<summary:34>",
+      "stepCount": 104,
+      "lastModifiedTime": "2026-11-07T02:40:17.119756Z",
+      "trajectoryId": "20d7c7b3-6847-4af3-a57f-45186320da26",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-07T01:37:56.468501Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+          "repository": {}
+        }
+      ],
+      "lastUserInputTime": "2026-11-07T02:40:14.618173Z",
+      "lastUserInputStepIndex": 102,
+      "annotations": {
+        "title": "<title:34>",
+        "lastUserViewTime": "2026-11-07T12:49:42.592Z"
+      },
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///Users/USER/folder-430a3265",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-07T01:37:56.468501Z",
+        "initializationStateId": "6c88e508-d1d6-4aa6-ac18-0ff783bc95aa",
+        "rootConversationId": "f549d917-f13a-4079-a21e-e195ef508ce7",
+        "workspaceUris": [
+          "file:///Users/USER/folder-430a3265"
+        ],
+        "projectId": "a29f16ef-8c9a-4e45-a3dd-f337011d952b"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+      "latestExecutorTerminationReason": "EXECUTOR_TERMINATION_REASON_NO_TOOL_CALL"
+    },
+    "fb40e5ec-6ad7-4484-956c-0acce3234101": {
+      "summary": "<summary:33>",
+      "stepCount": 10,
+      "lastModifiedTime": "2026-11-08T13:19:26.887763Z",
+      "trajectoryId": "9a3fd96b-0f3f-42de-bbca-6658e08215ec",
+      "status": "CASCADE_RUN_STATUS_IDLE",
+      "createdTime": "2026-11-08T13:18:51.757490Z",
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///tmp/TMP/folder-db4b4e5a",
+          "repository": {}
+        }
+      ],
+      "lastUserInputTime": "2026-11-08T13:18:51.763160Z",
+      "lastUserInputStepIndex": 0,
+      "annotations": {
+        "title": "<title:33>"
+      },
+      "trajectoryMetadata": {
+        "workspaces": [
+          {
+            "workspaceFolderAbsoluteUri": "file:///tmp/TMP/folder-db4b4e5a",
+            "repository": {}
+          }
+        ],
+        "createdAt": "2026-11-08T13:18:51.757490Z",
+        "initializationStateId": "e5f9bdf0-54bf-455d-a890-1c5a50c1f9ef",
+        "rootConversationId": "fb40e5ec-6ad7-4484-956c-0acce3234101",
+        "workspaceUris": [
+          "file:///tmp/TMP/folder-db4b4e5a"
+        ],
+        "projectId": "68248219-9db6-4c44-9ad6-ea28c29524d3"
+      },
+      "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+      "latestExecutorTerminationReason": "EXECUTOR_TERMINATION_REASON_NO_TOOL_CALL"
+    }
+  }
+}

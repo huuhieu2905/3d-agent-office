@@ -56,7 +56,13 @@ export function ProjectDialog({ onClose, onCreated }: { onClose(): void; onCreat
       onCreated?.(p);
       onClose();
     } catch (e) {
-      setError(e instanceof ApiError && e.appUnavailable ? 'Antigravity App chưa sẵn sàng.' : 'Không tạo được project.');
+      setError(
+        e instanceof ApiError && e.appUnavailable
+          ? 'Antigravity App chưa sẵn sàng.'
+          : e instanceof ApiError && e.code === 'PROJECT_NAME_TAKEN'
+            ? 'Tên project này đã có. Hãy đặt tên khác.'
+            : 'Không tạo được project.',
+      );
     } finally {
       setBusy(false);
     }

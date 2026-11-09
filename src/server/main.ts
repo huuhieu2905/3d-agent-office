@@ -20,7 +20,7 @@ async function main() {
     if (s.kind === 'connected') {
       console.log(`Antigravity App ${s.appVersion}: connected`);
       if (!s.versionSupported) {
-        const message = `Antigravity App ${s.appVersion} chưa được kiểm chứng (hỗ trợ: 2.24.0). Một số tính năng có thể không hoạt động.`;
+        const message = `Antigravity App ${s.appVersion} chưa được kiểm chứng (đã kiểm chứng: ${s.verifiedVersions.join(', ')}). Một số tính năng có thể không hoạt động.`;
         console.warn(message);
         server.hub.broadcast({ type: 'warning', payload: { code: 'APP_VERSION_UNSUPPORTED', message } });
       }

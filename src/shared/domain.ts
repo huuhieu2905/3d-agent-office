@@ -62,6 +62,8 @@ export const STEP_KINDS = [
   'file_change',
   'system',
   'permission_request',
+  'question',
+  'web_search',
   'error',
   'other',
 ] as const;
@@ -85,6 +87,37 @@ export interface PermissionRequest {
   options: string[];
 }
 
+export type QuestionState = 'waiting' | 'answered' | 'skipped' | 'canceled';
+
+/** One sub-question of an agent's multiple-choice question (data-model 003 §4). */
+export interface QuestionEntry {
+  /** Markdown. */
+  question: string;
+  options: { id: string; text: string }[];
+  multiSelect: boolean;
+  /** Empty while waiting. */
+  selectedOptionIds: string[];
+  /** Free-text ("Khác") answer, if any. */
+  writeIn: string | null;
+}
+
+/** A question the agent asked the user. State comes from the App; the system never changes it. */
+export interface AgentQuestion {
+  /** "<trajectoryId>:<stepIndex>:askQuestion" (same shape as PermissionRequest.requestId). */
+  requestId: string;
+  state: QuestionState;
+  /** At least one. */
+  entries: QuestionEntry[];
+}
+
+/** Max length of a free-text ("Khác") answer (data-model 003 §5). */
+export const WRITE_IN_MAX = 2000;
+
+/** What the user sends back; same order as `AgentQuestion.entries`. Never stored. */
+export interface QuestionAnswer {
+  answers: { selectedOptionIds: string[]; writeIn?: string }[];
+}
+
 export interface Step {
   index: number;
   kind: StepKind;
@@ -97,6 +130,8 @@ export interface Step {
   command: { commandLine: string; output: string; exitCode: number | null } | null;
   file: { uri: string; summary: string } | null;
   permission: PermissionRequest | null;
+  /** Only when kind = 'question'. A question step never carries `permission`. */
+  question: AgentQuestion | null;
   /** Raw App step type, kept only so `other` steps can be shown collapsed. */
   rawType: string;
   /** User turns only: the model the user asked for on this turn (A2-1). Null when unknown. */
@@ -267,10 +302,8 @@ export interface UserInput {
 
 export type ConnectionState =
   | { kind: 'searching' }
-  | { kind: 'connected'; appVersion: string; versionSupported: boolean }
+  | { kind: 'connected'; appVersion: string; versionSupported: boolean; verifiedVersions: string[] }
   | { kind: 'error'; reason: 'auth' | 'protocol' | 'unreachable'; detail: string };
-
-export const SUPPORTED_APP_VERSION = '2.24.0';
 
 // ---- Settings & weather -------------------------------------------------------
 

@@ -1,0 +1,3422 @@
+{
+  "trajectory": {
+    "trajectoryId": "9a3fd96b-0f3f-42de-bbca-6658e08215ec",
+    "cascadeId": "fb40e5ec-6ad7-4484-956c-0acce3234101",
+    "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+    "steps": [
+      {
+        "type": "CORTEX_STEP_TYPE_USER_INPUT",
+        "status": "CORTEX_STEP_STATUS_DONE",
+        "metadata": {
+          "createdAt": "2026-11-08T13:18:51.763160Z",
+          "source": "CORTEX_STEP_SOURCE_USER_EXPLICIT",
+          "executionId": "7b51c7ce-1eee-48ef-8a1c-c4af4d3758d2",
+          "sourceTrajectoryStepInfo": {
+            "trajectoryId": "9a3fd96b-0f3f-42de-bbca-6658e08215ec",
+            "cascadeId": "fb40e5ec-6ad7-4484-956c-0acce3234101"
+          },
+          "internalMetadata": {
+            "statusTransitions": [
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+                "timestamp": "2026-11-08T13:18:51.773742Z"
+              }
+            ]
+          },
+          "modelApiContentId": "[REDACTED]"
+        },
+        "userInput": {
+          "items": [
+            {
+              "text": "<text:171>"
+            }
+          ],
+          "userResponse": "<userResponse:171>",
+          "activeUserState": {},
+          "userConfig": {
+            "plannerConfig": {
+              "toolConfig": {
+                "antigravityBrowser": {
+                  "enableBrowserSubagentWebview": false
+                }
+              },
+              "planModel": "MODEL_PLACEHOLDER_M318"
+            }
+          }
+        }
+      },
+      {
+        "type": "CORTEX_STEP_TYPE_PLANNER_RESPONSE",
+        "status": "CORTEX_STEP_STATUS_DONE",
+        "metadata": {
+          "createdAt": "2026-11-08T13:18:51.777411Z",
+          "viewableAt": "2026-11-08T13:18:56.497509Z",
+          "finishedGeneratingAt": "2026-11-08T13:18:56.777823Z",
+          "startedAt": "2026-11-08T13:18:56.777823Z",
+          "completedAt": "2026-11-08T13:18:56.777823Z",
+          "source": "CORTEX_STEP_SOURCE_MODEL",
+          "modelUsage": {
+            "model": "MODEL_PLACEHOLDER_M318",
+            "inputTokens": "10082",
+            "outputTokens": "408",
+            "thinkingOutputTokens": "371",
+            "responseOutputTokens": "37",
+            "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+            "messageId": "bot-16402750-f036-4ceb-8afa-65c5785ad433",
+            "responseHeader": {
+              "sessionID": "-3750763034362895579"
+            },
+            "responseId": "vHbwaoGfNoyl1e8PvpiFEA"
+          },
+          "generatorModel": "MODEL_PLACEHOLDER_M318",
+          "executionId": "7b51c7ce-1eee-48ef-8a1c-c4af4d3758d2",
+          "sourceTrajectoryStepInfo": {
+            "trajectoryId": "9a3fd96b-0f3f-42de-bbca-6658e08215ec",
+            "stepIndex": 1,
+            "cascadeId": "fb40e5ec-6ad7-4484-956c-0acce3234101"
+          },
+          "internalMetadata": {
+            "statusTransitions": [
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_GENERATING",
+                "timestamp": "2026-11-08T13:18:56.497535Z"
+              },
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+                "timestamp": "2026-11-08T13:18:56.777830Z"
+              }
+            ]
+          },
+          "modelApiContentId": "[REDACTED]"
+        },
+        "plannerResponse": {
+          "thinking": "<thinking:45>",
+          "messageId": "bot-16402750-f036-4ceb-8afa-65c5785ad433",
+          "toolCalls": [
+            {
+              "id": "call_17168711003347208959",
+              "name": "run_command",
+              "argumentsJson": "{}",
+              "thinkingSignature": "<thinkingSignature:2452>"
+            }
+          ],
+          "thinkingDuration": "4.774320s",
+          "stopReason": "STOP_REASON_STOP_PATTERN"
+        }
+      },
+      {
+        "type": "CORTEX_STEP_TYPE_RUN_COMMAND",
+        "status": "CORTEX_STEP_STATUS_DONE",
+        "metadata": {
+          "createdAt": "2026-11-08T13:18:56.551733Z",
+          "viewableAt": "2026-11-08T13:18:56.776888Z",
+          "finishedGeneratingAt": "2026-11-08T13:18:56.776888Z",
+          "startedAt": "2026-11-08T13:18:56.783521Z",
+          "completedAt": "2026-11-08T13:19:11.426244Z",
+          "source": "CORTEX_STEP_SOURCE_MODEL",
+          "toolCall": {
+            "id": "call_17168711003347208959",
+            "name": "run_command",
+            "argumentsJson": "{}",
+            "thinkingSignature": "<thinkingSignature:2452>"
+          },
+          "generatorModel": "MODEL_PLACEHOLDER_M318",
+          "executionId": "7b51c7ce-1eee-48ef-8a1c-c4af4d3758d2",
+          "sourceTrajectoryStepInfo": {
+            "trajectoryId": "9a3fd96b-0f3f-42de-bbca-6658e08215ec",
+            "stepIndex": 2,
+            "cascadeId": "fb40e5ec-6ad7-4484-956c-0acce3234101"
+          },
+          "internalMetadata": {
+            "statusTransitions": [
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_PENDING",
+                "timestamp": "2026-11-08T13:18:56.776989Z"
+              },
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_RUNNING",
+                "timestamp": "2026-11-08T13:18:56.783525Z"
+              },
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_WAITING",
+                "timestamp": "2026-11-08T13:18:56.784230Z"
+              },
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_RUNNING",
+                "timestamp": "2026-11-08T13:19:11.403438Z"
+              },
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+                "timestamp": "2026-11-08T13:19:11.426247Z"
+              }
+            ]
+          },
+          "preToolHookResults": [
+            {
+              "decision": "allow"
+            }
+          ],
+          "modelApiContentId": "[REDACTED]",
+          "toolSource": "CORTEX_COMPONENT_SOURCE_BUILTIN"
+        },
+        "permissions": {
+          "permissionGrants": [
+            {
+              "allow": true,
+              "action": "command",
+              "target": "ls -la",
+              "resource": {
+                "action": "command",
+                "target": "ls -la"
+              }
+            }
+          ]
+        },
+        "completedInteractions": [
+          {
+            "request": {
+              "permission": {
+                "resource": {
+                  "action": "command",
+                  "target": "ls -la"
+                },
+                "persistSuggestionType": "PERSIST_SUGGESTION_TYPE_SUGGESTED",
+                "suggestedPersistPattern": "ls",
+                "actionDescription": "List workspace files",
+                "triggerSource": {
+                  "type": "TYPE_DEFAULT_FALLBACK"
+                },
+                "shellName": "zsh"
+              }
+            },
+            "response": {
+              "trajectoryId": "9a3fd96b-0f3f-42de-bbca-6658e08215ec",
+              "stepIndex": 2,
+              "permission": {
+                "allow": true
+              }
+            }
+          }
+        ],
+        "runCommand": {
+          "commandLine": "<commandLine:6>",
+          "proposedCommandLine": "<proposedCommandLine:6>",
+          "cwd": "/tmp/TMP/ao-fixture-eYwD4N",
+          "waitMsBeforeAsync": "5000",
+          "blocking": true,
+          "exitCode": 0,
+          "combinedOutput": {
+            "full": "Command exited with code 0.\n\nCommand output:\ntotal 8\r\ndrwx------@   3 USER  staff     96 Nov  8 20:18 .\r\ndrwx------@ 719 USER  staff  23008 Nov  8 20:19 ..\r\n-rw-r--r--@   1 USER  staff     47 Nov  8 20:18 README.md\r\n"
+          },
+          "shellName": "zsh"
+        }
+      },
+      {
+        "type": "CORTEX_STEP_TYPE_PLANNER_RESPONSE",
+        "status": "CORTEX_STEP_STATUS_DONE",
+        "metadata": {
+          "createdAt": "2026-11-08T13:19:11.428161Z",
+          "viewableAt": "2026-11-08T13:19:14.880312Z",
+          "finishedGeneratingAt": "2026-11-08T13:19:14.898261Z",
+          "startedAt": "2026-11-08T13:19:14.898261Z",
+          "completedAt": "2026-11-08T13:19:14.898261Z",
+          "source": "CORTEX_STEP_SOURCE_MODEL",
+          "modelUsage": {
+            "model": "MODEL_PLACEHOLDER_M318",
+            "inputTokens": "10665",
+            "outputTokens": "87",
+            "thinkingOutputTokens": "23",
+            "responseOutputTokens": "64",
+            "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+            "messageId": "bot-9f600fa4-89a0-48e4-959e-63fb06789388",
+            "responseHeader": {
+              "sessionID": "-3750763034362895579"
+            },
+            "responseId": "0HbwaoucEcLN2roP1Z2wmQw"
+          },
+          "generatorModel": "MODEL_PLACEHOLDER_M318",
+          "executionId": "7b51c7ce-1eee-48ef-8a1c-c4af4d3758d2",
+          "sourceTrajectoryStepInfo": {
+            "trajectoryId": "9a3fd96b-0f3f-42de-bbca-6658e08215ec",
+            "stepIndex": 3,
+            "metadataIndex": 1,
+            "cascadeId": "fb40e5ec-6ad7-4484-956c-0acce3234101"
+          },
+          "internalMetadata": {
+            "statusTransitions": [
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_GENERATING",
+                "timestamp": "2026-11-08T13:19:14.880357Z"
+              },
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+                "timestamp": "2026-11-08T13:19:14.898269Z"
+              }
+            ]
+          },
+          "modelApiContentId": "[REDACTED]"
+        },
+        "plannerResponse": {
+          "messageId": "bot-9f600fa4-89a0-48e4-959e-63fb06789388",
+          "toolCalls": [
+            {
+              "id": "call_7076244027900542868",
+              "name": "read_file",
+              "argumentsJson": "{}",
+              "thinkingSignature": "<thinkingSignature:248>"
+            }
+          ],
+          "stopReason": "STOP_REASON_STOP_PATTERN"
+        }
+      },
+      {
+        "type": "CORTEX_STEP_TYPE_VIEW_FILE",
+        "status": "CORTEX_STEP_STATUS_DONE",
+        "metadata": {
+          "createdAt": "2026-11-08T13:19:14.881746Z",
+          "viewableAt": "2026-11-08T13:19:14.896894Z",
+          "finishedGeneratingAt": "2026-11-08T13:19:14.896894Z",
+          "startedAt": "2026-11-08T13:19:14.902326Z",
+          "completedAt": "2026-11-08T13:19:14.903362Z",
+          "source": "CORTEX_STEP_SOURCE_MODEL",
+          "toolCall": {
+            "id": "call_7076244027900542868",
+            "name": "read_file",
+            "argumentsJson": "{}",
+            "thinkingSignature": "<thinkingSignature:248>"
+          },
+          "generatorModel": "MODEL_PLACEHOLDER_M318",
+          "executionId": "7b51c7ce-1eee-48ef-8a1c-c4af4d3758d2",
+          "sourceTrajectoryStepInfo": {
+            "trajectoryId": "9a3fd96b-0f3f-42de-bbca-6658e08215ec",
+            "stepIndex": 4,
+            "metadataIndex": 1,
+            "cascadeId": "fb40e5ec-6ad7-4484-956c-0acce3234101"
+          },
+          "internalMetadata": {
+            "statusTransitions": [
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_PENDING",
+                "timestamp": "2026-11-08T13:19:14.897335Z"
+              },
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_RUNNING",
+                "timestamp": "2026-11-08T13:19:14.902330Z"
+              },
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+                "timestamp": "2026-11-08T13:19:14.903363Z"
+              }
+            ]
+          },
+          "preToolHookResults": [
+            {
+              "decision": "allow"
+            }
+          ],
+          "modelApiContentId": "[REDACTED]",
+          "toolSource": "CORTEX_COMPONENT_SOURCE_BUILTIN"
+        },
+        "viewFile": {
+          "absolutePathUri": "file:///tmp/TMP/ao-fixture-eYwD4N/README.md",
+          "endLine": 2,
+          "content": "<content:78>",
+          "lineRangeBytes": 46,
+          "numLines": 3,
+          "numBytes": 47
+        }
+      },
+      {
+        "type": "CORTEX_STEP_TYPE_PLANNER_RESPONSE",
+        "status": "CORTEX_STEP_STATUS_DONE",
+        "metadata": {
+          "createdAt": "2026-11-08T13:19:14.905141Z",
+          "viewableAt": "2026-11-08T13:19:18.791174Z",
+          "finishedGeneratingAt": "2026-11-08T13:19:18.876719Z",
+          "startedAt": "2026-11-08T13:19:18.876719Z",
+          "completedAt": "2026-11-08T13:19:18.876719Z",
+          "source": "CORTEX_STEP_SOURCE_MODEL",
+          "modelUsage": {
+            "model": "MODEL_PLACEHOLDER_M318",
+            "inputTokens": "10853",
+            "outputTokens": "259",
+            "thinkingOutputTokens": "184",
+            "responseOutputTokens": "75",
+            "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+            "messageId": "bot-5070631b-52b9-4383-b212-11dca00f8402",
+            "responseHeader": {
+              "sessionID": "-3750763034362895579"
+            },
+            "responseId": "03bwaoi-KsHMrfcP8NSI4AU"
+          },
+          "generatorModel": "MODEL_PLACEHOLDER_M318",
+          "executionId": "7b51c7ce-1eee-48ef-8a1c-c4af4d3758d2",
+          "sourceTrajectoryStepInfo": {
+            "trajectoryId": "9a3fd96b-0f3f-42de-bbca-6658e08215ec",
+            "stepIndex": 5,
+            "metadataIndex": 2,
+            "cascadeId": "fb40e5ec-6ad7-4484-956c-0acce3234101"
+          },
+          "internalMetadata": {
+            "statusTransitions": [
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_GENERATING",
+                "timestamp": "2026-11-08T13:19:18.791381Z"
+              },
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+                "timestamp": "2026-11-08T13:19:18.876726Z"
+              }
+            ]
+          },
+          "modelApiContentId": "[REDACTED]"
+        },
+        "plannerResponse": {
+          "thinking": "<thinking:393>",
+          "messageId": "bot-5070631b-52b9-4383-b212-11dca00f8402",
+          "toolCalls": [
+            {
+              "id": "call_2167144657146795557",
+              "name": "write_file",
+              "argumentsJson": "{}",
+              "thinkingSignature": "<thinkingSignature:1064>"
+            }
+          ],
+          "thinkingDuration": "3.943930s",
+          "stopReason": "STOP_REASON_STOP_PATTERN"
+        }
+      },
+      {
+        "type": "CORTEX_STEP_TYPE_CODE_ACTION",
+        "status": "CORTEX_STEP_STATUS_DONE",
+        "metadata": {
+          "createdAt": "2026-11-08T13:19:18.849073Z",
+          "viewableAt": "2026-11-08T13:19:18.876001Z",
+          "finishedGeneratingAt": "2026-11-08T13:19:18.876001Z",
+          "startedAt": "2026-11-08T13:19:18.882160Z",
+          "completedAt": "2026-11-08T13:19:18.883660Z",
+          "source": "CORTEX_STEP_SOURCE_MODEL",
+          "toolCall": {
+            "id": "call_2167144657146795557",
+            "name": "write_file",
+            "argumentsJson": "{}",
+            "thinkingSignature": "<thinkingSignature:1064>"
+          },
+          "generatorModel": "MODEL_PLACEHOLDER_M318",
+          "executionId": "7b51c7ce-1eee-48ef-8a1c-c4af4d3758d2",
+          "sourceTrajectoryStepInfo": {
+            "trajectoryId": "9a3fd96b-0f3f-42de-bbca-6658e08215ec",
+            "stepIndex": 6,
+            "metadataIndex": 2,
+            "cascadeId": "fb40e5ec-6ad7-4484-956c-0acce3234101"
+          },
+          "internalMetadata": {
+            "statusTransitions": [
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_PENDING",
+                "timestamp": "2026-11-08T13:19:18.876131Z"
+              },
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_RUNNING",
+                "timestamp": "2026-11-08T13:19:18.882163Z"
+              },
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+                "timestamp": "2026-11-08T13:19:18.883661Z"
+              }
+            ]
+          },
+          "preToolHookResults": [
+            {
+              "decision": "allow"
+            }
+          ],
+          "modelApiContentId": "[REDACTED]",
+          "toolSource": "CORTEX_COMPONENT_SOURCE_BUILTIN"
+        },
+        "codeAction": {
+          "actionSpec": {
+            "createFile": {
+              "path": {
+                "absoluteUri": "file:///tmp/TMP/ao-fixture-eYwD4N/test-fixture.md"
+              }
+            }
+          },
+          "actionResult": {
+            "edit": {
+              "diff": {
+                "unifiedDiff": {
+                  "lines": [
+                    {
+                      "text": "<text:13>",
+                      "type": "UNIFIED_DIFF_LINE_TYPE_INSERT"
+                    },
+                    {
+                      "type": "UNIFIED_DIFF_LINE_TYPE_INSERT"
+                    }
+                  ]
+                }
+              },
+              "absoluteUri": "file:///tmp/TMP/ao-fixture-eYwD4N/test-fixture.md",
+              "createFile": true
+            }
+          },
+          "diffStats": {
+            "additions": 2
+          }
+        }
+      },
+      {
+        "type": "CORTEX_STEP_TYPE_PLANNER_RESPONSE",
+        "status": "CORTEX_STEP_STATUS_DONE",
+        "metadata": {
+          "createdAt": "2026-11-08T13:19:18.885195Z",
+          "viewableAt": "2026-11-08T13:19:22.200258Z",
+          "finishedGeneratingAt": "2026-11-08T13:19:22.227795Z",
+          "startedAt": "2026-11-08T13:19:22.227795Z",
+          "completedAt": "2026-11-08T13:19:22.227795Z",
+          "source": "CORTEX_STEP_SOURCE_MODEL",
+          "modelUsage": {
+            "model": "MODEL_PLACEHOLDER_M318",
+            "inputTokens": "11188",
+            "outputTokens": "80",
+            "thinkingOutputTokens": "14",
+            "responseOutputTokens": "66",
+            "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+            "messageId": "bot-589f6915-b67f-4cac-87b6-4cf591d334aa",
+            "responseHeader": {
+              "sessionID": "-3750763034362895579"
+            },
+            "responseId": "13bwaqjuLPz91e8Pqf6GgAc"
+          },
+          "generatorModel": "MODEL_PLACEHOLDER_M318",
+          "executionId": "7b51c7ce-1eee-48ef-8a1c-c4af4d3758d2",
+          "sourceTrajectoryStepInfo": {
+            "trajectoryId": "9a3fd96b-0f3f-42de-bbca-6658e08215ec",
+            "stepIndex": 7,
+            "metadataIndex": 3,
+            "cascadeId": "fb40e5ec-6ad7-4484-956c-0acce3234101"
+          },
+          "internalMetadata": {
+            "statusTransitions": [
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_GENERATING",
+                "timestamp": "2026-11-08T13:19:22.200297Z"
+              },
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+                "timestamp": "2026-11-08T13:19:22.227801Z"
+              }
+            ]
+          },
+          "modelApiContentId": "[REDACTED]"
+        },
+        "plannerResponse": {
+          "messageId": "bot-589f6915-b67f-4cac-87b6-4cf591d334aa",
+          "toolCalls": [
+            {
+              "id": "call_12854253186222274527",
+              "name": "read_file",
+              "argumentsJson": "{}",
+              "thinkingSignature": "<thinkingSignature:248>"
+            }
+          ],
+          "stopReason": "STOP_REASON_STOP_PATTERN"
+        }
+      },
+      {
+        "type": "CORTEX_STEP_TYPE_VIEW_FILE",
+        "status": "CORTEX_STEP_STATUS_DONE",
+        "metadata": {
+          "createdAt": "2026-11-08T13:19:22.201399Z",
+          "viewableAt": "2026-11-08T13:19:22.227126Z",
+          "finishedGeneratingAt": "2026-11-08T13:19:22.227126Z",
+          "startedAt": "2026-11-08T13:19:22.233397Z",
+          "completedAt": "2026-11-08T13:19:22.235200Z",
+          "source": "CORTEX_STEP_SOURCE_MODEL",
+          "toolCall": {
+            "id": "call_12854253186222274527",
+            "name": "read_file",
+            "argumentsJson": "{}",
+            "thinkingSignature": "<thinkingSignature:248>"
+          },
+          "generatorModel": "MODEL_PLACEHOLDER_M318",
+          "executionId": "7b51c7ce-1eee-48ef-8a1c-c4af4d3758d2",
+          "sourceTrajectoryStepInfo": {
+            "trajectoryId": "9a3fd96b-0f3f-42de-bbca-6658e08215ec",
+            "stepIndex": 8,
+            "metadataIndex": 3,
+            "cascadeId": "fb40e5ec-6ad7-4484-956c-0acce3234101"
+          },
+          "internalMetadata": {
+            "statusTransitions": [
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_PENDING",
+                "timestamp": "2026-11-08T13:19:22.227192Z"
+              },
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_RUNNING",
+                "timestamp": "2026-11-08T13:19:22.233403Z"
+              },
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+                "timestamp": "2026-11-08T13:19:22.235204Z"
+              }
+            ]
+          },
+          "preToolHookResults": [
+            {
+              "decision": "allow"
+            }
+          ],
+          "modelApiContentId": "[REDACTED]",
+          "toolSource": "CORTEX_COMPONENT_SOURCE_BUILTIN"
+        },
+        "viewFile": {
+          "absolutePathUri": "file:///tmp/TMP/ao-fixture-eYwD4N/test-fixture.md",
+          "content": "<content:39>",
+          "lineRangeBytes": 13,
+          "numLines": 1,
+          "numBytes": 14
+        }
+      },
+      {
+        "type": "CORTEX_STEP_TYPE_PLANNER_RESPONSE",
+        "status": "CORTEX_STEP_STATUS_DONE",
+        "metadata": {
+          "createdAt": "2026-11-08T13:19:22.238270Z",
+          "viewableAt": "2026-11-08T13:19:25.477095Z",
+          "finishedGeneratingAt": "2026-11-08T13:19:26.887763Z",
+          "startedAt": "2026-11-08T13:19:26.887763Z",
+          "completedAt": "2026-11-08T13:19:26.887763Z",
+          "source": "CORTEX_STEP_SOURCE_MODEL",
+          "modelUsage": {
+            "model": "MODEL_PLACEHOLDER_M318",
+            "inputTokens": "11356",
+            "outputTokens": "419",
+            "thinkingOutputTokens": "178",
+            "responseOutputTokens": "241",
+            "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+            "messageId": "bot-2a48f6a3-d605-4e2f-9f98-193c21d9bb0e",
+            "responseHeader": {
+              "sessionID": "-3750763034362895579"
+            },
+            "responseId": "2nbwapDcOtn11e8P2s35wAU"
+          },
+          "generatorModel": "MODEL_PLACEHOLDER_M318",
+          "executionId": "7b51c7ce-1eee-48ef-8a1c-c4af4d3758d2",
+          "sourceTrajectoryStepInfo": {
+            "trajectoryId": "9a3fd96b-0f3f-42de-bbca-6658e08215ec",
+            "stepIndex": 9,
+            "metadataIndex": 4,
+            "cascadeId": "fb40e5ec-6ad7-4484-956c-0acce3234101"
+          },
+          "internalMetadata": {
+            "statusTransitions": [
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_GENERATING",
+                "timestamp": "2026-11-08T13:19:25.477182Z"
+              },
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+                "timestamp": "2026-11-08T13:19:26.887879Z"
+              }
+            ]
+          },
+          "modelApiContentId": "[REDACTED]"
+        },
+        "plannerResponse": {
+          "response": "<response:550>",
+          "modifiedResponse": "<modifiedResponse:550>",
+          "thinkingSignature": "<thinkingSignature:908>",
+          "messageId": "bot-2a48f6a3-d605-4e2f-9f98-193c21d9bb0e",
+          "stopReason": "STOP_REASON_STOP_PATTERN"
+        }
+      }
+    ],
+    "generatorMetadata": [
+      {
+        "stepIndices": [
+          1,
+          2
+        ],
+        "chatModel": {
+          "model": "MODEL_PLACEHOLDER_M318",
+          "usage": {
+            "model": "MODEL_PLACEHOLDER_M318",
+            "inputTokens": "10082",
+            "outputTokens": "408",
+            "thinkingOutputTokens": "371",
+            "responseOutputTokens": "37",
+            "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+            "messageId": "bot-16402750-f036-4ceb-8afa-65c5785ad433",
+            "responseHeader": {
+              "sessionID": "-3750763034362895579"
+            },
+            "responseId": "vHbwaoGfNoyl1e8PvpiFEA"
+          },
+          "chatStartMetadata": {
+            "checkpointIndex": -1,
+            "contextWindowMetadata": {
+              "estimatedTokensUsed": 14456,
+              "maxContextTokens": 256000
+            }
+          },
+          "timeToFirstToken": "4.720116042s",
+          "streamingDuration": "0.280311917s",
+          "retryInfos": [
+            {
+              "usage": {
+                "model": "MODEL_PLACEHOLDER_M318",
+                "inputTokens": "10082",
+                "outputTokens": "408",
+                "thinkingOutputTokens": "371",
+                "responseOutputTokens": "37",
+                "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+                "messageId": "bot-16402750-f036-4ceb-8afa-65c5785ad433",
+                "responseHeader": {
+                  "sessionID": "-3750763034362895579"
+                },
+                "responseId": "vHbwaoGfNoyl1e8PvpiFEA"
+              },
+              "traceId": "b598794136085480"
+            }
+          ],
+          "responseModel": "gemini-3.8-flash-n",
+          "customMetadata": {
+            "cascade_id": "fb40e5ec-6ad7-4484-956c-0acce3234101",
+            "last_step_index": "0",
+            "model_enum": "MODEL_PLACEHOLDER_M318",
+            "request_id": "9a3fd96b-0f3f-42de-bbca-6658e08215ec-0",
+            "root_cascade_id": "fb40e5ec-6ad7-4484-956c-0acce3234101",
+            "trajectory_id": "9a3fd96b-0f3f-42de-bbca-6658e08215ec",
+            "used_claude": "false",
+            "used_claude_conservative": "false",
+            "used_non_gemini_model": "false"
+          },
+          "modelDisplayName": "Gemini 3.8 Flash (High)"
+        },
+        "executionId": "7b51c7ce-1eee-48ef-8a1c-c4af4d3758d2",
+        "mendelExperimentIds": [
+          1714259,
+          105856899,
+          105867469,
+          105867471,
+          105887299,
+          105979531,
+          105979552,
+          105979553,
+          105979574,
+          106015328,
+          106015333,
+          106021688,
+          106032301,
+          106032303,
+          106064028,
+          106064030,
+          106100625,
+          106100654,
+          106121399,
+          106121401,
+          106121604,
+          106121607,
+          106123597,
+          106123599,
+          106140402,
+          106143956,
+          106228452,
+          106260793,
+          106263850,
+          106264532,
+          106281951,
+          106380926,
+          106511968,
+          106544525,
+          106568390,
+          106568772,
+          106588527,
+          106596396,
+          106597020,
+          106640124,
+          106640126,
+          106643242,
+          106644204,
+          106644207,
+          106676368,
+          106712040,
+          106724031,
+          106749607,
+          106754391,
+          106778026,
+          106786387,
+          106786388,
+          106788235,
+          106791759,
+          106791765,
+          106793263,
+          106793266,
+          106798730,
+          106798741,
+          106805876,
+          106806117,
+          106811917,
+          106822474,
+          106825242,
+          106825244,
+          106826239,
+          106826316,
+          106827293,
+          106827294,
+          106828852,
+          106828853,
+          106828854,
+          106828998,
+          106833630,
+          106838234,
+          106848342,
+          106865004,
+          106865006,
+          106898384,
+          106913264,
+          106914992,
+          106986919,
+          107014155
+        ]
+      },
+      {
+        "stepIndices": [
+          3,
+          4
+        ],
+        "chatModel": {
+          "model": "MODEL_PLACEHOLDER_M318",
+          "usage": {
+            "model": "MODEL_PLACEHOLDER_M318",
+            "inputTokens": "10665",
+            "outputTokens": "87",
+            "thinkingOutputTokens": "23",
+            "responseOutputTokens": "64",
+            "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+            "messageId": "bot-9f600fa4-89a0-48e4-959e-63fb06789388",
+            "responseHeader": {
+              "sessionID": "-3750763034362895579"
+            },
+            "responseId": "0HbwaoucEcLN2roP1Z2wmQw"
+          },
+          "chatStartMetadata": {
+            "checkpointIndex": -1,
+            "contextWindowMetadata": {
+              "estimatedTokensUsed": 14970,
+              "maxContextTokens": 256000
+            }
+          },
+          "timeToFirstToken": "3.452164208s",
+          "streamingDuration": "0.017947625s",
+          "retryInfos": [
+            {
+              "usage": {
+                "model": "MODEL_PLACEHOLDER_M318",
+                "inputTokens": "10665",
+                "outputTokens": "87",
+                "thinkingOutputTokens": "23",
+                "responseOutputTokens": "64",
+                "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+                "messageId": "bot-9f600fa4-89a0-48e4-959e-63fb06789388",
+                "responseHeader": {
+                  "sessionID": "-3750763034362895579"
+                },
+                "responseId": "0HbwaoucEcLN2roP1Z2wmQw"
+              },
+              "traceId": "59a3b29a20e64c9"
+            }
+          ],
+          "responseModel": "gemini-3.8-flash-n",
+          "customMetadata": {
+            "cascade_id": "fb40e5ec-6ad7-4484-956c-0acce3234101",
+            "last_step_index": "2",
+            "model_enum": "MODEL_PLACEHOLDER_M318",
+            "request_id": "9a3fd96b-0f3f-42de-bbca-6658e08215ec-1",
+            "root_cascade_id": "fb40e5ec-6ad7-4484-956c-0acce3234101",
+            "trajectory_id": "9a3fd96b-0f3f-42de-bbca-6658e08215ec",
+            "used_claude": "false",
+            "used_claude_conservative": "false",
+            "used_non_gemini_model": "false"
+          },
+          "modelDisplayName": "Gemini 3.8 Flash (High)"
+        },
+        "executionId": "7b51c7ce-1eee-48ef-8a1c-c4af4d3758d2",
+        "mendelExperimentIds": [
+          1714259,
+          105856899,
+          105867469,
+          105867471,
+          105887299,
+          105979531,
+          105979552,
+          105979553,
+          105979574,
+          106015328,
+          106015333,
+          106021688,
+          106032301,
+          106032303,
+          106064028,
+          106064030,
+          106100625,
+          106100654,
+          106121399,
+          106121401,
+          106121604,
+          106121607,
+          106123597,
+          106123599,
+          106140402,
+          106143956,
+          106228452,
+          106260793,
+          106263850,
+          106264532,
+          106281951,
+          106380926,
+          106511968,
+          106544525,
+          106568390,
+          106568772,
+          106588527,
+          106596396,
+          106597020,
+          106640124,
+          106640126,
+          106643242,
+          106644204,
+          106644207,
+          106676368,
+          106712040,
+          106724031,
+          106749607,
+          106754391,
+          106778026,
+          106786387,
+          106786388,
+          106788235,
+          106791759,
+          106791765,
+          106793263,
+          106793266,
+          106798730,
+          106798741,
+          106805876,
+          106806117,
+          106811917,
+          106822474,
+          106825242,
+          106825244,
+          106826239,
+          106826316,
+          106827293,
+          106827294,
+          106828852,
+          106828853,
+          106828854,
+          106828998,
+          106833630,
+          106838234,
+          106848342,
+          106865004,
+          106865006,
+          106898384,
+          106913264,
+          106914992,
+          106986919,
+          107014155
+        ]
+      },
+      {
+        "stepIndices": [
+          5,
+          6
+        ],
+        "chatModel": {
+          "model": "MODEL_PLACEHOLDER_M318",
+          "usage": {
+            "model": "MODEL_PLACEHOLDER_M318",
+            "inputTokens": "10853",
+            "outputTokens": "259",
+            "thinkingOutputTokens": "184",
+            "responseOutputTokens": "75",
+            "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+            "messageId": "bot-5070631b-52b9-4383-b212-11dca00f8402",
+            "responseHeader": {
+              "sessionID": "-3750763034362895579"
+            },
+            "responseId": "03bwaoi-KsHMrfcP8NSI4AU"
+          },
+          "chatStartMetadata": {
+            "checkpointIndex": -1,
+            "contextWindowMetadata": {
+              "estimatedTokensUsed": 15114,
+              "maxContextTokens": 256000
+            }
+          },
+          "timeToFirstToken": "3.886048416s",
+          "streamingDuration": "0.085544125s",
+          "retryInfos": [
+            {
+              "usage": {
+                "model": "MODEL_PLACEHOLDER_M318",
+                "inputTokens": "10853",
+                "outputTokens": "259",
+                "thinkingOutputTokens": "184",
+                "responseOutputTokens": "75",
+                "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+                "messageId": "bot-5070631b-52b9-4383-b212-11dca00f8402",
+                "responseHeader": {
+                  "sessionID": "-3750763034362895579"
+                },
+                "responseId": "03bwaoi-KsHMrfcP8NSI4AU"
+              },
+              "traceId": "b0163bd98455c36c"
+            }
+          ],
+          "responseModel": "gemini-3.8-flash-n",
+          "customMetadata": {
+            "cascade_id": "fb40e5ec-6ad7-4484-956c-0acce3234101",
+            "last_step_index": "4",
+            "model_enum": "MODEL_PLACEHOLDER_M318",
+            "request_id": "9a3fd96b-0f3f-42de-bbca-6658e08215ec-2",
+            "root_cascade_id": "fb40e5ec-6ad7-4484-956c-0acce3234101",
+            "trajectory_id": "9a3fd96b-0f3f-42de-bbca-6658e08215ec",
+            "used_claude": "false",
+            "used_claude_conservative": "false",
+            "used_non_gemini_model": "false"
+          },
+          "modelDisplayName": "Gemini 3.8 Flash (High)"
+        },
+        "executionId": "7b51c7ce-1eee-48ef-8a1c-c4af4d3758d2",
+        "mendelExperimentIds": [
+          1714259,
+          105856899,
+          105867469,
+          105867471,
+          105887299,
+          105979531,
+          105979552,
+          105979553,
+          105979574,
+          106015328,
+          106015333,
+          106021688,
+          106032301,
+          106032303,
+          106064028,
+          106064030,
+          106100625,
+          106100654,
+          106121399,
+          106121401,
+          106121604,
+          106121607,
+          106123597,
+          106123599,
+          106140402,
+          106143956,
+          106228452,
+          106260793,
+          106263850,
+          106264532,
+          106281951,
+          106380926,
+          106511968,
+          106544525,
+          106568390,
+          106568772,
+          106588527,
+          106596396,
+          106597020,
+          106640124,
+          106640126,
+          106643242,
+          106644204,
+          106644207,
+          106676368,
+          106712040,
+          106724031,
+          106749607,
+          106754391,
+          106778026,
+          106786387,
+          106786388,
+          106788235,
+          106791759,
+          106791765,
+          106793263,
+          106793266,
+          106798730,
+          106798741,
+          106805876,
+          106806117,
+          106811917,
+          106822474,
+          106825242,
+          106825244,
+          106826239,
+          106826316,
+          106827293,
+          106827294,
+          106828852,
+          106828853,
+          106828854,
+          106828998,
+          106833630,
+          106838234,
+          106848342,
+          106865004,
+          106865006,
+          106898384,
+          106913264,
+          106914992,
+          106986919,
+          107014155
+        ]
+      },
+      {
+        "stepIndices": [
+          7,
+          8
+        ],
+        "chatModel": {
+          "model": "MODEL_PLACEHOLDER_M318",
+          "usage": {
+            "model": "MODEL_PLACEHOLDER_M318",
+            "inputTokens": "11188",
+            "outputTokens": "80",
+            "thinkingOutputTokens": "14",
+            "responseOutputTokens": "66",
+            "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+            "messageId": "bot-589f6915-b67f-4cac-87b6-4cf591d334aa",
+            "responseHeader": {
+              "sessionID": "-3750763034362895579"
+            },
+            "responseId": "13bwaqjuLPz91e8Pqf6GgAc"
+          },
+          "chatStartMetadata": {
+            "checkpointIndex": -1,
+            "contextWindowMetadata": {
+              "estimatedTokensUsed": 15409,
+              "maxContextTokens": 256000
+            }
+          },
+          "timeToFirstToken": "3.315075333s",
+          "streamingDuration": "0.027535500s",
+          "retryInfos": [
+            {
+              "usage": {
+                "model": "MODEL_PLACEHOLDER_M318",
+                "inputTokens": "11188",
+                "outputTokens": "80",
+                "thinkingOutputTokens": "14",
+                "responseOutputTokens": "66",
+                "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+                "messageId": "bot-589f6915-b67f-4cac-87b6-4cf591d334aa",
+                "responseHeader": {
+                  "sessionID": "-3750763034362895579"
+                },
+                "responseId": "13bwaqjuLPz91e8Pqf6GgAc"
+              },
+              "traceId": "815a4fb8bbc0246"
+            }
+          ],
+          "responseModel": "gemini-3.8-flash-n",
+          "customMetadata": {
+            "cascade_id": "fb40e5ec-6ad7-4484-956c-0acce3234101",
+            "last_step_index": "6",
+            "model_enum": "MODEL_PLACEHOLDER_M318",
+            "request_id": "9a3fd96b-0f3f-42de-bbca-6658e08215ec-3",
+            "root_cascade_id": "fb40e5ec-6ad7-4484-956c-0acce3234101",
+            "trajectory_id": "9a3fd96b-0f3f-42de-bbca-6658e08215ec",
+            "used_claude": "false",
+            "used_claude_conservative": "false",
+            "used_non_gemini_model": "false"
+          },
+          "modelDisplayName": "Gemini 3.8 Flash (High)"
+        },
+        "executionId": "7b51c7ce-1eee-48ef-8a1c-c4af4d3758d2",
+        "mendelExperimentIds": [
+          1714259,
+          105856899,
+          105867469,
+          105867471,
+          105887299,
+          105979531,
+          105979552,
+          105979553,
+          105979574,
+          106015328,
+          106015333,
+          106021688,
+          106032301,
+          106032303,
+          106064028,
+          106064030,
+          106100625,
+          106100654,
+          106121399,
+          106121401,
+          106121604,
+          106121607,
+          106123597,
+          106123599,
+          106140402,
+          106143956,
+          106228452,
+          106260793,
+          106263850,
+          106264532,
+          106281951,
+          106380926,
+          106511968,
+          106544525,
+          106568390,
+          106568772,
+          106588527,
+          106596396,
+          106597020,
+          106640124,
+          106640126,
+          106643242,
+          106644204,
+          106644207,
+          106676368,
+          106712040,
+          106724031,
+          106749607,
+          106754391,
+          106778026,
+          106786387,
+          106786388,
+          106788235,
+          106791759,
+          106791765,
+          106793263,
+          106793266,
+          106798730,
+          106798741,
+          106805876,
+          106806117,
+          106811917,
+          106822474,
+          106825242,
+          106825244,
+          106826239,
+          106826316,
+          106827293,
+          106827294,
+          106828852,
+          106828853,
+          106828854,
+          106828998,
+          106833630,
+          106838234,
+          106848342,
+          106865004,
+          106865006,
+          106898384,
+          106913264,
+          106914992,
+          106986919,
+          107014155
+        ]
+      },
+      {
+        "stepIndices": [
+          9
+        ],
+        "chatModel": {
+          "systemPrompt": "<systemPrompt:9999>",
+          "messagePrompts": [
+            {
+              "source": "CHAT_MESSAGE_SOURCE_USER",
+              "prompt": "<prompt:592>",
+              "numTokens": 203,
+              "providerAssignedMessageId": "[REDACTED]"
+            },
+            {
+              "messageId": "bot-16402750-f036-4ceb-8afa-65c5785ad433",
+              "source": "CHAT_MESSAGE_SOURCE_SYSTEM",
+              "numTokens": 408,
+              "toolCalls": [
+                {
+                  "id": "call_17168711003347208959",
+                  "name": "run_command",
+                  "argumentsJson": "{}",
+                  "thinkingSignature": "<thinkingSignature:2452>"
+                }
+              ],
+              "thinking": "<thinking:45>",
+              "stepIdx": 1,
+              "providerAssignedMessageId": "[REDACTED]"
+            },
+            {
+              "source": "CHAT_MESSAGE_SOURCE_TOOL",
+              "prompt": "<prompt:294>",
+              "numTokens": 106,
+              "toolCallId": "call_17168711003347208959",
+              "stepIdx": 2,
+              "providerAssignedMessageId": "[REDACTED]"
+            },
+            {
+              "messageId": "bot-9f600fa4-89a0-48e4-959e-63fb06789388",
+              "source": "CHAT_MESSAGE_SOURCE_SYSTEM",
+              "numTokens": 87,
+              "toolCalls": [
+                {
+                  "id": "call_7076244027900542868",
+                  "name": "read_file",
+                  "argumentsJson": "{}",
+                  "thinkingSignature": "<thinkingSignature:248>"
+                }
+              ],
+              "stepIdx": 3,
+              "providerAssignedMessageId": "[REDACTED]"
+            },
+            {
+              "source": "CHAT_MESSAGE_SOURCE_TOOL",
+              "prompt": "<prompt:156>",
+              "numTokens": 57,
+              "toolCallId": "call_7076244027900542868",
+              "stepIdx": 4,
+              "providerAssignedMessageId": "[REDACTED]"
+            },
+            {
+              "messageId": "bot-5070631b-52b9-4383-b212-11dca00f8402",
+              "source": "CHAT_MESSAGE_SOURCE_SYSTEM",
+              "numTokens": 259,
+              "toolCalls": [
+                {
+                  "id": "call_2167144657146795557",
+                  "name": "write_file",
+                  "argumentsJson": "{}",
+                  "thinkingSignature": "<thinkingSignature:1064>"
+                }
+              ],
+              "thinking": "<thinking:393>",
+              "stepIdx": 5,
+              "providerAssignedMessageId": "[REDACTED]"
+            },
+            {
+              "source": "CHAT_MESSAGE_SOURCE_TOOL",
+              "prompt": "<prompt:91>",
+              "numTokens": 36,
+              "toolCallId": "call_2167144657146795557",
+              "stepIdx": 6,
+              "providerAssignedMessageId": "[REDACTED]"
+            },
+            {
+              "messageId": "bot-589f6915-b67f-4cac-87b6-4cf591d334aa",
+              "source": "CHAT_MESSAGE_SOURCE_SYSTEM",
+              "numTokens": 80,
+              "toolCalls": [
+                {
+                  "id": "call_12854253186222274527",
+                  "name": "read_file",
+                  "argumentsJson": "{}",
+                  "thinkingSignature": "<thinkingSignature:248>"
+                }
+              ],
+              "stepIdx": 7,
+              "providerAssignedMessageId": "[REDACTED]"
+            },
+            {
+              "source": "CHAT_MESSAGE_SOURCE_TOOL",
+              "prompt": "<prompt:117>",
+              "numTokens": 44,
+              "toolCallId": "call_12854253186222274527",
+              "stepIdx": 8,
+              "providerAssignedMessageId": "[REDACTED]"
+            },
+            {
+              "source": "CHAT_MESSAGE_SOURCE_SYSTEM",
+              "prompt": "<prompt:430>",
+              "thinkingSignature": "<thinkingSignature:908>",
+              "stepIdx": 9
+            }
+          ],
+          "messageMetadata": [
+            {},
+            {
+              "messageIndex": 1
+            },
+            {
+              "messageIndex": 2
+            },
+            {
+              "messageIndex": 3
+            },
+            {
+              "messageIndex": 4
+            },
+            {
+              "messageIndex": 5
+            },
+            {
+              "messageIndex": 6
+            },
+            {
+              "messageIndex": 7
+            },
+            {
+              "messageIndex": 8
+            },
+            {
+              "messageIndex": 8,
+              "segmentIndex": 1
+            }
+          ],
+          "model": "MODEL_PLACEHOLDER_M318",
+          "usage": {
+            "model": "MODEL_PLACEHOLDER_M318",
+            "inputTokens": "11356",
+            "outputTokens": "419",
+            "thinkingOutputTokens": "178",
+            "responseOutputTokens": "241",
+            "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+            "messageId": "bot-2a48f6a3-d605-4e2f-9f98-193c21d9bb0e",
+            "responseHeader": {
+              "sessionID": "-3750763034362895579"
+            },
+            "responseId": "2nbwapDcOtn11e8P2s35wAU"
+          },
+          "tools": [
+            {
+              "name": "read_file",
+              "description": "<description:114>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"Path\":{\"type\":\"string\",\"description\":\"The absolute path of the file to read.\"},\"StartLine\":{\"type\":\"integer\",\"description\":\"Start line to read (inclusive). Omit to read from the beginning of the file.\"},\"EndLine\":{\"type\":\"integer\",\"description\":\"End line to read (inclusive). Omit to read until the end of the file, within the per-read limits.\"},\"ByteOffset\":{\"type\":\"integer\",\"description\":\"Byte offset into the line range. Use to continue reading when content is truncated by the byte limit.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"Path\"]}"
+            },
+            {
+              "name": "run_command",
+              "description": "<description:397>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"CommandLine\":{\"type\":\"string\",\"description\":\"The exact command line string to execute.\"},\"toolSummary\":{\"type\":\"string\",\"description\":\"Brief 2-5 word noun phrase describing the command task. Capitalize like a sentence. Some examples: 'Git status check', 'Unit test execution', 'Package build', 'Dev server startup'.\"},\"WaitMsBeforeAsync\":{\"type\":\"integer\",\"description\":\"Milliseconds to wait for the command to finish before backgrounding it (500 to 10000). Set to a larger value (e.g. 5000-10000) for commands expected to finish synchronously; set to 500 for commands intended to run in the background.\"},\"IsDaemon\":{\"type\":\"boolean\",\"description\":\"Set to true for long-running support processes that are meant to keep running in the background indefinitely and are not expected to finish on their own (e.g., dev servers, file watchers, tunnels). Leave false (the default) for normal commands that are expected to terminate.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"CommandLine\",\"toolSummary\",\"WaitMsBeforeAsync\"]}"
+            },
+            {
+              "name": "list_plugin_accounts",
+              "description": "<description:758>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{},\"additionalProperties\":false,\"type\":\"object\"}"
+            },
+            {
+              "name": "manage_task",
+              "description": "<description:281>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"Action\":{\"type\":\"string\",\"enum\":[\"list\",\"kill\",\"status\",\"send_input\"],\"description\":\"'list' reports the running tasks; the other actions operate on the task named in TaskId.\"},\"TaskId\":{\"type\":\"string\",\"description\":\"Task to manage, as reported by 'list'. Required for 'kill', 'status' and 'send_input'.\"},\"Input\":{\"type\":\"string\",\"description\":\"Input to deliver to the task. Required for 'send_input'.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"Action\"]}"
+            },
+            {
+              "name": "send_message",
+              "description": "<description:89>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"Recipient\":{\"type\":\"string\",\"minLength\":1,\"description\":\"Conversation ID of the agent to message.\"},\"Message\":{\"type\":\"string\",\"minLength\":1,\"description\":\"Content of the message.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"Recipient\",\"Message\"]}"
+            },
+            {
+              "name": "schedule",
+              "description": "<description:617>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"DurationSeconds\":{\"type\":\"integer\",\"description\":\"Seconds to wait for a one-shot timer. Mutually exclusive with CronExpression.\"},\"CronExpression\":{\"type\":\"string\",\"description\":\"Standard 5-field cron expression for a recurring schedule (e.g. '*/5 * * * *' for every 5 minutes). Mutually exclusive with DurationSeconds.\"},\"MaxIterations\":{\"type\":\"integer\",\"description\":\"Cron only. Maximum number of triggers before the schedule stops; defaults to unlimited.\"},\"TimerCondition\":{\"type\":\"string\",\"description\":\"Timer only. Cancels the timer early when a matching message arrives: 'never' (default), 'any' (any message), or a sender ID (a message from that subagent or background task).\"},\"Prompt\":{\"type\":\"string\",\"description\":\"Message sent to you as a high-priority notification when the timer fires or the cron triggers.\"},\"IsDaemon\":{\"type\":\"boolean\",\"description\":\"Cron only. Set true only for an independent standing job that should keep firing after the current task is done.\"},\"ExactTiming\":{\"type\":\"boolean\",\"description\":\"Cron only. Set true only when the user explicitly requires the schedule to fire at the exact wall-clock time without jitter. Leave false (the default) for polling, monitoring, or periodic tasks so triggers are jittered to avoid load spikes.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"Prompt\"]}"
+            },
+            {
+              "name": "invoke_subagent",
+              "description": "<description:551>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"TypeName\":{\"type\":\"string\",\"description\":\"Type name of the subagent to invoke.\"},\"Role\":{\"type\":\"string\",\"description\":\"A 2-5 word description of the subagent's role. Should read similar to a job title, e.g. 'Codebase Researcher', 'Database Debugger', etc. Should also be detailed enough to distinguish between different subagents who might share similar purposes.\"},\"Prompt\":{\"type\":\"string\",\"description\":\"A clear, actionable task description for the subagent. Be specific about what the subagent should do and what information it should return.\"},\"Workspace\":{\"type\":\"string\",\"description\":\"Workspace mode for the subagent. 'inherit' (default) uses the same workspace as the parent. 'branch' creates a new isolated workspace branched or cloned from the parent. 'share' creates a new workspace sharing the parent's underlying repository directory (similar to a git worktree or Mercurial 'hg share'), allowing independent branching without duplicating storage. If omitted, defaults to 'inherit'.\"},\"Model\":{\"type\":\"string\",\"enum\":[\"inherit\",\"flash_lite\",\"flash\",\"pro\"],\"description\":\"Model for the subagent. 'inherit' (default) uses your model. 'flash_lite' and 'flash' are lighter, faster models for simple tasks. 'pro' is a larger model for complex work.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"TypeName\",\"Role\",\"Prompt\"]}"
+            },
+            {
+              "name": "define_subagent",
+              "description": "<description:154>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"Name\":{\"type\":\"string\",\"minLength\":1,\"description\":\"Unique name used to invoke the subagent.\"},\"Description\":{\"type\":\"string\",\"minLength\":1,\"description\":\"What this subagent does and when it should be used.\"},\"SystemPrompt\":{\"type\":\"string\",\"minLength\":1,\"description\":\"System prompt for the subagent.\"},\"EnableWriteTools\":{\"type\":\"boolean\",\"description\":\"Grant tools to create and edit files, and run commands.\"},\"EnableSubagentTools\":{\"type\":\"boolean\",\"description\":\"Grant tools to define and invoke its own subagents.\"},\"EnableMCPTools\":{\"type\":\"boolean\",\"description\":\"Grant access to MCP tools.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"Name\",\"Description\",\"SystemPrompt\"]}"
+            },
+            {
+              "name": "manage_subagents",
+              "description": "<description:261>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"Action\":{\"type\":\"string\",\"enum\":[\"list\",\"kill\",\"kill_all\"],\"description\":\"'list' lists active direct subagents; 'kill' terminates the subagents named in ConversationIds; 'kill_all' terminates all.\"},\"ConversationIds\":{\"items\":{\"type\":\"string\"},\"type\":\"array\",\"description\":\"Subagents to kill. Required for 'kill'.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"Action\"]}"
+            },
+            {
+              "name": "write_file",
+              "description": "<description:321>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"Path\":{\"type\":\"string\",\"minLength\":1,\"description\":\"The absolute path of the file to create.\"},\"Content\":{\"type\":\"string\",\"description\":\"The full contents to write to the file.\"},\"Overwrite\":{\"type\":\"boolean\",\"description\":\"Whether to overwrite an existing file, replacing its entire contents.\"},\"Append\":{\"type\":\"boolean\",\"description\":\"Whether to append Content to the end of the file (creating the file if it does not exist). Cannot be combined with Overwrite=true.\"},\"ArtifactMetadata\":{\"properties\":{\"Summary\":{\"type\":\"string\",\"description\":\"Detailed multi-line summary of the artifact's contents and purpose.\"},\"UserFacing\":{\"type\":\"boolean\",\"description\":\"Whether this artifact should be presented to the user.\"},\"RequestFeedback\":{\"type\":\"boolean\",\"description\":\"Whether to request user feedback on this artifact if its contents are executable (e.g., a plan). The user is given a 'Proceed' button to execute it.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"Summary\",\"UserFacing\",\"RequestFeedback\"],\"description\":\"Metadata that defines artifact properties. ONLY provide when creating an artifact file in the artifact directory. Omit this field when creating non-artifact files.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"Path\",\"Content\"]}"
+            },
+            {
+              "name": "edit_file",
+              "description": "<description:393>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"Path\":{\"type\":\"string\",\"minLength\":1,\"description\":\"The absolute path of the file to modify.\"},\"Target\":{\"type\":\"string\",\"minLength\":1,\"description\":\"The exact string to be replaced. This must be the exact character-sequence to be replaced, including whitespace. Be very careful to include any leading whitespace otherwise this will not work at all. If the string appears multiple times in the file, every occurrence is replaced.\"},\"Replacement\":{\"type\":\"string\",\"description\":\"The content to replace the target with. Leave empty to delete the target.\"},\"ArtifactMetadata\":{\"properties\":{\"Summary\":{\"type\":\"string\",\"description\":\"Detailed multi-line summary of the artifact's contents and purpose.\"},\"UserFacing\":{\"type\":\"boolean\",\"description\":\"Whether this artifact should be presented to the user.\"},\"RequestFeedback\":{\"type\":\"boolean\",\"description\":\"Whether to request user feedback on this artifact if its contents are executable (e.g., a plan). The user is given a 'Proceed' button to execute it.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"Summary\",\"UserFacing\",\"RequestFeedback\"],\"description\":\"Metadata updates if updating an artifact file in the artifact directory. Omit this field when editing non-artifact files. Should be updated if the content is changing meaningfully.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"Path\",\"Target\",\"Replacement\"]}"
+            },
+            {
+              "name": "search_web",
+              "description": "<description:108>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"query\":{\"type\":\"string\"},\"domain\":{\"type\":\"string\",\"description\":\"Optional domain to recommend the search prioritize\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"query\"]}"
+            },
+            {
+              "name": "search_marketplace",
+              "description": "<description:1283>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"queries\":{\"items\":{\"type\":\"string\"},\"type\":\"array\",\"minItems\":1,\"description\":\"One to three short keyword variants in a single call: the product name, its common abbreviation, and the capability (e.g. [\\\"google calendar\\\", \\\"gcal\\\", \\\"calendar\\\"]); queries beyond the third are ignored. Each is matched case-insensitively as a substring of entry names and descriptions, so prefer single words or short phrases over sentences.\"},\"kind\":{\"type\":\"string\",\"enum\":[\"plugin\",\"skill\",\"all\"],\"description\":\"Which kind of entry to return. Defaults to plugin.\"},\"limit\":{\"type\":\"integer\",\"description\":\"Maximum number of results to return. Defaults to 5, at most 15.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"queries\"]}"
+            },
+            {
+              "name": "ask_question",
+              "description": "<description:175>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"questions\":{\"items\":{\"properties\":{\"question\":{\"type\":\"string\",\"minLength\":1,\"description\":\"The question, without 'select all that apply' or similar; the UI adds that.\"},\"options\":{\"items\":{\"type\":\"string\"},\"type\":\"array\",\"minItems\":2,\"description\":\"Answers to choose from, unnumbered and without an 'Other' option; the UI adds both. Put a recommended answer first, prefixed with '(Recommended)'.\"},\"is_multi_select\":{\"type\":\"boolean\",\"description\":\"Whether the user can select several options.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"question\",\"options\"]},\"type\":\"array\",\"minItems\":1}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"questions\"]}"
+            },
+            {
+              "name": "call_mcp_tool",
+              "description": "<description:102>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"ServerName\":{\"type\":\"string\",\"description\":\"Name of the MCP server.\"},\"ToolName\":{\"type\":\"string\",\"description\":\"Name of the tool to call.\"},\"Arguments\":{\"description\":\"Arguments to pass to the tool.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"ServerName\",\"ToolName\",\"Arguments\"]}"
+            },
+            {
+              "name": "list_resources",
+              "description": "<description:49>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"ServerName\":{\"type\":\"string\",\"minLength\":1,\"description\":\"Name of the server to list available resources from.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"ServerName\"]}"
+            },
+            {
+              "name": "read_resource",
+              "description": "<description:42>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"ServerName\":{\"type\":\"string\",\"description\":\"Name of the server to read the resource from.\"},\"Uri\":{\"type\":\"string\",\"description\":\"Unique identifier for the resource.\"}},\"additionalProperties\":false,\"type\":\"object\"}"
+            }
+          ],
+          "chatStartMetadata": {
+            "checkpointIndex": -1,
+            "contextWindowMetadata": {
+              "estimatedTokensUsed": 15533,
+              "tokenBreakdown": {
+                "groups": [
+                  {
+                    "name": "System Prompt",
+                    "type": "TOKEN_TYPE_SYSTEM_PROMPT",
+                    "source": "TOKEN_SOURCE_SYSTEM",
+                    "numTokens": 8147,
+                    "children": [
+                      {
+                        "name": "identity",
+                        "numTokens": 159
+                      },
+                      {
+                        "name": "artifacts",
+                        "numTokens": 1239
+                      },
+                      {
+                        "name": "conversation_transcript",
+                        "numTokens": 656
+                      },
+                      {
+                        "name": "guidelines",
+                        "numTokens": 238
+                      },
+                      {
+                        "name": "communication_style",
+                        "numTokens": 175
+                      },
+                      {
+                        "name": "slash_commands",
+                        "numTokens": 613
+                      },
+                      {
+                        "name": "messaging",
+                        "numTokens": 293
+                      },
+                      {
+                        "name": "mcp_servers",
+                        "numTokens": 224
+                      },
+                      {
+                        "name": "subagents",
+                        "numTokens": 689
+                      },
+                      {
+                        "name": "user_rules",
+                        "numTokens": 518
+                      },
+                      {
+                        "name": "skills",
+                        "numTokens": 1546
+                      },
+                      {
+                        "name": "featured_plugins",
+                        "numTokens": 1570
+                      },
+                      {
+                        "name": "user_information",
+                        "numTokens": 227
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Tools",
+                    "type": "TOKEN_TYPE_TOOLS",
+                    "source": "TOKEN_SOURCE_SYSTEM",
+                    "numTokens": 6106,
+                    "children": [
+                      {
+                        "name": "read_file",
+                        "numTokens": 254
+                      },
+                      {
+                        "name": "run_command",
+                        "numTokens": 506
+                      },
+                      {
+                        "name": "list_plugin_accounts",
+                        "numTokens": 300
+                      },
+                      {
+                        "name": "manage_task",
+                        "numTokens": 280
+                      },
+                      {
+                        "name": "send_message",
+                        "numTokens": 147
+                      },
+                      {
+                        "name": "schedule",
+                        "numTokens": 681
+                      },
+                      {
+                        "name": "invoke_subagent",
+                        "numTokens": 663
+                      },
+                      {
+                        "name": "define_subagent",
+                        "numTokens": 314
+                      },
+                      {
+                        "name": "manage_subagents",
+                        "numTokens": 246
+                      },
+                      {
+                        "name": "write_file",
+                        "numTokens": 562
+                      },
+                      {
+                        "name": "edit_file",
+                        "numTokens": 623
+                      },
+                      {
+                        "name": "search_web",
+                        "numTokens": 127
+                      },
+                      {
+                        "name": "search_marketplace",
+                        "numTokens": 703
+                      },
+                      {
+                        "name": "ask_question",
+                        "numTokens": 314
+                      },
+                      {
+                        "name": "call_mcp_tool",
+                        "numTokens": 163
+                      },
+                      {
+                        "name": "list_resources",
+                        "numTokens": 108
+                      },
+                      {
+                        "name": "read_resource",
+                        "numTokens": 115
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Chat Messages",
+                    "type": "TOKEN_TYPE_CHAT_MESSAGES",
+                    "numTokens": 1280,
+                    "children": [
+                      {
+                        "name": "0: USER_INPUT",
+                        "numTokens": 203
+                      },
+                      {
+                        "name": "1: PLANNER_RESPONSE",
+                        "numTokens": 408
+                      },
+                      {
+                        "name": "2: GENERIC",
+                        "numTokens": 106
+                      },
+                      {
+                        "name": "3: PLANNER_RESPONSE",
+                        "numTokens": 87
+                      },
+                      {
+                        "name": "4: GENERIC",
+                        "numTokens": 57
+                      },
+                      {
+                        "name": "5: PLANNER_RESPONSE",
+                        "numTokens": 259
+                      },
+                      {
+                        "name": "6: GENERIC",
+                        "numTokens": 36
+                      },
+                      {
+                        "name": "7: PLANNER_RESPONSE",
+                        "numTokens": 80
+                      },
+                      {
+                        "name": "8: GENERIC",
+                        "numTokens": 44
+                      }
+                    ]
+                  }
+                ],
+                "totalTokens": 15533
+              },
+              "maxContextTokens": 256000
+            }
+          },
+          "timeToFirstToken": "3.238836792s",
+          "streamingDuration": "1.410669917s",
+          "promptSections": [
+            {
+              "title": "<title:8>",
+              "content": "<content:476>",
+              "metadata": {
+                "sourceType": "PROMPT_SECTION_SOURCE_TYPE_TEMPLATE",
+                "templateKey": "identity"
+              },
+              "tokenType": "TOKEN_TYPE_SYSTEM_PROMPT",
+              "tokenSource": "TOKEN_SOURCE_SYSTEM"
+            },
+            {
+              "title": "<title:9>",
+              "content": "<content:3717>",
+              "metadata": {
+                "sourceType": "PROMPT_SECTION_SOURCE_TYPE_TEMPLATE",
+                "templateKey": "artifacts"
+              },
+              "tokenType": "TOKEN_TYPE_SYSTEM_PROMPT",
+              "tokenSource": "TOKEN_SOURCE_SYSTEM"
+            },
+            {
+              "title": "<title:23>",
+              "content": "<content:1968>",
+              "metadata": {
+                "sourceType": "PROMPT_SECTION_SOURCE_TYPE_TEMPLATE",
+                "templateKey": "conversation_transcript"
+              },
+              "tokenType": "TOKEN_TYPE_SYSTEM_PROMPT",
+              "tokenSource": "TOKEN_SOURCE_SYSTEM"
+            },
+            {
+              "title": "<title:10>",
+              "content": "<content:714>",
+              "metadata": {
+                "sourceType": "PROMPT_SECTION_SOURCE_TYPE_TEMPLATE",
+                "templateKey": "guidelines"
+              },
+              "tokenType": "TOKEN_TYPE_SYSTEM_PROMPT",
+              "tokenSource": "TOKEN_SOURCE_SYSTEM"
+            },
+            {
+              "title": "<title:19>",
+              "content": "<content:523>",
+              "metadata": {
+                "sourceType": "PROMPT_SECTION_SOURCE_TYPE_TEMPLATE",
+                "templateKey": "communication_style"
+              },
+              "tokenType": "TOKEN_TYPE_SYSTEM_PROMPT",
+              "tokenSource": "TOKEN_SOURCE_SYSTEM"
+            },
+            {
+              "title": "<title:14>",
+              "content": "<content:1838>",
+              "metadata": {
+                "sourceType": "PROMPT_SECTION_SOURCE_TYPE_TEMPLATE",
+                "templateKey": "slash_commands"
+              },
+              "tokenType": "TOKEN_TYPE_SYSTEM_PROMPT",
+              "tokenSource": "TOKEN_SOURCE_SYSTEM"
+            },
+            {
+              "title": "<title:9>",
+              "content": "<content:876>",
+              "metadata": {
+                "sourceType": "PROMPT_SECTION_SOURCE_TYPE_RAW"
+              },
+              "tokenType": "TOKEN_TYPE_SYSTEM_PROMPT",
+              "tokenSource": "TOKEN_SOURCE_SYSTEM"
+            },
+            {
+              "title": "<title:11>",
+              "content": "<content:671>",
+              "metadata": {
+                "sourceType": "PROMPT_SECTION_SOURCE_TYPE_RAW"
+              },
+              "tokenType": "TOKEN_TYPE_SYSTEM_PROMPT",
+              "tokenSource": "TOKEN_SOURCE_SYSTEM"
+            },
+            {
+              "title": "<title:9>",
+              "content": "<content:2067>",
+              "metadata": {
+                "sourceType": "PROMPT_SECTION_SOURCE_TYPE_RAW"
+              },
+              "tokenType": "TOKEN_TYPE_SYSTEM_PROMPT",
+              "tokenSource": "TOKEN_SOURCE_SYSTEM"
+            },
+            {
+              "title": "<title:10>",
+              "content": "<content:1554>",
+              "metadata": {
+                "sourceType": "PROMPT_SECTION_SOURCE_TYPE_RAW"
+              },
+              "tokenType": "TOKEN_TYPE_SYSTEM_PROMPT",
+              "tokenSource": "TOKEN_SOURCE_SYSTEM"
+            },
+            {
+              "title": "<title:6>",
+              "content": "<content:4634>",
+              "metadata": {
+                "sourceType": "PROMPT_SECTION_SOURCE_TYPE_TEMPLATE",
+                "templateKey": "skills"
+              },
+              "tokenType": "TOKEN_TYPE_SYSTEM_PROMPT",
+              "tokenSource": "TOKEN_SOURCE_SYSTEM"
+            },
+            {
+              "title": "<title:16>",
+              "content": "<content:4698>",
+              "metadata": {
+                "sourceType": "PROMPT_SECTION_SOURCE_TYPE_RAW"
+              },
+              "tokenType": "TOKEN_TYPE_SYSTEM_PROMPT",
+              "tokenSource": "TOKEN_SOURCE_SYSTEM"
+            },
+            {
+              "title": "<title:16>",
+              "content": "<content:681>",
+              "metadata": {
+                "sourceType": "PROMPT_SECTION_SOURCE_TYPE_RAW"
+              },
+              "tokenType": "TOKEN_TYPE_SYSTEM_PROMPT",
+              "tokenSource": "TOKEN_SOURCE_SYSTEM"
+            }
+          ],
+          "retryInfos": [
+            {
+              "usage": {
+                "model": "MODEL_PLACEHOLDER_M318",
+                "inputTokens": "11356",
+                "outputTokens": "419",
+                "thinkingOutputTokens": "178",
+                "responseOutputTokens": "241",
+                "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+                "messageId": "bot-2a48f6a3-d605-4e2f-9f98-193c21d9bb0e",
+                "responseHeader": {
+                  "sessionID": "-3750763034362895579"
+                },
+                "responseId": "2nbwapDcOtn11e8P2s35wAU"
+              },
+              "traceId": "e466cf610fe9428c"
+            }
+          ],
+          "responseModel": "gemini-3.8-flash-n",
+          "customMetadata": {
+            "cascade_id": "fb40e5ec-6ad7-4484-956c-0acce3234101",
+            "last_step_index": "8",
+            "model_enum": "MODEL_PLACEHOLDER_M318",
+            "request_id": "9a3fd96b-0f3f-42de-bbca-6658e08215ec-4",
+            "root_cascade_id": "fb40e5ec-6ad7-4484-956c-0acce3234101",
+            "trajectory_id": "9a3fd96b-0f3f-42de-bbca-6658e08215ec",
+            "used_claude": "false",
+            "used_claude_conservative": "false",
+            "used_non_gemini_model": "false"
+          },
+          "modelDisplayName": "Gemini 3.8 Flash (High)"
+        },
+        "plannerConfig": {
+          "declarativeMixinConfig": {
+            "promptSections": [
+              {
+                "builtinName": "identity"
+              },
+              {
+                "builtinName": "terminal_sandbox"
+              },
+              {
+                "builtinName": "artifacts"
+              },
+              {
+                "builtinName": "conversation_transcript"
+              },
+              {
+                "builtinName": "guidelines"
+              },
+              {
+                "builtinName": "communication_style"
+              },
+              {
+                "builtinName": "slash_commands"
+              },
+              {
+                "builtinName": "messaging"
+              },
+              {
+                "builtinName": "mcp_servers"
+              },
+              {
+                "builtinName": "subagents"
+              },
+              {
+                "builtinName": "user_rules"
+              },
+              {
+                "builtinName": "skills"
+              },
+              {
+                "builtinName": "featured_plugins"
+              },
+              {
+                "builtinName": "user_information"
+              },
+              {
+                "builtinName": "subagent_reminder"
+              }
+            ],
+            "tools": [
+              {
+                "name": "read_file",
+                "builtin": true
+              },
+              {
+                "name": "run_command",
+                "builtin": true
+              },
+              {
+                "name": "list_plugin_accounts",
+                "builtin": true
+              },
+              {
+                "name": "manage_task",
+                "builtin": true
+              },
+              {
+                "name": "send_message",
+                "builtin": true
+              },
+              {
+                "name": "schedule",
+                "builtin": true
+              },
+              {
+                "name": "invoke_subagent",
+                "builtin": true
+              },
+              {
+                "name": "define_subagent",
+                "builtin": true
+              },
+              {
+                "name": "manage_subagents",
+                "builtin": true
+              },
+              {
+                "name": "write_file",
+                "builtin": true
+              },
+              {
+                "name": "edit_file",
+                "builtin": true
+              },
+              {
+                "name": "search_web",
+                "builtin": true
+              },
+              {
+                "name": "search_marketplace",
+                "builtin": true
+              },
+              {
+                "name": "ask_question",
+                "builtin": true
+              }
+            ],
+            "preInvocationHooks": [
+              {
+                "name": "message_delivery",
+                "builtin": true
+              },
+              {
+                "name": "context_summary",
+                "builtin": true
+              }
+            ],
+            "postInvocationHooks": [
+              {
+                "name": "message_continue_check",
+                "builtin": true
+              },
+              {
+                "name": "terminal_step_check",
+                "builtin": true
+              },
+              {
+                "name": "max_generator_invocations_check",
+                "builtin": true
+              },
+              {
+                "name": "empty_output_continuation_check",
+                "builtin": true
+              },
+              {
+                "name": "force_invocation",
+                "builtin": true
+              },
+              {
+                "name": "no_tool_call_check",
+                "builtin": true
+              }
+            ],
+            "preToolHooks": [
+              {
+                "name": "battle_mode_tool_args",
+                "builtin": true
+              },
+              {
+                "name": "command_assessor",
+                "builtin": true
+              },
+              {
+                "name": "timeout_long_running_search_command",
+                "builtin": true
+              },
+              {
+                "name": "auto_run_safety_gate",
+                "builtin": true
+              }
+            ],
+            "postToolHooks": [
+              {
+                "name": "command_assessor",
+                "builtin": true
+              }
+            ],
+            "stopHooks": [
+              {
+                "name": "goal_stop",
+                "builtin": true
+              },
+              {
+                "name": "idle_subagent_guard",
+                "builtin": true
+              }
+            ],
+            "toolDecorators": [
+              {
+                "name": "output_truncation",
+                "builtin": true
+              }
+            ],
+            "forceDisableFundamentalComponents": true
+          },
+          "customizationDiscoveryConfig": {
+            "skills": {
+              "builtinSkillNames": [
+                "agy-customizations",
+                "antigravity_guide",
+                "automation",
+                "generative_ui",
+                "migrate-workflows",
+                "plugin",
+                "ui-plugin-navigation"
+              ],
+              "exclude": [
+                "permissioned-github"
+              ]
+            },
+            "agents": {
+              "builtinAgentNames": [
+                "self",
+                "research",
+                "browser",
+                "teamwork",
+                "DeepCoder",
+                "DeepInvestigator",
+                "image-generator"
+              ]
+            },
+            "kindEnablement": {
+              "agent": true,
+              "flow": false,
+              "hooks": true,
+              "mcp": true,
+              "plugin": true,
+              "rule": true,
+              "skill": true,
+              "workflow": true
+            }
+          },
+          "toolConfig": {
+            "code": {
+              "disableExtensions": [
+                ".ipynb"
+              ],
+              "allowEditGitignore": false,
+              "applyEdits": true,
+              "skipAwaitLintErrors": false,
+              "autoFixLintsConfig": {
+                "enabled": true,
+                "notifyingPrompt": "As IDE feedback, the following lint errors may be related to your recent edits up to this point. Consider whether they deserve immediate attention. If worth addressing, clearly comment on them and/or fix them. Be explicit in acknowledging lints and explaining your fix's approach. AVOID unproductive loops; if you detect yourself repeatedly creating/fixing lints in a short period, offer some thoughts but MOVE ON."
+              },
+              "replaceContentToolConfig": {
+                "maxFuzzyEditDistanceFraction": 0.001,
+                "allowPartialReplacementSuccess": true,
+                "fastApplyFallbackConfig": {
+                  "enabled": false,
+                  "promptUnchangedThreshold": 5,
+                  "contentViewRadiusLines": 200,
+                  "contentEditRadiusLines": 5,
+                  "fastApplyModel": "MODEL_GOOGLE_GEMINI_2_5_FLASH"
+                },
+                "showTriggeredMemories": true,
+                "disableAllowMultiple": false,
+                "useLineRange": true
+              },
+              "classifyEdit": false,
+              "provideImportance": false,
+              "useSedEdit": false,
+              "maxStoredDiffBytes": 1048576,
+              "useReplaceContentProposeCode": false
+            },
+            "intent": {
+              "intentModel": "MODEL_PLACEHOLDER_M50",
+              "maxContextTokens": 40000
+            },
+            "grep": {
+              "maxGrepResults": 50,
+              "useCodeSearch": false,
+              "disableFallbackToLocalExecution": false
+            },
+            "find": {
+              "maxFindResults": 50,
+              "useCodeSearch": false,
+              "disableFallbackToLocalExecution": false,
+              "forceDisable": true
+            },
+            "runCommand": {
+              "maxCharsCommandStdout": 8192,
+              "forceDisable": false,
+              "autoCommandConfig": {
+                "systemAllowlist": [
+                  "cd"
+                ],
+                "sandboxSystemAllowlist": [
+                  "head",
+                  "tail",
+                  "mkdir",
+                  "cd",
+                  "cp",
+                  "mv",
+                  "cat",
+                  "find",
+                  "grep",
+                  "rm",
+                  "touch",
+                  "less",
+                  "clear",
+                  "ls"
+                ],
+                "autoExecutionPolicy": "CASCADE_COMMANDS_AUTO_EXECUTION_OFF"
+              },
+              "enableIdeTerminalExecution": false,
+              "forceGoTerminalExecution": false,
+              "shellName": "zsh",
+              "shellPath": "zsh",
+              "forbidSearchCommands": false,
+              "enablePty": true,
+              "enablePersistentMode": true,
+              "enableTerminalSandbox": false,
+              "enableTimeoutNotification": false,
+              "enableDaemonCommands": true,
+              "enableFastOutputClose": true,
+              "searchFallbackMode": "SEARCH_FALLBACK_NONE",
+              "enablePluginAuth": true
+            },
+            "viewFile": {
+              "allowViewGitignore": false,
+              "splitOutlineTool": true,
+              "showTriggeredMemories": true,
+              "maxLinesPerView": 800,
+              "includeLineNumbers": true,
+              "maxBytesPerView": 46080,
+              "maxFileSizeBytes": 104857600,
+              "maxTotalOutlineBytes": 8192,
+              "maxBytesPerOutlineItem": 512,
+              "showFullFileBytes": 8192
+            },
+            "suggestedResponse": {
+              "forceDisable": true
+            },
+            "searchWeb": {
+              "forceDisable": false,
+              "thirdPartyConfig": {
+                "provider": "THIRD_PARTY_WEB_SEARCH_PROVIDER_GEMINI"
+              }
+            },
+            "mcp": {
+              "forceDisable": false,
+              "maxOutputBytes": 10240,
+              "nonBlockingTurnLoad": true
+            },
+            "listDir": {},
+            "commandStatus": {
+              "useDelta": true,
+              "maxOutputCharacters": 8192,
+              "minOutputCharacters": 1024,
+              "maxWaitDurationSeconds": 300,
+              "outputStabilizationDurationSeconds": 5,
+              "enableInputDetection": true,
+              "inputDetectionModel": "MODEL_GOOGLE_GEMINI_2_5_FLASH_LITE"
+            },
+            "antigravityBrowser": {
+              "enableBrowserSubagentV2": true,
+              "enableArk": false,
+              "enableBrowserSubagentWebview": false,
+              "browserJsExecutionPolicy": "BROWSER_JS_EXECUTION_POLICY_ALWAYS_ASK"
+            },
+            "codeSearch": {
+              "forceDisable": false,
+              "useDetailedSearchGuidanceInDi": true,
+              "enableCsQueryOptimizations": false
+            },
+            "internalSearch": {
+              "maxResults": 10,
+              "maxContentLength": 5000
+            },
+            "finish": {},
+            "notebookEdit": {
+              "enabled": false
+            },
+            "invokeSubagent": {
+              "enabled": true,
+              "maxNestingDepth": 10,
+              "alwaysInheritModel": false,
+              "allowFork": false,
+              "sendInitialPromptAsMessage": true
+            },
+            "askQuestion": {
+              "enabled": true
+            },
+            "permissionConfig": {
+              "enterpriseConfig": {
+                "enforceWorkspaceValidation": true
+              },
+              "effectiveGrants": {
+                "ask": [
+                  "mcp(<grant>)"
+                ]
+              },
+              "defaultGrants": {
+                "allow": [
+                  "read_file(<grant>)",
+                  "write_file(<grant>)"
+                ]
+              },
+              "permissionsV2": true,
+              "effectivePermissionPreset": "AGENT_PERMISSION_PRESET_REQUEST_REVIEW"
+            },
+            "userInteractionTimeoutSeconds": 0,
+            "wait": {
+              "enabled": false
+            },
+            "listPluginAccounts": {
+              "enabled": true
+            },
+            "toolOutput": {
+              "maxOutputBytes": 10240
+            },
+            "schedule": {
+              "enabled": true,
+              "enableDaemon": true
+            },
+            "forceEnableSendMessageTool": false,
+            "notifyUser": {
+              "artifactReviewMode": "ARTIFACT_REVIEW_MODE_ALWAYS"
+            },
+            "autoAllowAllInteractions": false
+          },
+          "planModel": "MODEL_PLACEHOLDER_M318",
+          "modelName": "gemini-3.8-flash-high",
+          "maxOutputTokens": 65536,
+          "noToolExplanation": true,
+          "noToolSummary": false,
+          "ephemeralMessagesConfig": {
+            "enabled": false,
+            "persistenceLevel": "EPHEMERAL_MESSAGE_PERSISTENCE_LEVEL_LATEST_ONLY",
+            "browserEphemeralOptions": [
+              "BROWSER_EPHEMERAL_OPTION_SCREENSHOT",
+              "BROWSER_EPHEMERAL_OPTION_DOM"
+            ],
+            "disabledHeuristics": [
+              "planning_mode",
+              "bash_command_reminder",
+              "running_tasks_reminder"
+            ],
+            "useAllowlist": false
+          },
+          "retryConfig": {
+            "modelOutputRetry": {
+              "maxRetries": 4,
+              "forbidToolUse": true,
+              "retryOnlyOnInvalidArgs": false
+            },
+            "apiRetry": {
+              "maxRetries": 8,
+              "initialSleepDurationMs": 4000,
+              "exponentialMultiplier": 2,
+              "includeErrorFeedback": true,
+              "range": 0.4
+            }
+          },
+          "knowledgeConfig": {
+            "enabled": false,
+            "model": "MODEL_PLACEHOLDER_M18",
+            "maxContextTokens": 200000,
+            "minTurnsBetweenKnowledgeGeneration": 10000,
+            "maxKnowledgeItems": 20,
+            "maxArtifactsPerKi": 20,
+            "maxTitleLength": 100,
+            "maxSummaryLength": 1000,
+            "maxInvocations": 20
+          },
+          "agenticModeConfig": {
+            "useSlashPlan": true
+          },
+          "noWaitForPreviousTools": false,
+          "experiments": {
+            "values": {
+              "convenient-multi-agent-coordination": {
+                "boolValue": false
+              },
+              "default_subagent_interaction_timeout_seconds": {
+                "numberValue": 60
+              },
+              "disable-teamwork-forced-flash-model": {
+                "boolValue": false
+              },
+              "enable-agent-plugins-spec": {
+                "boolValue": true
+              },
+              "enable-browser-subagent-webview-script": {
+                "boolValue": false
+              },
+              "enable-browser-subagent-webview-ux": {
+                "boolValue": false
+              },
+              "enable-citc-top-level-write-guard": {
+                "boolValue": false
+              },
+              "enable-citc-workspace-hygiene-rule": {
+                "boolValue": true
+              },
+              "enable-compact-slash-command": {
+                "boolValue": true
+              },
+              "enable-cost-accumulator": {
+                "boolValue": false
+              },
+              "enable-generative-hooks": {
+                "boolValue": false
+              },
+              "enable-iapi-tool-steps": {
+                "boolValue": false
+              },
+              "enable-owl-slash-command": {
+                "boolValue": true
+              },
+              "enable-permissioned-github": {
+                "boolValue": false
+              },
+              "enable-programmatic-tools": {
+                "boolValue": false
+              },
+              "enable-rpc-sandbox-proxy": {
+                "boolValue": false
+              },
+              "enable-subagent-hub": {
+                "boolValue": false
+              },
+              "enable-teamwork-subagent": {
+                "boolValue": true
+              },
+              "enable-trustedcli-config-files": {
+                "boolValue": false
+              },
+              "enable-url-artifacts": {
+                "boolValue": false
+              },
+              "jetski-autonomous-mode": {
+                "boolValue": false
+              },
+              "jetski-generative-ui": {
+                "boolValue": true
+              },
+              "jetski-unified-customizations-panel-enabled": {
+                "boolValue": false
+              },
+              "native-swarm-spanner-board": {
+                "boolValue": false
+              }
+            }
+          },
+          "disableLoopDetection": true,
+          "customizationTokenBudget": 20000,
+          "rulesTokenBudget": 20000
+        },
+        "executionId": "7b51c7ce-1eee-48ef-8a1c-c4af4d3758d2",
+        "mendelExperimentIds": [
+          1714259,
+          105856899,
+          105867469,
+          105867471,
+          105887299,
+          105979531,
+          105979552,
+          105979553,
+          105979574,
+          106015328,
+          106015333,
+          106021688,
+          106032301,
+          106032303,
+          106064028,
+          106064030,
+          106100625,
+          106100654,
+          106121399,
+          106121401,
+          106121604,
+          106121607,
+          106123597,
+          106123599,
+          106140402,
+          106143956,
+          106228452,
+          106260793,
+          106263850,
+          106264532,
+          106281951,
+          106380926,
+          106511968,
+          106544525,
+          106568390,
+          106568772,
+          106588527,
+          106596396,
+          106597020,
+          106640124,
+          106640126,
+          106643242,
+          106644204,
+          106644207,
+          106676368,
+          106712040,
+          106724031,
+          106749607,
+          106754391,
+          106778026,
+          106786387,
+          106786388,
+          106788235,
+          106791759,
+          106791765,
+          106793263,
+          106793266,
+          106798730,
+          106798741,
+          106805876,
+          106806117,
+          106811917,
+          106822474,
+          106825242,
+          106825244,
+          106826239,
+          106826316,
+          106827293,
+          106827294,
+          106828852,
+          106828853,
+          106828854,
+          106828998,
+          106833630,
+          106838234,
+          106848342,
+          106865004,
+          106865006,
+          106898384,
+          106913264,
+          106914992,
+          106986919,
+          107014155
+        ]
+      }
+    ],
+    "executorMetadatas": [
+      {
+        "terminationReason": "EXECUTOR_TERMINATION_REASON_NO_TOOL_CALL",
+        "numGeneratorInvocations": 5,
+        "lastStepIdx": 9,
+        "executionId": "7b51c7ce-1eee-48ef-8a1c-c4af4d3758d2",
+        "cascadeConfig": {
+          "plannerConfig": {
+            "declarativeMixinConfig": {
+              "promptSections": [
+                {
+                  "builtinName": "identity"
+                },
+                {
+                  "builtinName": "terminal_sandbox"
+                },
+                {
+                  "builtinName": "artifacts"
+                },
+                {
+                  "builtinName": "conversation_transcript"
+                },
+                {
+                  "builtinName": "guidelines"
+                },
+                {
+                  "builtinName": "communication_style"
+                },
+                {
+                  "builtinName": "slash_commands"
+                },
+                {
+                  "builtinName": "messaging"
+                },
+                {
+                  "builtinName": "mcp_servers"
+                },
+                {
+                  "builtinName": "subagents"
+                },
+                {
+                  "builtinName": "user_rules"
+                },
+                {
+                  "builtinName": "skills"
+                },
+                {
+                  "builtinName": "featured_plugins"
+                },
+                {
+                  "builtinName": "user_information"
+                },
+                {
+                  "builtinName": "subagent_reminder"
+                }
+              ],
+              "tools": [
+                {
+                  "name": "read_file",
+                  "builtin": true
+                },
+                {
+                  "name": "run_command",
+                  "builtin": true
+                },
+                {
+                  "name": "list_plugin_accounts",
+                  "builtin": true
+                },
+                {
+                  "name": "manage_task",
+                  "builtin": true
+                },
+                {
+                  "name": "send_message",
+                  "builtin": true
+                },
+                {
+                  "name": "schedule",
+                  "builtin": true
+                },
+                {
+                  "name": "invoke_subagent",
+                  "builtin": true
+                },
+                {
+                  "name": "define_subagent",
+                  "builtin": true
+                },
+                {
+                  "name": "manage_subagents",
+                  "builtin": true
+                },
+                {
+                  "name": "write_file",
+                  "builtin": true
+                },
+                {
+                  "name": "edit_file",
+                  "builtin": true
+                },
+                {
+                  "name": "search_web",
+                  "builtin": true
+                },
+                {
+                  "name": "search_marketplace",
+                  "builtin": true
+                },
+                {
+                  "name": "ask_question",
+                  "builtin": true
+                }
+              ],
+              "preInvocationHooks": [
+                {
+                  "name": "message_delivery",
+                  "builtin": true
+                },
+                {
+                  "name": "context_summary",
+                  "builtin": true
+                }
+              ],
+              "postInvocationHooks": [
+                {
+                  "name": "message_continue_check",
+                  "builtin": true
+                },
+                {
+                  "name": "terminal_step_check",
+                  "builtin": true
+                },
+                {
+                  "name": "max_generator_invocations_check",
+                  "builtin": true
+                },
+                {
+                  "name": "empty_output_continuation_check",
+                  "builtin": true
+                },
+                {
+                  "name": "force_invocation",
+                  "builtin": true
+                },
+                {
+                  "name": "no_tool_call_check",
+                  "builtin": true
+                }
+              ],
+              "preToolHooks": [
+                {
+                  "name": "battle_mode_tool_args",
+                  "builtin": true
+                },
+                {
+                  "name": "command_assessor",
+                  "builtin": true
+                },
+                {
+                  "name": "timeout_long_running_search_command",
+                  "builtin": true
+                },
+                {
+                  "name": "auto_run_safety_gate",
+                  "builtin": true
+                }
+              ],
+              "postToolHooks": [
+                {
+                  "name": "command_assessor",
+                  "builtin": true
+                }
+              ],
+              "stopHooks": [
+                {
+                  "name": "goal_stop",
+                  "builtin": true
+                },
+                {
+                  "name": "idle_subagent_guard",
+                  "builtin": true
+                }
+              ],
+              "toolDecorators": [
+                {
+                  "name": "output_truncation",
+                  "builtin": true
+                }
+              ],
+              "forceDisableFundamentalComponents": true
+            },
+            "customizationDiscoveryConfig": {
+              "skills": {
+                "builtinSkillNames": [
+                  "agy-customizations",
+                  "antigravity_guide",
+                  "automation",
+                  "generative_ui",
+                  "migrate-workflows",
+                  "plugin",
+                  "ui-plugin-navigation"
+                ],
+                "exclude": [
+                  "permissioned-github"
+                ]
+              },
+              "agents": {
+                "builtinAgentNames": [
+                  "self",
+                  "research",
+                  "browser",
+                  "teamwork",
+                  "DeepCoder",
+                  "DeepInvestigator",
+                  "image-generator"
+                ]
+              },
+              "kindEnablement": {
+                "agent": true,
+                "flow": false,
+                "hooks": true,
+                "mcp": true,
+                "plugin": true,
+                "rule": true,
+                "skill": true,
+                "workflow": true
+              }
+            },
+            "toolConfig": {
+              "code": {
+                "disableExtensions": [
+                  ".ipynb"
+                ],
+                "allowEditGitignore": false,
+                "applyEdits": true,
+                "skipAwaitLintErrors": false,
+                "autoFixLintsConfig": {
+                  "enabled": true,
+                  "notifyingPrompt": "As IDE feedback, the following lint errors may be related to your recent edits up to this point. Consider whether they deserve immediate attention. If worth addressing, clearly comment on them and/or fix them. Be explicit in acknowledging lints and explaining your fix's approach. AVOID unproductive loops; if you detect yourself repeatedly creating/fixing lints in a short period, offer some thoughts but MOVE ON."
+                },
+                "replaceContentToolConfig": {
+                  "maxFuzzyEditDistanceFraction": 0.001,
+                  "allowPartialReplacementSuccess": true,
+                  "fastApplyFallbackConfig": {
+                    "enabled": false,
+                    "promptUnchangedThreshold": 5,
+                    "contentViewRadiusLines": 200,
+                    "contentEditRadiusLines": 5,
+                    "fastApplyModel": "MODEL_GOOGLE_GEMINI_2_5_FLASH"
+                  },
+                  "showTriggeredMemories": true,
+                  "disableAllowMultiple": false,
+                  "useLineRange": true
+                },
+                "classifyEdit": false,
+                "provideImportance": false,
+                "useSedEdit": false,
+                "maxStoredDiffBytes": 1048576,
+                "useReplaceContentProposeCode": false
+              },
+              "intent": {
+                "intentModel": "MODEL_PLACEHOLDER_M50",
+                "maxContextTokens": 40000
+              },
+              "grep": {
+                "maxGrepResults": 50,
+                "useCodeSearch": false,
+                "disableFallbackToLocalExecution": false
+              },
+              "find": {
+                "maxFindResults": 50,
+                "useCodeSearch": false,
+                "disableFallbackToLocalExecution": false,
+                "forceDisable": true
+              },
+              "runCommand": {
+                "maxCharsCommandStdout": 8192,
+                "forceDisable": false,
+                "autoCommandConfig": {
+                  "systemAllowlist": [
+                    "cd"
+                  ],
+                  "sandboxSystemAllowlist": [
+                    "head",
+                    "tail",
+                    "mkdir",
+                    "cd",
+                    "cp",
+                    "mv",
+                    "cat",
+                    "find",
+                    "grep",
+                    "rm",
+                    "touch",
+                    "less",
+                    "clear",
+                    "ls"
+                  ],
+                  "autoExecutionPolicy": "CASCADE_COMMANDS_AUTO_EXECUTION_OFF"
+                },
+                "enableIdeTerminalExecution": false,
+                "forceGoTerminalExecution": false,
+                "shellName": "zsh",
+                "shellPath": "zsh",
+                "forbidSearchCommands": false,
+                "enablePty": true,
+                "enablePersistentMode": true,
+                "enableTerminalSandbox": false,
+                "enableTimeoutNotification": false,
+                "enableDaemonCommands": true,
+                "enableFastOutputClose": true,
+                "searchFallbackMode": "SEARCH_FALLBACK_NONE",
+                "enablePluginAuth": true
+              },
+              "viewFile": {
+                "allowViewGitignore": false,
+                "splitOutlineTool": true,
+                "showTriggeredMemories": true,
+                "maxLinesPerView": 800,
+                "includeLineNumbers": true,
+                "maxBytesPerView": 46080,
+                "maxFileSizeBytes": 104857600,
+                "maxTotalOutlineBytes": 8192,
+                "maxBytesPerOutlineItem": 512,
+                "showFullFileBytes": 8192
+              },
+              "suggestedResponse": {
+                "forceDisable": true
+              },
+              "searchWeb": {
+                "forceDisable": false,
+                "thirdPartyConfig": {
+                  "provider": "THIRD_PARTY_WEB_SEARCH_PROVIDER_GEMINI"
+                }
+              },
+              "mcp": {
+                "forceDisable": false,
+                "maxOutputBytes": 10240,
+                "nonBlockingTurnLoad": true
+              },
+              "listDir": {},
+              "commandStatus": {
+                "useDelta": true,
+                "maxOutputCharacters": 8192,
+                "minOutputCharacters": 1024,
+                "maxWaitDurationSeconds": 300,
+                "outputStabilizationDurationSeconds": 5,
+                "enableInputDetection": true,
+                "inputDetectionModel": "MODEL_GOOGLE_GEMINI_2_5_FLASH_LITE"
+              },
+              "antigravityBrowser": {
+                "enableBrowserSubagentV2": true,
+                "enableArk": false,
+                "enableBrowserSubagentWebview": false,
+                "browserJsExecutionPolicy": "BROWSER_JS_EXECUTION_POLICY_ALWAYS_ASK"
+              },
+              "codeSearch": {
+                "forceDisable": false,
+                "useDetailedSearchGuidanceInDi": true,
+                "enableCsQueryOptimizations": false
+              },
+              "internalSearch": {
+                "maxResults": 10,
+                "maxContentLength": 5000
+              },
+              "finish": {},
+              "notebookEdit": {
+                "enabled": false
+              },
+              "invokeSubagent": {
+                "enabled": true,
+                "maxNestingDepth": 10,
+                "alwaysInheritModel": false,
+                "allowFork": false,
+                "sendInitialPromptAsMessage": true
+              },
+              "askQuestion": {
+                "enabled": true
+              },
+              "permissionConfig": {
+                "enterpriseConfig": {
+                  "enforceWorkspaceValidation": true
+                },
+                "effectiveGrants": {
+                  "ask": [
+                    "mcp(<grant>)"
+                  ]
+                },
+                "defaultGrants": {
+                  "allow": [
+                    "read_file(<grant>)",
+                    "write_file(<grant>)"
+                  ]
+                },
+                "permissionsV2": true,
+                "effectivePermissionPreset": "AGENT_PERMISSION_PRESET_REQUEST_REVIEW"
+              },
+              "userInteractionTimeoutSeconds": 0,
+              "wait": {
+                "enabled": false
+              },
+              "listPluginAccounts": {
+                "enabled": true
+              },
+              "toolOutput": {
+                "maxOutputBytes": 10240
+              },
+              "schedule": {
+                "enabled": true,
+                "enableDaemon": true
+              },
+              "forceEnableSendMessageTool": false,
+              "notifyUser": {
+                "artifactReviewMode": "ARTIFACT_REVIEW_MODE_ALWAYS"
+              },
+              "autoAllowAllInteractions": false
+            },
+            "planModel": "MODEL_PLACEHOLDER_M318",
+            "modelName": "gemini-3.8-flash-high",
+            "maxOutputTokens": 65536,
+            "noToolExplanation": true,
+            "noToolSummary": false,
+            "ephemeralMessagesConfig": {
+              "enabled": false,
+              "persistenceLevel": "EPHEMERAL_MESSAGE_PERSISTENCE_LEVEL_LATEST_ONLY",
+              "browserEphemeralOptions": [
+                "BROWSER_EPHEMERAL_OPTION_SCREENSHOT",
+                "BROWSER_EPHEMERAL_OPTION_DOM"
+              ],
+              "disabledHeuristics": [
+                "planning_mode",
+                "bash_command_reminder",
+                "running_tasks_reminder"
+              ],
+              "useAllowlist": false
+            },
+            "retryConfig": {
+              "modelOutputRetry": {
+                "maxRetries": 4,
+                "forbidToolUse": true,
+                "retryOnlyOnInvalidArgs": false
+              },
+              "apiRetry": {
+                "maxRetries": 8,
+                "initialSleepDurationMs": 4000,
+                "exponentialMultiplier": 2,
+                "includeErrorFeedback": true,
+                "range": 0.4
+              }
+            },
+            "knowledgeConfig": {
+              "enabled": false,
+              "model": "MODEL_PLACEHOLDER_M18",
+              "maxContextTokens": 200000,
+              "minTurnsBetweenKnowledgeGeneration": 10000,
+              "maxKnowledgeItems": 20,
+              "maxArtifactsPerKi": 20,
+              "maxTitleLength": 100,
+              "maxSummaryLength": 1000,
+              "maxInvocations": 20
+            },
+            "agenticModeConfig": {
+              "useSlashPlan": true
+            },
+            "noWaitForPreviousTools": false,
+            "experiments": {
+              "values": {
+                "convenient-multi-agent-coordination": {
+                  "boolValue": false
+                },
+                "default_subagent_interaction_timeout_seconds": {
+                  "numberValue": 60
+                },
+                "disable-teamwork-forced-flash-model": {
+                  "boolValue": false
+                },
+                "enable-agent-plugins-spec": {
+                  "boolValue": true
+                },
+                "enable-browser-subagent-webview-script": {
+                  "boolValue": false
+                },
+                "enable-browser-subagent-webview-ux": {
+                  "boolValue": false
+                },
+                "enable-citc-top-level-write-guard": {
+                  "boolValue": false
+                },
+                "enable-citc-workspace-hygiene-rule": {
+                  "boolValue": true
+                },
+                "enable-compact-slash-command": {
+                  "boolValue": true
+                },
+                "enable-cost-accumulator": {
+                  "boolValue": false
+                },
+                "enable-generative-hooks": {
+                  "boolValue": false
+                },
+                "enable-iapi-tool-steps": {
+                  "boolValue": false
+                },
+                "enable-owl-slash-command": {
+                  "boolValue": true
+                },
+                "enable-permissioned-github": {
+                  "boolValue": false
+                },
+                "enable-programmatic-tools": {
+                  "boolValue": false
+                },
+                "enable-rpc-sandbox-proxy": {
+                  "boolValue": false
+                },
+                "enable-subagent-hub": {
+                  "boolValue": false
+                },
+                "enable-teamwork-subagent": {
+                  "boolValue": true
+                },
+                "enable-trustedcli-config-files": {
+                  "boolValue": false
+                },
+                "enable-url-artifacts": {
+                  "boolValue": false
+                },
+                "jetski-autonomous-mode": {
+                  "boolValue": false
+                },
+                "jetski-generative-ui": {
+                  "boolValue": true
+                },
+                "jetski-unified-customizations-panel-enabled": {
+                  "boolValue": false
+                },
+                "native-swarm-spanner-board": {
+                  "boolValue": false
+                }
+              }
+            },
+            "disableLoopDetection": true,
+            "customizationTokenBudget": 20000,
+            "rulesTokenBudget": 20000
+          },
+          "checkpointConfig": {
+            "maxOverheadRatio": 0.15,
+            "maxTokenLimit": 256000,
+            "maxOutputTokens": 16384,
+            "checkpointModel": "MODEL_PLACEHOLDER_M50",
+            "maxUserRequests": 10,
+            "maxUserRequestBytes": 1024,
+            "maxUserRequestMediaTokens": 1200,
+            "maxSubagentSnapshots": 20,
+            "retryConfig": {
+              "maxRetries": 4,
+              "initialSleepDurationMs": 1000,
+              "exponentialMultiplier": 2,
+              "includeErrorFeedback": false,
+              "range": 0.4
+            },
+            "enableFallback": true,
+            "strategy": "CHECKPOINT_STRATEGY_SAME_MODEL",
+            "sessionSummaryPromptOverride": "You have been working on the task described above but have not yet completed\nit. Write a continuation summary that will allow you (or another instance of\nyourself) to resume work efficiently in a future context window where the\nfull conversation history will NOT be available—only this summary.\n\nThis summary is all that will be available to you going forward in the future\ncontext window. Do not call any tools, simply just provide the summary based on\nthe information available in the current context window.\n\nYour summary must be structured, concise, and actionable. Optimize for enabling immediate resumption with zero redundant work.\n\nInclude the following sections:\n\n1. **Task Overview**\n   - The user's core request, success criteria, and requested deliverables. Record any target IDs, URLs, or reporting recipients from the request.\n   - Scope boundaries or task-specific constraints\n   - Any ambiguities that were resolved (and how)\n\n2. **Progress**\n   - What has been completed, with concrete references (file paths,\n     test or verification commands run and their outcomes, resource identifiers, tool outputs, URLs, etc.)\n   - Key plans, design docs, or artifacts produced and their current state\n   - Skills, documentation, or reference files that were read or inspected\n   - What is in progress or only inspected/planned, and its current state. Distinguish completed edits from files that were only read or partially edited, and do not mark unverified test commands as completed or passed.\n\n3. **Key Findings**\n   - Technical constraints, requirements, or domain details uncovered\n   - Decisions made and their rationale\n\n4. **Errors & Fixes**\n   This list should be exhaustive across the entire session so that no resolved or unresolved failure is omitted:\n   - All errors, failed commands, or test/build failures encountered during the session. Include both errors that were resolved or worked around and any unresolved failures, with specific error messages and root causes.\n   - How each error was fixed or worked around, and any user feedback on the error\n   - Approaches that were tried and abandoned (and why—this prevents\n     the successor from repeating them)\n\n5. **Active Context**\n   - State of any external resources, sessions, environments, or multi-agent context, such as parent or child agents in use.\n   - Relevant intermediate results, hypotheses, or working assumptions\n   - Dependencies between components or steps\n\n6. **Next Steps**\n   The next steps should provide all information required to continue working on the task. This includes any remaining features, bugs, points of investigation, and verification items. This list should be exhaustive, so that an agent working with this list can complete the full original task end-to-end. For example:\n   - Remaining steps from any agreed plan, design doc, or active workflows and instructions, in priority order. Preserve specific uncompleted items rather than collapsing checklists into high-level summaries.\n   - Remaining files to create, modify, move, copy, or delete, with the key changes needed in each\n   - Remaining verification steps, test or build commands, or deliverables needed to complete the task\n   - Any required cleanup, such as removing temporary files, debug code, or temporary configuration changes.\n   - Known blockers, open questions, prerequisites, or risks for each step\n\n7. **Commitments & Constraints**\n   - Standing rules, personas, or response formatting requirements from user instructions, rules files, or reference documents.\n   - Promises made to the user (e.g., \"I said I would do X before Y\")\n   - User preferences or style requirements\n   - Any boundaries the user set on approach, tools, or scope\n\nBe concise but complete—err on the side of including concrete details needed to\nprevent duplicate work, omitted plan steps, repeated mistakes, or broken promises.\n\nWrap your response in <summary></summary> tags.\n",
+            "useLastPlannerModel": true,
+            "includeArtifactSnapshots": true,
+            "includeSubagentSnapshots": true,
+            "includeRunningTaskSnapshots": true,
+            "maxArtifactSectionBytes": 4096,
+            "mediaTokensPerSecond": "300",
+            "useModelReportedTokenCount": true,
+            "enabled": true,
+            "includeConversationLog": false,
+            "tokenThreshold": 50000,
+            "isSync": true,
+            "includeLastUserMessage": true
+          },
+          "executorConfig": {
+            "disableAsync": false,
+            "maxGeneratorInvocations": -1,
+            "useAggressiveSnapshotting": false,
+            "requireFinishTool": false,
+            "queueAllSteps": true,
+            "storeGenSvcRequest": false,
+            "enableTasks": true,
+            "enableAfkStopHook": false,
+            "useCoreDirect": true,
+            "commandAssessorConfig": {
+              "enabled": true,
+              "policyGuardianConfig": {
+                "modelTier": "MODEL_TIER_FLASH_LITE",
+                "vettedTools": [
+                  "run_command",
+                  "read_url_content",
+                  "open_browser_url"
+                ],
+                "maxToolRounds": 10,
+                "enableUrlVetting": true,
+                "httpTimeoutSeconds": 30
+              },
+              "allowExperimentalMonitors": false,
+              "allowPssExperimentalMonitors": false,
+              "activeTags": [
+                "jetski_mode_request_review"
+              ]
+            },
+            "maxStopHookContinuations": 10,
+            "enableHookStatus": true
+          },
+          "trajectoryConversionConfig": {
+            "wrapToolResponses": false,
+            "logArtifactsConfig": {
+              "enabled": true,
+              "hideNominalToolSteps": false,
+              "hidePlannerResponseText": false,
+              "maxBytesPerStep": 4096,
+              "maxBytesPerToolArg": 2048,
+              "hideSystemSteps": false,
+              "hideUserImplicitSteps": false
+            },
+            "appendEphemeralToPreviousToolResult": true,
+            "disableStepId": true,
+            "enableToolTimestamp": true,
+            "useRawUserMessage": false,
+            "disableSystemMessageMerging": false,
+            "enableContextRole": false,
+            "maxTokensPerStep": 16384,
+            "discardLoopingPlannerResponses": false,
+            "discardErroredPlannerResponses": false,
+            "errorOnTruncationWithoutCheckpoint": false,
+            "raiseStepConversionError": false,
+            "maxTokensPerUserInputStep": 64000,
+            "useStructuredToolResponses": true,
+            "showModelSelectionChange": true,
+            "disableSystemMessageTag": false,
+            "taskDetailsSuffix": "\nYOU MUST TAKE ONE OF THE FOLLOWING TWO ACTIONS: A) either proceed to other relevant work (if any) or, B) simply update the user with a short message (that you have launched the command and will wait for it to finish) and end the turn.\n DO NOTHING ELSE."
+          },
+          "conversationHistoryConfig": {
+            "enabled": true,
+            "maxConversations": 20,
+            "maxTitleChars": 100,
+            "maxUserIntentChars": 1000,
+            "maxConversationLogsChars": 1000,
+            "maxArtifactSummaryChars": 2000
+          },
+          "messageConfig": {
+            "enabled": true
+          },
+          "agentApiConfig": {
+            "enabled": false
+          },
+          "battleModeConfig": {
+            "maxTurns": 0
+          }
+        },
+        "mendelExperimentIds": [
+          1714259,
+          105856899,
+          105867469,
+          105867471,
+          105887299,
+          105979531,
+          105979552,
+          105979553,
+          105979574,
+          106015328,
+          106015333,
+          106021688,
+          106032301,
+          106032303,
+          106064028,
+          106064030,
+          106100625,
+          106100654,
+          106121399,
+          106121401,
+          106121604,
+          106121607,
+          106123597,
+          106123599,
+          106140402,
+          106143956,
+          106228452,
+          106260793,
+          106263850,
+          106264532,
+          106281951,
+          106380926,
+          106511968,
+          106544525,
+          106568390,
+          106568772,
+          106588527,
+          106596396,
+          106597020,
+          106640124,
+          106640126,
+          106643242,
+          106644204,
+          106644207,
+          106676368,
+          106712040,
+          106724031,
+          106749607,
+          106754391,
+          106778026,
+          106786387,
+          106786388,
+          106788235,
+          106791759,
+          106791765,
+          106793263,
+          106793266,
+          106798730,
+          106798741,
+          106805876,
+          106806117,
+          106811917,
+          106822474,
+          106825242,
+          106825244,
+          106826239,
+          106826316,
+          106827293,
+          106827294,
+          106828852,
+          106828853,
+          106828854,
+          106828998,
+          106833630,
+          106838234,
+          106848342,
+          106865004,
+          106865006,
+          106898384,
+          106913264,
+          106914992,
+          106986919,
+          107014155
+        ],
+        "requestOverrideConfig": {
+          "plannerConfig": {
+            "toolConfig": {
+              "antigravityBrowser": {
+                "enableBrowserSubagentWebview": false
+              }
+            },
+            "planModel": "MODEL_PLACEHOLDER_M318"
+          }
+        },
+        "loadedCustomizations": {
+          "customizations": [
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_SKILL",
+              "name": "agy-customizations",
+              "path": "/Users/USER/.gemini/antigravity/builtin/skills/agy-customizations/SKILL.md",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_SKILL",
+              "name": "antigravity-guide",
+              "path": "/Users/USER/.gemini/antigravity/builtin/skills/antigravity_guide/SKILL.md",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_SKILL",
+              "name": "automation",
+              "path": "/Users/USER/.gemini/antigravity/builtin/skills/automation/SKILL.md",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_SKILL",
+              "name": "context7",
+              "path": "/Users/USER/.gemini/config/skills/context7/SKILL.md",
+              "scope": "SCOPE_GLOBAL",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_SKILL",
+              "name": "generative_ui",
+              "path": "/Users/USER/.gemini/antigravity/builtin/skills/generative_ui/SKILL.md",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_SKILL",
+              "name": "migrate-workflows",
+              "path": "/Users/USER/.gemini/antigravity/builtin/skills/migrate-workflows/SKILL.md",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_SKILL",
+              "name": "plugin",
+              "path": "/Users/USER/.gemini/antigravity/builtin/skills/plugin/SKILL.md",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_SKILL",
+              "name": "ui-plugin-navigation",
+              "path": "/Users/USER/.gemini/antigravity/builtin/skills/ui-plugin-navigation/SKILL.md",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_AGENT",
+              "name": "research",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_AGENT",
+              "name": "browser",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_AGENT",
+              "name": "image-generator",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_AGENT",
+              "name": "teamwork",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_AGENT",
+              "name": "DeepCoder",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_AGENT",
+              "name": "DeepInvestigator",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_RULE",
+              "path": "/Users/USER/.gemini/GEMINI.md",
+              "scope": "SCOPE_GLOBAL",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_MCP",
+              "name": "context7",
+              "path": "/Users/USER/.gemini/config/mcp_config.json",
+              "scope": "SCOPE_GLOBAL",
+              "status": "STATUS_ENABLED"
+            }
+          ]
+        }
+      }
+    ],
+    "source": "CORTEX_TRAJECTORY_SOURCE_INTERACTIVE_CASCADE",
+    "metadata": {
+      "workspaces": [
+        {
+          "workspaceFolderAbsoluteUri": "file:///tmp/TMP/folder-db4b4e5a",
+          "repository": {}
+        }
+      ],
+      "createdAt": "2026-11-08T13:18:51.757490Z",
+      "initializationStateId": "e5f9bdf0-54bf-455d-a890-1c5a50c1f9ef",
+      "rootConversationId": "fb40e5ec-6ad7-4484-956c-0acce3234101",
+      "workspaceUris": [
+        "file:///tmp/TMP/folder-db4b4e5a"
+      ],
+      "mendelExperimentIds": [
+        1714259,
+        105856899,
+        105867469,
+        105867471,
+        105887299,
+        105979531,
+        105979552,
+        105979553,
+        105979574,
+        106015328,
+        106015333,
+        106021688,
+        106032301,
+        106032303,
+        106064028,
+        106064030,
+        106100625,
+        106100654,
+        106121399,
+        106121401,
+        106121604,
+        106121607,
+        106123597,
+        106123599,
+        106140402,
+        106143956,
+        106228452,
+        106260793,
+        106263850,
+        106264532,
+        106281951,
+        106380926,
+        106511968,
+        106544525,
+        106568390,
+        106568772,
+        106588527,
+        106596396,
+        106597020,
+        106640124,
+        106640126,
+        106643242,
+        106644204,
+        106644207,
+        106676368,
+        106712040,
+        106724031,
+        106749607,
+        106754391,
+        106778026,
+        106786387,
+        106786388,
+        106788235,
+        106791759,
+        106791765,
+        106793263,
+        106793266,
+        106798730,
+        106798741,
+        106805876,
+        106806117,
+        106811917,
+        106822474,
+        106825242,
+        106825244,
+        106826239,
+        106826316,
+        106827293,
+        106827294,
+        106828852,
+        106828853,
+        106828854,
+        106828998,
+        106833630,
+        106838234,
+        106848342,
+        106865004,
+        106865006,
+        106898384,
+        106913264,
+        106914992,
+        106986919,
+        107014155
+      ],
+      "projectId": "68248219-9db6-4c44-9ad6-ea28c29524d3"
+    }
+  },
+  "status": "CASCADE_RUN_STATUS_IDLE",
+  "numTotalSteps": 10,
+  "numTotalGeneratorMetadata": 5,
+  "numTotalExecutorMetadata": 1
+}

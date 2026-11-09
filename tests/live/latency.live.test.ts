@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { createAppAdapter, deleteTestConversation } from '../../src/server/app-adapter/index';
 import { WsHub } from '../../src/server/http/ws-hub';
 import { createLogger } from '../../src/server/log';
@@ -7,6 +7,7 @@ import type { RunStatus, VisualState } from '../../src/shared/domain';
 import { mkdtemp } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { sweepTestArtifacts } from './sweep';
 
 // T059 / quality gate 2 (FR-003, SC-002). Runs only with AGENT_OFFICE_LIVE=1 against the real App.
 // Creates "[agent-office-test] latency", keeps the agent busy, and samples App status vs. published
@@ -15,6 +16,10 @@ import { join } from 'node:path';
 const MINUTES = Number(process.env.LATENCY_MINUTES ?? 10);
 const isRunning = (s: RunStatus) => s === 'RUNNING' || s === 'BUSY';
 const isBusyVisual = (v: VisualState) => v === 'working' || v === 'thinking' || v === 'waiting_for_boss';
+
+beforeAll(async () => {
+  await sweepTestArtifacts();
+}, 120_000);
 
 describe('live: status latency and accuracy', () => {
   it(`p95 latency ≤ 2 s and ≥ 99% agreement over ${MINUTES} min`, async () => {

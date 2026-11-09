@@ -46,7 +46,18 @@ createServer((req, res) => {
     mock.waiting = false;
     mock.created = [];
     mock.hiddenModels.clear();
+    mock.extraSteps = [];
+    mock.question = null;
+    mock.answeredWith = null;
+    mock.rejectQuestion = false;
   }
+  else if (action === 'error-and-search') mock.addErrorAndSearchSteps();
+  else if (action === 'question') {
+    mock.question = 'waiting';
+    mock.runningAll = true;
+  }
+  else if (action === 'question-cancel') mock.question = 'canceled';
+  else if (action === 'question-reject') mock.rejectQuestion = true;
   else if (action?.startsWith('hide-model/')) mock.hiddenModels.add(action.slice('hide-model/'.length));
   else if (action === 'sent') {
     res.setHeader('content-type', 'application/json');

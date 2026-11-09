@@ -380,6 +380,18 @@ body,
 }
 .msg-error {
   color: var(--error);
+  overflow-wrap: anywhere;
+}
+.link-button {
+  align-self: flex-start;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: underline;
 }
 .msg-tool {
   color: var(--muted);
@@ -594,6 +606,55 @@ code.inline {
 }
 .permission-title {
   font-weight: 700;
+}
+/* Spec 003 US2: agent questions */
+.question {
+  max-height: 55vh;
+  overflow: auto;
+}
+.question-entry {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.question-text {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.question-text p,
+.question-option-text p {
+  margin: 0;
+}
+.question-option {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+.question-option input {
+  margin-top: 4px;
+  flex: none;
+}
+.question-writein {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 6px 8px;
+  font: inherit;
+  background: transparent;
+  color: var(--text);
+}
+.question-closed {
+  color: var(--muted);
+  font-style: italic;
+}
+.question-history .small {
+  font-size: 12px;
 }
 
 /* Quota */

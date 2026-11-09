@@ -1,0 +1,35 @@
+{
+  "_comment": "variants, shape from recorded App 2.29.0 step 2026-11-08 (CORTEX_STEP_TYPE_ERROR_MESSAGE). Values are fake. Spec 003 T038; real recordings go in GetCascadeTrajectorySteps.error-message.json.",
+  "steps": [
+    {
+      "type": "CORTEX_STEP_TYPE_ERROR_MESSAGE",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "errorMessage": {
+        "error": {
+          "shortError": "API error (attempt 1): request failed: read: connection reset by peer",
+          "errorId": "00000000-0000-4000-8000-000000000001-8"
+        }
+      }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_ERROR_MESSAGE",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "errorMessage": { "error": {} }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_ERROR_MESSAGE",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "errorMessage": { "error": { "errorId": "00000000-0000-4000-8000-000000000003-1" } }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_ERROR_MESSAGE",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "errorMessage": {
+        "error": {
+          "shortError": "auth failed with token __REGISTERED_SECRET__ while calling the model",
+          "errorId": "00000000-0000-4000-8000-000000000004-2"
+        }
+      }
+    }
+  ]
+}

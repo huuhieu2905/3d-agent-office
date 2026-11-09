@@ -16,6 +16,7 @@
     "test:live": "AGENT_OFFICE_LIVE=1 vitest run",
     "test:leaks": "vitest run tests/leaks",
     "bench:fps": "tsx scripts/bench-fps.ts",
+    "check:compat": "tsx scripts/check-compat.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.server.json",
     "lint": "eslint ."
   },

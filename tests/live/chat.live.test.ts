@@ -1,7 +1,12 @@
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { createAppAdapter, deleteTestConversation } from '../../src/server/app-adapter/index';
+import { sweepTestArtifacts } from './sweep';
 
 // T062: A6 (messages are USER_INPUT, not SYSTEM_MESSAGE) and A7 (cancel → IDLE ≤ 3 s) on the real App.
+
+beforeAll(async () => {
+  await sweepTestArtifacts();
+}, 120_000);
 
 describe('live: chat', () => {
   it('sends as the user and cancels within 3 s', async () => {

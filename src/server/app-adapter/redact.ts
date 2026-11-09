@@ -1,4 +1,4 @@
-import { homedir, userInfo } from 'node:os';
+import { homedir, tmpdir, userInfo } from 'node:os';
 import { redactString } from '../log';
 
 // Sanitize raw App JSON before it leaves the adapter for fixtures (T023). Keeps structure, drops content.
@@ -27,10 +27,18 @@ const CONTENT_KEYS = new Set([
   'commandLine',
   'proposedCommandLine',
   'diff',
+  // Spec 003 (A3-4): question text, error messages (may carry URLs/IPs), web-search queries, write-in answers.
+  'question',
+  'shortError',
+  'fullError',
+  'query',
+  'writeInResponse',
 ]);
 
 const HOME = homedir();
 const USERNAME = userInfo().username;
+/** macOS per-user temp dir (/var/folders/xx/<id>/T) identifies the account; normalise it too. */
+const TMP = tmpdir().replace(/\/+$/, '');
 
 export function sanitizeRaw(value: unknown, key = '', parent = ''): unknown {
   if (typeof value === 'string') {
@@ -40,6 +48,7 @@ export function sanitizeRaw(value: unknown, key = '', parent = ''): unknown {
       return `<${key}:${Math.min(value.length, 9999)}>`;
     }
     let s = value.split(HOME).join('/Users/USER');
+    if (TMP.length > 4) s = s.split(TMP).join('/tmp/TMP');
     if (USERNAME.length >= 3) s = s.split(USERNAME).join('USER');
     return redactString(s);
   }

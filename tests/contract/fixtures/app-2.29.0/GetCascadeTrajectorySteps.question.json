@@ -1,0 +1,319 @@
+{
+  "steps": [
+    {
+      "type": "CORTEX_STEP_TYPE_USER_INPUT",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-08T13:33:39.330180Z",
+        "source": "CORTEX_STEP_SOURCE_USER_EXPLICIT",
+        "executionId": "03fc9e50-b226-4694-bf61-51499f2f4234",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "739bd16a-6796-4d2d-a80b-25505dcb19ff",
+          "cascadeId": "f786c7cb-cec7-400f-bdd4-68c31a5497eb"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-08T13:33:39.336857Z"
+            }
+          ]
+        },
+        "modelApiContentId": "[REDACTED]"
+      },
+      "userInput": {
+        "items": [
+          {
+            "text": "<text:270>"
+          }
+        ],
+        "userResponse": "<userResponse:270>",
+        "activeUserState": {},
+        "userConfig": {
+          "plannerConfig": {
+            "toolConfig": {
+              "antigravityBrowser": {
+                "enableBrowserSubagentWebview": false
+              }
+            },
+            "planModel": "MODEL_PLACEHOLDER_M318"
+          }
+        }
+      }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_PLANNER_RESPONSE",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-08T13:33:39.340070Z",
+        "viewableAt": "2026-11-08T13:33:45.123067Z",
+        "finishedGeneratingAt": "2026-11-08T13:33:45.213632Z",
+        "startedAt": "2026-11-08T13:33:45.213632Z",
+        "completedAt": "2026-11-08T13:33:45.213632Z",
+        "source": "CORTEX_STEP_SOURCE_MODEL",
+        "modelUsage": {
+          "model": "MODEL_PLACEHOLDER_M318",
+          "inputTokens": "10077",
+          "outputTokens": "517",
+          "thinkingOutputTokens": "439",
+          "responseOutputTokens": "78",
+          "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+          "messageId": "bot-ebf58a44-389c-4759-994d-9a4d7bdcd786",
+          "responseHeader": {
+            "sessionID": "-3750763034362895579"
+          },
+          "responseId": "NHrwaqr1D_mX0-kP0NePsA0"
+        },
+        "generatorModel": "MODEL_PLACEHOLDER_M318",
+        "executionId": "03fc9e50-b226-4694-bf61-51499f2f4234",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "739bd16a-6796-4d2d-a80b-25505dcb19ff",
+          "stepIndex": 1,
+          "cascadeId": "f786c7cb-cec7-400f-bdd4-68c31a5497eb"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_GENERATING",
+              "timestamp": "2026-11-08T13:33:45.123143Z"
+            },
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-08T13:33:45.213638Z"
+            }
+          ]
+        },
+        "modelApiContentId": "[REDACTED]"
+      },
+      "plannerResponse": {
+        "thinking": "<thinking:269>",
+        "messageId": "bot-ebf58a44-389c-4759-994d-9a4d7bdcd786",
+        "toolCalls": [
+          {
+            "id": "call_17961863818998109016",
+            "name": "ask_question",
+            "argumentsJson": "{}",
+            "thinkingSignature": "<thinkingSignature:2560>"
+          }
+        ],
+        "thinkingDuration": "5.842631s",
+        "stopReason": "STOP_REASON_STOP_PATTERN"
+      }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_ASK_QUESTION",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-08T13:33:45.182705Z",
+        "viewableAt": "2026-11-08T13:33:45.212555Z",
+        "finishedGeneratingAt": "2026-11-08T13:33:45.212555Z",
+        "startedAt": "2026-11-08T13:33:45.217160Z",
+        "completedAt": "2026-11-08T13:33:45.445394Z",
+        "source": "CORTEX_STEP_SOURCE_MODEL",
+        "toolCall": {
+          "id": "call_17961863818998109016",
+          "name": "ask_question",
+          "argumentsJson": "{}",
+          "thinkingSignature": "<thinkingSignature:2560>"
+        },
+        "generatorModel": "MODEL_PLACEHOLDER_M318",
+        "executionId": "03fc9e50-b226-4694-bf61-51499f2f4234",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "739bd16a-6796-4d2d-a80b-25505dcb19ff",
+          "stepIndex": 2,
+          "cascadeId": "f786c7cb-cec7-400f-bdd4-68c31a5497eb"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_PENDING",
+              "timestamp": "2026-11-08T13:33:45.212783Z"
+            },
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_RUNNING",
+              "timestamp": "2026-11-08T13:33:45.217169Z"
+            },
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_WAITING",
+              "timestamp": "2026-11-08T13:33:45.218674Z"
+            },
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_RUNNING",
+              "timestamp": "2026-11-08T13:33:45.444695Z"
+            },
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-08T13:33:45.445397Z"
+            }
+          ]
+        },
+        "preToolHookResults": [
+          {
+            "decision": "allow"
+          }
+        ],
+        "modelApiContentId": "[REDACTED]",
+        "toolSource": "CORTEX_COMPONENT_SOURCE_BUILTIN"
+      },
+      "completedInteractions": [
+        {
+          "request": {
+            "askQuestion": {
+              "questions": [
+                {
+                  "question": "<question:14>",
+                  "options": [
+                    {
+                      "id": "1",
+                      "text": "<text:17>"
+                    },
+                    {
+                      "id": "2",
+                      "text": "<text:4>"
+                    }
+                  ]
+                },
+                {
+                  "question": "<question:20>",
+                  "options": [
+                    {
+                      "id": "1",
+                      "text": "<text:17>"
+                    },
+                    {
+                      "id": "2",
+                      "text": "<text:3>"
+                    },
+                    {
+                      "id": "3",
+                      "text": "<text:3>"
+                    }
+                  ],
+                  "isMultiSelect": true
+                }
+              ]
+            }
+          },
+          "response": {
+            "trajectoryId": "739bd16a-6796-4d2d-a80b-25505dcb19ff",
+            "stepIndex": 2,
+            "askQuestion": {
+              "responses": [
+                {
+                  "question": "<question:14>",
+                  "selectedOptionIds": [
+                    "2"
+                  ]
+                },
+                {
+                  "question": "<question:20>",
+                  "selectedOptionIds": [
+                    "1"
+                  ],
+                  "writeInResponse": "<writeInResponse:13>"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "askQuestion": {
+        "questions": [
+          {
+            "question": "<question:14>",
+            "options": [
+              {
+                "id": "1",
+                "text": "<text:17>"
+              },
+              {
+                "id": "2",
+                "text": "<text:4>"
+              }
+            ],
+            "selectedOptionIds": [
+              "2"
+            ]
+          },
+          {
+            "question": "<question:20>",
+            "options": [
+              {
+                "id": "1",
+                "text": "<text:17>"
+              },
+              {
+                "id": "2",
+                "text": "<text:3>"
+              },
+              {
+                "id": "3",
+                "text": "<text:3>"
+              }
+            ],
+            "isMultiSelect": true,
+            "selectedOptionIds": [
+              "1"
+            ],
+            "writeInResponse": "<writeInResponse:13>"
+          }
+        ]
+      }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_PLANNER_RESPONSE",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-08T13:33:45.446964Z",
+        "viewableAt": "2026-11-08T13:33:54.112787Z",
+        "finishedGeneratingAt": "2026-11-08T13:33:54.293239Z",
+        "startedAt": "2026-11-08T13:33:54.293239Z",
+        "completedAt": "2026-11-08T13:33:54.293239Z",
+        "source": "CORTEX_STEP_SOURCE_MODEL",
+        "modelUsage": {
+          "model": "MODEL_PLACEHOLDER_M318",
+          "inputTokens": "10682",
+          "outputTokens": "291",
+          "thinkingOutputTokens": "275",
+          "responseOutputTokens": "16",
+          "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+          "messageId": "bot-c306bc6c-f5c4-4783-b7cc-c5eff5a5d0bb",
+          "responseHeader": {
+            "sessionID": "-3750763034362895579"
+          },
+          "responseId": "OnrwatPVFayv1e8P2tmPgAM"
+        },
+        "generatorModel": "MODEL_PLACEHOLDER_M318",
+        "executionId": "03fc9e50-b226-4694-bf61-51499f2f4234",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "739bd16a-6796-4d2d-a80b-25505dcb19ff",
+          "stepIndex": 3,
+          "metadataIndex": 1,
+          "cascadeId": "f786c7cb-cec7-400f-bdd4-68c31a5497eb"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_GENERATING",
+              "timestamp": "2026-11-08T13:33:54.112850Z"
+            },
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-08T13:33:54.293273Z"
+            }
+          ]
+        },
+        "modelApiContentId": "[REDACTED]"
+      },
+      "plannerResponse": {
+        "response": "<response:76>",
+        "modifiedResponse": "<modifiedResponse:76>",
+        "thinking": "<thinking:68>",
+        "thinkingSignature": "<thinkingSignature:1844>",
+        "messageId": "bot-c306bc6c-f5c4-4783-b7cc-c5eff5a5d0bb",
+        "thinkingDuration": "8.756103s",
+        "stopReason": "STOP_REASON_STOP_PATTERN"
+      }
+    }
+  ]
+}

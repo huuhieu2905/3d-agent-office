@@ -9,7 +9,7 @@ export function mapCommands(response: unknown): Command[] {
   if (!Array.isArray(list)) return [];
   const out: Command[] = [];
   for (const entry of list as Raw[]) {
-    // App 2.24.0 wraps each command as { info: { name, type, description, ... } }.
+    // The App wraps each command as { info: { name, type, description, ... } }.
     const c = ((entry?.info as Raw | undefined) ?? entry ?? {}) as Raw;
     if (typeof c.name !== 'string' || !c.name) continue;
     const type = String(c.type ?? '');

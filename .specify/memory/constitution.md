@@ -23,16 +23,34 @@ thái, người dùng mất niềm tin và phải quay về App, nghĩa là dự
   nhất** (adapter). Phần còn lại của hệ thống chỉ được dùng các khái niệm của miền nghiệp vụ
   (nhân viên, cuộc trò chuyện, trạng thái, quota), KHÔNG ĐƯỢC gọi API nội bộ hay đọc file của
   App trực tiếp.
-- Lớp kết nối PHẢI nhắm tới **Antigravity App 2.24.0**. Khi khởi động, nó PHẢI kiểm tra phiên
-  bản App và cảnh báo rõ ràng nếu phiên bản khác. Hệ thống không có nghĩa vụ hỗ trợ tính năng
-  của các phiên bản tương lai.
+- Lớp kết nối PHẢI nhắm tới **danh sách phiên bản App đã kiểm chứng**. Danh sách hiện gồm
+  **2.29.0** (kiểm chứng 2026-11-09, feature `003-antigravity-2-29-compat`) và **2.24.0** (giữ
+  lại để hỗ trợ máy chưa cập nhật). Danh sách này PHẢI nằm ở **một nơi duy nhất** trong lớp
+  kết nối.
+  - **Mã nguồn** và mọi **thông báo hiển thị cho người dùng** (cảnh báo phiên bản, log ở
+    terminal) PHẢI lấy phiên bản từ danh sách đó, KHÔNG ĐƯỢC ghi cứng số phiên bản.
+  - **Tài liệu, script cài đặt và kiểm thử** được phép nêu số phiên bản cụ thể, vì chúng không
+    đọc được danh sách lúc chạy, và kiểm thử cần giá trị cụ thể để so sánh. Nhưng chúng PHẢI được
+    cập nhật **trong cùng một thay đổi** với danh sách, để không bao giờ lệch nhau.
+- Một phiên bản chỉ được thêm vào danh sách sau khi: (1) bộ dữ liệu mẫu ghi từ chính bản đó đã
+  được thêm vào kiểm thử hợp đồng và chạy qua, và (2) kiểm thử với App thật, gồm cả thao tác
+  **đọc và ghi** và tự kết nối lại, đã chạy qua trên bản đó. Bỏ một phiên bản khỏi danh sách
+  cũng PHẢI được ghi lại lý do.
+- Khi khởi động, lớp kết nối PHẢI kiểm tra phiên bản App. Với bản ngoài danh sách, hệ thống vẫn
+  chạy nhưng PHẢI cảnh báo rõ ràng, nêu cả bản đang chạy lẫn các bản đã kiểm chứng. Hệ thống
+  không có nghĩa vụ hỗ trợ tính năng của các phiên bản chưa kiểm chứng.
+- Khi App tự cập nhật lên bản mới, PHẢI rà soát tương thích bằng thao tác **chỉ đọc** trước khi
+  sửa code. Rà soát xem phiên bản, các API nội bộ đang dùng còn hay mất, định dạng dữ liệu thêm
+  hay bớt gì, và loại bước nào chưa được nhận ra.
 - Khi App đóng, đổi cổng hoặc API thay đổi, hệ thống PHẢI suy giảm có kiểm soát: hiển thị
   trạng thái mất kết nối, tự kết nối lại khi App mở lại, KHÔNG ĐƯỢC treo hay hỏng dữ liệu cục bộ.
 - Lớp kết nối PHẢI có kiểm thử dựa trên dữ liệu mẫu ghi lại từ App thật, đã loại bỏ thông tin
   cá nhân, để phát hiện ngay khi App cập nhật làm thay đổi định dạng.
 
 **Lý do**: API nội bộ không được công bố và có thể đổi bất cứ lúc nào. Người dùng đã chấp
-nhận rủi ro này, với điều kiện chỉ phải sửa ở một nơi.
+nhận rủi ro này, với điều kiện chỉ phải sửa ở một nơi. App tự cập nhật và người dùng không chọn
+được phiên bản (2026-11-08: 2.24.0 → 2.29.0). Vì vậy cam kết với đúng một phiên bản cố định là
+không thực tế; cam kết với danh sách bản đã kiểm chứng thì vẫn giữ được tính trung thực.
 
 ### III. Local-first, bảo mật và riêng tư
 
@@ -101,8 +119,9 @@ App có bản Linux. Cam kết một nền tảng chưa kiểm chứng được 
 
 - **Nền tảng**: ứng dụng web chạy trên trình duyệt, kèm một tiến trình server local làm cầu
   nối với Antigravity App (trình duyệt không thể tự đọc tiến trình hay file của App).
-- **Đối tượng kết nối**: chỉ Antigravity App (desktop) 2.24.0. CLI `agy` và Antigravity IDE
-  không phải nguồn dữ liệu.
+- **Đối tượng kết nối**: chỉ Antigravity App (desktop), các phiên bản trong danh sách đã kiểm
+  chứng của Nguyên tắc II (hiện gồm 2.29.0 và 2.24.0). CLI `agy` và Antigravity IDE không phải
+  nguồn dữ liệu.
 - **Điều kiện chạy**: Antigravity App PHẢI đang mở thì hệ thống mới thao tác được. Đây là ràng
   buộc đã được chấp nhận, không phải lỗi.
 - **Dữ liệu thời tiết**: dùng nguồn miễn phí cho mục đích phi thương mại (mặc định Open-Meteo)
@@ -147,5 +166,9 @@ App có bản Linux. Cam kết một nền tảng chưa kiểm chứng được 
 - **Rà soát tuân thủ**: `/speckit-plan` PHẢI có bước Constitution Check đối chiếu với 6 nguyên
   tắc. `/speckit-analyze` PHẢI coi vi phạm constitution là lỗi nghiêm trọng. Khi Antigravity
   App đổi phiên bản mục tiêu, Nguyên tắc II và mục Ràng buộc kỹ thuật PHẢI được xem lại.
+- **Thay đổi danh sách phiên bản đã kiểm chứng**: thêm hoặc bớt một phiên bản trong danh sách
+  của Nguyên tắc II mà không đổi quy tắc kiểm chứng được tính là sửa đổi **PATCH**. Việc này vẫn
+  PHẢI qua `/speckit-constitution` và nêu bằng chứng kiểm chứng (feature spec và kết quả kiểm thử
+  với App thật).
 
-**Version**: 2.0.1 | **Ratified**: 2026-11-06 | **Last Amended**: 2026-11-07
+**Version**: 2.1.2 | **Ratified**: 2026-11-06 | **Last Amended**: 2026-11-09

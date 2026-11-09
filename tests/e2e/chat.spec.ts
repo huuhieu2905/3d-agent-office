@@ -64,3 +64,17 @@ test('a failed send keeps the text and can be retried', async ({ page }) => {
   await page.getByRole('button', { name: 'Gửi lại' }).click();
   await expect.poll(async () => (await sent()).filter((s) => s.method === 'SendUserCascadeMessage').length).toBe(1);
 });
+
+// Spec 003 US3 (U3-4, U3-5): error text with "Xem thêm", and web searches.
+test('shows the error message (300 chars + Xem thêm) and the web search query', async ({ page }) => {
+  await ctl('error-and-search');
+  await page.goto(`/#k=${TOKEN}`);
+  await clickFirstEmployee(page);
+  const err = page.getByTestId('step-error');
+  await expect(err).toBeVisible({ timeout: 10_000 });
+  await expect(err).toContainText('API error (attempt 1)');
+  await expect(err).not.toContainText('END-OF-ERROR');
+  await err.getByRole('button', { name: 'Xem thêm' }).click();
+  await expect(err).toContainText('END-OF-ERROR');
+  await expect(page.getByTestId('step-web-search')).toHaveText(/Đã tìm: Open-Meteo API/);
+});

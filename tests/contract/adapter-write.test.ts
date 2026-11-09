@@ -1,3 +1,4 @@
+// Body contract: what the adapter sends does not depend on a recorded fixture set, so it runs once (FR-006).
 import { afterEach, describe, expect, it } from 'vitest';
 import { createAppAdapter } from '../../src/server/app-adapter/index';
 import { FakeFinder, FakeTransport } from './helpers';
