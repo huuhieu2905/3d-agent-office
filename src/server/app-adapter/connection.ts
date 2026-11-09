@@ -1,8 +1,9 @@
-import { SUPPORTED_APP_VERSION, type ConnectionState } from '../../shared/domain';
+import type { ConnectionState } from '../../shared/domain';
 import { forgetSecret, registerSecret } from '../log';
 import type { ProcessFinder } from './discovery/process-finder';
 import { parseServerArgs } from './discovery/args';
 import { probeApiPort } from './discovery/probe';
+import { isVerified, verifiedVersionList } from './versions';
 import type { RpcTarget, RpcTransport } from './rpc-client';
 
 // Discovery + health loop (research.md R6). Reconnects within ~2s of the App being ready (SC-010).
@@ -103,7 +104,8 @@ export class ConnectionManager {
       this.setState({
         kind: 'connected',
         appVersion: parsed.appVersion,
-        versionSupported: parsed.appVersion === SUPPORTED_APP_VERSION,
+        versionSupported: isVerified(parsed.appVersion),
+        verifiedVersions: verifiedVersionList(),
       });
     } catch (err) {
       this.setState({ kind: 'error', reason: 'unreachable', detail: (err as Error).message.slice(0, 200) });

@@ -9,7 +9,7 @@ trên máy bạn thành nhân viên. Mọi thứ chạy **local**: không có Do
 
 | Thành phần | Phiên bản |
 |---|---|
-| Antigravity App | **2.24.0**, đã đăng nhập |
+| Antigravity App | **2.29.0** (đã kiểm chứng cả 2.24.0), đã đăng nhập |
 | Node.js | **22** trở lên |
 | Trình duyệt | Chrome, Edge hoặc Firefox bản mới (có WebGL 2) |
 | git | có sẵn trên macOS (Xcode Command Line Tools) |
@@ -51,14 +51,14 @@ Script sẽ kiểm tra Node, cài thư viện và build giao diện.
 3. Trình duyệt tự mở `http://127.0.0.1:4317/#k=…`. Nếu không tự mở, hãy copy **đúng đường link** mà terminal in ra
    (đường link có mã phiên `#k=`, mỗi lần chạy một mã khác).
 
-Terminal sẽ in `Antigravity App 2.24.0: connected` khi kết nối thành công.
+Terminal sẽ in `Antigravity App 2.29.0: connected` khi kết nối thành công.
 
 ## Xử lý sự cố
 
 | Hiện tượng | Cách xử lý |
 |---|---|
 | Banner "Chưa kết nối được Antigravity App" | Mở Antigravity App. Hệ thống tự kết nối trong vài giây, không cần tải lại trang. |
-| Cảnh báo "Antigravity App x.y.z chưa được kiểm chứng" | Hệ thống được làm cho bản **2.24.0**. Bản khác vẫn chạy nhưng có thể thiếu tính năng. |
+| Cảnh báo "Antigravity App x.y.z chưa được kiểm chứng" | Hệ thống đã kiểm chứng trên **2.29.0** và **2.24.0**. Bản khác vẫn chạy nhưng có thể thiếu tính năng. |
 | Banner "Thiếu mã phiên" | Bạn đã mở `http://127.0.0.1:4317` mà không có `#k=…`. Hãy dùng đúng đường link `npm start` in ra. |
 | `EADDRINUSE` / cổng 4317 bận | Chạy với cổng khác: `AGENT_OFFICE_PORT=4400 npm start` |
 | Trình duyệt không tự mở | Copy đường link trong terminal vào trình duyệt. |
@@ -93,6 +93,7 @@ rm -rf agent-office "$HOME/Library/Application Support/agent-office"
 |---|---|---|
 | 2026-11-06 | MacBook Pro M1 Pro, macOS, Antigravity App 2.24.0 | Cài Node 22 qua `fnm`: khoảng 1 phút. `git clone` + `./scripts/install.sh` + `npm start` từ bản clone sạch: **6 giây** (npm cache có sẵn). Kết nối App thành công. |
 | 2026-11-07 | MacBook Pro M1 Pro, macOS, Node 26.13 (Homebrew), Antigravity App 2.24.0 | Bản 002 (concept E+, có thêm gói font): `git clone` + `./scripts/install.sh` với **npm cache trống** (giả lập máy mới, tải khoảng 88 MB): **11 giây**. `npm start`: in `Antigravity App 2.24.0: connected`. Lần đầu thử bị lỗi build vì `.gitignore` đã bỏ qua `src/web/ui/build/`; đã sửa trước khi đo. |
+| 2026-11-09 | MacBook Pro M1 Pro, macOS, Node 26.13 (Homebrew), Antigravity App 2.29.0 | Bản 003: `git clone` + `./scripts/install.sh` + `npm start` từ bản clone sạch: **10 giây** (npm cache có sẵn). `npm start` in `Antigravity App 2.29.0: connected`, không có cảnh báo phiên bản. |
 
 > Chưa kiểm chứng trên **một máy Mac khác**. Lần đo ngày 2026-11-07 dùng npm cache trống trên cùng máy để giả lập
 > máy mới; thời gian thực tế phụ thuộc tốc độ mạng (khoảng 88 MB tải về, khoảng 370 MB sau khi giải nén).

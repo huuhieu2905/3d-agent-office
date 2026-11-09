@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { MODEL_ID_RE } from './model';
-import { CITIES, FLOOR_MAX, FLOOR_MIN, ITEM_TYPES, PLACEABLE_TYPES } from './domain';
+import { CITIES, FLOOR_MAX, FLOOR_MIN, ITEM_TYPES, PLACEABLE_TYPES, WRITE_IN_MAX, type AgentQuestion, type QuestionAnswer } from './domain';
 
 // Validation for data crossing the local API and for persisted JSON files.
 
@@ -106,3 +106,36 @@ export const usageFileSchema = z.object({
   schemaVersion: z.literal(1),
   days: z.record(z.string(), z.object({ sentViaOffice: z.number().int(), userInputsTotal: z.number().int() })),
 });
+
+// ---- Spec 003 US2: answering an agent's question (data-model §5, contracts/local-api.md L3-1) ----
+
+export const questionAnswerSchema = z.object({
+  answers: z
+    .array(
+      z.object({
+        selectedOptionIds: z.array(z.string().max(100)).max(50),
+        writeIn: z.string().max(WRITE_IN_MAX).optional(),
+      }),
+    )
+    .min(1)
+    .max(20),
+});
+
+/** Returns a Vietnamese reason when `answer` does not fit `question`, or null when it is valid. */
+export function validateAnswer(question: AgentQuestion, answer: QuestionAnswer): string | null {
+  if (question.state !== 'waiting') return 'Câu hỏi không còn chờ trả lời';
+  if (answer.answers.length !== question.entries.length) return `Cần trả lời đủ ${question.entries.length} câu`;
+  for (let i = 0; i < question.entries.length; i++) {
+    const e = question.entries[i]!;
+    const a = answer.answers[i]!;
+    const n = i + 1;
+    const writeIn = a.writeIn?.trim() ?? '';
+    if ((a.writeIn?.length ?? 0) > WRITE_IN_MAX) return `Câu ${n}: câu trả lời khác dài quá 2 000 ký tự`;
+    if (a.selectedOptionIds.length === 0 && !writeIn) return `Câu ${n} chưa có câu trả lời`;
+    if (!e.multiSelect && a.selectedOptionIds.length > 1) return `Câu ${n} chỉ được chọn một đáp án`;
+    if (new Set(a.selectedOptionIds).size !== a.selectedOptionIds.length) return `Câu ${n}: đáp án bị trùng`;
+    const ids = new Set(e.options.map((o) => o.id));
+    if (a.selectedOptionIds.some((id) => !ids.has(id))) return `Câu ${n}: đáp án không tồn tại`;
+  }
+  return null;
+}

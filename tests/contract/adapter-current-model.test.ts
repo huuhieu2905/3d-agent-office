@@ -1,14 +1,20 @@
 import { describe, expect, it } from 'vitest';
 import { mapSteps } from '../../src/server/app-adapter/mappers/step';
 import { latestRequestedModel } from '../../src/shared/model';
-import { fixture } from './helpers';
+import { FIXTURE_SETS, fixtureFrom, LEGACY_SET } from './helpers';
 
 // A2-1 (specs/002-realistic-ui-refresh/contracts/app-adapter.md): the model a conversation used last
 // comes from the App's steps — the user's requested model on the latest user turn.
 
 describe('A2-1 — current model of a conversation', () => {
-  it('reads the requested model of the last user turn from the 2.24.0 fixture', () => {
-    const steps = mapSteps(fixture('GetCascadeTrajectorySteps'));
+  it.each(FIXTURE_SETS)('every user turn has a string model or null (App %s)', (version) => {
+    const steps = mapSteps(fixtureFrom(version, 'GetCascadeTrajectorySteps'));
+    for (const s of steps.filter((x) => x.kind === 'user')) expect(s.model === null || typeof s.model === 'string').toBe(true);
+    expect(steps.filter((x) => x.kind !== 'user').every((x) => x.model === null)).toBe(true);
+  });
+
+  it('reads the requested model of the last user turn from the legacy fixture', () => {
+    const steps = mapSteps(fixtureFrom(LEGACY_SET, 'GetCascadeTrajectorySteps'));
     const userSteps = steps.filter((s) => s.kind === 'user');
     expect(userSteps.length).toBeGreaterThan(0);
     expect(userSteps.at(-1)!.model).toBe('MODEL_PLACEHOLDER_M318');

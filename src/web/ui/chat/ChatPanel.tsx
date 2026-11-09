@@ -13,6 +13,7 @@ import { resolveModel } from './resolve-model';
 import { StepView } from './StepView';
 import { ComposerExtensions } from './extensions';
 import { PermissionPrompt } from './PermissionPrompt';
+import { QuestionPrompt } from './QuestionPrompt';
 
 // T067: right-hand chat for the clicked employee — full history, live updates, send, stop.
 
@@ -40,6 +41,9 @@ export function ChatPanel() {
   // 002 US1: the pick shows at once; the server copy (employee.preferredModel) follows over WebSocket.
   const [picked, setPicked] = useState<{ id: string; modelId: string } | null>(null);
   const [modelNote, setModelNote] = useState<{ kind: 'saved' | 'error'; text: string } | null>(null);
+  // Spec 003 T033: the question form stays (locked) after the App moves on, until the user closes it.
+  const [openQuestion, setOpenQuestion] = useState<string | null>(null);
+  const [dismissed, setDismissed] = useState<Set<string>>(() => new Set());
 
   useEffect(() => {
     if (!modelNote || modelNote.kind !== 'saved') return;
@@ -65,6 +69,20 @@ export function ChatPanel() {
   if (!id) return null;
   const busy = employee?.visualState === 'working' || employee?.visualState === 'thinking';
   const pending = steps?.filter((s) => s.kind === 'permission_request' && s.status === 'WAITING').at(-1);
+  const questionStep =
+    steps
+      ?.filter(
+        (s) =>
+          s.kind === 'question' &&
+          s.question &&
+          !dismissed.has(s.question.requestId) &&
+          ((s.status === 'WAITING' && s.question.state === 'waiting') || s.question.requestId === openQuestion),
+      )
+      .at(-1) ?? null;
+  if (questionStep?.question && questionStep.question.state === 'waiting' && openQuestion !== questionStep.question.requestId) {
+    // Remember which question is on screen so it can lock instead of vanishing (render-time sync, no effect needed).
+    setOpenQuestion(questionStep.question.requestId);
+  }
   const resolved = resolveModel({
     preferredModel: (picked?.id === id ? picked.modelId : null) ?? employee?.preferredModel,
     currentModel: (steps && latestRequestedModel(steps)) ?? employee?.currentModel,
@@ -106,7 +124,20 @@ export function ChatPanel() {
         {!steps && <div className="muted">Đang tải…</div>}
         {steps?.map((s) => <StepView key={s.index} step={s} />)}
       </div>
-      {pending && <PermissionPrompt key={pending.permission?.requestId} conversationId={id} step={pending} />}
+      {questionStep?.question ? (
+        <QuestionPrompt
+          key={questionStep.question.requestId}
+          conversationId={id}
+          question={questionStep.question}
+          onDismiss={() => {
+            const req = questionStep.question!.requestId;
+            setDismissed((d) => new Set(d).add(req));
+            setOpenQuestion(null);
+          }}
+        />
+      ) : (
+        pending && <PermissionPrompt key={pending.permission?.requestId} conversationId={id} step={pending} />
+      )}
       <Composer
         key={id}
         busy={busy}

@@ -1,0 +1,173 @@
+{
+  "steps": [
+    {
+      "type": "CORTEX_STEP_TYPE_USER_INPUT",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-08T13:18:51.763160Z",
+        "source": "CORTEX_STEP_SOURCE_USER_EXPLICIT",
+        "executionId": "7b51c7ce-1eee-48ef-8a1c-c4af4d3758d2",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "9a3fd96b-0f3f-42de-bbca-6658e08215ec",
+          "cascadeId": "fb40e5ec-6ad7-4484-956c-0acce3234101"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-08T13:18:51.773742Z"
+            }
+          ]
+        },
+        "modelApiContentId": "[REDACTED]"
+      },
+      "userInput": {
+        "items": [
+          {
+            "text": "<text:171>"
+          }
+        ],
+        "userResponse": "<userResponse:171>",
+        "activeUserState": {},
+        "userConfig": {
+          "plannerConfig": {
+            "toolConfig": {
+              "antigravityBrowser": {
+                "enableBrowserSubagentWebview": false
+              }
+            },
+            "planModel": "MODEL_PLACEHOLDER_M318"
+          }
+        }
+      }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_PLANNER_RESPONSE",
+      "status": "CORTEX_STEP_STATUS_DONE",
+      "metadata": {
+        "createdAt": "2026-11-08T13:18:51.777411Z",
+        "viewableAt": "2026-11-08T13:18:56.497509Z",
+        "finishedGeneratingAt": "2026-11-08T13:18:56.777823Z",
+        "startedAt": "2026-11-08T13:18:56.777823Z",
+        "completedAt": "2026-11-08T13:18:56.777823Z",
+        "source": "CORTEX_STEP_SOURCE_MODEL",
+        "modelUsage": {
+          "model": "MODEL_PLACEHOLDER_M318",
+          "inputTokens": "10082",
+          "outputTokens": "408",
+          "thinkingOutputTokens": "371",
+          "responseOutputTokens": "37",
+          "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+          "messageId": "bot-16402750-f036-4ceb-8afa-65c5785ad433",
+          "responseHeader": {
+            "sessionID": "-3750763034362895579"
+          },
+          "responseId": "vHbwaoGfNoyl1e8PvpiFEA"
+        },
+        "generatorModel": "MODEL_PLACEHOLDER_M318",
+        "executionId": "7b51c7ce-1eee-48ef-8a1c-c4af4d3758d2",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "9a3fd96b-0f3f-42de-bbca-6658e08215ec",
+          "stepIndex": 1,
+          "cascadeId": "fb40e5ec-6ad7-4484-956c-0acce3234101"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_GENERATING",
+              "timestamp": "2026-11-08T13:18:56.497535Z"
+            },
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+              "timestamp": "2026-11-08T13:18:56.777830Z"
+            }
+          ]
+        },
+        "modelApiContentId": "[REDACTED]"
+      },
+      "plannerResponse": {
+        "thinking": "<thinking:45>",
+        "messageId": "bot-16402750-f036-4ceb-8afa-65c5785ad433",
+        "toolCalls": [
+          {
+            "id": "call_17168711003347208959",
+            "name": "run_command",
+            "argumentsJson": "{}",
+            "thinkingSignature": "<thinkingSignature:2452>"
+          }
+        ],
+        "thinkingDuration": "4.774320s",
+        "stopReason": "STOP_REASON_STOP_PATTERN"
+      }
+    },
+    {
+      "type": "CORTEX_STEP_TYPE_GENERIC",
+      "status": "CORTEX_STEP_STATUS_WAITING",
+      "metadata": {
+        "createdAt": "2026-11-08T13:18:56.551733Z",
+        "viewableAt": "2026-11-08T13:18:56.776888Z",
+        "finishedGeneratingAt": "2026-11-08T13:18:56.776888Z",
+        "startedAt": "2026-11-08T13:18:56.783521Z",
+        "source": "CORTEX_STEP_SOURCE_MODEL",
+        "toolCall": {
+          "id": "call_17168711003347208959",
+          "name": "run_command",
+          "argumentsJson": "{}",
+          "thinkingSignature": "<thinkingSignature:2452>"
+        },
+        "generatorModel": "MODEL_PLACEHOLDER_M318",
+        "executionId": "7b51c7ce-1eee-48ef-8a1c-c4af4d3758d2",
+        "sourceTrajectoryStepInfo": {
+          "trajectoryId": "9a3fd96b-0f3f-42de-bbca-6658e08215ec",
+          "stepIndex": 2,
+          "cascadeId": "fb40e5ec-6ad7-4484-956c-0acce3234101"
+        },
+        "internalMetadata": {
+          "statusTransitions": [
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_PENDING",
+              "timestamp": "2026-11-08T13:18:56.776989Z"
+            },
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_RUNNING",
+              "timestamp": "2026-11-08T13:18:56.783525Z"
+            },
+            {
+              "updatedStatus": "CORTEX_STEP_STATUS_WAITING",
+              "timestamp": "2026-11-08T13:18:56.784230Z"
+            }
+          ]
+        },
+        "preToolHookResults": [
+          {
+            "decision": "allow"
+          }
+        ],
+        "modelApiContentId": "[REDACTED]",
+        "toolSource": "CORTEX_COMPONENT_SOURCE_BUILTIN"
+      },
+      "requestedInteraction": {
+        "permission": {
+          "resource": {
+            "action": "command",
+            "target": "ls -la"
+          },
+          "persistSuggestionType": "PERSIST_SUGGESTION_TYPE_SUGGESTED",
+          "suggestedPersistPattern": "ls",
+          "actionDescription": "List workspace files",
+          "triggerSource": {
+            "type": "TYPE_DEFAULT_FALLBACK"
+          },
+          "shellName": "zsh"
+        }
+      },
+      "generic": {
+        "args": {
+          "CommandLine": "ls -la",
+          "WaitMsBeforeAsync": "5000",
+          "toolSummary": "List workspace files"
+        }
+      }
+    }
+  ]
+}

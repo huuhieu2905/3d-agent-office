@@ -1,4 +1,7 @@
 import { randomUUID } from 'node:crypto';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import type {
   Command,
   ConnectionState,
@@ -6,6 +9,7 @@ import type {
   Mention,
   ModelOption,
   Project,
+  QuestionAnswer,
   Quota,
   Step,
   UserInput,
@@ -21,10 +25,13 @@ import { mapQuota } from './mappers/quota';
 import { openStream, type StreamHandle } from './stream';
 import { sanitizeRaw, stripIdentity } from './redact';
 import { HttpsRpcTransport, RpcClient, type RpcTransport } from './rpc-client';
-import { AppUnavailableError, RpcError, type AppAdapter, type Unsubscribe } from './types';
+import { AppRejectedError, AppUnavailableError, ProjectNameTakenError, QuestionNotPendingError, RpcError, type AppAdapter, type CompatReport, type Unsubscribe } from './types';
+import { countUnknownStepTypes, diffPaths, normalizedPaths, scanRpcNames, USED_RPCS } from './compat';
+import { isVerified, verifiedVersionList } from './versions';
 
-export { AppUnavailableError, AppProtocolError, AppNotSupportedError } from './types';
-export type { AppAdapter, Unsubscribe } from './types';
+export { AppUnavailableError, AppProtocolError, AppNotSupportedError, AppRejectedError, ProjectNameTakenError, QuestionNotPendingError, RpcError } from './types';
+export { sanitizeRaw } from './redact';
+export type { AppAdapter, CompatReport, Unsubscribe } from './types';
 
 export interface AdapterDeps {
   finder?: ProcessFinder;
@@ -178,7 +185,7 @@ function createInternal(deps: AdapterDeps): { adapter: AppAdapter; rpc: RpcClien
       return value;
     },
     async suggestMentions(conversationId: string, query: string): Promise<Mention[]> {
-      // App-side search (returns nothing without an IDE workspace in 2.24.0); the server falls back to its own listing.
+      // App-side search (returned nothing without an IDE workspace on the first verified App); the server falls back to its own listing.
       const conv = (await adapter.listConversations()).find((c) => c.id === conversationId);
       const res = await call<Record<string, unknown>>('GetMatchingContextScopeItems', {
         query,
@@ -207,7 +214,12 @@ function createInternal(deps: AdapterDeps): { adapter: AppAdapter; rpc: RpcClien
     async createProject({ name, folderUri }: { name: string; folderUri: string }): Promise<Project> {
       // Spike 2026-11-07: the App only creates the project when the client supplies the id.
       const id = randomUUID();
-      await call('CreateProject', { project: { id, name, projectResources: { resources: [{ folderUri }] } } });
+      try {
+        await call('CreateProject', { project: { id, name, projectResources: { resources: [{ folderUri }] } } });
+      } catch (err) {
+        if (err instanceof RpcError && err.status === 409) throw new ProjectNameTakenError();
+        throw err;
+      }
       const created = mapProjects(await call('ReadProjects', { ids: [id] }))[0];
       if (!created) throw new RpcError('protocol', 'CreateProject did not create the project');
       return created;
@@ -238,6 +250,8 @@ function createInternal(deps: AdapterDeps): { adapter: AppAdapter; rpc: RpcClien
       const [trajectoryId, idx, kind = 'permission'] = requestId.split(':');
       const stepIndex = Number(idx);
       if (!trajectoryId || !Number.isInteger(stepIndex)) throw new RpcError('protocol', 'bad permission request id');
+      // Spec 003 R3-07: questions are answered with answerQuestion, never allow/deny.
+      if (kind === 'askQuestion') throw new RpcError('protocol', 'question request ids are answered with answerQuestion');
       const allow = decision === 'allow';
       const answer =
         kind === 'runCommand' || kind === 'approvalInteraction' ? { confirm: allow } : { allow };
@@ -245,6 +259,38 @@ function createInternal(deps: AdapterDeps): { adapter: AppAdapter; rpc: RpcClien
         cascadeId: conversationId,
         interaction: { trajectoryId, stepIndex, [kind]: answer },
       });
+    },
+    async answerQuestion(conversationId: string, requestId: string, answer: QuestionAnswer): Promise<void> {
+      // Spec 003 R3-04: HandleCascadeUserInteraction {cascadeId, interaction:{trajectoryId, stepIndex,
+      // askQuestion:{responses:[{question, selectedOptionIds, writeInResponse?}]}}} — the same shape the App
+      // records in completedInteractions[].response when the user answers inside the App.
+      const [trajectoryId, idx, kind] = requestId.split(':');
+      const stepIndex = Number(idx);
+      if (!trajectoryId || !Number.isInteger(stepIndex) || stepIndex < 0 || kind !== 'askQuestion') {
+        throw new RpcError('protocol', 'bad question request id');
+      }
+      const step = (await adapter.getSteps(conversationId)).find((s) => s.index === stepIndex);
+      if (!step?.question || step.status !== 'WAITING' || step.question.state !== 'waiting') throw new QuestionNotPendingError();
+      const responses = step.question.entries.map((e, i) => {
+        const a = answer.answers[i] ?? { selectedOptionIds: [] };
+        const writeIn = a.writeIn?.trim();
+        return { question: e.question, selectedOptionIds: a.selectedOptionIds, ...(writeIn ? { writeInResponse: writeIn } : {}) };
+      });
+      try {
+        await call('HandleCascadeUserInteraction', {
+          cascadeId: conversationId,
+          interaction: { trajectoryId, stepIndex, askQuestion: { responses } },
+        });
+      } catch (err) {
+        if (err instanceof RpcError && err.kind === 'protocol' && (err.status ?? 0) >= 400 && (err.status ?? 0) < 500) throw new AppRejectedError();
+        // Spike S1: answering a question that is no longer waiting makes the App reply HTTP 500. If another
+        // window answered between our check and the call, report "not pending" instead of a server error.
+        if (err instanceof RpcError && err.kind === 'app') {
+          const now = (await adapter.getSteps(conversationId).catch(() => [])).find((s) => s.index === stepIndex);
+          if (!now || now.status !== 'WAITING') throw new QuestionNotPendingError();
+        }
+        throw err;
+      }
     },
   };
   return { adapter, rpc };
@@ -311,6 +357,97 @@ export async function deleteTestProject(projectId: string, deps: AdapterDeps = {
     if (!p.name.startsWith('[agent-office-test]')) throw new Error('Refusing to delete a project that is not marked [agent-office-test]');
     await rpc.call('DeleteProject', { id: projectId });
     return true;
+  } finally {
+    await adapter.stop();
+  }
+}
+
+// ---- Development-only compatibility check (spec 003 US4, research R3-08) --------
+
+const DEFAULT_FIXTURES_ROOT = join(import.meta.dirname, '..', '..', '..', 'tests', 'contract', 'fixtures');
+const COMPARED_RPCS = ['GetAllCascadeTrajectories', 'GetUserStatus', 'GetAllSkills', 'ListProjects', 'ReadProjects', 'GetSlashCommands'] as const;
+const STEP_FIXTURE = /^(GetCascadeTrajectorySteps(\..+)?|waiting-steps)\.json$/;
+
+export interface InspectCompatOptions extends AdapterDeps {
+  /** Fixture set to compare against (a version string). Default: newest verified version that has fixtures. */
+  baseline?: string;
+  fixturesRoot?: string;
+}
+
+/**
+ * Read-only compatibility report for the running App (FR-015/016). Only READ_ONLY_RPCS are called,
+ * the App's binary is only read, nothing is written, and the report holds names and counts only.
+ * Only for scripts/check-compat.ts — Agent Office never runs it by itself (FR-016a).
+ */
+export async function inspectCompat(opts: InspectCompatOptions = {}): Promise<CompatReport> {
+  const t0 = Date.now();
+  const finder = opts.finder ?? createProcessFinder();
+  const { adapter, rpc } = createInternal({ ...opts, finder, healthIntervalMs: 60_000 });
+  await adapter.start();
+  try {
+    const conn = adapter.getConnection();
+    if (conn.kind !== 'connected') throw new AppUnavailableError();
+    const read = async (method: ReadOnlyRpc, body: unknown) => sanitizeRaw(await rpc.call(method, body, 30_000));
+
+    // 1. RPC names in the App binary (read only).
+    const proc = await finder.findLanguageServer();
+    const binaryPath = proc?.args[0];
+    const binary = binaryPath ? await readFile(binaryPath) : Buffer.alloc(0);
+    const rpcs = scanRpcNames(binary, USED_RPCS);
+
+    // 2. Field diff against the baseline fixture set.
+    const root = opts.fixturesRoot ?? DEFAULT_FIXTURES_ROOT;
+    const baseline = opts.baseline ?? verifiedVersionList().find((v) => existsSync(join(root, `app-${v}`))) ?? null;
+    const baseDir = baseline ? join(root, `app-${baseline}`) : null;
+    const basePaths = (file: string): Set<string> | null =>
+      baseDir && existsSync(join(baseDir, file)) ? normalizedPaths(JSON.parse(readFileSync(join(baseDir, file), 'utf8'))) : null;
+
+    const status = (await read('GetUserStatus', {})) as Record<string, unknown>;
+    const model = mapModels(status)[0]?.modelId ?? '';
+    const projectIds = mapProjectIds(await rpc.call('ListProjects', {}));
+    const bodies: Record<(typeof COMPARED_RPCS)[number], unknown> = {
+      GetAllCascadeTrajectories: {},
+      GetUserStatus: {},
+      GetAllSkills: {},
+      ListProjects: {},
+      ReadProjects: { ids: projectIds },
+      GetSlashCommands: { cascadeConfig: { plannerConfig: { planModel: model } } },
+    };
+    const fieldDiff: CompatReport['fieldDiff'] = [];
+    for (const m of COMPARED_RPCS) {
+      const base = basePaths(`${m}.json`);
+      if (!base || !baseline) continue;
+      const current = normalizedPaths(m === 'GetUserStatus' ? status : await read(m, bodies[m]));
+      fieldDiff.push({ rpc: m, baseline, ...diffPaths(current, base) });
+    }
+
+    // 3. Steps of every conversation: field paths + unknown step types.
+    const conversations = (await adapter.listConversations()).filter((c) => c.stepCount > 0);
+    const stepPaths = new Set<string>();
+    const allSteps: Step[] = [];
+    for (const c of conversations) {
+      const raw = await read('GetCascadeTrajectorySteps', { cascadeId: c.id });
+      normalizedPaths(raw, '', stepPaths);
+      allSteps.push(...mapSteps(raw));
+    }
+    if (baseDir && baseline) {
+      const base = new Set<string>();
+      for (const f of readdirSync(baseDir).filter((n) => STEP_FIXTURE.test(n))) {
+        normalizedPaths(JSON.parse(readFileSync(join(baseDir, f), 'utf8')), '', base);
+      }
+      fieldDiff.push({ rpc: 'GetCascadeTrajectorySteps', baseline, ...diffPaths(stepPaths, base), contentDependent: true });
+    }
+
+    return {
+      appVersion: conn.appVersion,
+      verified: isVerified(conn.appVersion),
+      baseline,
+      rpcs,
+      fieldDiff,
+      unknownStepTypes: countUnknownStepTypes(allSteps),
+      scannedConversations: conversations.length,
+      durationMs: Date.now() - t0,
+    };
   } finally {
     await adapter.stop();
   }

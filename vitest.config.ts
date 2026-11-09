@@ -13,6 +13,9 @@ export default defineConfig({
       ? ['tests/live/**/*.test.ts']
       : ['tests/unit/**/*.test.ts', 'tests/contract/**/*.test.ts', 'tests/leaks/**/*.test.ts'],
     testTimeout: live ? 15 * 60_000 : 10_000,
+    // Live tests share one real App, and each file sweeps leftover "[agent-office-test]" objects in
+    // beforeAll (spec 003 T009): run files one at a time so a sweep never hits another file's objects.
+    fileParallelism: !live,
     passWithNoTests: true,
   },
 });

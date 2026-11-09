@@ -34,5 +34,5 @@ npm run build
 
 say "3/3 Xong!"
 echo
-echo "Hãy mở Antigravity App 2.24.0, rồi chạy:"
+echo "Hãy mở Antigravity App (đã kiểm chứng 2.29.0, 2.24.0), rồi chạy:"
 echo "  npm start"

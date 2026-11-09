@@ -5,6 +5,7 @@ nhìn là biết ai đang làm, ai rảnh, ai đang chờ bạn. Bấm 1 lần v
 dừng agent hoặc "tuyển" nhân viên mới.
 
 **Tính năng**
+
 - 🧑‍💼 Mỗi conversation là một nhân viên (nhân vật hoạt hình 3D, concept **Soft Studio · Sài Gòn**), chuyển
   động theo trạng thái thật: gõ phím khi làm, vẫy tay khi **chờ sếp duyệt**, lắc đầu khi lỗi, và thỉnh
   thoảng vươn vai hoặc đi uống nước khi rảnh. Nhân viên không bao giờ đứng chồng lên nhau: họ nhường đường,
@@ -23,16 +24,16 @@ dừng agent hoặc "tuyển" nhân viên mới.
 - 🚶 Góc nhìn thứ nhất (phím <kbd>V</kbd>): đi lại trong văn phòng, nhắm vào nhân viên và bấm để chat
 
 - Chạy **local** trên macOS, giao diện trong trình duyệt
-- Kết nối trực tiếp với Antigravity App 2.24.0 trên cùng máy
+- Kết nối trực tiếp với Antigravity App trên cùng máy (đã kiểm chứng 2.29.0 và 2.24.0)
 - Không lưu nội dung chat, không gửi dữ liệu ra ngoài
 
 👉 **Cài đặt**: xem [docs/INSTALL.md](docs/INSTALL.md)
 
-| Nền tảng | Trạng thái |
-|---|---|
-| macOS 13+ | ✅ hỗ trợ |
-| Linux | ⏳ hoãn, sẽ bàn sau |
-| Windows | ✗ ngoài phạm vi |
+| Nền tảng  | Trạng thái          |
+| --------- | ------------------- |
+| macOS 13+ | ✅ hỗ trợ           |
+| Linux     | ⏳ hoãn, sẽ bàn sau |
+| Windows   | ✗ ngoài phạm vi     |
 
 ## Dành cho người phát triển
 

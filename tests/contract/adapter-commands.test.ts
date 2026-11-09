@@ -3,23 +3,25 @@ import { createAppAdapter } from '../../src/server/app-adapter/index';
 import { mapCommands } from '../../src/server/app-adapter/mappers/command';
 import { mapQuota } from '../../src/server/app-adapter/mappers/quota';
 import { score } from '../../src/server/services/mentions';
-import { FakeFinder, FakeTransport, fixture } from './helpers';
+import { FakeFinder, FakeTransport, FIXTURE_SETS, fixture, fixtureFrom } from './helpers';
 
-// T084 (slash commands, mentions) + T089 (quota, A8) on recorded App 2.24.0 fixtures.
+// T084 (slash commands, mentions) + T089 (quota, A8) on every recorded App fixture set (FR-006).
 
 const stops: (() => Promise<void>)[] = [];
 afterEach(async () => {
   while (stops.length) await stops.pop()!();
 });
 
-describe('slash commands', () => {
+describe.each(FIXTURE_SETS)('slash commands (App %s)', (version) => {
   it('maps system commands and skills', () => {
-    const cmds = mapCommands(fixture('GetSlashCommands'));
+    const cmds = mapCommands(fixtureFrom(version, 'GetSlashCommands'));
     expect(cmds.length).toBeGreaterThan(5);
     expect(cmds.filter((c) => c.kind === 'system').map((c) => c.name)).toEqual(expect.arrayContaining(['plan', 'goal', 'compact']));
     expect(cmds.some((c) => c.kind === 'skill')).toBe(true);
   });
+});
 
+describe('slash commands cache', () => {
   it('passes the model and caches per model for 60 s', async () => {
     const t = new FakeTransport();
     let calls = 0;
@@ -47,8 +49,8 @@ describe('mention fuzzy score', () => {
   });
 });
 
-describe('quota (A8, FR-081)', () => {
-  const q = mapQuota(fixture('GetUserStatus'));
+describe.each(FIXTURE_SETS)('quota (A8, FR-081) — App %s', (version) => {
+  const q = mapQuota(fixtureFrom(version, 'GetUserStatus'));
   it('never contains name or email', () => {
     const s = JSON.stringify(q);
     expect(s).not.toMatch(/"(name|email)"/);

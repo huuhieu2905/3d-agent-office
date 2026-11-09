@@ -1,7 +1,7 @@
 import { pathToFileURL } from 'node:url';
 import type { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
-import { AppUnavailableError } from '../../app-adapter/index';
+import { AppUnavailableError, ProjectNameTakenError } from '../../app-adapter/index';
 import { FolderAccessError } from '../../services/folders';
 import { sendError } from '../security';
 import type { RouteDeps } from './index';
@@ -32,6 +32,7 @@ export const projectRoutes: FastifyPluginAsync<RouteDeps> = async (app, deps) =>
     } catch (err) {
       if (err instanceof FolderAccessError) return sendError(reply, 400, 'BAD_REQUEST', err.message);
       if (err instanceof AppUnavailableError) return sendError(reply, 503, 'APP_UNAVAILABLE', 'Antigravity App is not connected');
+      if (err instanceof ProjectNameTakenError) return sendError(reply, 409, 'PROJECT_NAME_TAKEN', 'Tên project này đã có');
       throw err;
     }
   });

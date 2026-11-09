@@ -66,7 +66,7 @@ export function deleteTestProject(projectId: string): Promise<boolean>
 |---|---|---|
 | A1 | Không có tiến trình App thì `getConnection()` là `searching`. Mọi lệnh đọc hoặc ghi ném lỗi `AppUnavailableError`, không treo quá 3 giây | unit, dùng process finder giả |
 | A2 | Tự phát hiện App khởi động lại (PID, cổng hoặc token đổi) và chuyển về `connected` trong ≤ 10 giây | unit + live |
-| A3 | `appVersion != '2.24.0'` thì `versionSupported = false`, nhưng vẫn hoạt động | unit |
+| A3 | Thay bằng A3-1 trong `specs/003-antigravity-2-29-compat/contracts/app-adapter.md`: `versionSupported` theo danh sách đã kiểm chứng ở `src/server/app-adapter/versions.ts`; bản ngoài danh sách vẫn hoạt động | unit |
 | A4 | Token và email KHÔNG xuất hiện trong log, trong thông báo lỗi, hay trong giá trị trả về | test rà log |
 | A5 | Phản hồi sai định dạng (trường thiếu hoặc lạ) không làm sập adapter. Bước không nhận ra được ánh xạ thành `kind: 'other'`. Lỗi cấu trúc nghiêm trọng thì `error.reason = 'protocol'` | contract test dùng fixture có biến thể |
 | A6 | `sendMessage` tạo bước `user` trong App, không phải `system` | live test |
@@ -90,7 +90,7 @@ src/server/app-adapter/
 └── fixtures/             # (trong tests/) phản hồi App 2.24.0 đã làm sạch
 ```
 
-## Các RPC đang dùng (App 2.24.0, chỉ adapter được biết)
+## Các RPC đang dùng (xem `versions.ts` cho các phiên bản đã kiểm chứng; danh sách đầy đủ ở `USED_RPCS` trong `compat.ts`; chỉ adapter được biết)
 
 `GetAllCascadeTrajectories`, `GetCascadeTrajectorySteps`, `StreamCascadeReactiveUpdates` (tuỳ chọn),
 `SendUserCascadeMessage`, `StartCascade`, `CancelCascadeInvocation`, `HandleCascadeUserInteraction`,

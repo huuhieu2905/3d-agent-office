@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { ConnectionState, Conversation, Step, StepStatus } from '../../src/shared/domain';
 import { computeVisualState, STICKY_MS } from '../../src/server/services/visual-state';
 
-const connected: ConnectionState = { kind: 'connected', appVersion: '2.24.0', versionSupported: true };
+const connected: ConnectionState = { kind: 'connected', appVersion: '2.24.0', versionSupported: true, verifiedVersions: ['2.24.0'] };
 
 const conv = (runStatus: Conversation['runStatus'], lastUserInputAt: string | null = null): Conversation => ({
   id: 'c1',
@@ -29,6 +29,7 @@ const step = (status: StepStatus, kind: Step['kind'] = 'agent', createdAt = '202
   command: null,
   file: null,
   permission: kind === 'permission_request' ? { requestId: 'r', description: 'd', options: [] } : null,
+  question: null,
   rawType: 'PLANNER_RESPONSE',
   model: null,
 });
@@ -79,5 +80,12 @@ describe('stopped/error decay', () => {
   it('returns to idle when the boss sends a new message after the error', () => {
     const later = new Date(Date.parse('2026-11-06T10:00:00Z') + 5000).toISOString();
     expect(computeVisualState(conv('IDLE', later), step('ERROR'), connected, NOW)).toBe('idle');
+  });
+});
+
+// Spec 003 U3-7 / FR-009: a question waiting for the boss shows the employee as waiting.
+describe('agent question', () => {
+  it('a WAITING question makes the employee wait for the boss', () => {
+    expect(computeVisualState(conv('RUNNING'), step('WAITING', 'question'), connected, NOW)).toBe('waiting_for_boss');
   });
 });

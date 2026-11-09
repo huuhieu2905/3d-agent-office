@@ -2,10 +2,12 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { createAppAdapter } from '../../src/server/app-adapter/index';
 import { mapSteps } from '../../src/server/app-adapter/mappers/step';
 import { computeVisualState } from '../../src/server/services/visual-state';
-import type { Conversation } from '../../src/shared/domain';
-import { FakeFinder, FakeTransport, fixture } from './helpers';
+import type { ConnectionState, Conversation } from '../../src/shared/domain';
+import { FakeFinder, FakeTransport, FIXTURE_SETS, fixture, fixtureFrom, hasFixture, LEGACY_SET } from './helpers';
 
-// Spikes T029/T084 (2026-11-06): waiting-for-approval and error steps observed on App 2.24.0.
+// Spikes T029/T084 (2026-11-06): waiting-for-approval and error steps observed on the first recorded App.
+// The waiting fixture is re-recorded on every fixture set by tests/live/permission.live.test.ts (FR-006);
+// `error-steps.json` exists only in the legacy set (denied-command error from spike T029).
 
 const stops: (() => Promise<void>)[] = [];
 afterEach(async () => {
@@ -24,21 +26,28 @@ const conv = (runStatus: Conversation['runStatus']): Conversation => ({
   workspaceUris: [],
   currentModel: null,
 });
-const connected = { kind: 'connected', appVersion: '2.24.0', versionSupported: true } as const;
+const connected: ConnectionState = { kind: 'connected', appVersion: '2.24.0', versionSupported: true, verifiedVersions: ['2.24.0'] };
 
-describe('waiting for approval', () => {
-  const steps = mapSteps(fixture('waiting-steps'));
-  const last = steps.at(-1)!;
+describe.each(FIXTURE_SETS)('waiting for approval (App %s)', (version) => {
+  const recorded = hasFixture(version, 'waiting-steps');
+  const last = () => mapSteps(fixtureFrom(version, 'waiting-steps')).filter((s) => s.status === 'WAITING').at(-1)!;
 
-  it('maps the WAITING GENERIC step to a permission request with a usable id', () => {
-    expect(last.status).toBe('WAITING');
-    expect(last.kind).toBe('permission_request');
-    expect(last.permission?.requestId).toMatch(/^[0-9a-f-]{36}:6:permission$/);
-    expect(last.permission?.description).toContain('echo second_check');
+  it.skipIf(!recorded)('maps the WAITING step to a permission request with a usable id', () => {
+    expect(last().kind).toBe('permission_request');
+    expect(last().permission?.requestId).toMatch(/^[0-9a-f-]{36}:\d+:[A-Za-z]+$/);
+    expect(last().question).toBeNull();
   });
 
-  it('shows the employee as waiting_for_boss while the run is RUNNING', () => {
-    expect(computeVisualState(conv('RUNNING'), last, connected)).toBe('waiting_for_boss');
+  it.skipIf(!recorded)('shows the employee as waiting_for_boss while the run is RUNNING', () => {
+    expect(computeVisualState(conv('RUNNING'), last(), connected)).toBe('waiting_for_boss');
+  });
+});
+
+describe('waiting for approval — legacy spike details', () => {
+  it('keeps the step index and command of spike T029', () => {
+    const last = mapSteps(fixtureFrom(LEGACY_SET, 'waiting-steps')).at(-1)!;
+    expect(last.permission?.requestId).toMatch(/^[0-9a-f-]{36}:6:permission$/);
+    expect(last.permission?.description).toContain('echo second_check');
   });
 });
 

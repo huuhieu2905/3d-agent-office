@@ -5,7 +5,7 @@ import { Writable } from 'node:stream';
 import { afterAll, describe, expect, it } from 'vitest';
 import { createLogger, redactString, registerSecret } from '../../src/server/log';
 import { createHttpServer } from '../../src/server/http/app';
-import { createAppAdapter } from '../../src/server/app-adapter/index';
+import { createAppAdapter, sanitizeRaw } from '../../src/server/app-adapter/index';
 import { JsonStore } from '../../src/server/storage/json-store';
 import { settingsSchema } from '../../src/shared/schemas';
 import { FakeFinder, FakeTransport, FAKE_TOKEN } from '../contract/helpers';
@@ -89,5 +89,28 @@ describe('server responses and persisted files', () => {
     const files = await readdir(dataDir);
     const fileText = (await Promise.all(files.map((f) => readFile(join(dataDir, f), 'utf8')))).join('\n');
     assertClean(bodies.join('\n') + lines.join('\n') + fileText);
+  });
+});
+
+// Spec 003 (A3-4, T005): new App 2.29.0 content keys must be redacted in fixtures.
+describe('sanitizeRaw: content keys added for App 2.29.0', () => {
+  it('drops question text, error messages, search queries and write-in answers', () => {
+    const IP = '192.168.1.2';
+    const raw = {
+      steps: [
+        {
+          askQuestion: {
+            questions: [{ question: 'secret-question-123', options: [{ id: '1', text: 'secret-option-456' }], writeInResponse: 'secret-writein-789' }],
+          },
+        },
+        { errorMessage: { error: { shortError: `secret-error-abc read tcp ${IP}:62882`, fullError: 'secret-full-error-def', errorId: 'keep-id' } } },
+        { searchWeb: { query: 'secret-query-ghi', summary: 'secret-summary-jkl' } },
+      ],
+    };
+    const out = JSON.stringify(sanitizeRaw(raw));
+    for (const secret of ['secret-question-123', 'secret-option-456', 'secret-writein-789', 'secret-error-abc', 'secret-full-error-def', 'secret-query-ghi', 'secret-summary-jkl', IP]) {
+      expect(out).not.toContain(secret);
+    }
+    expect(out).toContain('keep-id'); // structure and ids stay usable for contract tests
   });
 });

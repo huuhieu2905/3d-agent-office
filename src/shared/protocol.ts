@@ -27,6 +27,9 @@ export type ErrorCode =
   | 'INVALID_SEATING'
   | 'FLOOR_TOO_SMALL'
   | 'NOT_SUPPORTED'
+  | 'QUESTION_NOT_PENDING'
+  | 'APP_REJECTED'
+  | 'PROJECT_NAME_TAKEN'
   | 'INTERNAL';
 
 export interface ErrorBody {

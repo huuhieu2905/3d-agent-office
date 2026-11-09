@@ -41,7 +41,7 @@ function Code({ code, lang }: { code: string; lang: string }) {
   );
 }
 
-function Md({ text }: { text: string }) {
+export function Md({ text }: { text: string }) {
   return (
     <Markdown
       remarkPlugins={[remarkGfm]}
@@ -71,6 +71,23 @@ function Collapsible({ title, children, open = false }: { title: string; childre
       <summary>{title}</summary>
       <div className="collapsible-body">{children}</div>
     </details>
+  );
+}
+
+/** U3-4 (spec 003): error text, max 300 characters with "Xem thêm" for the rest. */
+export const ERROR_PREVIEW_CHARS = 300;
+function ErrorText({ text }: { text: string }) {
+  const [open, setOpen] = useState(false);
+  const long = text.length > ERROR_PREVIEW_CHARS;
+  return (
+    <div className="msg msg-error" data-testid="step-error">
+      ⚠ {long && !open ? `${text.slice(0, ERROR_PREVIEW_CHARS)}…` : text}
+      {long && (
+        <button type="button" className="link-button" onClick={() => setOpen((v) => !v)}>
+          {open ? 'Thu gọn' : 'Xem thêm'}
+        </button>
+      )}
+    </div>
   );
 }
 
@@ -146,7 +163,37 @@ export const StepView = memo(function StepView({ step }: { step: Step }) {
     case 'system':
       return <div className="msg msg-system">{step.text}</div>;
     case 'error':
-      return <div className="msg msg-error">⚠ Agent gặp lỗi ({step.rawType})</div>;
+      return step.text ? <ErrorText text={step.text} /> : <div className="msg msg-error">⚠ Agent gặp lỗi ({step.rawType})</div>;
+    case 'question': {
+      // Spec 003 U3-3: history of an agent question. The live form is QuestionPrompt (ChatPanel).
+      const q = step.question;
+      if (!q) return null;
+      if (q.state === 'waiting') return <div className="msg msg-system">❓ Agent đang hỏi bạn…</div>;
+      return (
+        <div className="msg msg-tool question-history" data-testid="step-question">
+          {q.entries.map((e, i) => {
+            const chosen = e.options.filter((o) => e.selectedOptionIds.includes(o.id)).map((o) => o.text);
+            if (e.writeIn) chosen.push(e.writeIn);
+            return (
+              <div key={i}>
+                <div className="question-text">
+                  ❓ <Md text={e.question} />
+                </div>
+                <div className="small">
+                  {q.state === 'skipped' ? 'Đã bỏ qua' : q.state === 'canceled' ? 'Đã huỷ' : `→ ${chosen.join(', ') || '(không có đáp án)'}`}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+    case 'web_search':
+      return (
+        <div className="msg msg-tool small" data-testid="step-web-search">
+          🔎 Đã tìm: {step.text ?? '(không rõ nội dung)'}
+        </div>
+      );
     case 'permission_request':
       return <div className="msg msg-system">Agent đang xin quyền: {step.permission?.description}</div>;
     default:
