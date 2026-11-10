@@ -13,12 +13,12 @@ test.beforeEach(async () => {
 
 test('create a project by browsing to a folder', async ({ page }) => {
   await page.goto(`/#k=${TOKEN}`);
-  await page.getByRole('button', { name: '+ Tạo project' }).click();
-  const dialog = page.getByRole('dialog', { name: 'Tạo project' });
+  await page.getByRole('button', { name: '+ New project' }).click();
+  const dialog = page.getByRole('dialog', { name: 'New project' });
   await dialog.getByRole('button', { name: /code/ }).click();
   await dialog.getByRole('button', { name: /website/ }).click();
   await expect(dialog.getByRole('textbox')).toHaveValue('website');
-  await dialog.getByRole('button', { name: /Tạo project tại ~\/code\/website/ }).click();
+  await dialog.getByRole('button', { name: /Create project at ~\/code\/website/ }).click();
   await expect(dialog).toBeHidden();
   const create = (await sent()).find((s) => s.method === 'CreateProject')!;
   const project = create.body.project as { id: string; name: string; projectResources: { resources: { folderUri: string }[] } };
@@ -29,17 +29,17 @@ test('create a project by browsing to a folder', async ({ page }) => {
 
 test('hiring requires a project; a new project can be created inline and is pre-selected', async ({ page }) => {
   await page.goto(`/#k=${TOKEN}`);
-  await page.getByRole('button', { name: '+ Tuyển nhân viên' }).click();
-  const hire = page.getByRole('dialog', { name: 'Tuyển nhân viên mới' });
+  await page.getByRole('button', { name: '+ Hire employee' }).click();
+  const hire = page.getByRole('dialog', { name: 'Hire a new employee' });
   await hire.locator('textarea').fill('Làm trang chủ');
   await expect(hire.locator('.model-picker select')).not.toHaveValue('');
-  await expect(hire.getByRole('button', { name: 'Tuyển' })).toBeDisabled();
-  await hire.getByLabel('Dự án').selectOption('__new__');
-  const dialog = page.getByRole('dialog', { name: 'Tạo project' });
+  await expect(hire.getByRole('button', { name: 'Hire' })).toBeDisabled();
+  await hire.getByLabel('Project').selectOption('__new__');
+  const dialog = page.getByRole('dialog', { name: 'New project' });
   await dialog.getByRole('button', { name: /Documents/ }).click();
-  await dialog.getByRole('button', { name: /Tạo project tại/ }).click();
-  await expect(hire.getByRole('button', { name: 'Tuyển' })).toBeEnabled();
-  await hire.getByRole('button', { name: 'Tuyển' }).click();
+  await dialog.getByRole('button', { name: /Create project at/ }).click();
+  await expect(hire.getByRole('button', { name: 'Hire' })).toBeEnabled();
+  await hire.getByRole('button', { name: 'Hire' }).click();
   await expect.poll(async () => (await sent()).find((s) => s.method === 'StartCascade')?.body).toMatchObject({
     projectEnvConfig: { projectId: expect.stringMatching(/^[0-9a-f-]{36}$/) },
   });

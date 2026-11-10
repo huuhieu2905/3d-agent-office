@@ -3,6 +3,7 @@ import type { Project } from '@shared/domain';
 import { api } from '../../api/client';
 import { useUi } from '../../state/ui';
 import { ModelPicker } from './ModelPicker';
+import { useEscapeToClose } from '../useEscapeToClose';
 import { PROJECTS_CHANGED, ProjectDialog } from '../projects/ProjectDialog';
 
 // T072 + T082 / FR-026, FR-032: hire = first request + model + a REQUIRED project (existing or newly created).
@@ -14,7 +15,7 @@ export function HireButton() {
   return (
     <>
       <button className="btn btn-primary hire" onClick={() => setOpen(true)}>
-        + Tuyển nhân viên
+        + Hire employee
       </button>
       {open && <HireDialog onClose={() => setOpen(false)} />}
     </>
@@ -29,6 +30,7 @@ export function HireDialog({ onClose, deskId }: { onClose(): void; deskId?: stri
   const [text, setText] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  useEscapeToClose(onClose);
   const openConversation = useUi((s) => s.openConversation);
 
   function load() {
@@ -50,7 +52,7 @@ export function HireDialog({ onClose, deskId }: { onClose(): void; deskId?: stri
       onClose();
       openConversation(res.conversationId);
     } catch {
-      setError('Không tuyển được nhân viên mới. Hãy kiểm tra Antigravity App đang mở.');
+      setError('Could not hire a new employee. Check that the Antigravity App is open.');
     } finally {
       setBusy(false);
     }
@@ -58,12 +60,12 @@ export function HireDialog({ onClose, deskId }: { onClose(): void; deskId?: stri
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal panel" role="dialog" aria-label="Tuyển nhân viên mới" onClick={(e) => e.stopPropagation()}>
-        <h3>Tuyển nhân viên mới</h3>
+      <div className="modal panel" role="dialog" aria-label="Hire a new employee" onClick={(e) => e.stopPropagation()}>
+        <h3>Hire a new employee</h3>
         <label>
-          Dự án <span className="muted small">(bắt buộc)</span>
+          Project <span className="muted small">(required)</span>
           <select
-            aria-label="Dự án"
+            aria-label="Project"
             value={projectId}
             onChange={(e) => {
               if (e.target.value === NEW) setCreatingProject(true);
@@ -71,7 +73,7 @@ export function HireDialog({ onClose, deskId }: { onClose(): void; deskId?: stri
             }}
           >
             <option value="" disabled>
-              — Chọn dự án —
+              — Choose a project —
             </option>
             {projects.map((p) => (
               <option key={p.id} value={p.id}>
@@ -79,11 +81,11 @@ export function HireDialog({ onClose, deskId }: { onClose(): void; deskId?: stri
                 {p.folderUri ? ` — ${decodeURIComponent(p.folderUri.replace('file://', '')).split('/').slice(-2).join('/')}` : ''}
               </option>
             ))}
-            <option value={NEW}>+ Tạo project mới…</option>
+            <option value={NEW}>+ New project…</option>
           </select>
         </label>
         <label>
-          Việc đầu tiên giao cho nhân viên
+          First task for the employee
           <textarea rows={4} value={text} onChange={(e) => setText(e.target.value)} autoFocus />
         </label>
         <label>
@@ -93,10 +95,10 @@ export function HireDialog({ onClose, deskId }: { onClose(): void; deskId?: stri
         {error && <div className="send-failed">{error}</div>}
         <div className="modal-actions">
           <button className="btn" onClick={onClose}>
-            Huỷ
+            Cancel
           </button>
           <button className="btn btn-primary" disabled={busy || !text.trim() || !model || !projectId} onClick={() => void submit()}>
-            {busy ? 'Đang tuyển…' : 'Tuyển'}
+            {busy ? 'Hiring…' : 'Hire'}
           </button>
         </div>
       </div>

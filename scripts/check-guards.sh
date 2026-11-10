@@ -4,6 +4,8 @@
 #  (b) FR-082 — no outbound URLs except localhost and Open-Meteo
 #  (c) FR-030 — adapter write calls only from HTTP routes (i.e. user-initiated)
 #  (d) Constitution II v2.1.1 / spec 003 A3-1d — App version literals only in app-adapter/versions.ts
+#  (e) spec 003 — compat script isolation
+#  (f) spec 006 FR-006 — no Vietnamese UI text in src/
 set -euo pipefail
 cd "$(dirname "$0")/.."
 fail=0
@@ -46,5 +48,17 @@ if hits=$(grep -RInE "inspectCompat|from '\./compat'|app-adapter/compat" src --i
   echo "✗ (e) inspectCompat / compat.ts used outside the adapter (Agent Office must not run it):"; echo "$hits"; fail=1
 fi
 
-if [ "$fail" -eq 0 ]; then echo "✓ check-guards: adapter isolation, outbound URLs, user-initiated writes, version literals, compat isolation"; fi
+# (f) Spec 006 FR-006: no Vietnamese UI text in src/ (whole-line comments are allowed).
+# C.UTF-8, not en_US.UTF-8: a missing locale falls back to bytes and then "×" matches "à".
+vi_re='[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]'
+vi_grep() { LC_ALL=C.UTF-8 grep -niE "$vi_re" "$@"; }
+# Self-check: must catch uppercase Vietnamese and must not flag "×".
+if ! printf 'Ở đây\n' | vi_grep >/dev/null || printf 'a × b 1.00×\n' | vi_grep >/dev/null; then
+  echo "✗ (f) Vietnamese-text guard is broken in this locale (needs C.UTF-8)"; fail=1
+fi
+if hits=$(vi_grep -R src --include='*.ts' --include='*.tsx' --include='*.html' --include='*.css' | grep -vE '^[^:]+:[0-9]+:[[:space:]]*(//|\*|/\*|\{/\*)'); then
+  echo "✗ (f) Vietnamese UI text in src/:"; echo "$hits"; fail=1
+fi
+
+if [ "$fail" -eq 0 ]; then echo "✓ check-guards: adapter isolation, outbound URLs, user-initiated writes, version literals, compat isolation, English-only UI"; fi
 exit "$fail"

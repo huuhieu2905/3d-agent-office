@@ -25,7 +25,7 @@ export function drawQuota(ctx: CanvasRenderingContext2D, quota: Quota | null): v
   if (!quota) {
     ctx.font = "20px 'Nunito Variable', sans-serif";
     ctx.fillStyle = '#a49a8b';
-    ctx.fillText('Đang tải…', 20, 90);
+    ctx.fillText('Loading…', 20, 90);
     return;
   }
   ctx.font = "18px 'Nunito Variable', sans-serif";
@@ -49,7 +49,7 @@ export function drawQuota(ctx: CanvasRenderingContext2D, quota: Quota | null): v
   if (quota.groups.some((g) => g.low)) {
     ctx.fillStyle = '#d1453b';
     ctx.font = "700 18px 'Nunito Variable', sans-serif";
-    ctx.fillText('⚠ Có nhóm model sắp hết quota', 20, H - 16);
+    ctx.fillText('⚠ Some model groups are low on quota', 20, H - 16);
   }
 }
 

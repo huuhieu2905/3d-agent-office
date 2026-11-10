@@ -35,7 +35,7 @@ test('legend stays on screen, scrolls, collapses and remembers it', async ({ pag
   await saved;
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
   await expect(list).toBeHidden();
-  await expect(toggle).toContainText('Dự án (8)');
+  await expect(toggle).toContainText('Projects (8)');
   await expect(toggle.locator('.tag-dot')).toHaveCount(1);
 
   // Remembered across a reload.

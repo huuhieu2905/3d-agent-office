@@ -32,16 +32,16 @@ export function ProjectLegend() {
   if (shown.length === 0) return null;
   const highlighted = shown.find((p) => p.id === highlight);
   return (
-    <div className="legend panel" aria-label="Chú giải dự án">
+    <div className="legend panel" aria-label="Project legend">
       <button
         className="legend-toggle"
         data-testid="legend-toggle"
         aria-expanded={!collapsed}
         onClick={() => useSettings.getState().update({ legendCollapsed: !collapsed })}
-        title={collapsed ? 'Mở chú giải dự án' : 'Thu gọn chú giải dự án'}
+        title={collapsed ? 'Expand project legend' : 'Collapse project legend'}
       >
         <span aria-hidden>{collapsed ? '▸' : '▾'}</span>
-        Dự án ({shown.length})
+        Projects ({shown.length})
         {collapsed && highlighted && <span className="tag-dot" style={{ background: highlighted.color }} title={highlighted.name} />}
       </button>
       {!collapsed && (
@@ -51,7 +51,7 @@ export function ProjectLegend() {
               key={p.id}
               className={`legend-item ${highlight === p.id ? 'active' : ''}`}
               onClick={() => setHighlight(highlight === p.id ? null : p.id)}
-              title="Bấm để làm nổi bật nhân viên của dự án này"
+              title="Click to highlight this project's employees"
             >
               <span className="tag-dot" style={{ background: p.color }} />
               {p.name}

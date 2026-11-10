@@ -34,10 +34,10 @@ export class FolderService {
     try {
       real = await realpath(target);
     } catch {
-      throw new FolderAccessError('Thư mục không tồn tại');
+      throw new FolderAccessError('Folder does not exist');
     }
-    if (real !== home && !real.startsWith(home + sep)) throw new FolderAccessError('Chỉ được chọn thư mục trong thư mục home');
-    if (!(await stat(real)).isDirectory()) throw new FolderAccessError('Không phải thư mục');
+    if (real !== home && !real.startsWith(home + sep)) throw new FolderAccessError('Only folders inside your home folder can be chosen');
+    if (!(await stat(real)).isDirectory()) throw new FolderAccessError('Not a folder');
     return real;
   }
 
@@ -48,7 +48,7 @@ export class FolderService {
     try {
       entries = await readdir(dir, { withFileTypes: true });
     } catch {
-      throw new FolderAccessError('Không có quyền đọc thư mục này');
+      throw new FolderAccessError('No permission to read this folder');
     }
     const dirs: { name: string; path: string }[] = [];
     for (const e of entries) {

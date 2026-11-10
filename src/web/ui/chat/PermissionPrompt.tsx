@@ -18,23 +18,23 @@ export function PermissionPrompt({ conversationId, step }: { conversationId: str
         json: { decision },
       });
     } catch {
-      setError('Không gửi được câu trả lời. Hãy thử lại hoặc trả lời trong Antigravity App.');
+      setError('Could not send the answer. Try again or answer in the Antigravity App.');
       setBusy(null);
     }
   }
 
   return (
-    <div className="permission panel" role="alertdialog" aria-label="Agent xin quyền">
-      <div className="permission-title">✋ Nhân viên xin phép</div>
+    <div className="permission panel" role="alertdialog" aria-label="The agent asks for permission">
+      <div className="permission-title">✋ The employee asks for permission</div>
       <div className="permission-body">{step.permission.description}</div>
       {step.command?.commandLine && <pre className="code">{step.command.commandLine}</pre>}
       {error && <div className="send-failed">{error}</div>}
       <div className="modal-actions">
         <button className="btn" disabled={!!busy} onClick={() => void answer('deny')}>
-          {busy === 'deny' ? 'Đang gửi…' : 'Từ chối'}
+          {busy === 'deny' ? 'Sending…' : 'Deny'}
         </button>
         <button className="btn btn-primary" disabled={!!busy} onClick={() => void answer('allow')}>
-          {busy === 'allow' ? 'Đang gửi…' : 'Cho phép'}
+          {busy === 'allow' ? 'Sending…' : 'Allow'}
         </button>
       </div>
     </div>

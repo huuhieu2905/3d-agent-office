@@ -43,10 +43,10 @@ test('moving an employee to an occupied desk swaps the two', async ({ request })
 
 test('build mode opens a toolbar with the furniture palette and can be cancelled', async ({ page }) => {
   await page.goto(`/#k=${TOKEN}`);
-  await page.getByRole('button', { name: /Xây dựng/ }).click();
-  const bar = page.getByRole('toolbar', { name: 'Chế độ xây dựng' });
-  await expect(bar.getByRole('button', { name: 'Bàn làm việc' })).toBeVisible();
-  await expect(bar.getByRole('button', { name: 'Vách kính' })).toBeVisible();
-  await bar.getByRole('button', { name: 'Huỷ' }).click();
+  await page.getByRole('button', { name: /Build/ }).click();
+  const bar = page.getByRole('toolbar', { name: 'Build mode' });
+  await expect(bar.getByRole('button', { name: 'Desk' })).toBeVisible();
+  await expect(bar.getByRole('button', { name: 'Glass wall' })).toBeVisible();
+  await bar.getByRole('button', { name: 'Cancel' }).click();
   await expect(bar).toBeHidden();
 });

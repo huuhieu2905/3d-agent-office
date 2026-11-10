@@ -23,6 +23,7 @@ let starter: ((p: Pending) => void) | null = null;
 
 /** Called by draggable objects (furniture, employees) on pointerdown in arrange mode. */
 export function beginDrag(kind: DragKind, id: string, origin: Pt, event: PointerEvent): void {
+  if (event.button !== 0) return; // 006: only the left button drags; right-click is delete (OfficeScene)
   starter?.({ kind, id, origin, event });
 }
 

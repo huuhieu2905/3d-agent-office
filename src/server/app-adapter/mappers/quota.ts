@@ -37,7 +37,7 @@ export function mapQuota(userStatusResponse: unknown, now = new Date()): Quota {
   }
 
   return {
-    planName: (typeof tier.name === 'string' && tier.name) || (typeof planInfo.planName === 'string' && planInfo.planName) || 'Không rõ',
+    planName: (typeof tier.name === 'string' && tier.name) || (typeof planInfo.planName === 'string' && planInfo.planName) || 'Unknown',
     groups: [...groups.values()].sort((a, b) => a.remainingPercent - b.remainingPercent),
     credits: {
       prompt: { available: num(plan.availablePromptCredits), monthly: num(planInfo.monthlyPromptCredits) },

@@ -325,6 +325,8 @@ export interface Settings {
   /** 004 US4: ids of wall screens switched OFF (≤ 50 ids, each ≤ 100 chars). Screens are on by default
    * — the first one shows the quota (001 FR-040). */
   screensOff?: string[];
+  /** 006 US5: mouse look/rotate speed multiplier. Optional, 0.25–3, absent = 1. */
+  mouseSensitivity?: number;
 }
 
 export type WeatherCondition = 'clear' | 'cloudy' | 'rain' | 'storm' | 'fog_snow';

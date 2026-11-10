@@ -37,12 +37,12 @@ const COLORS: Record<BuildingStyle, string[]> = {
   glass: ['#3a5f86', '#5d7fa3', '#8fa6b8', '#c9cfd4', '#2c4a6b'],
 };
 
-/** Fictional names in each city's language (no real brands). */
+/** Fictional English-readable names with local flavor (no real brands). */
 export const SHOP_NAMES: Record<City, { cafe: [string, string]; resto: [string, string]; kiosk: string; grocery: string; sugarcane: string; banhmi: string }> = {
-  hanoi: { cafe: ['Cà Phê Gió', 'Cà Phê Phố Cổ'], resto: ['Quán Phở Sớm', 'Bún Chả Hàng Mây'], kiosk: 'Cà Phê Công Viên', grocery: 'Tạp Hoá Cô Lan', sugarcane: 'Nước Mía Hồ Tây', banhmi: 'Bánh Mì Sáng' },
-  hcmc: { cafe: ['Cà Phê Vỉa Hè', 'Cà Phê Sữa Đá'], resto: ['Cơm Tấm Cô Ba', 'Hủ Tiếu Đêm'], kiosk: 'Cà Phê Công Viên', grocery: 'Tạp Hoá Bà Tư', sugarcane: 'Nước Mía Siêu Sạch', banhmi: 'Bánh Mì Nóng' },
+  hanoi: { cafe: ['Breeze Coffee', 'Old Quarter Coffee'], resto: ['Early Pho', 'Bun Cha House'], kiosk: 'Park Coffee', grocery: "Lan's Grocery", sugarcane: 'West Lake Cane Juice', banhmi: 'Morning Banh Mi' },
+  hcmc: { cafe: ['Sidewalk Coffee', 'Iced Milk Coffee'], resto: ["Ba's Broken Rice", 'Night Noodles'], kiosk: 'Park Coffee', grocery: "Tu's Grocery", sugarcane: 'Fresh Cane Juice', banhmi: 'Hot Banh Mi' },
   singapore: { cafe: ['Kopi Corner', 'Tiong Bahru Brew'], resto: ['Laksa House', 'Hawker 88'], kiosk: 'Park Kopi', grocery: 'Mama Shop', sugarcane: 'Cane Juice', banhmi: 'Kaya Toast' },
-  tokyo: { cafe: ['Kissa Hoshi', 'Café Sakura'], resto: ['Ramen Kaze', 'Izakaya Tsuki'], kiosk: 'Kōen Café', grocery: 'Konbini Mori', sugarcane: 'Ocha Stand', banhmi: 'Onigiri Ya' },
+  tokyo: { cafe: ['Kissa Hoshi', 'Cafe Sakura'], resto: ['Ramen Kaze', 'Izakaya Tsuki'], kiosk: 'Koen Cafe', grocery: 'Konbini Mori', sugarcane: 'Ocha Stand', banhmi: 'Onigiri Ya' },
   newyork: { cafe: ['Corner Roast', 'Bean & Bagel'], resto: ['Liberty Diner', "Tony's Slice"], kiosk: 'Park Coffee Cart', grocery: 'Corner Bodega', sugarcane: 'Lemonade Stand', banhmi: 'Pretzel Cart' },
 };
 

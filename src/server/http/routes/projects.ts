@@ -24,7 +24,7 @@ export const projectRoutes: FastifyPluginAsync<RouteDeps> = async (app, deps) =>
 
   app.post('/api/projects', async (req, reply) => {
     const body = createSchema.safeParse(req.body);
-    if (!body.success) return sendError(reply, 400, 'BAD_REQUEST', 'Cần tên project và thư mục');
+    if (!body.success) return sendError(reply, 400, 'BAD_REQUEST', 'Project name and folder are required');
     try {
       const folder = await services.folders.resolveInsideHome(body.data.folderPath);
       const project = await adapter.createProject({ name: body.data.name, folderUri: pathToFileURL(folder).href });
@@ -32,7 +32,7 @@ export const projectRoutes: FastifyPluginAsync<RouteDeps> = async (app, deps) =>
     } catch (err) {
       if (err instanceof FolderAccessError) return sendError(reply, 400, 'BAD_REQUEST', err.message);
       if (err instanceof AppUnavailableError) return sendError(reply, 503, 'APP_UNAVAILABLE', 'Antigravity App is not connected');
-      if (err instanceof ProjectNameTakenError) return sendError(reply, 409, 'PROJECT_NAME_TAKEN', 'Tên project này đã có');
+      if (err instanceof ProjectNameTakenError) return sendError(reply, 409, 'PROJECT_NAME_TAKEN', 'A project with this name already exists');
       throw err;
     }
   });

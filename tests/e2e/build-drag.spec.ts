@@ -30,13 +30,13 @@ async function getEmployees(page: Page): Promise<Emp[]> {
   return (await (await page.request.get('/api/employees', { headers: auth })).json()).employees;
 }
 async function enterArrange(page: Page) {
-  await page.getByRole('button', { name: /Xây dựng/ }).click();
-  await expect(page.getByRole('toolbar', { name: 'Chế độ xây dựng' })).toBeVisible();
+  await page.getByRole('button', { name: /Build/ }).click();
+  await expect(page.getByRole('toolbar', { name: 'Build mode' })).toBeVisible();
   await page.waitForTimeout(600);
 }
 async function save(page: Page) {
-  const bar = page.getByRole('toolbar', { name: 'Chế độ xây dựng' });
-  await bar.getByRole('button', { name: 'Lưu' }).click();
+  const bar = page.getByRole('toolbar', { name: 'Build mode' });
+  await bar.getByRole('button', { name: 'Save' }).click();
   await expect(bar).toBeHidden({ timeout: 20_000 }); // the PUT has completed (headless frames can be slow)
 }
 const centre = (it: Item) => ({ x: it.pos.x + (it.type === 'desk' ? 0.75 : 0.25), z: it.pos.z + (it.type === 'desk' ? 0.5 : 0.25) });
@@ -69,7 +69,7 @@ test('a desk is selected by a click and dragged off the old grid; the spot is sa
   // Move it into the free aisle south of the desk row, a quarter metre at a time is enough to prove 0.05 m.
   await drag(page, await project(page, c.x, c.z, 0.76), await project(page, target.x, target.z, 0.76));
   await save(page);
-  await expect(page.getByRole('toolbar', { name: 'Chế độ xây dựng' })).toBeHidden();
+  await expect(page.getByRole('toolbar', { name: 'Build mode' })).toBeHidden();
   const after = (await getLayout(page)).items.find((i) => i.id === desk.id)!;
   expect(Math.abs(after.pos.x - desk.pos.x)).toBeLessThanOrEqual(0.05);
   expect(Math.abs(after.pos.z - (desk.pos.z + 0.25))).toBeLessThanOrEqual(0.05);
@@ -112,13 +112,13 @@ test('an employee dragged onto a free desk sits there; onto an occupied desk the
 test('an employee can be seated at a desk placed in the draft, before saving', async ({ page }) => {
   const emp = (await getEmployees(page)).find((e) => e.visible && e.deskId)!;
   await enterArrange(page);
-  await page.getByRole('toolbar', { name: 'Chế độ xây dựng' }).getByRole('button', { name: 'Bàn làm việc' }).click();
+  await page.getByRole('toolbar', { name: 'Build mode' }).getByRole('button', { name: 'Desk' }).click();
   // An empty spot in the south-east corner of the default office.
   const spot = await project(page, 12, 10.4, 0);
   await page.mouse.move(spot.x, spot.y);
   await page.mouse.click(spot.x, spot.y);
   await page.keyboard.press('Escape'); // leave the palette
-  await expect.poll(async () => page.evaluate(() => document.querySelector('.build')?.textContent ?? '')).not.toContain('Đang lưu');
+  await expect.poll(async () => page.evaluate(() => document.querySelector('.build')?.textContent ?? '')).not.toContain('Saving');
   await drag(page, await bodyOf(page, emp.name), await project(page, 12, 10.6, 0.76));
   await save(page);
   const layout = await getLayout(page);
@@ -152,4 +152,70 @@ test('outside arrange mode nothing is dragged and one click opens the chat', asy
   const body = await bodyOf(page, emp.name);
   await page.mouse.click(body.x, body.y);
   await expect(page.locator('.chat strong')).toHaveText(emp.name);
+});
+
+// 006 US3: right-click deletes the selected item (draft only, undoable); nothing else is deleted.
+async function plantPoint(page: Page) {
+  const plant = (await getLayout(page)).items.find((i) => i.type === 'plant')!;
+  const c = centre(plant);
+  return { plant, at: await project(page, c.x, c.z, 0.4) };
+}
+const rightClick = (page: Page, p: { x: number; y: number }) => page.mouse.click(p.x, p.y, { button: 'right' });
+const hasItem = async (page: Page, id: string) => (await getLayout(page)).items.some((i) => i.id === id);
+
+test('right-click on the selected item deletes it; Cancel keeps the saved layout', async ({ page }) => {
+  await enterArrange(page);
+  const { plant, at } = await plantPoint(page);
+  await page.mouse.click(at.x, at.y);
+  await expect.poll(() => page.evaluate(() => window.__agentOffice!.arrange().selectedId)).toBe(plant.id);
+  await rightClick(page, at);
+  await expect.poll(() => page.evaluate(() => window.__agentOffice!.arrange().selectedId)).toBeNull();
+  await page.getByRole('toolbar', { name: 'Build mode' }).getByRole('button', { name: 'Cancel' }).click();
+  expect(await hasItem(page, plant.id)).toBe(true);
+  await enterArrange(page);
+  await page.mouse.click(at.x, at.y);
+  await rightClick(page, at);
+  await save(page);
+  expect(await hasItem(page, plant.id)).toBe(false);
+});
+
+test('a right-click delete is undone by ⌘Z', async ({ page }) => {
+  await enterArrange(page);
+  const { plant, at } = await plantPoint(page);
+  await page.mouse.click(at.x, at.y);
+  await rightClick(page, at);
+  await expect.poll(() => page.evaluate(() => window.__agentOffice!.arrange().selectedId)).toBeNull();
+  await page.keyboard.press('ControlOrMeta+z');
+  await save(page);
+  expect(await hasItem(page, plant.id)).toBe(true);
+});
+
+test('right-click on an unselected item, or mid-drag, deletes nothing', async ({ page }) => {
+  await enterArrange(page);
+  const { plant, at } = await plantPoint(page);
+  await rightClick(page, at); // nothing selected
+  expect(await page.evaluate(() => window.__agentOffice!.arrange().selectedId)).toBeNull();
+  await page.mouse.move(at.x, at.y); // left drag on the (now selected) plant, right button pressed mid-drag
+  await page.mouse.down();
+  await page.mouse.move(at.x + 4, at.y + 4);
+  await page.mouse.down({ button: 'right' });
+  await page.mouse.up({ button: 'right' });
+  await page.mouse.up();
+  await save(page);
+  expect(await hasItem(page, plant.id)).toBe(true);
+});
+
+test('006: in build mode, Esc closes an open dialog and keeps the selected item', async ({ page }) => {
+  await enterArrange(page);
+  const { plant, at } = await plantPoint(page);
+  await page.mouse.click(at.x, at.y);
+  await expect.poll(() => page.evaluate(() => window.__agentOffice!.arrange().selectedId)).toBe(plant.id);
+  await page.getByRole('button', { name: 'Settings' }).click();
+  const settings = page.getByRole('dialog', { name: 'Settings' });
+  await expect(settings).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(settings).toBeHidden();
+  expect(await page.evaluate(() => window.__agentOffice!.arrange().selectedId)).toBe(plant.id);
+  await page.keyboard.press('Escape'); // with no dialog open, Esc deselects as before
+  await expect.poll(() => page.evaluate(() => window.__agentOffice!.arrange().selectedId)).toBeNull();
 });

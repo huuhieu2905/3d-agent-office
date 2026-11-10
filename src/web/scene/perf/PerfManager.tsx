@@ -28,7 +28,7 @@ export function PerfManager({ children }: { children: React.ReactNode }) {
         update({ detailLevel: next });
         useConnection.getState().addWarning({
           code: 'DETAIL_LOWERED',
-          message: `Máy đang chạy chậm — đã giảm mức chi tiết bối cảnh xuống "${next === 'low' ? 'Thấp' : 'Vừa'}". Văn phòng không bị ảnh hưởng.`,
+          message: `The computer is running slowly — surroundings detail lowered to "${next === 'low' ? 'Low' : 'Medium'}". The office is not affected.`,
         });
       }}
     >

@@ -23,13 +23,13 @@ const HEIGHT: Record<InteractableType, number> = { wall_screen: 1.6, sofa: 0.45,
 function actionFor(type: InteractableType, on: boolean): string {
   switch (type) {
     case 'wall_screen':
-      return on ? 'Tắt màn hình' : 'Bật màn hình';
+      return on ? 'Turn screen off' : 'Turn screen on';
     case 'sofa':
-      return 'Ngồi · Shift+E — Nằm';
+      return 'Sit · Shift+E — Lie down';
     case 'water_cooler':
-      return 'Uống nước';
+      return 'Drink water';
     case 'plant':
-      return 'Tưới cây';
+      return 'Water the plant';
   }
 }
 

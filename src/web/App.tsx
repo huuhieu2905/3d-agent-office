@@ -16,7 +16,7 @@ import { AddDeskHint } from './ui/build/AddDeskHint';
 import { SettingsButton, ThemeToggle, WeatherBadge } from './ui/settings/SettingsPanel';
 import { PerfManager } from './scene/perf/PerfManager';
 import { useEffect } from 'react';
-import { CameraToggle, FirstPersonHelp, useCameraHotkey, userChoseCamera } from './ui/CameraToggle';
+import { CameraToggle, FirstPersonHelp, FullscreenToggle, useCameraHotkey, useFullscreenHotkey, userChoseCamera } from './ui/CameraToggle';
 import { Crosshair, FirstPersonHint } from './scene/cameras/FirstPerson';
 
 function ConnectionBanner() {
@@ -24,15 +24,15 @@ function ConnectionBanner() {
   let text: string | null = null;
   let tone: 'warn' | 'error' = 'warn';
   if (!getSessionToken()) {
-    text = 'Thiếu mã phiên. Hãy mở đúng đường link mà lệnh `npm start` in ra.';
+    text = 'Missing session token. Open the exact link printed by `npm start`.';
     tone = 'error';
   } else if (!serverOnline) {
-    text = 'Mất kết nối tới server Agent Office — đang thử lại…';
+    text = 'Lost connection to the Agent Office server — retrying…';
     tone = 'error';
   } else if (app.kind === 'searching') {
-    text = 'Chưa kết nối được Antigravity App — hãy mở App.';
+    text = 'Not connected to the Antigravity App — please open the App.';
   } else if (app.kind === 'error') {
-    text = 'Đang kết nối lại Antigravity App…';
+    text = 'Reconnecting to the Antigravity App…';
   }
   return (
     <div className="banners" role="status" aria-live="polite">
@@ -40,7 +40,7 @@ function ConnectionBanner() {
       {warnings.map((w) => (
         <div key={w.code} className="banner banner-warn">
           {w.message}
-          <button onClick={() => dismissWarning(w.code)} aria-label="Đóng">
+          <button onClick={() => dismissWarning(w.code)} aria-label="Close">
             ×
           </button>
         </div>
@@ -57,6 +57,7 @@ export function App() {
     if (serverOnline && !loaded) void useSettings.getState().load();
   }, [serverOnline, loaded]);
   useCameraHotkey();
+  useFullscreenHotkey();
   const cameraMode = useUi((s) => s.camera);
   const savedCamera = useSettings((s) => (s.loaded ? s.settings.camera : null));
   useEffect(() => {
@@ -66,7 +67,8 @@ export function App() {
   const setHireDesk = useUi((s) => s.setHireDesk);
   return (
     <div className={`app theme-${theme}`}>
-      <Canvas shadows dpr={[1, 2]} camera={{ position: [10, 12, 14], fov: 45, far: 600 }}>
+      {/* 006 FR-012: right-click is a build-mode delete, never the browser menu. */}
+      <Canvas shadows dpr={[1, 2]} camera={{ position: [10, 12, 14], fov: 45, far: 600 }} onContextMenu={(e) => e.preventDefault()}>
         <PerfManager>
           <Suspense fallback={null}>
             <OfficeScene theme={theme} />
@@ -76,6 +78,7 @@ export function App() {
       <ConnectionBanner />
       <div className="hud-top-right">
         <CameraToggle />
+        <FullscreenToggle />
         <ThemeToggle />
         <SettingsButton />
         <BuildButton />

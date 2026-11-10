@@ -13,14 +13,14 @@ export const settingsRoutes: FastifyPluginAsync<RouteDeps> = async (app, deps) =
 
   app.put('/api/settings', async (req, reply) => {
     const parsed = settingsSchema.safeParse(req.body);
-    if (!parsed.success) return sendError(reply, 400, 'BAD_REQUEST', 'Cài đặt không hợp lệ');
+    if (!parsed.success) return sendError(reply, 400, 'BAD_REQUEST', 'Invalid settings');
     await services.settings.save(parsed.data);
     return parsed.data;
   });
 
   app.get<{ Querystring: { city?: string } }>('/api/weather', async (req, reply) => {
     const city = req.query.city as City;
-    if (!CITIES.includes(city)) return sendError(reply, 400, 'BAD_REQUEST', 'Thành phố không hỗ trợ');
+    if (!CITIES.includes(city)) return sendError(reply, 400, 'BAD_REQUEST', 'Unsupported city');
     return services.weather.get(city);
   });
 };

@@ -123,6 +123,12 @@ export function OfficeScene({
         onItemPress={
           build.active
             ? (item, e) => {
+                // 006 FR-010/011: right-click deletes only the item already selected; never selects or drags.
+                // A right press during a left drag fires no pointerdown (chorded buttons arrive as pointermove).
+                if (e.button === 2) {
+                  if (item.id === build.selectedId) build.removeSelected();
+                  return;
+                }
                 build.select(item.id);
                 beginDrag('item', item.id, item.pos, e);
               }

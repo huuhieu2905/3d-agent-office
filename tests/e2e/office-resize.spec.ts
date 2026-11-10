@@ -10,14 +10,14 @@ const ctl = (a: string) => fetch(`http://127.0.0.1:${Number(process.env.E2E_PORT
 type Layout = { floor: { width: number; depth: number }; items: { id: string; type: string; pos: { x: number; z: number } }[] };
 
 const getLayout = async (page: Page): Promise<Layout> => (await page.request.get('/api/layout', { headers: auth })).json();
-const bar = (page: Page) => page.getByRole('toolbar', { name: 'Chế độ xây dựng' });
+const bar = (page: Page) => page.getByRole('toolbar', { name: 'Build mode' });
 async function enterArrange(page: Page) {
   await page.getByTestId(TID.buildToggle).click();
   await expect(bar(page)).toBeVisible();
   await page.waitForTimeout(500);
 }
 async function save(page: Page) {
-  await bar(page).getByRole('button', { name: 'Lưu' }).click();
+  await bar(page).getByRole('button', { name: 'Save' }).click();
   await expect(bar(page)).toBeHidden({ timeout: 20_000 });
 }
 
@@ -63,9 +63,9 @@ test('dragging the east handle by about 3 m shows the new size and applies it', 
 test('5 m or 41 m is refused with a clear message and the office does not change', async ({ page }) => {
   await enterArrange(page);
   await page.getByTestId(TID.floorWidthInput).fill('5');
-  await expect(bar(page).getByRole('alert')).toHaveText(/Từ 6 đến 40 m, bước 0,5 m/);
+  await expect(bar(page).getByRole('alert')).toHaveText(/6–40 m, in 0\.5 m steps/);
   await page.getByTestId(TID.floorWidthInput).fill('41');
-  await expect(bar(page).getByRole('alert')).toHaveText(/Từ 6 đến 40 m, bước 0,5 m/);
+  await expect(bar(page).getByRole('alert')).toHaveText(/6–40 m, in 0\.5 m steps/);
   await save(page);
   expect((await getLayout(page)).floor).toEqual({ width: 16, depth: 12 });
 });
@@ -73,8 +73,8 @@ test('5 m or 41 m is refused with a clear message and the office does not change
 test('shrinking past the furniture is blocked and the items in the way are named', async ({ page }) => {
   await enterArrange(page);
   await page.getByTestId(TID.floorWidthInput).fill('14');
-  await expect(bar(page).getByText(/Không thu nhỏ được: \d+ đồ vật đang chắn/)).toBeVisible();
-  await bar(page).getByText(/Không thu nhỏ được/).click();
+  await expect(bar(page).getByText(/Can't shrink: \d+ item\(s\) in the way/)).toBeVisible();
+  await bar(page).getByText(/Can't shrink/).click();
   expect((await page.evaluate(() => window.__agentOffice!.arrange())).selectedId).toBeTruthy();
   await save(page);
   expect((await getLayout(page)).floor).toEqual({ width: 16, depth: 12 });

@@ -15,15 +15,15 @@ export interface CatalogEntry {
 }
 
 export const CATALOG: Record<ItemType, CatalogEntry> = {
-  desk: { type: 'desk', label: 'Bàn làm việc', footprint: { w: 3, d: 2 }, blocks: 'cell', seat: { x: 1, z: 2 } },
-  chair: { type: 'chair', label: 'Ghế', footprint: { w: 1, d: 1 }, blocks: 'none' },
-  wall: { type: 'wall', label: 'Tường', footprint: { w: 1, d: 1 }, blocks: 'edge' },
-  glass_wall: { type: 'glass_wall', label: 'Vách kính', footprint: { w: 1, d: 1 }, blocks: 'edge' },
-  door: { type: 'door', label: 'Cửa', footprint: { w: 2, d: 1 }, blocks: 'none' },
-  plant: { type: 'plant', label: 'Cây cảnh', footprint: { w: 1, d: 1 }, blocks: 'cell' },
-  water_cooler: { type: 'water_cooler', label: 'Máy nước', footprint: { w: 1, d: 1 }, blocks: 'cell' },
-  sofa: { type: 'sofa', label: 'Ghế sofa', footprint: { w: 4, d: 2 }, blocks: 'cell' },
-  wall_screen: { type: 'wall_screen', label: 'Màn hình treo tường', footprint: { w: 3, d: 1 }, blocks: 'none' },
+  desk: { type: 'desk', label: 'Desk', footprint: { w: 3, d: 2 }, blocks: 'cell', seat: { x: 1, z: 2 } },
+  chair: { type: 'chair', label: 'Chair', footprint: { w: 1, d: 1 }, blocks: 'none' },
+  wall: { type: 'wall', label: 'Wall', footprint: { w: 1, d: 1 }, blocks: 'edge' },
+  glass_wall: { type: 'glass_wall', label: 'Glass wall', footprint: { w: 1, d: 1 }, blocks: 'edge' },
+  door: { type: 'door', label: 'Door', footprint: { w: 2, d: 1 }, blocks: 'none' },
+  plant: { type: 'plant', label: 'Plant', footprint: { w: 1, d: 1 }, blocks: 'cell' },
+  water_cooler: { type: 'water_cooler', label: 'Water cooler', footprint: { w: 1, d: 1 }, blocks: 'cell' },
+  sofa: { type: 'sofa', label: 'Sofa', footprint: { w: 4, d: 2 }, blocks: 'cell' },
+  wall_screen: { type: 'wall_screen', label: 'Wall screen', footprint: { w: 3, d: 1 }, blocks: 'none' },
 };
 
 export const isEdge = (type: ItemType): boolean => CATALOG[type].blocks === 'edge';

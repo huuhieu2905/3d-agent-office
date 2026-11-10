@@ -24,7 +24,7 @@ export function mapConversation(id: string, raw: Raw): Conversation {
   const workspaceUris = Array.isArray(workspaces)
     ? workspaces.map((w) => (typeof w === 'string' ? w : str((w as Raw)?.workspaceFolderAbsoluteUri) ?? str((w as Raw)?.uri) ?? '')).filter(Boolean)
     : [];
-  const title = str(raw.summary) ?? str(raw.title) ?? 'Nhân viên mới';
+  const title = str(raw.summary) ?? str(raw.title) ?? 'New employee';
   return {
     id,
     title,

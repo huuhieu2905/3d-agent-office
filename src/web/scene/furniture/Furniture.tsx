@@ -200,12 +200,12 @@ function ScreenBoard() {
     g.fillStyle = '#fff4e0';
     g.font = '700 84px "Baloo 2 Variable", sans-serif';
     g.textBaseline = 'top';
-    g.fillText(new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }), 28, 18);
+    g.fillText(new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }), 28, 18);
     g.font = '600 34px "Baloo 2 Variable", sans-serif';
     const rows: [string, number, string][] = [
-      ['Đang làm', count((s) => s === 'working' || s === 'thinking'), '#9ccfb4'],
-      ['Chờ sếp', count((s) => s === 'waiting_for_boss'), '#f2c94c'],
-      ['Đang rảnh', count((s) => s === 'idle'), '#efe4cc'],
+      ['Working', count((s) => s === 'working' || s === 'thinking'), '#9ccfb4'],
+      ['Waiting', count((s) => s === 'waiting_for_boss'), '#f2c94c'],
+      ['Idle', count((s) => s === 'idle'), '#efe4cc'],
     ];
     rows.forEach(([label, n, color], i) => {
       g.fillStyle = color;

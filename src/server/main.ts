@@ -22,8 +22,8 @@ async function main() {
       if (!s.versionSupported) {
         // An empty list means no App version is verified on this OS yet (Constitution VI v2.2.0).
         const message = s.verifiedVersions.length
-          ? `Antigravity App ${s.appVersion} chưa được kiểm chứng (đã kiểm chứng: ${s.verifiedVersions.join(', ')}). Một số tính năng có thể không hoạt động.`
-          : `Antigravity App ${s.appVersion}: hệ điều hành này đang ở giai đoạn thử nghiệm, chưa có phiên bản App nào được kiểm chứng trên đây. Một số tính năng có thể không hoạt động.`;
+          ? `Antigravity App ${s.appVersion} is not verified (verified: ${s.verifiedVersions.join(', ')}). Some features may not work.`
+          : `Antigravity App ${s.appVersion}: this operating system is experimental; no App version has been verified on it yet. Some features may not work.`;
         console.warn(message);
         server.hub.broadcast({ type: 'warning', payload: { code: 'APP_VERSION_UNSUPPORTED', message } });
       }

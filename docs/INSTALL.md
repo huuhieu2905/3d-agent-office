@@ -57,7 +57,7 @@ Terminal sẽ in `Antigravity App 2.29.0: connected` khi kết nối thành côn
 ## Linux
 
 Đã kiểm chứng với Antigravity App **2.29.1** bản Linux (2026-11-10, feature `005-linux-support`). Bản App
-khác sẽ hiện cảnh báo "chưa được kiểm chứng" nhưng vẫn dùng được.
+khác sẽ hiện cảnh báo "is not verified" nhưng vẫn dùng được.
 
 - **Máy được cam kết**: CachyOS, CPU x86_64. Các bản phân phối khác (Ubuntu, Fedora…) và CPU ARM không được kiểm chứng.
 - **Antigravity App** bản Linux, cài ở `/opt/Antigravity/`, chạy dưới **chính user của bạn** (không qua Flatpak/Snap).
@@ -79,18 +79,18 @@ Các bước 2 và 3 ở trên giống hệt macOS. Nếu trình duyệt không 
 
 | Hiện tượng | Cách xử lý |
 |---|---|
-| Banner "Chưa kết nối được Antigravity App" | Mở Antigravity App. Hệ thống tự kết nối trong vài giây, không cần tải lại trang. |
-| Cảnh báo "Antigravity App x.y.z chưa được kiểm chứng" | Đã kiểm chứng: macOS **2.29.0**, **2.24.0**; Linux **2.29.1**. Bản khác vẫn chạy nhưng có thể thiếu tính năng. |
+| Banner "Not connected to the Antigravity App" | Mở Antigravity App. Hệ thống tự kết nối trong vài giây, không cần tải lại trang. |
+| Cảnh báo "Antigravity App x.y.z is not verified" | Đã kiểm chứng: macOS **2.29.0**, **2.24.0**; Linux **2.29.1**. Bản khác vẫn chạy nhưng có thể thiếu tính năng. |
 | Linux: "Cannot read the Antigravity App process info" | App đang chạy dưới user khác hoặc trong sandbox (Flatpak/Snap). Hãy chạy App và `npm start` bằng cùng một user, với bản App cài ở `/opt/Antigravity/`. |
-| Banner "Thiếu mã phiên" | Bạn đã mở `http://127.0.0.1:4317` mà không có `#k=…`. Hãy dùng đúng đường link `npm start` in ra. |
+| Banner "Missing session token" | Bạn đã mở `http://127.0.0.1:4317` mà không có `#k=…`. Hãy dùng đúng đường link `npm start` in ra. |
 | `EADDRINUSE` / cổng 4317 bận | Chạy với cổng khác: `AGENT_OFFICE_PORT=4400 npm start` |
 | Trình duyệt không tự mở | Copy đường link trong terminal vào trình duyệt. |
 | `npm start` báo không tìm thấy `node` | Mở terminal mới (để `fnm` có hiệu lực), hoặc chạy `eval "$(fnm env)"`. |
-| Văn phòng giật, chậm | Bấm ⚙︎ → giảm "Mức chi tiết bối cảnh". Hệ thống cũng tự giảm khi máy chậm (có thể tắt trong cài đặt). Mức "Thấp" bỏ các toà cao ốc ở xa, giữ phố và quán. |
-| Kéo đồ vật hoặc nhân viên không được | Phải bật chế độ sắp xếp (nút **Xây dựng**). Ngoài chế độ này, bấm vào nhân viên chỉ mở chat. |
-| Không thu nhỏ được văn phòng | Có đồ vật nằm ở phần sẽ bị cắt; bấm vào thông báo "Không thu nhỏ được" để chọn lần lượt từng đồ vật và dời chúng vào trong. |
+| Văn phòng giật, chậm | Bấm ⚙︎ → giảm "Surroundings detail". Hệ thống cũng tự giảm khi máy chậm (có thể tắt trong cài đặt). Mức "Low" bỏ các toà cao ốc ở xa, giữ phố và quán. |
+| Kéo đồ vật hoặc nhân viên không được | Phải bật chế độ sắp xếp (nút **Build**). Ngoài chế độ này, bấm vào nhân viên chỉ mở chat. |
+| Không thu nhỏ được văn phòng | Có đồ vật nằm ở phần sẽ bị cắt; bấm vào thông báo "Can't shrink" để chọn lần lượt từng đồ vật và dời chúng vào trong. |
 | `npm run test:e2e` rất chậm hoặc treo | E2E vẽ cảnh 3D trên GPU (Metal). Hãy chạy trên Mac thật, không qua máy ảo hoặc phiên SSH không có GPU. |
-| Gõ `@` không gợi ý file | Conversation phải thuộc một project gắn thư mục. Tạo project bằng nút "+ Tạo project", rồi tuyển nhân viên trong project đó. |
+| Gõ `@` không gợi ý file | Conversation phải thuộc một project gắn thư mục. Tạo project bằng nút "+ New project", rồi tuyển nhân viên trong project đó. |
 
 ## Dữ liệu và quyền riêng tư
 

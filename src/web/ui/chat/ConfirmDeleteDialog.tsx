@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { api, ApiError } from '../../api/client';
+import { useEscapeToClose } from '../useEscapeToClose';
 
 // 004 US2 (U4-2, FR-013): confirm permanently deleting a conversation in the App — and its subagents,
 // which the App deletes with it. Focus starts on "Huỷ"; Esc cancels.
 
 const ERRORS: Record<string, string> = {
-  AGENT_BUSY: 'Agent vừa bắt đầu chạy — dừng agent rồi thử lại',
-  APP_UNAVAILABLE: 'Chưa kết nối được Antigravity App',
+  AGENT_BUSY: 'The agent just started running — stop it and try again',
+  APP_UNAVAILABLE: 'Not connected to the Antigravity App',
 };
 
 export function ConfirmDeleteDialog({
@@ -26,14 +27,8 @@ export function ConfirmDeleteDialog({
   const [error, setError] = useState<string | null>(null);
   const cancelRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    cancelRef.current?.focus();
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && !busy) onCancel();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [busy, onCancel]);
+  useEffect(() => cancelRef.current?.focus(), [busy, onCancel]);
+  useEscapeToClose(() => !busy && onCancel()); // 006: this Esc belongs to the dialog, not to the chat behind it
 
   async function confirm() {
     setBusy(true);
@@ -42,7 +37,7 @@ export function ConfirmDeleteDialog({
       await api(`/api/conversations/${conversationId}`, { method: 'DELETE' });
       onDeleted();
     } catch (err) {
-      setError(ERRORS[err instanceof ApiError ? err.code : ''] ?? 'App không xoá được conversation này');
+      setError(ERRORS[err instanceof ApiError ? err.code : ''] ?? 'The App could not delete this conversation');
       setBusy(false);
     }
   }
@@ -53,15 +48,15 @@ export function ConfirmDeleteDialog({
         className="modal panel"
         role="alertdialog"
         aria-modal="true"
-        aria-label="Xoá nhân viên"
+        aria-label="Delete employee"
         data-testid="confirm-delete"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2>Xoá nhân viên?</h2>
+        <h2>Delete employee?</h2>
         <p>
           Conversation <strong>{name}</strong>
-          {subagents > 0 && <> cùng {subagents} subagent con</>} sẽ bị <strong>xoá vĩnh viễn trong Antigravity App</strong>. Không
-          hoàn tác được.
+          {subagents > 0 && <> and its {subagents} subagent(s)</>} will be <strong>permanently deleted in the Antigravity App</strong>. This
+          cannot be undone.
         </p>
         {error && (
           <div className="send-failed" data-testid="confirm-delete-error" role="alert">
@@ -70,10 +65,10 @@ export function ConfirmDeleteDialog({
         )}
         <div className="modal-actions">
           <button ref={cancelRef} className="btn" disabled={busy} onClick={onCancel}>
-            Huỷ
+            Cancel
           </button>
           <button className="btn btn-stop" data-testid="confirm-delete-ok" disabled={busy} onClick={() => void confirm()}>
-            {busy ? 'Đang xoá…' : 'Xoá vĩnh viễn'}
+            {busy ? 'Deleting…' : 'Delete permanently'}
           </button>
         </div>
       </div>

@@ -182,7 +182,7 @@ export function mapStep(raw: Raw, index: number): Step {
     case 'CODE_ACTION': {
       const ca = (raw.codeAction ?? {}) as Raw;
       const uri = str(ca.absolutePathUri) ?? str((ca.actionSpec as Raw | undefined)?.absoluteUri) ?? '';
-      step.file = { uri, summary: str(ca.description) ?? (uri.split('/').pop() ?? 'thay đổi file') };
+      step.file = { uri, summary: str(ca.description) ?? (uri.split('/').pop() ?? 'file change') };
       break;
     }
     case 'GENERIC': {
@@ -202,7 +202,7 @@ export function mapStep(raw: Raw, index: number): Step {
       const err = (((raw.errorMessage as Raw | undefined)?.error ?? {}) as Raw);
       const msg = str(err.shortError) ?? str(err.userErrorMessage) ?? str(err.message);
       const id = str(err.errorId);
-      step.text = msg ? redactString(msg) : `Lỗi không rõ nguyên nhân${id ? ` (mã ${id})` : ''}`;
+      step.text = msg ? redactString(msg) : `Unknown error${id ? ` (code ${id})` : ''}`;
       break;
     }
     case 'ASK_QUESTION': {

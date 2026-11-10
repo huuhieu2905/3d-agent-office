@@ -36,6 +36,7 @@ export const settingsSchema = z.object({
   // 004: optional on purpose — a required field would make JsonStore reset older settings.json files.
   legendCollapsed: z.boolean().optional(),
   screensOff: z.array(z.string().min(1).max(100)).max(50).optional(),
+  mouseSensitivity: z.number().min(0.25).max(3).optional(),
 });
 
 const rotationSchema = z.union([z.literal(0), z.literal(90), z.literal(180), z.literal(270)]);
@@ -126,19 +127,19 @@ export const questionAnswerSchema = z.object({
 
 /** Returns a Vietnamese reason when `answer` does not fit `question`, or null when it is valid. */
 export function validateAnswer(question: AgentQuestion, answer: QuestionAnswer): string | null {
-  if (question.state !== 'waiting') return 'Câu hỏi không còn chờ trả lời';
-  if (answer.answers.length !== question.entries.length) return `Cần trả lời đủ ${question.entries.length} câu`;
+  if (question.state !== 'waiting') return 'This question is no longer waiting for an answer';
+  if (answer.answers.length !== question.entries.length) return `All ${question.entries.length} questions must be answered`;
   for (let i = 0; i < question.entries.length; i++) {
     const e = question.entries[i]!;
     const a = answer.answers[i]!;
     const n = i + 1;
     const writeIn = a.writeIn?.trim() ?? '';
-    if ((a.writeIn?.length ?? 0) > WRITE_IN_MAX) return `Câu ${n}: câu trả lời khác dài quá 2 000 ký tự`;
-    if (a.selectedOptionIds.length === 0 && !writeIn) return `Câu ${n} chưa có câu trả lời`;
-    if (!e.multiSelect && a.selectedOptionIds.length > 1) return `Câu ${n} chỉ được chọn một đáp án`;
-    if (new Set(a.selectedOptionIds).size !== a.selectedOptionIds.length) return `Câu ${n}: đáp án bị trùng`;
+    if ((a.writeIn?.length ?? 0) > WRITE_IN_MAX) return `Question ${n}: the written answer is longer than 2,000 characters`;
+    if (a.selectedOptionIds.length === 0 && !writeIn) return `Question ${n} has no answer`;
+    if (!e.multiSelect && a.selectedOptionIds.length > 1) return `Question ${n} allows only one choice`;
+    if (new Set(a.selectedOptionIds).size !== a.selectedOptionIds.length) return `Question ${n}: duplicate choice`;
     const ids = new Set(e.options.map((o) => o.id));
-    if (a.selectedOptionIds.some((id) => !ids.has(id))) return `Câu ${n}: đáp án không tồn tại`;
+    if (a.selectedOptionIds.some((id) => !ids.has(id))) return `Question ${n}: choice does not exist`;
   }
   return null;
 }

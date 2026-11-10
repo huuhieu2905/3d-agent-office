@@ -17,13 +17,13 @@ test('V switches to first person and back; the choice survives a reload', async 
   await expect(page.locator('.tag').first()).toBeVisible({ timeout: 20_000 });
   await page.keyboard.press('v');
   await expect(page.locator('.crosshair')).toBeVisible();
-  await expect(page.getByRole('button', { name: /Toàn cảnh/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /Overview/ })).toBeVisible();
   await page.waitForTimeout(600);
   await page.goto(`/#k=${TOKEN}`);
   await expect(page.locator('.crosshair')).toBeVisible({ timeout: 10_000 });
   await page.keyboard.press('v');
   await expect(page.locator('.crosshair')).toBeHidden();
-  await expect(page.getByRole('button', { name: /Góc nhìn thứ nhất/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /First person/ })).toBeVisible();
 });
 
 test('entering build mode returns to the overview camera', async ({ page }) => {
@@ -33,9 +33,9 @@ test('entering build mode returns to the overview camera', async ({ page }) => {
   await page.waitForTimeout(800);
   if (!(await page.locator('.crosshair').isVisible())) await page.keyboard.press('v');
   await expect(page.locator('.crosshair')).toBeVisible();
-  await page.getByRole('button', { name: /Xây dựng/ }).click();
+  await page.getByRole('button', { name: /Build/ }).click();
   await expect(page.locator('.crosshair')).toBeHidden();
-  await page.getByRole('toolbar', { name: 'Chế độ xây dựng' }).getByRole('button', { name: 'Huỷ' }).click();
+  await page.getByRole('toolbar', { name: 'Build mode' }).getByRole('button', { name: 'Cancel' }).click();
 });
 
 // ---- 004 US4 (FR-030…FR-036, U4-3): using things and walking out ---------------------------------
@@ -89,11 +89,11 @@ test('first person: screen off/on, sofa sit/lie/stand, water, plant; overview po
   const cooler = items.find((i) => i.type === 'water_cooler')!.id;
   const plant = items.find((i) => i.type === 'plant')!.id;
   await enterFirstPerson(page);
-  await expect(page.locator('.fp-help')).toContainText('dùng đồ vật');
+  await expect(page.locator('.fp-help')).toContainText('use object');
 
   // Screen: on by default (it shows the quota) → E switches it off, remembered across a reload.
   await lookAt(page, screen, 1.6, { dx: 0, dz: 1.4 });
-  await expect(page.getByTestId('fp-hint')).toHaveText('E — Tắt màn hình');
+  await expect(page.getByTestId('fp-hint')).toHaveText('E — Turn screen off');
   const saved = page.waitForResponse((r) => r.url().endsWith('/api/settings') && r.request().method() === 'PUT');
   await page.keyboard.press('e');
   await saved;
@@ -101,7 +101,7 @@ test('first person: screen off/on, sofa sit/lie/stand, water, plant; overview po
   await page.reload();
   await expect.poll(() => player(page), { timeout: 15_000 }).not.toBeNull();
   await lookAt(page, screen, 1.6, { dx: 0, dz: 1.4 });
-  await expect(page.getByTestId('fp-hint')).toHaveText('E — Bật màn hình');
+  await expect(page.getByTestId('fp-hint')).toHaveText('E — Turn screen on');
 
   // Overview: the ⏻ button switches it back on.
   await page.keyboard.press('v');
@@ -113,7 +113,7 @@ test('first person: screen off/on, sofa sit/lie/stand, water, plant; overview po
 
   // Sofa: E sits, W stands up, Shift+E lies down, E stands up.
   await lookAt(page, sofa, 0.45, { dx: 0, dz: 1.3 });
-  await expect(page.getByTestId('fp-hint')).toContainText('Ngồi');
+  await expect(page.getByTestId('fp-hint')).toContainText('Sit');
   await page.keyboard.press('e');
   await expect.poll(async () => (await player(page))?.pose).toBe('sit');
   await page.keyboard.down('KeyW');
@@ -122,7 +122,7 @@ test('first person: screen off/on, sofa sit/lie/stand, water, plant; overview po
   await expect.poll(async () => (await player(page))?.pose).toBe('standing');
   await expect.poll(() => walksAfterStandUp(page)).toBeGreaterThan(0.5); // fp-sofa-standup-stuck
   await lookAt(page, sofa, 0.45, { dx: 0, dz: 1.3 });
-  await expect(page.getByTestId('fp-hint')).toContainText('Nằm');
+  await expect(page.getByTestId('fp-hint')).toContainText('Lie down');
   await page.keyboard.press('Shift+E');
   await expect.poll(async () => (await player(page))?.pose).toBe('lie');
   await page.keyboard.press('e');
