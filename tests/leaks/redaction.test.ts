@@ -93,6 +93,22 @@ describe('server responses and persisted files', () => {
 });
 
 // Spec 003 (A3-4, T005): new App 2.29.0 content keys must be redacted in fixtures.
+describe('sanitizeRaw: Linux paths and permission grants (spec 005)', () => {
+  it('hides data-disk mount points and the commands/paths in grant lists', () => {
+    const raw = {
+      workspaceFolderAbsoluteUri: 'file:///mnt/0f1e2d3c-secret-disk/Work',
+      other: '/media/someone/SecretLabel/x and /run/media/someone/Label2/y',
+      defaultGrants: { allow: ['command(curl secret-host.example)', 'write_file(/mnt/abc/secret-file.md)'], ask: ['mcp(x/y)'] },
+    };
+    const out = sanitizeRaw(raw) as typeof raw;
+    expect(out.workspaceFolderAbsoluteUri).toBe('file:///mnt/MOUNT/Work');
+    expect(out.defaultGrants).toEqual({ allow: ['command(<grant>)', 'write_file(<grant>)'], ask: ['mcp(<grant>)'] });
+    for (const secret of ['0f1e2d3c', 'secret-disk', 'SecretLabel', 'Label2', 'secret-host', 'secret-file']) {
+      expect(JSON.stringify(out)).not.toContain(secret);
+    }
+  });
+});
+
 describe('sanitizeRaw: content keys added for App 2.29.0', () => {
   it('drops question text, error messages, search queries and write-in answers', () => {
     const IP = '192.168.1.2';

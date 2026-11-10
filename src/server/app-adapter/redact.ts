@@ -35,6 +35,11 @@ const CONTENT_KEYS = new Set([
   'writeInResponse',
 ]);
 
+/** Permission grant lists (`command(...)`, `write_file(/path)`) hold the user's own commands and paths. */
+const GRANT_KEYS = new Set(['allow', 'ask', 'deny']);
+/** Data disks outside home (Linux /mnt/<uuid>, /media/<user>/<label>) name the machine (spec 005). */
+const MOUNT = /\/(?:run\/media\/[^/\s"')]+|media\/[^/\s"')]+|mnt)\/[^/\s"')]+/g;
+
 const HOME = homedir();
 const USERNAME = userInfo().username;
 /** macOS per-user temp dir (/var/folders/xx/<id>/T) identifies the account; normalise it too. */
@@ -47,7 +52,8 @@ export function sanitizeRaw(value: unknown, key = '', parent = ''): unknown {
       if (key === 'argumentsJson') return '{}';
       return `<${key}:${Math.min(value.length, 9999)}>`;
     }
-    let s = value.split(HOME).join('/Users/USER');
+    if (GRANT_KEYS.has(key)) return value.replace(/\(.*\)$/s, '(<grant>)');
+    let s = value.split(HOME).join('/Users/USER').replace(MOUNT, '/mnt/MOUNT');
     if (TMP.length > 4) s = s.split(TMP).join('/tmp/TMP');
     if (USERNAME.length >= 3) s = s.split(USERNAME).join('USER');
     return redactString(s);
