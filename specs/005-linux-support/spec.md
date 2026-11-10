@@ -55,6 +55,35 @@ Chạy 2 lệnh `ps` và `ss` khi App Linux đang mở, đối chiếu với App
 thêm cách liệt kê cổng cho Linux. Bước tiếp theo: có cách tìm App cho Linux, chạy `npm run check:compat`
 trên CachyOS để rà soát API và dữ liệu của bản 2.29.1.
 
+### Bước 1 (2026-11-10, CachyOS, chỉ đọc)
+
+| Hạng mục | Kết quả |
+|---|---|
+| Phiên bản App | 2.29.1, lúc đó "CHƯA kiểm chứng" (đúng như dự kiến) |
+| Lệnh nội bộ đang dùng | **19/19 còn** |
+| Trường thêm/bớt | Lần chạy đầu không so được: Linux chưa có bản kiểm chứng nên không chọn được fixture gốc. Đã sửa: so với bộ mới nhất đã kiểm chứng ở bất kỳ hệ nào (2.29.0). Contract test trên fixture 2.29.1 qua hết, không cần sửa mapper |
+| Loại bước chưa nhận ra | `GENERIC` 28, `CHECKPOINT` 1. Cả hai cũng là `other` trên macOS, không riêng Linux |
+| `npm start` | Trình duyệt mở văn phòng, nhân viên khớp App, có cảnh báo thử nghiệm. Tắt/mở App 5 lần đều tự kết nối lại. Khởi động khi App tắt: báo mất kết nối, không treo (SC-001, SC-004) |
+
+### Bước 2 (2026-11-10, CachyOS, đọc và ghi)
+
+| Hạng mục | Kết quả |
+|---|---|
+| Dữ liệu mẫu | `tests/contract/fixtures/app-2.29.1/` (cơ bản + 1 conversation thử nghiệm; chưa có các biến thể `tools`, `question`, `search-web`) |
+| `npm test` | 275 qua, 0 lỗi, `check-guards` qua |
+| `npm run test:live` | 8/8 qua: chat + dừng ≤ 3 s, xoá, câu hỏi (chọn một, chọn nhiều, tự nhập), project, duyệt/từ chối lệnh (chạy riêng khi App bật "hỏi trước khi chạy lệnh") |
+| Độ trễ trạng thái | p95 **840 ms** (mục tiêu ≤ 2 s), khớp **100%** trên 2070 mẫu, 27 lần chuyển trạng thái, 10 phút |
+| `npm run test:leaks` | 6/6 qua; `--sweep` không còn conversation thử nghiệm |
+
+**Khác biệt tìm thấy trên Linux** (đã sửa):
+- App Linux mới cài **không có** project `default-cli-project` (chỉ có sau khi dùng CLI). Tạo nhân viên
+  không chọn project từng gửi project này và bị HTTP 404. Nay dùng project mặc định mà App thật sự có
+  (`default-cli-project`, rồi `outside-of-project`).
+- Dữ liệu mẫu ghi trên Linux lộ đường dẫn ổ `/mnt/<uuid>`, danh sách quyền đã cấp, tên thư mục project
+  và nội dung prompt. Bộ lọc fixture nay che các phần này; lịch sử git đã được lọc lại.
+
+**Kết luận**: 2.29.1 được công nhận cho Linux (2026-11-10).
+
 ## Phương án đề xuất (tóm tắt)
 
 Đi theo 3 bước, mỗi bước dùng được độc lập:

@@ -42,5 +42,5 @@ npm run build
 
 say "3/3 Xong!"
 echo
-echo "Hãy mở Antigravity App (macOS đã kiểm chứng 2.29.0, 2.24.0; Linux đang thử nghiệm), rồi chạy:"
+echo "Hãy mở Antigravity App (đã kiểm chứng: macOS 2.29.0, 2.24.0; Linux 2.29.1), rồi chạy:"
 echo "  npm start"

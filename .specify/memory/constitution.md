@@ -26,7 +26,8 @@ thái, người dùng mất niềm tin và phải quay về App, nghĩa là dự
 - Lớp kết nối PHẢI nhắm tới **danh sách phiên bản App đã kiểm chứng**, ghi rõ mỗi phiên bản
   được kiểm chứng trên **hệ điều hành nào**. Danh sách hiện gồm, trên macOS: **2.29.0** (kiểm
   chứng 2026-11-09, feature `003-antigravity-2-29-compat`) và **2.24.0** (giữ lại để hỗ trợ máy
-  chưa cập nhật). Trên Linux: **chưa có** phiên bản nào. Danh sách này PHẢI nằm ở **một nơi duy
+  chưa cập nhật). Trên Linux: **2.29.1** (kiểm chứng 2026-11-10 trên CachyOS x86_64, feature
+  `005-linux-support`). Danh sách này PHẢI nằm ở **một nơi duy
   nhất** trong lớp kết nối.
   - **Mã nguồn** và mọi **thông báo hiển thị cho người dùng** (cảnh báo phiên bản, log ở
     terminal) PHẢI lấy phiên bản từ danh sách đó, KHÔNG ĐƯỢC ghi cứng số phiên bản.
@@ -131,7 +132,7 @@ lượng vẫn kiểm chứng được bằng đúng một máy.
 - **Nền tảng**: ứng dụng web chạy trên trình duyệt, kèm một tiến trình server local làm cầu
   nối với Antigravity App (trình duyệt không thể tự đọc tiến trình hay file của App).
 - **Đối tượng kết nối**: chỉ Antigravity App (desktop) trên macOS và Linux, các phiên bản trong
-  danh sách đã kiểm chứng của Nguyên tắc II (hiện gồm 2.29.0 và 2.24.0 trên macOS; Linux chưa có). CLI `agy` và Antigravity IDE không phải
+  danh sách đã kiểm chứng của Nguyên tắc II (hiện gồm 2.29.0 và 2.24.0 trên macOS; 2.29.1 trên Linux). CLI `agy` và Antigravity IDE không phải
   nguồn dữ liệu.
 - **Điều kiện chạy**: Antigravity App PHẢI đang mở thì hệ thống mới thao tác được. Đây là ràng
   buộc đã được chấp nhận, không phải lỗi.
@@ -185,4 +186,4 @@ lượng vẫn kiểm chứng được bằng đúng một máy.
   PHẢI qua `/speckit-constitution` và nêu bằng chứng kiểm chứng (feature spec và kết quả kiểm thử
   với App thật).
 
-**Version**: 2.2.0 | **Ratified**: 2026-11-06 | **Last Amended**: 2026-11-10
+**Version**: 2.2.1 | **Ratified**: 2026-11-06 | **Last Amended**: 2026-11-10

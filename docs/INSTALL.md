@@ -3,14 +3,14 @@
 Agent Office là một văn phòng 3D chạy trong trình duyệt, biến các conversation của **Antigravity App**
 trên máy bạn thành nhân viên. Mọi thứ chạy **local**: không có Docker, không có máy chủ đám mây.
 
-> **Hệ điều hành**: macOS 13 trở lên (Apple Silicon hoặc Intel), và Linux: **CachyOS x86_64** (đang thử nghiệm,
-> xem [phần Linux](#linux)). Bản phân phối Linux khác có thể chạy được nhưng không được cam kết. Windows chưa có kế hoạch.
+> **Hệ điều hành**: macOS 13 trở lên (Apple Silicon hoặc Intel), và Linux: **CachyOS x86_64** (xem
+> [phần Linux](#linux)). Bản phân phối Linux khác có thể chạy được nhưng không được cam kết. Windows chưa có kế hoạch.
 
 ## Yêu cầu
 
 | Thành phần | Phiên bản |
 |---|---|
-| Antigravity App | **2.29.0** (đã kiểm chứng cả 2.24.0), đã đăng nhập |
+| Antigravity App | macOS: **2.29.0** (đã kiểm chứng cả 2.24.0); Linux: **2.29.1**. Đã đăng nhập |
 | Node.js | **22** trở lên |
 | Trình duyệt | Chrome, Edge hoặc Firefox bản mới (có WebGL 2) |
 | git | có sẵn trên macOS (Xcode Command Line Tools); Linux: `sudo pacman -S git` |
@@ -56,8 +56,8 @@ Terminal sẽ in `Antigravity App 2.29.0: connected` khi kết nối thành côn
 
 ## Linux
 
-Đang **thử nghiệm**: chưa có phiên bản Antigravity App nào được kiểm chứng trên Linux, nên hệ thống sẽ hiện
-cảnh báo "hệ điều hành này đang ở giai đoạn thử nghiệm". Mọi tính năng vẫn dùng được.
+Đã kiểm chứng với Antigravity App **2.29.1** bản Linux (2026-11-10, feature `005-linux-support`). Bản App
+khác sẽ hiện cảnh báo "chưa được kiểm chứng" nhưng vẫn dùng được.
 
 - **Máy được cam kết**: CachyOS, CPU x86_64. Các bản phân phối khác (Ubuntu, Fedora…) và CPU ARM không được kiểm chứng.
 - **Antigravity App** bản Linux, cài ở `/opt/Antigravity/`, chạy dưới **chính user của bạn** (không qua Flatpak/Snap).
@@ -80,8 +80,7 @@ Các bước 2 và 3 ở trên giống hệt macOS. Nếu trình duyệt không 
 | Hiện tượng | Cách xử lý |
 |---|---|
 | Banner "Chưa kết nối được Antigravity App" | Mở Antigravity App. Hệ thống tự kết nối trong vài giây, không cần tải lại trang. |
-| Cảnh báo "Antigravity App x.y.z chưa được kiểm chứng" | Trên macOS, hệ thống đã kiểm chứng **2.29.0** và **2.24.0**. Bản khác vẫn chạy nhưng có thể thiếu tính năng. |
-| Cảnh báo "hệ điều hành này đang ở giai đoạn thử nghiệm" (Linux) | Bình thường: chưa có bản App nào được kiểm chứng trên Linux. |
+| Cảnh báo "Antigravity App x.y.z chưa được kiểm chứng" | Đã kiểm chứng: macOS **2.29.0**, **2.24.0**; Linux **2.29.1**. Bản khác vẫn chạy nhưng có thể thiếu tính năng. |
 | Linux: "Cannot read the Antigravity App process info" | App đang chạy dưới user khác hoặc trong sandbox (Flatpak/Snap). Hãy chạy App và `npm start` bằng cùng một user, với bản App cài ở `/opt/Antigravity/`. |
 | Banner "Thiếu mã phiên" | Bạn đã mở `http://127.0.0.1:4317` mà không có `#k=…`. Hãy dùng đúng đường link `npm start` in ra. |
 | `EADDRINUSE` / cổng 4317 bận | Chạy với cổng khác: `AGENT_OFFICE_PORT=4400 npm start` |

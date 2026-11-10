@@ -16,6 +16,7 @@ export interface VerifiedAppVersion {
 
 /** Newest first. A version is added only after its fixtures and live read/write tests pass (FR-003). */
 export const VERIFIED_APP_VERSIONS: readonly VerifiedAppVersion[] = [
+  { version: '2.29.1', platforms: ['linux'], verifiedOn: '2026-11-10', evidence: 'specs/005-linux-support' },
   { version: '2.29.0', platforms: ['darwin'], verifiedOn: '2026-11-09', evidence: 'specs/003-antigravity-2-29-compat' },
   { version: '2.24.0', platforms: ['darwin'], verifiedOn: '2026-11-06', evidence: 'specs/001-3d-agent-office' },
 ];

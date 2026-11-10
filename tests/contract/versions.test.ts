@@ -17,13 +17,15 @@ describe('verified App versions', () => {
     expect(isVerified('2.24.0', 'darwin')).toBe(true);
     expect(isVerified('2.29.0', 'darwin')).toBe(true);
     expect(isVerified('2.29.0', 'linux')).toBe(false);
+    expect(isVerified('2.29.1', 'linux')).toBe(true);
+    expect(isVerified('2.29.1', 'darwin')).toBe(false);
     expect(isVerified('2.30.0', 'darwin')).toBe(false);
     expect(isVerified('unknown', 'darwin')).toBe(false);
     expect(isVerified('', 'darwin')).toBe(false);
   });
 
   it('filters the list by platform', () => {
-    expect(verifiedVersionList('linux')).toEqual([]);
+    expect(verifiedVersionList('linux')).toEqual(['2.29.1']);
     expect(verifiedVersionList('win32')).toEqual([]);
     expect(verifiedVersionList('darwin')).toContain('2.29.0');
   });

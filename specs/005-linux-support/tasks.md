@@ -63,8 +63,8 @@ bằng Claude Code chạy trên chính máy CachyOS.
 
 ### Verification on CachyOS for User Story 1
 
-- [ ] T012 [US1] 🐧 (FR-001 bước 1, điểm dừng trước US2) Trên CachyOS: clone repo, checkout `005-linux-support`, `npm ci && npm run build`, rồi `npm run check:compat -- --out /tmp/compat-linux.md`. Ghi kết quả vào `specs/005-linux-support/spec.md`, mục "Kết quả rà soát Linux", thêm tiểu mục "Bước 1" dạng bảng như bước 0 (phiên bản, số lệnh nội bộ còn, trường thêm/bớt so với fixture mới nhất, loại bước chưa nhận ra). **Nếu thiếu lệnh nội bộ nào: dừng, báo người dùng, không làm tiếp**
-- [ ] T013 [US1] 🐧 `npm start` trên CachyOS: kiểm tra (1) trình duyệt tự mở hoặc địa chỉ được in ra, (2) nhân viên khớp App trong ≤ 10 giây (SC-001), (3) terminal và giao diện hiện cảnh báo thử nghiệm của T009. Tắt/mở App 5 lần, mỗi lần tự kết nối lại ≤ 10 giây (SC-004). Tắt App trước khi `npm start` → trạng thái mất kết nối, không treo. Ghi kết quả vào `specs/005-linux-support/spec.md`, tiểu mục "Bước 1"
+- [X] T012 [US1] 🐧 (FR-001 bước 1, điểm dừng trước US2) Trên CachyOS: clone repo, checkout `005-linux-support`, `npm ci && npm run build`, rồi `npm run check:compat -- --out /tmp/compat-linux.md`. Ghi kết quả vào `specs/005-linux-support/spec.md`, mục "Kết quả rà soát Linux", thêm tiểu mục "Bước 1" dạng bảng như bước 0 (phiên bản, số lệnh nội bộ còn, trường thêm/bớt so với fixture mới nhất, loại bước chưa nhận ra). **Nếu thiếu lệnh nội bộ nào: dừng, báo người dùng, không làm tiếp**
+- [X] T013 [US1] 🐧 `npm start` trên CachyOS: kiểm tra (1) trình duyệt tự mở hoặc địa chỉ được in ra, (2) nhân viên khớp App trong ≤ 10 giây (SC-001), (3) terminal và giao diện hiện cảnh báo thử nghiệm của T009. Tắt/mở App 5 lần, mỗi lần tự kết nối lại ≤ 10 giây (SC-004). Tắt App trước khi `npm start` → trạng thái mất kết nối, không treo. Ghi kết quả vào `specs/005-linux-support/spec.md`, tiểu mục "Bước 1"
 
 **Checkpoint**: Văn phòng chạy trên CachyOS ở chế độ đọc, có cảnh báo thử nghiệm.
 
@@ -76,12 +76,12 @@ bằng Claude Code chạy trên chính máy CachyOS.
 
 **Independent Test**: quickstart.md phần C.
 
-- [ ] T014 [US2] 🐧 Chạy `npx tsx scripts/record-fixtures.ts` (và `--conversation <tên>=<id>` cho các loại bước như fixture `app-2.29.0`: `tools`, `question`, `waiting-question`, `search-web` nếu tạo được) để tạo `tests/contract/fixtures/app-2.29.1/`. Đọc lại từng file, xác nhận không có token, email, tên người dùng hay đường dẫn home
-- [ ] T015 [P] [US2] 🐧 Tạo `tests/contract/fixtures/app-2.29.1/SOURCE.md` ghi: "Ghi từ Antigravity App 2.29.1 bản Linux, CachyOS x86_64, <ngày>, feature 005-linux-support"
-- [ ] T016 [US2] 🐧 Chạy `npm test` trên CachyOS (contract test tự nhận bộ fixture mới qua `FIXTURE_SETS`). Sửa mapper trong `src/server/app-adapter/mappers/` chỉ khi test chỉ ra khác biệt thật, và ghi khác biệt vào spec
-- [ ] T017 [US2] 🐧 Chạy `npm run test:live` (chat, xoá, độ trễ ≤ 2 giây, duyệt quyền, project, câu hỏi); rồi `npm run test:leaks`; rồi `npx tsx scripts/record-fixtures.ts --sweep`. Tất cả qua và App không còn conversation `[agent-office-test]`. Ghi kết quả (số test, độ trễ đo được) vào `specs/005-linux-support/spec.md`, tiểu mục "Bước 2"
-- [ ] T018 [US2] 🍎 Chỉ khi T016–T017 qua, **trong cùng một commit**: thêm `{ version: '2.29.1', platforms: ['linux'], verifiedOn: '<ngày T017>', evidence: 'specs/005-linux-support' }` lên đầu `VERIFIED_APP_VERSIONS` trong `src/server/app-adapter/versions.ts`; thêm khẳng định `isVerified('2.29.1','linux')` đúng và `isVerified('2.29.1','darwin')` sai vào `tests/contract/versions.test.ts`; cập nhật danh sách phiên bản trong `scripts/install.sh`, `README.md`, `docs/INSTALL.md` (ghi rõ bản nào cho hệ nào); đổi dòng Linux trong bảng hệ điều hành của `README.md` từ 🧪 thành ✅. `npm test` xanh
-- [ ] T019 [US2] 🍎 Chạy `/speckit-constitution` (PATCH 2.2.0 → 2.2.1) để ghi 2.29.1 (Linux) vào danh sách Nguyên tắc II và mục Ràng buộc kỹ thuật, dẫn chứng `specs/005-linux-support`
+- [X] T014 [US2] 🐧 Chạy `npx tsx scripts/record-fixtures.ts` (và `--conversation <tên>=<id>` cho các loại bước như fixture `app-2.29.0`: `tools`, `question`, `waiting-question`, `search-web` nếu tạo được) để tạo `tests/contract/fixtures/app-2.29.1/`. Đọc lại từng file, xác nhận không có token, email, tên người dùng hay đường dẫn home
+- [X] T015 [P] [US2] 🐧 Tạo `tests/contract/fixtures/app-2.29.1/SOURCE.md` ghi: "Ghi từ Antigravity App 2.29.1 bản Linux, CachyOS x86_64, <ngày>, feature 005-linux-support"
+- [X] T016 [US2] 🐧 Chạy `npm test` trên CachyOS (contract test tự nhận bộ fixture mới qua `FIXTURE_SETS`). Sửa mapper trong `src/server/app-adapter/mappers/` chỉ khi test chỉ ra khác biệt thật, và ghi khác biệt vào spec
+- [X] T017 [US2] 🐧 Chạy `npm run test:live` (chat, xoá, độ trễ ≤ 2 giây, duyệt quyền, project, câu hỏi); rồi `npm run test:leaks`; rồi `npx tsx scripts/record-fixtures.ts --sweep`. Tất cả qua và App không còn conversation `[agent-office-test]`. Ghi kết quả (số test, độ trễ đo được) vào `specs/005-linux-support/spec.md`, tiểu mục "Bước 2"
+- [X] T018 [US2] 🍎 Chỉ khi T016–T017 qua, **trong cùng một commit**: thêm `{ version: '2.29.1', platforms: ['linux'], verifiedOn: '<ngày T017>', evidence: 'specs/005-linux-support' }` lên đầu `VERIFIED_APP_VERSIONS` trong `src/server/app-adapter/versions.ts`; thêm khẳng định `isVerified('2.29.1','linux')` đúng và `isVerified('2.29.1','darwin')` sai vào `tests/contract/versions.test.ts`; cập nhật danh sách phiên bản trong `scripts/install.sh`, `README.md`, `docs/INSTALL.md` (ghi rõ bản nào cho hệ nào); đổi dòng Linux trong bảng hệ điều hành của `README.md` từ 🧪 thành ✅. `npm test` xanh
+- [X] T019 [US2] 🍎 Chạy `/speckit-constitution` (PATCH 2.2.0 → 2.2.1) để ghi 2.29.1 (Linux) vào danh sách Nguyên tắc II và mục Ràng buộc kỹ thuật, dẫn chứng `specs/005-linux-support`
 - [ ] T020 [US2] 🐧 Kéo commit mới về CachyOS, `npm start`: không còn cảnh báo thử nghiệm (FR-018)
 
 **Checkpoint**: Linux được công nhận chính thức trong danh sách đã kiểm chứng.
