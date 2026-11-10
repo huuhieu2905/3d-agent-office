@@ -27,7 +27,10 @@ import { sanitizeRaw, stripIdentity } from './redact';
 import { HttpsRpcTransport, RpcClient, type RpcTransport } from './rpc-client';
 import { AppRejectedError, AppUnavailableError, ProjectNameTakenError, QuestionNotPendingError, RpcError, type AppAdapter, type CompatReport, type Unsubscribe } from './types';
 import { countUnknownStepTypes, diffPaths, normalizedPaths, scanRpcNames, USED_RPCS } from './compat';
-import { isVerified, verifiedVersionList } from './versions';
+import { isVerified, VERIFIED_APP_VERSIONS, verifiedVersionList } from './versions';
+
+/** Projects the App itself uses for a conversation without a project (spike T028(d)), in order of preference. */
+const DEFAULT_PROJECT_IDS = ['default-cli-project', 'outside-of-project'];
 
 export { AppUnavailableError, AppProtocolError, AppNotSupportedError, AppRejectedError, ProjectNameTakenError, QuestionNotPendingError, RpcError } from './types';
 export { sanitizeRaw } from './redact';
@@ -241,9 +244,15 @@ function createInternal(deps: AdapterDeps): { adapter: AppAdapter; rpc: RpcClien
     },
     async startConversation(input: UserInput & { projectId?: string }): Promise<{ conversationId: string }> {
       // Spike T028(a): source + projectEnvConfig.defaultProjectEnvironment are required.
+      // Spec 005: `default-cli-project` only exists once the CLI has been used (missing on a fresh Linux App → 404).
+      let projectId = input.projectId;
+      if (!projectId) {
+        const ids = mapProjectIds(await call('ListProjects', {}));
+        projectId = DEFAULT_PROJECT_IDS.find((d) => ids.includes(d));
+      }
       const res = await call<{ cascadeId?: string }>('StartCascade', {
         source: 'CORTEX_TRAJECTORY_SOURCE_INTERACTIVE_CASCADE',
-        projectEnvConfig: { projectId: input.projectId ?? 'default-cli-project', defaultProjectEnvironment: {} },
+        projectEnvConfig: { ...(projectId ? { projectId } : {}), defaultProjectEnvironment: {} },
       });
       if (!res.cascadeId) throw new RpcError('protocol', 'StartCascade returned no cascadeId');
       await adapter.sendMessage(res.cascadeId, input);
@@ -426,7 +435,9 @@ export async function inspectCompat(opts: InspectCompatOptions = {}): Promise<Co
 
     // 2. Field diff against the baseline fixture set.
     const root = opts.fixturesRoot ?? DEFAULT_FIXTURES_ROOT;
-    const baseline = opts.baseline ?? verifiedVersionList().find((v) => existsSync(join(root, `app-${v}`))) ?? null;
+    // An OS with no verified version yet (Linux, spec 005) compares against the newest set verified anywhere.
+    const candidates = [...verifiedVersionList(), ...VERIFIED_APP_VERSIONS.map((v) => v.version)];
+    const baseline = opts.baseline ?? candidates.find((v) => existsSync(join(root, `app-${v}`))) ?? null;
     const baseDir = baseline ? join(root, `app-${baseline}`) : null;
     const basePaths = (file: string): Set<string> | null =>
       baseDir && existsSync(join(baseDir, file)) ? normalizedPaths(JSON.parse(readFileSync(join(baseDir, file), 'utf8'))) : null;

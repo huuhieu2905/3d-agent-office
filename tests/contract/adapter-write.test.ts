@@ -24,7 +24,7 @@ async function setup() {
   const adapter = createAppAdapter({ finder: new FakeFinder(), transport, healthIntervalMs: 60_000 });
   await adapter.start();
   stops.push(() => adapter.stop());
-  return { adapter, sent };
+  return { adapter, sent, transport };
 }
 
 describe('adapter writes (contracts/app-adapter.md)', () => {
@@ -62,6 +62,19 @@ describe('adapter writes (contracts/app-adapter.md)', () => {
       },
     });
     expect(sent[1]).toMatchObject({ method: 'SendUserCascadeMessage', body: { cascadeId: 'new-cascade-id' } });
+  });
+
+  it.each([
+    [['p1', 'default-cli-project', 'outside-of-project'], 'default-cli-project'],
+    [['p1', 'outside-of-project'], 'outside-of-project'], // fresh Linux App: no CLI project (spec 005)
+    [['p1'], undefined],
+  ])('startConversation without a project uses a default project the App has (%j)', async (projectIds, expected) => {
+    const { adapter, sent, transport } = await setup();
+    transport.handlers.ListProjects = () => ({ projectIds });
+    await adapter.startConversation({ parts: [{ text: 'hello' }], model: 'M' });
+    expect((sent[0]!.body as { projectEnvConfig: unknown }).projectEnvConfig).toEqual(
+      expected ? { projectId: expected, defaultProjectEnvironment: {} } : { defaultProjectEnvironment: {} },
+    );
   });
 
   it('getModels reads labels, model ids and remaining quota from GetUserStatus', async () => {

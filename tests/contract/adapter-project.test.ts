@@ -14,7 +14,8 @@ describe.each(FIXTURE_SETS)('recorded projects (App %s)', (version) => {
   it('reads the bound folder of existing projects', () => {
     const ps = mapProjects(fixtureFrom(version, 'ReadProjects'));
     expect(ps.some((p) => p.folderUri?.startsWith('file:///'))).toBe(true);
-    expect(ps.find((p) => p.id === 'default-cli-project')?.folderUri).toBeNull();
+    const cli = ps.find((p) => p.id === 'default-cli-project'); // missing on a fresh Linux App (spec 005)
+    if (cli) expect(cli.folderUri).toBeNull();
   });
 });
 
