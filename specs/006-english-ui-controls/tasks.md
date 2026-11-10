@@ -153,3 +153,11 @@ Không có việc nào chặn. Mỗi user story chạm vào phần code khác nh
 - T022: các test e2e cho chuột phải nằm trong `tests/e2e/build-drag.spec.ts` (file này đã có sẵn hàm hỗ trợ kéo và tính vị trí trên màn hình), không phải `build.spec.ts`. T025: nằm trong file mới `tests/e2e/fullscreen.spec.ts`.
 - T032: test "busy agent…" trong `tests/e2e/delete-employee.spec.ts` lỗi khoảng 1 trên 40 lần chạy. Code trước 006 cũng lỗi y như vậy (2 trên 80 lần), nên đây là lỗi tranh chấp thời gian (race) có từ trước, không phải do 006.
 - T033: chủ dự án đã tự kiểm tra bằng tay ngày 2026-11-10, mọi chức năng hoạt động đầy đủ.
+
+## Phase 9: Convergence
+
+- [X] T034 [US2] Cho các hộp thoại `SettingsPanel` (`src/web/ui/settings/SettingsPanel.tsx`), `HireDialog` (`src/web/ui/chat/HireDialog.tsx`), `ProjectDialog` (`src/web/ui/projects/ProjectDialog.tsx`) và bảng quota (`src/web/ui/quota/QuotaPanel.tsx`) nhận Esc ở pha bắt (capture) giống `ConfirmDeleteDialog`: gọi `e.preventDefault()` rồi đóng hộp thoại đó, để khi khung chat đang mở, Esc chỉ đóng hộp thoại trên cùng chứ không đóng chat phía sau. Thêm một test e2e: mở chat, mở Settings, bấm Esc thì Settings đóng còn chat vẫn mở per FR-008 (partial)
+
+## Phase 10: Convergence
+
+- [X] T035 [US2] Trong `src/web/ui/build/BuildMode.tsx`, cho nhánh Esc của `onKey` thoát sớm cả khi `e.defaultPrevented` (một hộp thoại như Settings, Quota, Hire hoặc New project đã dùng phím Esc qua `useEscapeToClose`), để trong chế độ Xây dựng một lần Esc chỉ đóng hộp thoại chứ không đồng thời bỏ chọn đồ trong bảng hoặc bỏ chọn đồ vật. Thêm một test e2e: vào chế độ Xây dựng, chọn một đồ vật, mở Settings, bấm Esc thì Settings đóng và `selectedId` vẫn giữ per plan: R4 / contracts/ui-input.md thứ tự xử lý Esc (partial)

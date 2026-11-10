@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { Project } from '@shared/domain';
 import { api, ApiError } from '../../api/client';
+import { useEscapeToClose } from '../useEscapeToClose';
 
 // T082 / FR-031: create a project bound to a folder chosen from a folder browser (inside home only).
 
@@ -31,6 +32,7 @@ export function ProjectDialog({ onClose, onCreated }: { onClose(): void; onCreat
   const [nameTouched, setNameTouched] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  useEscapeToClose(onClose);
 
   async function go(path?: string) {
     setError(null);

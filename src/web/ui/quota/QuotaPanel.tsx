@@ -3,6 +3,7 @@ import type { Quota } from '@shared/domain';
 import { api } from '../../api/client';
 import { useConnection } from '../../state/connection';
 import { useQuota } from '../../state/quota';
+import { useEscapeToClose } from '../useEscapeToClose';
 
 // T092 / FR-041: plan, each model group (models, % left, reset time), credits, last update.
 // Also a small toolbar button as a fallback when the layout has no wall screen.
@@ -37,6 +38,7 @@ export function QuotaPanel() {
   useEffect(() => {
     if (connected && !quota) api<Quota>('/api/quota').then(set).catch(() => undefined);
   }, [connected, quota, set]);
+  useEscapeToClose(() => setPanelOpen(false), panelOpen);
   if (!panelOpen) return null;
   return (
     <div className="modal-backdrop" onClick={() => setPanelOpen(false)}>

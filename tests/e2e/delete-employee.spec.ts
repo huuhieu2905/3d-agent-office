@@ -64,7 +64,11 @@ test('subagents are named in the dialog and leave together', async ({ page }) =>
   await ctl(`parent/${b}/${a}`);
   await page.getByTestId(TID.employeeDelete).click();
   await expect(page.getByTestId(TID.confirmDelete)).toContainText('and its 2 subagent(s)', { timeout: 10_000 });
+  // Wait for the server to finish: it re-checks the App ~250 ms after deleting. Ending the test earlier lets the
+  // next test's `reset` bring the conversation back, and that re-check then deletes it again inside the next test.
+  const deleted = page.waitForResponse((r) => r.request().method() === 'DELETE' && r.url().includes(`/api/conversations/${id}`));
   await page.getByTestId(TID.confirmDeleteOk).click();
+  expect((await deleted).status()).toBe(200);
   await expect.poll(async () => (await employeeIds()).filter((x) => [id, a, b].includes(x)).length, { timeout: 10_000 }).toBe(0);
 });
 
@@ -82,7 +86,8 @@ test('busy agent: the button is disabled; starting while the dialog is open is r
   await ctl(`run/${id}`); // the agent starts from the App while the dialog is open
   await page.getByTestId(TID.confirmDeleteOk).click();
   await expect(page.getByTestId(TID.confirmDeleteError)).toHaveText('The agent just started running — stop it and try again');
-  expect((await sent()).some((s) => s.method === 'DeleteCascadeTrajectory')).toBe(false);
+  // Only this conversation counts: a call left over from an earlier test must not make this one fail.
+  expect((await sent()).some((s) => s.method === 'DeleteCascadeTrajectory' && s.body.cascadeId === id)).toBe(false);
   expect(await employeeIds()).toContain(id);
 });
 

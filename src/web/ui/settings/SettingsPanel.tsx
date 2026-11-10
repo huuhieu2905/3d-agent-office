@@ -4,6 +4,7 @@ import { useSettings } from '../../state/settings';
 import { useWeather } from '../../state/weather';
 import { loadModels } from '../chat/ModelPicker';
 import { UsageStats } from './UsageStats';
+import { useEscapeToClose } from '../useEscapeToClose';
 
 // T112 + T113: city (FR-060), light/dark (FR-064), detail level + auto-lower (FR-065), default model,
 // usage statistics; plus the always-visible Open-Meteo attribution (CC BY 4.0, FR-063).
@@ -59,6 +60,7 @@ export function SettingsButton() {
 export function SettingsPanel({ onClose }: { onClose(): void }) {
   const { settings, update } = useSettings();
   const [models, setModels] = useState<ModelOption[]>([]);
+  useEscapeToClose(onClose);
   useEffect(() => {
     loadModels()
       .then(setModels)

@@ -100,3 +100,28 @@ test('Esc closes the command menu first, then the chat', async ({ page }) => {
   await page.locator('.chat textarea').press('Escape');
   await expect(page.locator('.chat')).toBeHidden();
 });
+
+test('006 FR-008: Esc closes a dialog over the chat first, and only the topmost of nested dialogs', async ({ page }) => {
+  await page.goto(`/#k=${TOKEN}`);
+  await clickFirstEmployee(page);
+  await page.getByRole('button', { name: 'Settings' }).click();
+  const settings = page.getByRole('dialog', { name: 'Settings' });
+  await expect(settings).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(settings).toBeHidden();
+  await expect(page.locator('.chat')).toBeVisible();
+
+  await page.getByRole('button', { name: '+ Hire employee' }).click();
+  const hire = page.getByRole('dialog', { name: 'Hire a new employee' });
+  await hire.getByLabel('Project').selectOption('__new__');
+  const project = page.getByRole('dialog', { name: 'New project' });
+  await expect(project).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(project).toBeHidden();
+  await expect(hire).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(hire).toBeHidden();
+  await expect(page.locator('.chat')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.chat')).toBeHidden();
+});

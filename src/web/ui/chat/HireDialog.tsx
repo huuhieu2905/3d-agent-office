@@ -3,6 +3,7 @@ import type { Project } from '@shared/domain';
 import { api } from '../../api/client';
 import { useUi } from '../../state/ui';
 import { ModelPicker } from './ModelPicker';
+import { useEscapeToClose } from '../useEscapeToClose';
 import { PROJECTS_CHANGED, ProjectDialog } from '../projects/ProjectDialog';
 
 // T072 + T082 / FR-026, FR-032: hire = first request + model + a REQUIRED project (existing or newly created).
@@ -29,6 +30,7 @@ export function HireDialog({ onClose, deskId }: { onClose(): void; deskId?: stri
   const [text, setText] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  useEscapeToClose(onClose);
   const openConversation = useUi((s) => s.openConversation);
 
   function load() {

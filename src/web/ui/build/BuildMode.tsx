@@ -56,7 +56,8 @@ export function BuildMode() {
       } else if (e.key === 'Delete' || e.key === 'Backspace') {
         st.removeSelected();
       } else if (e.key === 'Escape') {
-        if (useUi.getState().openConversationId !== null) return; // 006: that Esc closes the chat
+        // 006: that Esc closes the chat, or a dialog already used it (useEscapeToClose); one Esc does one thing.
+        if (e.defaultPrevented || useUi.getState().openConversationId !== null) return;
         if (st.palette) st.setPalette(null);
         else st.select(null);
       } else if (e.key.startsWith('Arrow') && st.selectedId && st.draft) {

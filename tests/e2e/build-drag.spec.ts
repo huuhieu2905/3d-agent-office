@@ -204,3 +204,18 @@ test('right-click on an unselected item, or mid-drag, deletes nothing', async ({
   await save(page);
   expect(await hasItem(page, plant.id)).toBe(true);
 });
+
+test('006: in build mode, Esc closes an open dialog and keeps the selected item', async ({ page }) => {
+  await enterArrange(page);
+  const { plant, at } = await plantPoint(page);
+  await page.mouse.click(at.x, at.y);
+  await expect.poll(() => page.evaluate(() => window.__agentOffice!.arrange().selectedId)).toBe(plant.id);
+  await page.getByRole('button', { name: 'Settings' }).click();
+  const settings = page.getByRole('dialog', { name: 'Settings' });
+  await expect(settings).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(settings).toBeHidden();
+  expect(await page.evaluate(() => window.__agentOffice!.arrange().selectedId)).toBe(plant.id);
+  await page.keyboard.press('Escape'); // with no dialog open, Esc deselects as before
+  await expect.poll(() => page.evaluate(() => window.__agentOffice!.arrange().selectedId)).toBeNull();
+});

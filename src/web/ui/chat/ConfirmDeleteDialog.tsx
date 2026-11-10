@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { api, ApiError } from '../../api/client';
+import { useEscapeToClose } from '../useEscapeToClose';
 
 // 004 US2 (U4-2, FR-013): confirm permanently deleting a conversation in the App — and its subagents,
 // which the App deletes with it. Focus starts on "Huỷ"; Esc cancels.
@@ -26,17 +27,8 @@ export function ConfirmDeleteDialog({
   const [error, setError] = useState<string | null>(null);
   const cancelRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    cancelRef.current?.focus();
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape') return;
-      e.preventDefault(); // 006: this Esc belongs to the dialog, not to the chat behind it
-      if (!busy) onCancel();
-    };
-    // Capture phase: runs before the chat panel's Esc listener, which was registered first.
-    window.addEventListener('keydown', onKey, true);
-    return () => window.removeEventListener('keydown', onKey, true);
-  }, [busy, onCancel]);
+  useEffect(() => cancelRef.current?.focus(), [busy, onCancel]);
+  useEscapeToClose(() => !busy && onCancel()); // 006: this Esc belongs to the dialog, not to the chat behind it
 
   async function confirm() {
     setBusy(true);
