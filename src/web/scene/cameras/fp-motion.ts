@@ -6,7 +6,7 @@ import type { Cell } from '../grid/grid';
 // the park; employees (`others`) block the way too (FR-035).
 
 export const EYE_HEIGHT = 1.65;
-// Must stay below half a cell (0.25 m) so a body centred in a cell next to a wall is not "inside" it.
+// Larger than half a nav cell (0.125 m): a cell centre next to furniture is not free — use nearestFree().
 export const RADIUS = 0.2;
 /** Keep this far (m) from an employee's centre. */
 export const PERSON_GAP = RADIUS + 0.2;
@@ -47,4 +47,24 @@ export function slide(grid: MotionGrid, x: number, z: number, dx: number, dz: nu
   if (freeAt(grid, x + dx, z, RADIUS, list)) nx = x + dx;
   if (freeAt(grid, nx, z + dz, RADIUS, list)) nz = z + dz;
   return { x: nx, z: nz };
+}
+
+/** Nearest point within maxR of (x, z) where the body fits (freeAt), scanned on a 5 cm lattice; null if none. */
+export function nearestFree(grid: MotionGrid, x: number, z: number, maxR = 1.5, ok: (x: number, z: number) => boolean = () => true): { x: number; z: number } | null {
+  const step = 0.05;
+  const n = Math.ceil(maxR / step);
+  let best: { x: number; z: number } | null = null;
+  let bestD = Infinity;
+  for (let i = -n; i <= n; i++)
+    for (let j = -n; j <= n; j++) {
+      const d = Math.hypot(i, j) * step;
+      if (d > maxR || d >= bestD) continue;
+      const px = x + i * step;
+      const pz = z + j * step;
+      if (ok(px, pz) && freeAt(grid, px, pz)) {
+        best = { x: px, z: pz };
+        bestD = d;
+      }
+    }
+  return best;
 }

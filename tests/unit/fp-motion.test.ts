@@ -70,3 +70,28 @@ describe('first person with the SiteGrid (004)', () => {
     expect(p.x).toBe(0);
   });
 });
+
+// ---- bug fp-sofa-standup-stuck: standing up from the sofa must leave the user able to walk ----------
+
+import { sofaSpots } from '../../src/web/scene/break-spots';
+import { nearestFree } from '../../src/web/scene/cameras/fp-motion';
+
+describe('standing up from the sofa (fp-sofa-standup-stuck)', () => {
+  const site = new SiteGrid(grid, { radius: 30, boxes: [], circles: [] });
+
+  it('stands up where the body fits and can walk away at frame-sized steps', () => {
+    for (const seat of sofaSpots(layout)) {
+      const p = nearestFree(site, seat.x, seat.z, 1.5, (x, z) => site.isIndoorAt(x, z))!;
+      expect(p).not.toBeNull();
+      expect(Math.hypot(p.x - seat.x, p.z - seat.z)).toBeLessThanOrEqual(1.5);
+      expect(freeAt(site, p.x, p.z)).toBe(true);
+      // ~2.2 m/s at 60 fps; at least one direction must move the user.
+      const moved = [[0.035, 0], [-0.035, 0], [0, 0.035], [0, -0.035]].map(([dx, dz]) => {
+        let q = p;
+        for (let i = 0; i < 20; i++) q = slide(site, q.x, q.z, dx!, dz!);
+        return Math.hypot(q.x - p.x, q.z - p.z);
+      });
+      expect(Math.max(...moved)).toBeGreaterThan(0.5);
+    }
+  });
+});
