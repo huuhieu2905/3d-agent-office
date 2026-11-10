@@ -72,6 +72,16 @@ async function lookAt(page: import('@playwright/test').Page, id: string, y: numb
 const ids = async (request: import('@playwright/test').APIRequestContext) =>
   ((await (await request.get('/api/layout', { headers: auth })).json()) as { items: { id: string; type: string }[] }).items;
 
+/** Metres walked holding W for 0.5 s (0 when stuck after standing up from the sofa). */
+async function walksAfterStandUp(page: import('@playwright/test').Page) {
+  const a = (await player(page))!;
+  await page.keyboard.down('KeyW');
+  await page.waitForTimeout(500);
+  await page.keyboard.up('KeyW');
+  const b = (await player(page))!;
+  return Math.hypot(b.x - a.x, b.z - a.z);
+}
+
 test('first person: screen off/on, sofa sit/lie/stand, water, plant; overview power button', async ({ page, request }) => {
   const items = await ids(request);
   const screen = items.find((i) => i.type === 'wall_screen')!.id;
@@ -110,12 +120,14 @@ test('first person: screen off/on, sofa sit/lie/stand, water, plant; overview po
   await page.waitForTimeout(150);
   await page.keyboard.up('KeyW');
   await expect.poll(async () => (await player(page))?.pose).toBe('standing');
+  await expect.poll(() => walksAfterStandUp(page)).toBeGreaterThan(0.5); // fp-sofa-standup-stuck
   await lookAt(page, sofa, 0.45, { dx: 0, dz: 1.3 });
   await expect(page.getByTestId('fp-hint')).toContainText('Nằm');
   await page.keyboard.press('Shift+E');
   await expect.poll(async () => (await player(page))?.pose).toBe('lie');
   await page.keyboard.press('e');
   await expect.poll(async () => (await player(page))?.pose).toBe('standing');
+  await expect.poll(() => walksAfterStandUp(page)).toBeGreaterThan(0.5);
 
   // Water and plant: a short effect (< 3 s), then control again.
   for (const [id, y] of [

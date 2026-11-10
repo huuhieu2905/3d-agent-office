@@ -9,7 +9,7 @@ import { NO_IDS, useSettings } from '../../state/settings';
 import type { Crowd } from '../crowd/crowd';
 import { PLAYER, sofaOf, sofaSpots, type SpotBook } from '../break-spots';
 import { aimTarget, buildInteractables, toggledScreens, type Interactable } from '../interaction/interactables';
-import { EYE_HEIGHT, slide } from './fp-motion';
+import { EYE_HEIGHT, nearestFree, slide } from './fp-motion';
 
 // T116 / T117 / FR-070, FR-071: walk the office at eye height (WASD/arrows, Shift to hurry), no walking
 // through walls or furniture, click the employee under the crosshair (≤ 4 m) to open the chat.
@@ -80,7 +80,8 @@ export function FirstPersonCamera({
     if (!r) return;
     spots?.release(PLAYER);
     resting.current = null;
-    const p = site.nearestWalkable(r.x, r.z) ?? { x: camera.position.x, z: camera.position.z };
+    // A spot the body fits in, else slide() rejects every step and the user is stuck by the sofa.
+    const p = nearestFree(site, r.x, r.z, 1.5, (x, z) => site.isIndoorAt(x, z)) ?? site.nearestWalkable(r.x, r.z) ?? { x: camera.position.x, z: camera.position.z };
     camera.position.set(p.x, EYE_HEIGHT, p.z);
     useUi.getState().setPlayerPose('standing');
   }
