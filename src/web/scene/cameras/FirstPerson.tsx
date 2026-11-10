@@ -47,6 +47,7 @@ export function FirstPersonCamera({
   const camera = useThree((s) => s.camera);
   const gl = useThree((s) => s.gl);
   const controls = useRef<React.ElementRef<typeof PointerLockControls>>(null);
+  const sensitivity = useSettings((s) => s.settings.mouseSensitivity ?? 1); // 006 US5
   const keys = useRef(new Set<string>());
   const openConversation = useUi((s) => s.openConversation);
   const chatOpen = useUi((s) => !!s.openConversationId);
@@ -222,7 +223,7 @@ export function FirstPersonCamera({
     return () => el.removeEventListener('click', onClick);
   });
 
-  return <PointerLockControls ref={controls} makeDefault />;
+  return <PointerLockControls ref={controls} makeDefault pointerSpeed={sensitivity} />;
 }
 
 export function Crosshair() {
@@ -240,7 +241,7 @@ export function FirstPersonHint() {
     const id = setTimeout(() => setEffect(null), Math.max(0, effect.until - Date.now()));
     return () => clearTimeout(id);
   }, [effect, setEffect]);
-  const text = pose !== 'standing' ? 'E / W — Đứng dậy' : aim ? `E — ${aim.action}` : null;
+  const text = pose !== 'standing' ? 'E / W — Stand up' : aim ? `E — ${aim.action}` : null;
   return (
     <>
       {text && (

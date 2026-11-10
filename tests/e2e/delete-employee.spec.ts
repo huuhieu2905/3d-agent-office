@@ -37,9 +37,9 @@ test('cancel changes nothing; confirm deletes in ≤ 3 clicks and the employee l
 
   await page.getByTestId(TID.employeeDelete).click();
   const dialog = page.getByTestId(TID.confirmDelete);
-  await expect(dialog).toContainText('xoá vĩnh viễn trong Antigravity App');
-  await expect(dialog.getByRole('button', { name: 'Huỷ' })).toBeFocused();
-  await dialog.getByRole('button', { name: 'Huỷ' }).click();
+  await expect(dialog).toContainText('permanently deleted in the Antigravity App');
+  await expect(dialog.getByRole('button', { name: 'Cancel' })).toBeFocused();
+  await dialog.getByRole('button', { name: 'Cancel' }).click();
   await expect(dialog).toBeHidden();
   expect((await sent()).some((s) => s.method === 'DeleteCascadeTrajectory')).toBe(false);
 
@@ -63,7 +63,7 @@ test('subagents are named in the dialog and leave together', async ({ page }) =>
   await ctl(`parent/${a}/${id}`);
   await ctl(`parent/${b}/${a}`);
   await page.getByTestId(TID.employeeDelete).click();
-  await expect(page.getByTestId(TID.confirmDelete)).toContainText('cùng 2 subagent con', { timeout: 10_000 });
+  await expect(page.getByTestId(TID.confirmDelete)).toContainText('and its 2 subagent(s)', { timeout: 10_000 });
   await page.getByTestId(TID.confirmDeleteOk).click();
   await expect.poll(async () => (await employeeIds()).filter((x) => [id, a, b].includes(x)).length, { timeout: 10_000 }).toBe(0);
 });
@@ -74,14 +74,14 @@ test('busy agent: the button is disabled; starting while the dialog is open is r
 
   await ctl(`run/${id}`);
   await expect(page.getByTestId(TID.employeeDelete)).toBeDisabled({ timeout: 10_000 });
-  await expect(page.getByTestId(TID.employeeDelete)).toHaveAttribute('title', 'Dừng agent trước khi xoá');
+  await expect(page.getByTestId(TID.employeeDelete)).toHaveAttribute('title', 'Stop the agent before deleting');
 
   await ctl(`idle/${id}`);
   await expect(page.getByTestId(TID.employeeDelete)).toBeEnabled({ timeout: 10_000 });
   await page.getByTestId(TID.employeeDelete).click();
   await ctl(`run/${id}`); // the agent starts from the App while the dialog is open
   await page.getByTestId(TID.confirmDeleteOk).click();
-  await expect(page.getByTestId(TID.confirmDeleteError)).toHaveText('Agent vừa bắt đầu chạy — dừng agent rồi thử lại');
+  await expect(page.getByTestId(TID.confirmDeleteError)).toHaveText('The agent just started running — stop it and try again');
   expect((await sent()).some((s) => s.method === 'DeleteCascadeTrajectory')).toBe(false);
   expect(await employeeIds()).toContain(id);
 });
@@ -92,6 +92,19 @@ test('the App refusing keeps the employee and shows an error', async ({ page }) 
   const id = await openFirstEmployee(page);
   await page.getByTestId(TID.employeeDelete).click();
   await page.getByTestId(TID.confirmDeleteOk).click();
-  await expect(page.getByTestId(TID.confirmDeleteError)).toHaveText('App không xoá được conversation này');
+  await expect(page.getByTestId(TID.confirmDeleteError)).toHaveText('The App could not delete this conversation');
   expect(await employeeIds()).toContain(id);
+});
+
+test('006: Esc closes only the delete dialog, the chat stays open', async ({ page }) => {
+  await page.goto(`/#k=${TOKEN}`);
+  await openFirstEmployee(page);
+  await page.getByTestId(TID.employeeDelete).click();
+  const dialog = page.getByTestId(TID.confirmDelete);
+  await expect(dialog).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeHidden();
+  await expect(page.locator('.chat')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.chat')).toBeHidden();
 });

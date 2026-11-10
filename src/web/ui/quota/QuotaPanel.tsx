@@ -11,21 +11,21 @@ function relative(iso: string | null): string {
   if (!iso) return '—';
   const ms = Date.parse(iso) - Date.now();
   if (!Number.isFinite(ms)) return '—';
-  if (ms <= 0) return 'đã làm mới';
+  if (ms <= 0) return 'refreshed';
   const h = Math.floor(ms / 3_600_000);
   const m = Math.round((ms % 3_600_000) / 60_000);
-  if (h >= 48) return `còn ${Math.round(h / 24)} ngày`;
-  return h > 0 ? `còn ${h} giờ ${m} phút` : `còn ${m} phút`;
+  if (h >= 48) return `${Math.round(h / 24)} days left`;
+  return h > 0 ? `${h} h ${m} min left` : `${m} min left`;
 }
 
-const fmt = (n: number | null) => (n == null ? '—' : n.toLocaleString('vi-VN'));
+const fmt = (n: number | null) => (n == null ? '—' : n.toLocaleString('en-US'));
 
 export function QuotaButton() {
   const quota = useQuota((s) => s.quota);
   const setOpen = useQuota((s) => s.setPanelOpen);
   const low = quota?.groups.some((g) => g.low);
   return (
-    <button className={`btn ${low ? 'btn-warn' : ''}`} onClick={() => setOpen(true)} title="Quota tài khoản">
+    <button className={`btn ${low ? 'btn-warn' : ''}`} onClick={() => setOpen(true)} title="Account quota">
       {low ? '⚠ ' : ''}Quota
     </button>
   );
@@ -40,21 +40,21 @@ export function QuotaPanel() {
   if (!panelOpen) return null;
   return (
     <div className="modal-backdrop" onClick={() => setPanelOpen(false)}>
-      <div className="modal panel quota-panel" role="dialog" aria-label="Quota tài khoản" onClick={(e) => e.stopPropagation()}>
-        <h3>Quota tài khoản</h3>
+      <div className="modal panel quota-panel" role="dialog" aria-label="Account quota" onClick={(e) => e.stopPropagation()}>
+        <h3>Account quota</h3>
         {!quota ? (
-          <div className="muted">Chưa có dữ liệu quota (Antigravity App chưa kết nối?).</div>
+          <div className="muted">No quota data yet (is the Antigravity App connected?).</div>
         ) : (
           <>
             <div>
-              Gói: <strong>{quota.planName}</strong>
+              Plan: <strong>{quota.planName}</strong>
             </div>
             <table className="usage">
               <thead>
                 <tr>
                   <th>Model</th>
-                  <th>Còn lại</th>
-                  <th>Làm mới</th>
+                  <th>Remaining</th>
+                  <th>Refresh</th>
                 </tr>
               </thead>
               <tbody>
@@ -72,7 +72,7 @@ export function QuotaPanel() {
                       {Math.round(g.remainingPercent)}%{g.low ? ' ⚠' : ''}
                     </td>
                     <td title={g.resetAt ?? ''}>
-                      {g.resetAt ? new Date(g.resetAt).toLocaleString('vi-VN') : '—'}
+                      {g.resetAt ? new Date(g.resetAt).toLocaleString('en-US') : '—'}
                       <div className="muted small">{relative(g.resetAt)}</div>
                     </td>
                   </tr>
@@ -80,15 +80,15 @@ export function QuotaPanel() {
               </tbody>
             </table>
             <div className="credits">
-              Credits — prompt: {fmt(quota.credits.prompt.available)} / {fmt(quota.credits.prompt.monthly)} mỗi tháng · flow:{' '}
-              {fmt(quota.credits.flow.available)} / {fmt(quota.credits.flow.monthly)} mỗi tháng
+              Credits — prompt: {fmt(quota.credits.prompt.available)} / {fmt(quota.credits.prompt.monthly)} per month · flow:{' '}
+              {fmt(quota.credits.flow.available)} / {fmt(quota.credits.flow.monthly)} per month
             </div>
-            <div className="muted small">Cập nhật lúc {new Date(quota.fetchedAt).toLocaleTimeString('vi-VN')}</div>
+            <div className="muted small">Updated at {new Date(quota.fetchedAt).toLocaleTimeString('en-US')}</div>
           </>
         )}
         <div className="modal-actions">
           <button className="btn" onClick={() => setPanelOpen(false)}>
-            Đóng
+            Close
           </button>
         </div>
       </div>

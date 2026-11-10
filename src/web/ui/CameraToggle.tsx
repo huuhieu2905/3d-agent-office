@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useUi } from '../state/ui';
 import { useSettings } from '../state/settings';
 import { useBuild } from '../state/build';
@@ -33,9 +33,68 @@ export function CameraToggle() {
   const camera = useUi((s) => s.camera);
   const building = useBuild((s) => s.active);
   return (
-    <button className="btn" onClick={toggleCamera} disabled={building} title="Đổi góc nhìn (phím V)">
-      {camera === 'overview' ? '🚶 Góc nhìn thứ nhất' : '🗺 Toàn cảnh'}
+    <button className="btn" onClick={toggleCamera} disabled={building} title="Switch view (V key)">
+      {camera === 'overview' ? '🚶 First person' : '🗺 Overview'}
     </button>
+  );
+}
+
+// 006 US4 / FR-014..017: whole-page fullscreen (panels stay usable), button or F, in both views.
+const isTyping = (t: EventTarget | null) => t instanceof HTMLInputElement || t instanceof HTMLTextAreaElement || t instanceof HTMLSelectElement;
+let reportFullscreenError: (() => void) | null = null;
+
+function toggleFullscreen() {
+  const req = document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+  req.catch(() => reportFullscreenError?.());
+}
+
+export function useFullscreenHotkey() {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (isTyping(e.target) || e.code !== 'KeyF' || e.metaKey || e.ctrlKey || e.altKey) return;
+      toggleFullscreen();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+}
+
+export function FullscreenToggle() {
+  const [on, setOn] = useState(() => !!document.fullscreenElement);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    const sync = () => setOn(!!document.fullscreenElement); // also catches Esc / F11 / browser controls
+    document.addEventListener('fullscreenchange', sync);
+    reportFullscreenError = () => setFailed(true);
+    return () => {
+      document.removeEventListener('fullscreenchange', sync);
+      reportFullscreenError = null;
+    };
+  }, []);
+  useEffect(() => {
+    if (!failed) return;
+    const t = setTimeout(() => setFailed(false), 3000);
+    return () => clearTimeout(t);
+  }, [failed]);
+  const supported = document.fullscreenEnabled;
+  return (
+    <>
+      <button
+        className="btn"
+        data-testid="fullscreen-toggle"
+        aria-pressed={on}
+        disabled={!supported}
+        onClick={toggleFullscreen}
+        title={supported ? 'Fullscreen (F key)' : 'Fullscreen is not available in this browser'}
+      >
+        {on ? 'Exit fullscreen' : '⛶ Fullscreen'}
+      </button>
+      {failed && (
+        <span className="panel small" role="status">
+          Fullscreen is not available
+        </span>
+      )}
+    </>
   );
 }
 
@@ -44,11 +103,11 @@ export function FirstPersonHelp() {
   if (camera !== 'first_person') return null;
   return (
     <div className="fp-help panel small">
-      Bấm vào cảnh để điều khiển · <kbd>W</kbd>
+      Click the scene to take control · <kbd>W</kbd>
       <kbd>A</kbd>
       <kbd>S</kbd>
-      <kbd>D</kbd> đi lại · <kbd>Shift</kbd> đi nhanh · <kbd>E</kbd> dùng đồ vật · nhắm vào nhân viên rồi bấm để trò chuyện · <kbd>Esc</kbd> nhả chuột ·{' '}
-      <kbd>V</kbd> về toàn cảnh
+      <kbd>D</kbd> walk · <kbd>Shift</kbd> run · <kbd>E</kbd> use object · aim at an employee and click to chat · <kbd>Esc</kbd> release mouse ·{' '}
+      <kbd>V</kbd> back to overview · <kbd>F</kbd> fullscreen
     </div>
   );
 }

@@ -21,7 +21,7 @@ async function openChatOf(page: Page, name: string) {
   await expect(page.locator('.chat strong')).toHaveText(name);
 }
 const picker = (page: Page) => page.getByTestId(TID.modelPicker).locator('select');
-const closeChat = (page: Page) => page.getByRole('button', { name: 'Đóng' }).click();
+const closeChat = (page: Page) => page.getByRole('button', { name: 'Close' }).click();
 
 let names: string[] = [];
 
@@ -40,7 +40,7 @@ test('a model picked without sending is kept after closing the chat and after a 
   await openChatOf(page, names[0]!);
   await expect(picker(page)).toHaveValue(FLASH_HIGH);
   await picker(page).selectOption(FLASH_MEDIUM);
-  await expect(page.getByText('Đã lưu cho cuộc trò chuyện này')).toBeVisible();
+  await expect(page.getByText('Saved for this conversation')).toBeVisible();
   await closeChat(page);
   await openChatOf(page, names[0]!);
   await expect(picker(page)).toHaveValue(FLASH_MEDIUM);
@@ -53,7 +53,7 @@ test('another conversation keeps its own model', async ({ page }) => {
   await page.goto(`/#k=${TOKEN}`);
   await openChatOf(page, names[0]!);
   await picker(page).selectOption(FLASH_MEDIUM);
-  await expect(page.getByText('Đã lưu cho cuộc trò chuyện này')).toBeVisible();
+  await expect(page.getByText('Saved for this conversation')).toBeVisible();
   await closeChat(page);
   await openChatOf(page, names[1]!);
   await expect(picker(page)).toHaveValue(FLASH_HIGH);
@@ -63,7 +63,7 @@ test('a remembered model the App no longer offers is flagged and sending is bloc
   await page.goto(`/#k=${TOKEN}`);
   await openChatOf(page, names[0]!);
   await picker(page).selectOption(FLASH_MEDIUM);
-  await expect(page.getByText('Đã lưu cho cuộc trò chuyện này')).toBeVisible();
+  await expect(page.getByText('Saved for this conversation')).toBeVisible();
   await ctl(`hide-model/${FLASH_MEDIUM}`);
   await page.waitForTimeout(5_500); // the adapter caches the App's model list for 5 s
   await page.reload();
@@ -71,5 +71,5 @@ test('a remembered model the App no longer offers is flagged and sending is bloc
   await expect(page.getByTestId(TID.modelUnavailable)).toBeVisible();
   await expect(picker(page)).toHaveValue(FLASH_MEDIUM);
   await page.locator('.chat textarea').fill('Chào');
-  await expect(page.getByRole('button', { name: 'Gửi', exact: true })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Send', exact: true })).toBeDisabled();
 });

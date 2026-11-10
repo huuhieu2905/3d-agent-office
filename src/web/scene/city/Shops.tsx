@@ -20,7 +20,7 @@ function useFontsReady(): boolean {
   const [ready, setReady] = useState(() => typeof document === 'undefined' || document.fonts?.status === 'loaded');
   useEffect(() => {
     let alive = true;
-    void document.fonts?.load(`700 64px "Baloo 2 Variable"`, 'Cà Phê').then(() => alive && setReady(true));
+    void document.fonts?.load(`700 64px "Baloo 2 Variable"`, 'Coffee').then(() => alive && setReady(true));
     return () => {
       alive = false;
     };

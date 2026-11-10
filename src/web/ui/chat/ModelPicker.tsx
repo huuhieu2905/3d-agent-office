@@ -53,7 +53,7 @@ export function ModelPicker({ value, onChange, autoSelectFirst = true, unavailab
   return (
     <div className={`model-picker ${unavailable ? 'model-picker-bad' : ''}`} data-testid="model-picker">
       <select
-        aria-label="Chọn model"
+        aria-label="Choose model"
         value={value ?? ''}
         onChange={(e) => {
           const m = models.find((x) => x.modelId === e.target.value);
@@ -62,24 +62,24 @@ export function ModelPicker({ value, onChange, autoSelectFirst = true, unavailab
       >
         {missing && (
           <option value={value!} disabled>
-            Model đã chọn trước đây
+            Previously chosen model
           </option>
         )}
         {models.map((m) => (
           <option key={m.modelId} value={m.modelId} disabled={quotaState(m) === 'empty' && m.modelId !== value}>
             {m.label}
-            {m.remainingPercent != null ? ` — còn ${Math.round(m.remainingPercent)}%` : ''}
+            {m.remainingPercent != null ? ` — ${Math.round(m.remainingPercent)}% left` : ''}
           </option>
         ))}
       </select>
       {unavailable ? (
         <span className="quota-empty" role="alert" data-testid="model-unavailable">
-          {current?.label ?? 'Model đã chọn'} không còn khả dụng — chọn model khác
+          {current?.label ?? 'The chosen model'} is no longer available — choose another model
         </span>
       ) : (
         <>
-          {state === 'low' && <span className="quota-warn">Quota sắp hết</span>}
-          {state === 'empty' && <span className="quota-empty">Hết quota — hãy chọn model khác</span>}
+          {state === 'low' && <span className="quota-warn">Quota almost used up</span>}
+          {state === 'empty' && <span className="quota-empty">Out of quota — choose another model</span>}
         </>
       )}
     </div>

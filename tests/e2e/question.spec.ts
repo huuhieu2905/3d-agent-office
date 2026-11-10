@@ -30,8 +30,8 @@ test('a waiting question shows choices, not allow/deny, and sends the picked ans
   await openChat(page);
   const prompt = page.getByTestId('question-prompt');
   await expect(prompt).toBeVisible({ timeout: 10_000 });
-  await expect(page.getByRole('button', { name: 'Cho phép' })).toHaveCount(0);
-  await expect(page.getByRole('button', { name: 'Từ chối' })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Allow' })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Deny' })).toHaveCount(0);
   await expect(page.getByTestId('question-option-0-1')).toHaveAttribute('type', 'radio');
   await expect(page.getByTestId('question-option-1-1')).toHaveAttribute('type', 'checkbox');
 
@@ -49,7 +49,7 @@ test('a waiting question shows choices, not allow/deny, and sends the picked ans
       { question: 'Những ngày nào bạn rảnh?', selectedOptionIds: ['1', '3'] },
     ],
   ]);
-  await expect(prompt).toContainText('Đã gửi');
+  await expect(prompt).toContainText('Sent');
   await page.getByTestId('question-dismiss').click();
   await expect(prompt).toHaveCount(0);
   // History shows the chosen answers.
@@ -57,7 +57,7 @@ test('a waiting question shows choices, not allow/deny, and sends the picked ans
   await expect(page.getByTestId('step-question')).toContainText('→ Thứ 2, Thứ 4');
 });
 
-test('"Khác" sends a write-in answer', async ({ page }) => {
+test('"Other" sends a write-in answer', async ({ page }) => {
   await openChat(page);
   await page.getByTestId('question-other-0').check();
   await page.getByTestId('question-writein-0').fill('Tím');
@@ -78,7 +78,7 @@ test('an App rejection keeps the choices and the typed text', async ({ page }) =
   await page.getByTestId('question-writein-0').fill('Tím');
   await page.getByTestId('question-option-1-1').check();
   await page.getByTestId('question-submit').click();
-  await expect(page.getByText('App không nhận câu trả lời này')).toBeVisible();
+  await expect(page.getByText('The App did not accept this answer')).toBeVisible();
   await expect(page.getByTestId('question-writein-0')).toHaveValue('Tím');
   await expect(page.getByTestId('question-option-1-1')).toBeChecked();
   await expect(page.getByTestId('question-submit')).toBeEnabled();
@@ -89,11 +89,11 @@ test('a question canceled while the form is open locks the form and sends nothin
   await page.getByTestId('question-option-0-1').check();
   await ctl('question-cancel');
   const prompt = page.getByTestId('question-prompt');
-  await expect(prompt).toContainText('Câu hỏi đã bị huỷ', { timeout: 10_000 });
+  await expect(prompt).toContainText('This question was canceled', { timeout: 10_000 });
   await expect(page.getByTestId('question-option-0-1')).toBeDisabled();
   await expect(page.getByTestId('question-option-0-1')).toBeChecked();
   expect(await answers()).toEqual([]);
   await page.getByTestId('question-dismiss').click();
   await expect(prompt).toHaveCount(0);
-  await expect(page.getByTestId('step-question')).toContainText('Đã huỷ');
+  await expect(page.getByTestId('step-question')).toContainText('Canceled');
 });

@@ -15,7 +15,7 @@ test('office shows employees, then a disconnected banner when the App quits, and
   await expect(page.locator('.banner')).toHaveCount(0);
 
   await control('quit');
-  await expect(page.getByText('Chưa kết nối được Antigravity App')).toBeVisible({ timeout: 5_000 });
+  await expect(page.getByText('Not connected to the Antigravity App')).toBeVisible({ timeout: 5_000 });
 
   await control('open');
   const t0 = Date.now();

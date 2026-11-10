@@ -22,9 +22,9 @@ type Phase =
   | { kind: 'closed'; text: string };
 
 const CLOSED_TEXT: Record<Exclude<AgentQuestion['state'], 'waiting'>, string> = {
-  answered: 'Câu hỏi đã được trả lời ở nơi khác',
-  skipped: 'Câu hỏi đã được bỏ qua',
-  canceled: 'Câu hỏi đã bị huỷ',
+  answered: 'This question was answered elsewhere',
+  skipped: 'This question was skipped',
+  canceled: 'This question was canceled',
 };
 
 const answered = (d: Draft) => d.selected.length > 0 || (d.other && d.text.trim().length > 0);
@@ -60,22 +60,22 @@ export function QuestionPrompt({
       setPhase({ kind: 'sent' });
     } catch (err) {
       if (err instanceof ApiError && err.status === 409) setPhase({ kind: 'closed', text: CLOSED_TEXT.answered });
-      else if (err instanceof ApiError && err.status === 422) setPhase({ kind: 'error', text: 'App không nhận câu trả lời này. Hãy chọn đáp án có sẵn hoặc sửa câu trả lời rồi gửi lại.' });
-      else if (err instanceof ApiError && err.appUnavailable) setPhase({ kind: 'error', text: 'Chưa kết nối được Antigravity App. Câu trả lời vẫn được giữ, hãy gửi lại sau.' });
-      else setPhase({ kind: 'error', text: 'Không gửi được câu trả lời. Hãy thử lại hoặc trả lời trong Antigravity App.' });
+      else if (err instanceof ApiError && err.status === 422) setPhase({ kind: 'error', text: 'The App did not accept this answer. Pick one of the choices or edit your answer and send it again.' });
+      else if (err instanceof ApiError && err.appUnavailable) setPhase({ kind: 'error', text: 'Not connected to the Antigravity App. Your answer is kept; send it again later.' });
+      else setPhase({ kind: 'error', text: 'Could not send the answer. Try again or answer in the Antigravity App.' });
     }
   }
 
   return (
-    <div className="permission question panel" role="dialog" aria-label="Agent hỏi bạn" data-testid="question-prompt">
-      <div className="permission-title">❓ Nhân viên hỏi bạn</div>
+    <div className="permission question panel" role="dialog" aria-label="The agent is asking you" data-testid="question-prompt">
+      <div className="permission-title">❓ The employee is asking you</div>
       {question.entries.map((e, i) => {
         const d = drafts[i]!;
         const name = `${question.requestId}-${i}`;
         return (
           <fieldset key={i} className="question-entry" disabled={locked}>
             <legend className="question-text">
-              <Md text={e.question || '(không có nội dung câu hỏi)'} />
+              <Md text={e.question || '(empty question)'} />
             </legend>
             {e.options.map((o) => (
               <label key={o.id} className="question-option">
@@ -105,16 +105,16 @@ export function QuestionPrompt({
                 checked={d.other}
                 onChange={(ev) => update(i, (x) => (e.multiSelect ? { ...x, other: ev.target.checked } : { ...x, other: true, selected: [] }))}
               />
-              <span>Khác</span>
+              <span>Other</span>
             </label>
             {d.other && (
               <input
                 className="question-writein"
                 data-testid={`question-writein-${i}`}
-                aria-label={`Câu trả lời khác cho câu ${i + 1}`}
+                aria-label={`Other answer for question ${i + 1}`}
                 maxLength={WRITE_IN_MAX}
                 value={d.text}
-                placeholder="Nhập câu trả lời của bạn"
+                placeholder="Type your answer"
                 onChange={(ev) => update(i, (x) => ({ ...x, text: ev.target.value }))}
               />
             )}
@@ -126,14 +126,14 @@ export function QuestionPrompt({
       <div className="modal-actions">
         {shownPhase.kind === 'closed' || shownPhase.kind === 'sent' ? (
           <>
-            {shownPhase.kind === 'sent' && <span className="muted">Đã gửi</span>}
+            {shownPhase.kind === 'sent' && <span className="muted">Sent</span>}
             <button className="btn" data-testid="question-dismiss" onClick={onDismiss}>
-              Đóng
+              Close
             </button>
           </>
         ) : (
           <button className="btn btn-primary" data-testid="question-submit" disabled={!canSend} onClick={() => void send()}>
-            {shownPhase.kind === 'sending' ? 'Đang gửi…' : 'Gửi'}
+            {shownPhase.kind === 'sending' ? 'Sending…' : 'Send'}
           </button>
         )}
       </div>

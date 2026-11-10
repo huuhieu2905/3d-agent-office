@@ -839,6 +839,17 @@ kbd {
 .modal label.check input {
   width: auto;
 }
+/* 006 US5: mouse sensitivity slider + Reset on one row. */
+.modal .sensitivity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.modal .sensitivity input[type='range'] {
+  flex: 1;
+  border: 0;
+  padding: 0;
+}
 
 /* First person */
 .crosshair {

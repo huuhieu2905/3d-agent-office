@@ -20,14 +20,14 @@ import type { Employee } from '@shared/domain';
 // T067: right-hand chat for the clicked employee — full history, live updates, send, stop.
 
 const STATE_LABEL: Record<string, string> = {
-  idle: 'Đang rảnh',
-  thinking: 'Đang suy nghĩ',
-  working: 'Đang làm việc',
-  waiting_for_boss: 'Chờ sếp',
-  error: 'Gặp lỗi',
-  stopped: 'Đã dừng',
-  unknown: 'Không rõ',
-  disconnected: 'Mất kết nối',
+  idle: 'Idle',
+  thinking: 'Thinking',
+  working: 'Working',
+  waiting_for_boss: 'Waiting for you',
+  error: 'Error',
+  stopped: 'Stopped',
+  unknown: 'Unknown',
+  disconnected: 'Disconnected',
 };
 
 /** 004 FR-015: states that block deleting (the server re-checks; this only disables the button). */
@@ -69,6 +69,16 @@ export function ChatPanel() {
   // Spec 003 T033: the question form stays (locked) after the App moves on, until the user closes it.
   const [openQuestion, setOpenQuestion] = useState<string | null>(null);
   const [dismissed, setDismissed] = useState<Set<string>>(() => new Set());
+
+  // 006 FR-007/008: Esc closes the chat, unless a popup over it (mention menu, delete dialog) used that Esc.
+  useEffect(() => {
+    if (!id) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !e.defaultPrevented) close();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [id, close]);
 
   useEffect(() => {
     if (!modelNote || modelNote.kind !== 'saved') return;
@@ -122,31 +132,31 @@ export function ChatPanel() {
     setPicked({ id: conversationId, modelId });
     try {
       await api(`/api/employees/${conversationId}/profile`, { method: 'PUT', json: { preferredModel: modelId } });
-      setModelNote({ kind: 'saved', text: 'Đã lưu cho cuộc trò chuyện này' });
+      setModelNote({ kind: 'saved', text: 'Saved for this conversation' });
     } catch {
-      setModelNote({ kind: 'error', text: 'Chưa lưu được lựa chọn model. Model vẫn dùng cho lượt này.' });
+      setModelNote({ kind: 'error', text: 'Could not save the model choice. It is still used for this turn.' });
     }
   }
 
   return (
-    <aside className="chat panel" aria-label="Trò chuyện">
+    <aside className="chat panel" aria-label="Chat">
       <header className="chat-head">
         <span className="tag-dot" style={{ background: employee?.projectColor ?? '#999' }} />
         <div className="chat-title">
-          <strong>{employee?.name ?? 'Nhân viên'}</strong>
+          <strong>{employee?.name ?? 'Employee'}</strong>
           <span className={`state state-${employee?.visualState}`}>{STATE_LABEL[employee?.visualState ?? 'unknown']}</span>
         </div>
         <button
           className="icon"
           data-testid="employee-delete"
-          aria-label="Xoá nhân viên"
+          aria-label="Delete employee"
           disabled={deleteBlocked}
-          title={deleteBlocked ? 'Dừng agent trước khi xoá' : 'Xoá nhân viên (xoá vĩnh viễn conversation trong App)'}
+          title={deleteBlocked ? 'Stop the agent before deleting' : 'Delete employee (permanently deletes the conversation in the App)'}
           onClick={() => setConfirmDelete(true)}
         >
           🗑
         </button>
-        <button className="icon" onClick={close} aria-label="Đóng">
+        <button className="icon" onClick={close} aria-label="Close">
           ×
         </button>
       </header>
@@ -158,7 +168,7 @@ export function ChatPanel() {
           stick.current = el.scrollHeight - el.scrollTop - el.clientHeight < 60;
         }}
       >
-        {!steps && <div className="muted">Đang tải…</div>}
+        {!steps && <div className="muted">Loading…</div>}
         {steps?.map((s) => <StepView key={s.index} step={s} />)}
       </div>
       {questionStep?.question ? (
@@ -195,7 +205,7 @@ export function ChatPanel() {
       {confirmDelete && (
         <ConfirmDeleteDialog
           conversationId={id}
-          name={employee?.name ?? 'Nhân viên'}
+          name={employee?.name ?? 'Employee'}
           subagents={subagents.length}
           onCancel={() => setConfirmDelete(false)}
           onDeleted={() => {

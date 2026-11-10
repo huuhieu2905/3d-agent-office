@@ -1,6 +1,7 @@
 import { CameraControls } from '@react-three/drei';
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
+import { useSettings } from '../../state/settings';
 
 // Remembered pose so switching back from first person returns to the same view (T118).
 let saved: { pos: THREE.Vector3; target: THREE.Vector3 } | null = null;
@@ -23,6 +24,7 @@ export function OverviewCamera({ size }: { size: [number, number] }) {
     };
   }, [size]);
   const r = Math.max(size[0], size[1]);
+  const sensitivity = useSettings((s) => s.settings.mouseSensitivity ?? 1); // 006 US5: rotate only, not zoom/pan
   return (
     <CameraControls
       ref={ref}
@@ -33,6 +35,8 @@ export function OverviewCamera({ size }: { size: [number, number] }) {
       maxPolarAngle={Math.PI / 2.25}
       dollySpeed={0.6}
       truckSpeed={1.2}
+      azimuthRotateSpeed={sensitivity}
+      polarRotateSpeed={sensitivity}
     />
   );
 }

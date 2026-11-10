@@ -67,7 +67,7 @@ function ScreenPower({ on, onToggle }: { on: boolean; onToggle(): void }) {
         className={`screen-power ${on ? 'on' : ''}`}
         data-testid="screen-power"
         aria-pressed={on}
-        title={on ? 'Tắt màn hình' : 'Bật màn hình'}
+        title={on ? 'Turn screen off' : 'Turn screen on'}
         onClick={(e) => {
           e.stopPropagation();
           onToggle();

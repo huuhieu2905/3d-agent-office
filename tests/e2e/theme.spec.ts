@@ -30,7 +30,7 @@ async function shoot(page: Page, theme: string) {
   await page.getByRole('button', { name: 'Quota', exact: true }).click();
   await page.waitForTimeout(400);
   await page.screenshot({ path: `${dir}/quota.png` });
-  await page.getByRole('dialog', { name: 'Quota tài khoản' }).getByRole('button', { name: 'Đóng', exact: true }).last().click();
+  await page.getByRole('dialog', { name: 'Account quota' }).getByRole('button', { name: 'Close', exact: true }).last().click();
   const tag = page.locator('.tag').first();
   await expect(tag).toBeVisible();
   await page.waitForTimeout(800); // let seated employees settle
@@ -38,11 +38,11 @@ async function shoot(page: Page, theme: string) {
   await page.mouse.click(box.x + box.width / 2, box.y + box.height + 28);
   await expect(page.locator('.chat')).toBeVisible({ timeout: 10_000 });
   await page.screenshot({ path: `${dir}/chat.png` });
-  await page.locator('.chat').getByRole('button', { name: 'Đóng' }).click();
-  await page.getByRole('button', { name: /Xây dựng/ }).click();
+  await page.locator('.chat').getByRole('button', { name: 'Close' }).click();
+  await page.getByRole('button', { name: /Build/ }).click();
   await page.waitForTimeout(400);
   await page.screenshot({ path: `${dir}/arrange.png` });
-  await page.getByRole('toolbar', { name: 'Chế độ xây dựng' }).getByRole('button', { name: 'Huỷ' }).click();
+  await page.getByRole('toolbar', { name: 'Build mode' }).getByRole('button', { name: 'Cancel' }).click();
 }
 
 for (const theme of ['light', 'dark'] as const) {
@@ -50,9 +50,9 @@ for (const theme of ['light', 'dark'] as const) {
     test.setTimeout(150_000); // four full-page screenshots of a WebGL scene
     await page.goto(`/#k=${TOKEN}`);
     await expect(page.locator('.tag').first()).toBeVisible({ timeout: 20_000 });
-    await page.getByRole('button', { name: 'Cài đặt' }).click();
-    await page.getByLabel('Giao diện').selectOption(theme);
-    await page.getByRole('button', { name: 'Xong' }).click();
+    await page.getByRole('button', { name: 'Settings' }).click();
+    await page.getByLabel('Theme').selectOption(theme);
+    await page.getByRole('button', { name: 'Done' }).click();
     await expect(page.locator('.app')).toHaveClass(new RegExp(`theme-${theme}`));
     await page.waitForTimeout(800);
     const t = await tokens(page);

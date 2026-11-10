@@ -41,7 +41,7 @@ describe('live: permission requests', () => {
       const waiting = await waitFor(a, id, (s) => s.status === 'WAITING' && s.kind === 'permission_request', 60_000);
       if (!waiting) {
         const ran = (await a.getSteps(id)).some((s) => s.kind === 'command');
-        ctx.skip(ran ? 'App đang tự duyệt lệnh, kiểm chứng bằng tay quickstart M4' : 'Agent không xin chạy lệnh trong 60 s');
+        ctx.skip(ran ? 'The App auto-approves commands; verify by hand (quickstart M4)' : 'The agent did not ask to run a command within 60 s');
         return;
       }
 

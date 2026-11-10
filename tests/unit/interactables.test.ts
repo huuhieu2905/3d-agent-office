@@ -13,11 +13,11 @@ describe('interactables', () => {
     for (const t of ['wall_screen', 'sofa', 'water_cooler', 'plant']) expect(types.has(t as never)).toBe(true);
     const screen = list.find((i) => i.type === 'wall_screen')!;
     // On by default (the first screen shows the quota); switched off → the hint offers to switch it on.
-    expect(screen.action).toBe('Tắt màn hình');
-    expect(buildInteractables(layout, [screen.itemId]).find((i) => i.itemId === screen.itemId)!.action).toBe('Bật màn hình');
-    expect(list.find((i) => i.type === 'water_cooler')!.action).toBe('Uống nước');
-    expect(list.find((i) => i.type === 'plant')!.action).toBe('Tưới cây');
-    expect(list.find((i) => i.type === 'sofa')!.action).toMatch(/^Ngồi/);
+    expect(screen.action).toBe('Turn screen off');
+    expect(buildInteractables(layout, [screen.itemId]).find((i) => i.itemId === screen.itemId)!.action).toBe('Turn screen on');
+    expect(list.find((i) => i.type === 'water_cooler')!.action).toBe('Drink water');
+    expect(list.find((i) => i.type === 'plant')!.action).toBe('Water the plant');
+    expect(list.find((i) => i.type === 'sofa')!.action).toMatch(/^Sit/);
   });
 
   it('aims within 2 m and 12°, picks the one nearest the crosshair', () => {

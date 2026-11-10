@@ -28,8 +28,8 @@ describe('ERROR_MESSAGE steps', () => {
   });
 
   it('A3-2f — never leaves the text empty', () => {
-    expect(variants()[1]!.text).toBe('Lỗi không rõ nguyên nhân');
-    expect(variants()[2]!.text).toBe('Lỗi không rõ nguyên nhân (mã 00000000-0000-4000-8000-000000000003-1)');
+    expect(variants()[1]!.text).toBe('Unknown error');
+    expect(variants()[2]!.text).toBe('Unknown error (code 00000000-0000-4000-8000-000000000003-1)');
   });
 
   it.skipIf(!hasFixture(SET, 'GetCascadeTrajectorySteps.error-message'))('A3-2e — recorded error step has text', () => {

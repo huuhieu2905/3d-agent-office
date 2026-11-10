@@ -16,16 +16,16 @@ export function UsageStats() {
       .then((r) => setWeeks(r.weeks))
       .catch(() => setWeeks([]));
   }, []);
-  if (!weeks) return <div className="muted">Đang tải…</div>;
-  if (weeks.length === 0) return <div className="muted">Chưa có dữ liệu sử dụng.</div>;
+  if (!weeks) return <div className="muted">Loading…</div>;
+  if (weeks.length === 0) return <div className="muted">No usage data yet.</div>;
   return (
     <table className="usage">
       <thead>
         <tr>
-          <th>Tuần bắt đầu</th>
-          <th>Gửi qua văn phòng</th>
-          <th>Tổng tin của sếp</th>
-          <th>Tỷ lệ</th>
+          <th>Week of</th>
+          <th>Sent via the office</th>
+          <th>Your total messages</th>
+          <th>Share</th>
         </tr>
       </thead>
       <tbody>

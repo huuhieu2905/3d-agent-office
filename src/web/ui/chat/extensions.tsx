@@ -99,14 +99,14 @@ function SlashMenu({ text, setText, model }: Props) {
         .map((c) => ({
           key: c.name,
           label: `/${c.name}`,
-          badge: c.kind === 'skill' ? 'skill' : c.kind === 'workflow' ? 'workflow' : 'lệnh',
+          badge: c.kind === 'skill' ? 'skill' : c.kind === 'workflow' ? 'workflow' : 'command',
           hint: c.description?.slice(0, 80),
           pick: () => setText(`/${c.name} `),
         })),
     [commands, q, setText],
   );
   const active = useMenuKeys(items, open, () => setDismissed(true));
-  return open ? <Menu title="Lệnh và skill" items={items} active={active} /> : null;
+  return open ? <Menu title="Commands and skills" items={items} active={active} /> : null;
 }
 
 function MentionMenu({ conversationId, text, setText, addPart }: Props) {
@@ -135,8 +135,8 @@ function MentionMenu({ conversationId, text, setText, addPart }: Props) {
   }));
   const active = useMenuKeys(items, open, () => setDismissed(true));
   if (!open) return null;
-  if (items.length === 0) return <div className="menu panel muted small">Không tìm thấy file phù hợp trong workspace.</div>;
-  return <Menu title="Nhắc tới file" items={items} active={active} />;
+  if (items.length === 0) return <div className="menu panel muted small">No matching files in the workspace.</div>;
+  return <Menu title="Mention a file" items={items} active={active} />;
 }
 
 export function ComposerExtensions(props: Props) {

@@ -39,16 +39,16 @@ function solid(item: PlacedItem): boolean {
 export function validateLayout(layout: OfficeLayout): ValidationResult {
   const reasons: Record<string, string> = {};
   if (!floorSizeValid(layout.floor.width) || !floorSizeValid(layout.floor.depth)) {
-    reasons['__floor__'] = `Kích thước văn phòng phải từ ${FLOOR_MIN} đến ${FLOOR_MAX} m, bước ${FLOOR_STEP} m`;
+    reasons['__floor__'] = `Office size must be ${FLOOR_MIN}–${FLOOR_MAX} m in steps of ${FLOOR_STEP} m`;
   }
   const ids = new Set<string>();
   for (const it of layout.items) {
-    if (ids.has(it.id)) reasons[it.id] = 'Trùng mã đồ vật';
+    if (ids.has(it.id)) reasons[it.id] = 'Duplicate item id';
     ids.add(it.id);
-    if (it.type === 'door') reasons[it.id] ??= 'Cửa chính thuộc vỏ văn phòng, không đặt như đồ vật';
+    if (it.type === 'door') reasons[it.id] ??= 'The main door is part of the office shell and cannot be placed as an item';
     const step = isEdge(it.type) ? WALL_STEP : POS_STEP;
-    if (!onStep(it.pos.x, step) || !onStep(it.pos.z, step)) reasons[it.id] ??= isEdge(it.type) ? 'Tường phải nằm trên lưới 0,5 m' : 'Vị trí phải theo bước 5 cm';
-    if (!insideFloor(layout, it)) reasons[it.id] ??= 'Nằm ngoài mặt bằng';
+    if (!onStep(it.pos.x, step) || !onStep(it.pos.z, step)) reasons[it.id] ??= isEdge(it.type) ? 'Walls must sit on the 0.5 m grid' : 'Position must be in 5 cm steps';
+    if (!insideFloor(layout, it)) reasons[it.id] ??= 'Outside the floor';
   }
 
   // Overlap between solid items (desks, plants, sofas, cooler, chairs); a chair may sit at its own desk.
@@ -58,7 +58,7 @@ export function validateLayout(layout: OfficeLayout): ValidationResult {
       const a = solids[i]!;
       const b = solids[j]!;
       if (chairOfDesk(a, b) || chairOfDesk(b, a)) continue;
-      if (rectsOverlap(footprintRect(a), footprintRect(b))) reasons[b.id] ??= 'Chồng lên đồ vật khác';
+      if (rectsOverlap(footprintRect(a), footprintRect(b))) reasons[b.id] ??= 'Overlaps another item';
     }
 
   // Edge items: one per edge segment.
@@ -66,24 +66,24 @@ export function validateLayout(layout: OfficeLayout): ValidationResult {
   for (const it of layout.items) {
     if (!isEdge(it.type)) continue;
     const k = `${it.rotation === 0 || it.rotation === 180 ? 'n' : 'w'}:${it.pos.x},${it.pos.z}`;
-    if (edges.has(k)) reasons[it.id] ??= 'Trùng vị trí tường';
+    if (edges.has(k)) reasons[it.id] ??= 'Another wall is already here';
     else edges.add(k);
   }
 
   // Door within its side, and every desk seat reachable from it.
   const { side, offset } = layout.shell.door;
   const sideLen = side === 'south' ? layout.floor.width : layout.floor.depth;
-  if (offset < 0 || offset > sideLen - DOOR_WIDTH) reasons['__door__'] = 'Cửa chính nằm ngoài cạnh văn phòng';
+  if (offset < 0 || offset > sideLen - DOOR_WIDTH) reasons['__door__'] = 'The main door is off the office edge';
   else if (!reasons['__floor__']) {
     const grid = new OfficeGrid(layout);
     const { door } = grid.entrance();
-    if (!grid.walkable(door.x, door.z)) reasons['__door__'] = 'Lối vào cửa chính bị chắn';
+    if (!grid.walkable(door.x, door.z)) reasons['__door__'] = 'The main door entrance is blocked';
     else {
       const reach = reachable(grid, door);
       for (const desk of layout.items.filter((i) => i.type === 'desk')) {
         const s = grid.seatOf(desk.id)!;
-        if (!grid.walkable(s.x, s.z)) reasons[desk.id] ??= 'Chỗ ngồi của bàn bị chắn';
-        else if (!reach.has(s.z * grid.width + s.x)) reasons[desk.id] ??= 'Không có lối đi từ cửa tới bàn';
+        if (!grid.walkable(s.x, s.z)) reasons[desk.id] ??= 'The desk seat is blocked';
+        else if (!reach.has(s.z * grid.width + s.x)) reasons[desk.id] ??= 'No path from the door to this desk';
       }
     }
   }

@@ -21,22 +21,22 @@ describe('validateAnswer', () => {
     expect(validateAnswer(q, { answers: [{ selectedOptionIds: [], writeIn: 'Tím' }, { selectedOptionIds: ['2'] }] })).toBeNull();
   });
   it('requires an answer for every sub-question', () => {
-    expect(validateAnswer(q, { answers: [{ selectedOptionIds: ['1'] }] })).toMatch(/câu/);
-    expect(validateAnswer(q, { answers: [{ selectedOptionIds: ['1'] }, { selectedOptionIds: [], writeIn: '   ' }] })).toMatch(/câu 2/i);
+    expect(validateAnswer(q, { answers: [{ selectedOptionIds: ['1'] }] })).toMatch(/questions/);
+    expect(validateAnswer(q, { answers: [{ selectedOptionIds: ['1'] }, { selectedOptionIds: [], writeIn: '   ' }] })).toMatch(/question 2/i);
   });
   it('rejects several ids on a single-choice entry', () => {
-    expect(validateAnswer(q, { answers: [{ selectedOptionIds: ['1', '2'] }, { selectedOptionIds: ['1'] }] })).toMatch(/một/);
+    expect(validateAnswer(q, { answers: [{ selectedOptionIds: ['1', '2'] }, { selectedOptionIds: ['1'] }] })).toMatch(/only one/);
   });
   it('rejects unknown option ids and duplicates', () => {
-    expect(validateAnswer(q, { answers: [{ selectedOptionIds: ['9'] }, { selectedOptionIds: ['1'] }] })).toMatch(/không tồn tại/);
-    expect(validateAnswer(q, { answers: [{ selectedOptionIds: ['1'] }, { selectedOptionIds: ['2', '2'] }] })).toMatch(/trùng/);
+    expect(validateAnswer(q, { answers: [{ selectedOptionIds: ['9'] }, { selectedOptionIds: ['1'] }] })).toMatch(/does not exist/);
+    expect(validateAnswer(q, { answers: [{ selectedOptionIds: ['1'] }, { selectedOptionIds: ['2', '2'] }] })).toMatch(/duplicate/);
   });
   it('rejects a write-in longer than 2 000 characters', () => {
-    expect(validateAnswer(q, { answers: [{ selectedOptionIds: [], writeIn: 'x'.repeat(2001) }, { selectedOptionIds: ['1'] }] })).toMatch(/2 000/);
+    expect(validateAnswer(q, { answers: [{ selectedOptionIds: [], writeIn: 'x'.repeat(2001) }, { selectedOptionIds: ['1'] }] })).toMatch(/2,000/);
     expect(validateAnswer(q, { answers: [{ selectedOptionIds: [], writeIn: 'x'.repeat(2000) }, { selectedOptionIds: ['1'] }] })).toBeNull();
   });
   it('rejects answers to a question that is not waiting', () => {
-    expect(validateAnswer({ ...q, state: 'answered' }, { answers: [{ selectedOptionIds: ['1'] }, { selectedOptionIds: ['1'] }] })).toMatch(/không còn/);
+    expect(validateAnswer({ ...q, state: 'answered' }, { answers: [{ selectedOptionIds: ['1'] }, { selectedOptionIds: ['1'] }] })).toMatch(/no longer/);
   });
 });
 

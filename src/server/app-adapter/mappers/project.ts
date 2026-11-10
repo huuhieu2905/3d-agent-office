@@ -6,8 +6,8 @@ import { colorFor } from '../../../shared/colors';
 type Raw = Record<string, unknown>;
 
 const FRIENDLY: Record<string, string> = {
-  'default-cli-project': 'Dự án mặc định',
-  'outside-of-project': 'Ngoài dự án',
+  'default-cli-project': 'Default project',
+  'outside-of-project': 'No project',
 };
 
 export function mapProjectIds(response: unknown): string[] {

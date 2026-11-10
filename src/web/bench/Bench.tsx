@@ -44,7 +44,7 @@ function countOverlaps(): number {
 function fakeEmployees(tick: number, deskIds: string[], allIdle = false): Employee[] {
   return Array.from({ length: 20 }, (_, i) => ({
     conversationId: `bench-${i}`,
-    name: `Nhân viên ${i + 1}`,
+    name: `Employee ${i + 1}`,
     visualState: allIdle ? 'idle' : STATES[(i + tick) % STATES.length]!,
     appearance: APPEARANCES[i % APPEARANCES.length]!,
     deskId: deskIds[i] ?? null,

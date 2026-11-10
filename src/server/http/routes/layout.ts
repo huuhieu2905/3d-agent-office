@@ -15,7 +15,7 @@ export const layoutRoutes: FastifyPluginAsync<RouteDeps> = async (app, deps) => 
 
   app.put('/api/layout', async (req, reply) => {
     const parsed = layoutPutSchema.safeParse(req.body);
-    if (!parsed.success) return sendError(reply, 400, 'BAD_REQUEST', 'Bố cục không đúng định dạng');
+    if (!parsed.success) return sendError(reply, 400, 'BAD_REQUEST', 'Invalid layout format');
     // L2-2: { layout, seating? } or a bare layout; v1 bodies are migrated before validation.
     const raw = ('layout' in parsed.data ? parsed.data.layout : parsed.data) as OfficeLayout | OfficeLayoutV1;
     const layout: OfficeLayout = isLayoutV1(raw) ? migrateV1toV2(raw) : raw;
@@ -26,12 +26,12 @@ export const layoutRoutes: FastifyPluginAsync<RouteDeps> = async (app, deps) => 
     const blockers = shrank ? layout.items.filter((i) => !insideFloor(layout, i)).map((i) => i.id) : [];
     if (blockers.length) {
       const m = minFloorSize(layout);
-      return reply.code(422).send({ error: { code: 'FLOOR_TOO_SMALL', message: 'Văn phòng nhỏ hơn chỗ đồ vật đang chiếm' }, blockers, min: { width: m.width, depth: m.depth } });
+      return reply.code(422).send({ error: { code: 'FLOOR_TOO_SMALL', message: 'The office is smaller than the area its items occupy' }, blockers, min: { width: m.width, depth: m.depth } });
     }
     const v = validateLayout(layout);
     if (!v.ok) {
       return reply.code(422).send({
-        error: { code: 'INVALID_LAYOUT', message: Object.values(v.reasons)[0] ?? 'Bố cục không hợp lệ' },
+        error: { code: 'INVALID_LAYOUT', message: Object.values(v.reasons)[0] ?? 'Invalid layout' },
         invalidItems: v.invalidItems,
         reasons: v.reasons,
       });
@@ -46,7 +46,7 @@ export const layoutRoutes: FastifyPluginAsync<RouteDeps> = async (app, deps) => 
       })
       .map(([id]) => id);
     if (badSeats.length) {
-      return reply.code(422).send({ error: { code: 'INVALID_SEATING', message: 'Chỗ ngồi không hợp lệ' }, conversationIds: badSeats });
+      return reply.code(422).send({ error: { code: 'INVALID_SEATING', message: 'Invalid seating' }, conversationIds: badSeats });
     }
     await services.layout.save(layout);
     if (Object.keys(seating).length) await services.profiles.setSeats(seating);
@@ -60,11 +60,11 @@ export const layoutRoutes: FastifyPluginAsync<RouteDeps> = async (app, deps) => 
     const body = profilePatchSchema.safeParse(req.body);
     if (!body.success) return sendError(reply, 400, 'BAD_REQUEST', 'invalid profile');
     // L2-3: only conversations the App knows about have a profile to change.
-    if (!services.employees.conversation(req.params.conversationId)) return sendError(reply, 404, 'NOT_FOUND', 'Không có cuộc trò chuyện này');
+    if (!services.employees.conversation(req.params.conversationId)) return sendError(reply, 404, 'NOT_FOUND', 'Conversation not found');
     if (body.data.deskId) {
       const layout = await services.layout.get();
       if (!layout.items.some((i) => i.id === body.data.deskId && i.type === 'desk')) {
-        return sendError(reply, 400, 'BAD_REQUEST', 'Không có bàn này');
+        return sendError(reply, 400, 'BAD_REQUEST', 'Desk not found');
       }
     }
     const p = await services.profiles.update(req.params.conversationId, body.data);

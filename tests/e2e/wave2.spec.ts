@@ -25,21 +25,21 @@ test('typing / lists commands and skills like the App; Enter picks one', async (
   await openFirstChat(page);
   await expect(page.locator('.model-picker select')).not.toHaveValue('');
   await page.locator('.chat textarea').fill('/pl');
-  const menu = page.getByRole('listbox', { name: 'Lệnh và skill' });
+  const menu = page.getByRole('listbox', { name: 'Commands and skills' });
   await expect(menu).toBeVisible();
   await expect(menu.getByRole('option').first()).toContainText('/plan');
   await page.locator('.chat textarea').press('Enter');
   await expect(page.locator('.chat textarea')).toHaveValue('/plan ');
 });
 
-test('a waiting employee shows a permission prompt; "Cho phép" answers the App', async ({ page }) => {
+test('a waiting employee shows a permission prompt; "Allow" answers the App', async ({ page }) => {
   await ctl('waiting');
   await page.goto(`/#k=${TOKEN}`);
   await expect(page.locator('.badge-waiting').first()).toBeVisible({ timeout: 20_000 });
   await openFirstChat(page);
-  const prompt = page.getByRole('alertdialog', { name: 'Agent xin quyền' });
+  const prompt = page.getByRole('alertdialog', { name: 'The agent asks for permission' });
   await expect(prompt).toContainText('echo second_check');
-  await prompt.getByRole('button', { name: 'Cho phép' }).click();
+  await prompt.getByRole('button', { name: 'Allow' }).click();
   await expect.poll(async () => (await sent()).find((s) => s.method === 'HandleCascadeUserInteraction')?.body).toMatchObject({
     interaction: { stepIndex: 6, permission: { allow: true } },
   });
@@ -48,8 +48,8 @@ test('a waiting employee shows a permission prompt; "Cho phép" answers the App'
 test('quota button opens the panel with plan and model groups', async ({ page }) => {
   await page.goto(`/#k=${TOKEN}`);
   await page.getByRole('button', { name: /Quota/ }).click();
-  const panel = page.getByRole('dialog', { name: 'Quota tài khoản' });
-  await expect(panel).toContainText('Gói:');
+  const panel = page.getByRole('dialog', { name: 'Account quota' });
+  await expect(panel).toContainText('Plan:');
   await expect(panel.locator('tbody tr').first()).toBeVisible();
   await expect(panel).not.toContainText('@');
 });

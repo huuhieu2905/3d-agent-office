@@ -18,7 +18,7 @@ export function ProjectButton() {
   return (
     <>
       <button className="btn" onClick={() => setOpen(true)}>
-        + Tạo project
+        + New project
       </button>
       {open && <ProjectDialog onClose={() => setOpen(false)} />}
     </>
@@ -39,7 +39,7 @@ export function ProjectDialog({ onClose, onCreated }: { onClose(): void; onCreat
       setListing(l);
       if (!nameTouched) setName(l.path === l.home ? '' : (l.path.split('/').pop() ?? ''));
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : 'Không mở được thư mục');
+      setError(e instanceof ApiError ? e.message : 'Could not open the folder');
     }
   }
   useEffect(() => {
@@ -58,10 +58,10 @@ export function ProjectDialog({ onClose, onCreated }: { onClose(): void; onCreat
     } catch (e) {
       setError(
         e instanceof ApiError && e.appUnavailable
-          ? 'Antigravity App chưa sẵn sàng.'
+          ? 'The Antigravity App is not ready.'
           : e instanceof ApiError && e.code === 'PROJECT_NAME_TAKEN'
-            ? 'Tên project này đã có. Hãy đặt tên khác.'
-            : 'Không tạo được project.',
+            ? 'A project with this name already exists. Choose another name.'
+            : 'Could not create the project.',
       );
     } finally {
       setBusy(false);
@@ -71,19 +71,19 @@ export function ProjectDialog({ onClose, onCreated }: { onClose(): void; onCreat
   const rel = listing ? (listing.path === listing.home ? '~' : '~' + listing.path.slice(listing.home.length)) : '';
   return (
     <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal panel" role="dialog" aria-label="Tạo project" onClick={(e) => e.stopPropagation()}>
-        <h3>Tạo project</h3>
+      <div className="modal panel" role="dialog" aria-label="New project" onClick={(e) => e.stopPropagation()}>
+        <h3>New project</h3>
         <label>
-          Thư mục của project
+          Project folder
           <div className="folder-path" title={listing?.path}>
-            <button className="btn" disabled={!listing?.parent} onClick={() => listing?.parent && void go(listing.parent)} aria-label="Lên thư mục cha">
+            <button className="btn" disabled={!listing?.parent} onClick={() => listing?.parent && void go(listing.parent)} aria-label="Up to parent folder">
               ↑
             </button>
             <code>{rel || '…'}</code>
           </div>
         </label>
-        <ul className="folder-list" role="listbox" aria-label="Thư mục con">
-          {listing?.dirs.length === 0 && <li className="muted small">Không có thư mục con.</li>}
+        <ul className="folder-list" role="listbox" aria-label="Subfolders">
+          {listing?.dirs.length === 0 && <li className="muted small">No subfolders.</li>}
           {listing?.dirs.map((d) => (
             <li key={d.path}>
               <button className="row" onClick={() => void go(d.path)}>
@@ -93,23 +93,23 @@ export function ProjectDialog({ onClose, onCreated }: { onClose(): void; onCreat
           ))}
         </ul>
         <label>
-          Tên project
+          Project name
           <input
             value={name}
             onChange={(e) => {
               setName(e.target.value);
               setNameTouched(true);
             }}
-            placeholder="Ví dụ: Website công ty"
+            placeholder="e.g. Company website"
           />
         </label>
         {error && <div className="send-failed">{error}</div>}
         <div className="modal-actions">
           <button className="btn" onClick={onClose}>
-            Huỷ
+            Cancel
           </button>
           <button className="btn btn-primary" disabled={busy || !listing || !name.trim()} onClick={() => void create()}>
-            {busy ? 'Đang tạo…' : `Tạo project tại ${rel}`}
+            {busy ? 'Creating…' : `Create project at ${rel}`}
           </button>
         </div>
       </div>

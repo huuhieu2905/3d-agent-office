@@ -31,7 +31,7 @@ export function BuildButton() {
           .catch(() => undefined)
       }
     >
-      🛠 Xây dựng
+      🛠 Build
     </button>
   );
 }
@@ -56,6 +56,7 @@ export function BuildMode() {
       } else if (e.key === 'Delete' || e.key === 'Backspace') {
         st.removeSelected();
       } else if (e.key === 'Escape') {
+        if (useUi.getState().openConversationId !== null) return; // 006: that Esc closes the chat
         if (st.palette) st.setPalette(null);
         else st.select(null);
       } else if (e.key.startsWith('Arrow') && st.selectedId && st.draft) {
@@ -84,7 +85,7 @@ export function BuildMode() {
       window.dispatchEvent(new CustomEvent(LAYOUT_CHANGED));
       s.end();
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : 'Không lưu được bố cục');
+      setError(e instanceof ApiError ? e.message : 'Could not save the layout');
     } finally {
       setSaving(false);
     }
@@ -94,8 +95,8 @@ export function BuildMode() {
   const blockers = s.resizeBlockers;
   const selected = s.selectedId ? s.draft.items.find((i) => i.id === s.selectedId) : undefined;
   return (
-    <div className="build panel" role="toolbar" aria-label="Chế độ xây dựng">
-      <div className="build-title">🛠 Chế độ xây dựng</div>
+    <div className="build panel" role="toolbar" aria-label="Build mode">
+      <div className="build-title">🛠 Build mode</div>
       <div className="palette">
         {PLACEABLE_TYPES.map((t) => (
           <button key={t} className={`palette-item ${s.palette === t ? 'active' : ''}`} onClick={() => s.setPalette(s.palette === t ? null : t)}>
@@ -104,22 +105,22 @@ export function BuildMode() {
         ))}
       </div>
       <div className="muted small">
-        Chọn đồ vật trong bảng rồi bấm lên sàn để đặt · bấm một đồ vật để chọn, giữ chuột và kéo để dời tới bất kỳ chỗ nào (giữ{' '}
-        <kbd>Shift</kbd> để bám lưới 0,5 m) · kéo nhân viên thả vào bàn để xếp chỗ, thả vào bàn có người để đổi chỗ · <kbd>Esc</kbd> huỷ
-        thao tác kéo · <kbd>⌘Z</kbd>/<kbd>⇧⌘Z</kbd> hoàn tác/làm lại
+        Pick an item in the palette, then click the floor to place it · click an item to select it, hold and drag to move it anywhere (hold{' '}
+        <kbd>Shift</kbd> to snap to the 0.5 m grid) · right-click the selected item to delete it · drag an employee onto a desk to seat them, onto an occupied desk to swap · <kbd>Esc</kbd>
+        cancels a drag · <kbd>⌘Z</kbd>/<kbd>⇧⌘Z</kbd> undo/redo
       </div>
       {selected && (
-        <div className="build-selected" role="group" aria-label="Đồ vật đang chọn">
+        <div className="build-selected" role="group" aria-label="Selected item">
           <strong>{CATALOG[selected.type].label}</strong>
-          <span className="muted small">mũi tên: dời 5 cm</span>
+          <span className="muted small">arrows: move 5 cm</span>
           <button className="btn" onClick={s.rotateSelected}>
-            ⟳ Xoay <kbd>R</kbd>
+            ⟳ Rotate <kbd>R</kbd>
           </button>
           <button className="btn" onClick={s.removeSelected}>
-            Xoá
+            Delete
           </button>
           <button className="btn" onClick={() => s.select(null)}>
-            Bỏ chọn
+            Deselect
           </button>
         </div>
       )}
@@ -134,7 +135,7 @@ export function BuildMode() {
             s.select(blockers[i]!);
           }}
         >
-          Không thu nhỏ được: {blockers.length} đồ vật đang chắn (bấm để xem từng cái)
+          Can't shrink: {blockers.length} item(s) in the way (click to step through them)
         </button>
       )}
       {problems.length > 0 && <div className="send-failed">⚠ {problems[0]}{problems.length > 1 ? ` (+${problems.length - 1})` : ''}</div>}
@@ -147,10 +148,10 @@ export function BuildMode() {
           ↷
         </button>
         <button className="btn" onClick={s.end}>
-          Huỷ
+          Cancel
         </button>
         <button className="btn btn-primary" onClick={() => void save()} disabled={saving || problems.length > 0}>
-          {saving ? 'Đang lưu…' : 'Lưu'}
+          {saving ? 'Saving…' : 'Save'}
         </button>
       </div>
     </div>
@@ -169,7 +170,7 @@ function FloorSize({ width, depth }: { width: number; depth: number }) {
     const a = Number(nw.replace(',', '.'));
     const b = Number(nd.replace(',', '.'));
     if (!floorSizeValid(a) || !floorSizeValid(b)) {
-      setError(`Từ ${FLOOR_MIN} đến ${FLOOR_MAX} m, bước 0,5 m`);
+      setError(`${FLOOR_MIN}–${FLOOR_MAX} m, in 0.5 m steps`);
       return;
     }
     setError(null);
@@ -177,9 +178,9 @@ function FloorSize({ width, depth }: { width: number; depth: number }) {
   };
   const bad = (v: string) => !floorSizeValid(Number(v.replace(',', '.')));
   return (
-    <div className="floor-size" role="group" aria-label="Kích thước văn phòng">
+    <div className="floor-size" role="group" aria-label="Office size">
       <label>
-        Chiều dài (m)
+        Length (m)
         <input
           id="floor-width"
           data-testid="floor-width-input"
@@ -197,7 +198,7 @@ function FloorSize({ width, depth }: { width: number; depth: number }) {
         />
       </label>
       <label>
-        Chiều rộng (m)
+        Width (m)
         <input
           id="floor-depth"
           data-testid="floor-depth-input"

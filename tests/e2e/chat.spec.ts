@@ -45,7 +45,7 @@ test('stop button cancels a working employee', async ({ page }) => {
   await ctl('running');
   await page.goto(`/#k=${TOKEN}`);
   await clickFirstEmployee(page);
-  await page.getByRole('button', { name: /Dừng/ }).click();
+  await page.getByRole('button', { name: /Stop/ }).click();
   await expect.poll(async () => (await sent()).some((s) => s.method === 'CancelCascadeInvocation')).toBe(true);
 });
 
@@ -54,19 +54,19 @@ test('a failed send keeps the text and can be retried', async ({ page }) => {
   await clickFirstEmployee(page);
   await expect(page.locator('.model-picker select')).not.toHaveValue('');
   await ctl('quit');
-  await expect(page.getByText('Chưa kết nối được Antigravity App')).toBeVisible({ timeout: 5_000 });
+  await expect(page.getByText('Not connected to the Antigravity App')).toBeVisible({ timeout: 5_000 });
   await page.locator('.chat textarea').fill('Tin quan trọng');
   await page.locator('.chat textarea').press('Enter');
-  await expect(page.getByRole('button', { name: 'Gửi lại' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Retry' })).toBeVisible();
   await expect(page.locator('.chat textarea')).toHaveValue('Tin quan trọng');
   await ctl('open');
   await expect(page.locator('.banner')).toHaveCount(0, { timeout: 10_000 });
-  await page.getByRole('button', { name: 'Gửi lại' }).click();
+  await page.getByRole('button', { name: 'Retry' }).click();
   await expect.poll(async () => (await sent()).filter((s) => s.method === 'SendUserCascadeMessage').length).toBe(1);
 });
 
 // Spec 003 US3 (U3-4, U3-5): error text with "Xem thêm", and web searches.
-test('shows the error message (300 chars + Xem thêm) and the web search query', async ({ page }) => {
+test('shows the error message (300 chars + Show more) and the web search query', async ({ page }) => {
   await ctl('error-and-search');
   await page.goto(`/#k=${TOKEN}`);
   await clickFirstEmployee(page);
@@ -74,7 +74,29 @@ test('shows the error message (300 chars + Xem thêm) and the web search query',
   await expect(err).toBeVisible({ timeout: 10_000 });
   await expect(err).toContainText('API error (attempt 1)');
   await expect(err).not.toContainText('END-OF-ERROR');
-  await err.getByRole('button', { name: 'Xem thêm' }).click();
+  await err.getByRole('button', { name: 'Show more' }).click();
   await expect(err).toContainText('END-OF-ERROR');
-  await expect(page.getByTestId('step-web-search')).toHaveText(/Đã tìm: Open-Meteo API/);
+  await expect(page.getByTestId('step-web-search')).toHaveText(/Searched: Open-Meteo API/);
+});
+
+// 006 US2: Esc closes the chat; a popup over it takes the first Esc.
+test('Esc closes the chat, even while typing in the composer', async ({ page }) => {
+  await page.goto(`/#k=${TOKEN}`);
+  await clickFirstEmployee(page);
+  await page.locator('.chat textarea').fill('draft');
+  await page.locator('.chat textarea').press('Escape');
+  await expect(page.locator('.chat')).toBeHidden();
+});
+
+test('Esc closes the command menu first, then the chat', async ({ page }) => {
+  await page.goto(`/#k=${TOKEN}`);
+  await clickFirstEmployee(page);
+  await page.locator('.chat textarea').fill('/pl');
+  const menu = page.getByRole('listbox', { name: 'Commands and skills' });
+  await expect(menu).toBeVisible();
+  await page.locator('.chat textarea').press('Escape');
+  await expect(menu).toBeHidden();
+  await expect(page.locator('.chat')).toBeVisible();
+  await page.locator('.chat textarea').press('Escape');
+  await expect(page.locator('.chat')).toBeHidden();
 });

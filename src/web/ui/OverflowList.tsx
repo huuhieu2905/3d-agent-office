@@ -15,7 +15,7 @@ export function OverflowList() {
   return (
     <div className="overflow panel">
       <button className="link" onClick={() => setExpanded((v) => !v)} aria-expanded={expanded}>
-        +{overflow} nhân viên khác {expanded ? '▴' : '▾'}
+        +{overflow} more employees {expanded ? '▴' : '▾'}
       </button>
       {expanded && (
         <ul>

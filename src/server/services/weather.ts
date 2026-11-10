@@ -7,8 +7,8 @@ import type { Logger } from '../log';
 // The ONLY outbound Internet call of the system (FR-082). Failures fall back to clear weather silently.
 
 export const CITY_COORDS: Record<City, { lat: number; lon: number; name: string; tz: string }> = {
-  hanoi: { lat: 21.0285, lon: 105.8542, name: 'Hà Nội', tz: 'Asia/Ho_Chi_Minh' },
-  hcmc: { lat: 10.7769, lon: 106.7009, name: 'TP. Hồ Chí Minh', tz: 'Asia/Ho_Chi_Minh' },
+  hanoi: { lat: 21.0285, lon: 105.8542, name: 'Hanoi', tz: 'Asia/Ho_Chi_Minh' },
+  hcmc: { lat: 10.7769, lon: 106.7009, name: 'Ho Chi Minh City', tz: 'Asia/Ho_Chi_Minh' },
   singapore: { lat: 1.2903, lon: 103.852, name: 'Singapore', tz: 'Asia/Singapore' },
   tokyo: { lat: 35.6762, lon: 139.6503, name: 'Tokyo', tz: 'Asia/Tokyo' },
   newyork: { lat: 40.7128, lon: -74.006, name: 'New York', tz: 'America/New_York' },

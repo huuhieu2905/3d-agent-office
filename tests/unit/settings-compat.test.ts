@@ -31,6 +31,13 @@ describe('settings compatibility (004)', () => {
     expect(settingsSchema.safeParse({ ...OLD, screensOff: [''] }).success).toBe(false);
   });
 
+  it('006: mouseSensitivity is optional and limited to 0.25–3', () => {
+    expect(settingsSchema.safeParse(OLD).success).toBe(true);
+    expect(settingsSchema.safeParse({ ...OLD, mouseSensitivity: 0.25 }).success).toBe(true);
+    expect(settingsSchema.safeParse({ ...OLD, mouseSensitivity: 3 }).success).toBe(true);
+    for (const bad of [0.2, 3.1, '1']) expect(settingsSchema.safeParse({ ...OLD, mouseSensitivity: bad }).success).toBe(false);
+  });
+
   it('PUT /api/settings rejects a wrongly typed new field with 400', async () => {
     const SESSION = 'session-token-for-settings-compat-0123456789';
     const adapter = createAppAdapter({ finder: new FakeFinder(), transport: new FakeTransport(), healthIntervalMs: 60_000 });

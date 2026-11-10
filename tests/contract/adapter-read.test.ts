@@ -121,7 +121,7 @@ describe('A5 — malformed responses do not crash', () => {
     expect(mapConversations({})).toEqual([]);
     expect(mapConversations({ trajectorySummaries: { 'abc-1': {} } })[0]).toMatchObject({
       id: 'abc-1',
-      title: 'Nhân viên mới',
+      title: 'New employee',
       runStatus: 'UNKNOWN',
     });
     const steps = mapSteps({ steps: [{ type: 'CORTEX_STEP_TYPE_BRAND_NEW', status: 'CORTEX_STEP_STATUS_DONE' }, null] });

@@ -4,7 +4,7 @@ import { ModelPicker, quotaState } from './ModelPicker';
 
 // 002 US1: the model is controlled by the chat panel (remembered per conversation), not kept here.
 
-// T070: multi-line input, Enter sends, Shift+Enter newline; keeps text and offers "Gửi lại" on failure;
+// T070: multi-line input, Enter sends, Shift+Enter newline; keeps text and offers "Retry" on failure;
 // shows "Dừng" while the employee is working. `/` and `@` menus plug in via `extensions` (US3).
 
 export interface ComposerProps {
@@ -31,7 +31,7 @@ export function Composer({ busy, model, modelInfo, modelUnavailable, onModelChan
   async function send() {
     const trimmed = text.trim();
     if (!trimmed || !model || sending || qs === 'empty' || modelUnavailable) return;
-    if (qs === 'low' && !confirm('Quota của model này còn dưới 10%. Vẫn gửi?')) return;
+    if (qs === 'low' && !confirm('This model has less than 10% quota left. Send anyway?')) return;
     setSending(true);
     setFailed(null);
     try {
@@ -39,7 +39,7 @@ export function Composer({ busy, model, modelInfo, modelUnavailable, onModelChan
       setText('');
       setMentions([]);
     } catch (err) {
-      setFailed((err as { appUnavailable?: boolean }).appUnavailable ? 'Antigravity App chưa sẵn sàng.' : 'Gửi không thành công.');
+      setFailed((err as { appUnavailable?: boolean }).appUnavailable ? 'The Antigravity App is not ready.' : 'Sending failed.');
     } finally {
       setSending(false);
       area.current?.focus();
@@ -55,7 +55,7 @@ export function Composer({ busy, model, modelInfo, modelUnavailable, onModelChan
             'mention' in p ? (
               <span key={p.mention.uri} className="chip">
                 @{p.mention.label}
-                <button aria-label="Bỏ" onClick={() => setMentions((m) => m.filter((_, j) => j !== i))}>
+                <button aria-label="Remove" onClick={() => setMentions((m) => m.filter((_, j) => j !== i))}>
                   ×
                 </button>
               </span>
@@ -66,7 +66,7 @@ export function Composer({ busy, model, modelInfo, modelUnavailable, onModelChan
       <textarea
         ref={area}
         value={text}
-        placeholder="Nhắn cho nhân viên… (Enter để gửi, Shift+Enter xuống dòng, / để gọi lệnh, @ để nhắc file)"
+        placeholder="Message the employee… (Enter to send, Shift+Enter for a new line, / for commands, @ to mention a file)"
         rows={3}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={(e) => {
@@ -80,7 +80,7 @@ export function Composer({ busy, model, modelInfo, modelUnavailable, onModelChan
         <div className="send-failed" role="alert">
           {failed}{' '}
           <button className="link" onClick={() => void send()}>
-            Gửi lại
+            Retry
           </button>
         </div>
       )}
@@ -93,11 +93,11 @@ export function Composer({ busy, model, modelInfo, modelUnavailable, onModelChan
         )}
         {busy ? (
           <button className="btn btn-stop" onClick={() => void onStop()}>
-            ■ Dừng
+            ■ Stop
           </button>
         ) : null}
         <button className="btn btn-primary" disabled={!text.trim() || sending || qs === 'empty' || modelUnavailable || !model} onClick={() => void send()}>
-          {sending ? 'Đang gửi…' : 'Gửi'}
+          {sending ? 'Sending…' : 'Send'}
         </button>
       </div>
     </div>

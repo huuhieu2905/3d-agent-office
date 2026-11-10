@@ -14,7 +14,7 @@ export function AddDeskHint() {
   if (waiting === 0 || active) return null;
   return (
     <div className="panel hint" role="status">
-      {waiting} nhân viên chưa có bàn và đang đứng ở khu chờ.{' '}
+      {waiting} employee(s) have no desk and are standing in the waiting area.{' '}
       <button
         className="link"
         onClick={() =>
@@ -26,7 +26,7 @@ export function AddDeskHint() {
             .catch(() => undefined)
         }
       >
-        Thêm bàn
+        Add a desk
       </button>
     </div>
   );

@@ -18,12 +18,12 @@ import { useBuild } from '../state/build';
 // one click opens the conversation.
 
 const BADGE: Partial<Record<VisualState, { icon: string; cls: string; label: string }>> = {
-  thinking: { icon: '…', cls: 'thinking', label: 'Đang suy nghĩ' },
-  working: { icon: '⌨', cls: 'working', label: 'Đang làm việc' },
-  waiting_for_boss: { icon: '!', cls: 'waiting', label: 'Chờ sếp duyệt' },
-  error: { icon: '✕', cls: 'error', label: 'Gặp lỗi' },
-  stopped: { icon: '■', cls: 'stopped', label: 'Đã dừng' },
-  unknown: { icon: '?', cls: 'unknown', label: 'Không rõ trạng thái' },
+  thinking: { icon: '…', cls: 'thinking', label: 'Thinking' },
+  working: { icon: '⌨', cls: 'working', label: 'Working' },
+  waiting_for_boss: { icon: '!', cls: 'waiting', label: 'Waiting for your approval' },
+  error: { icon: '✕', cls: 'error', label: 'Error' },
+  stopped: { icon: '■', cls: 'stopped', label: 'Stopped' },
+  unknown: { icon: '?', cls: 'unknown', label: 'Status unknown' },
 };
 
 // 002 US6: the cartoon rig bends its own legs to sit, so the group is not lowered any more.
