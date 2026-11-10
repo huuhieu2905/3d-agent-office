@@ -1,0 +1,123 @@
+{
+  "skills": [
+    {
+      "path": "/Users/USER/.gemini/antigravity/builtin/skills/agy-customizations/SKILL.md",
+      "name": "agy-customizations",
+      "description": "<description:16>",
+      "content": "<content:12>",
+      "isBuiltin": true,
+      "scope": {
+        "globalScope": {}
+      },
+      "baseDir": "file:///Users/USER/.gemini/antigravity/builtin",
+      "discoveredIn": "builtin",
+      "discoveryCategory": "DISCOVERY_CATEGORY_BUILTIN"
+    },
+    {
+      "path": "/Users/USER/.gemini/antigravity/builtin/skills/antigravity_guide/SKILL.md",
+      "name": "antigravity-guide",
+      "description": "<description:16>",
+      "content": "<content:12>",
+      "isBuiltin": true,
+      "scope": {
+        "globalScope": {}
+      },
+      "baseDir": "file:///Users/USER/.gemini/antigravity/builtin",
+      "discoveredIn": "builtin",
+      "discoveryCategory": "DISCOVERY_CATEGORY_BUILTIN"
+    },
+    {
+      "path": "/Users/USER/.gemini/antigravity/builtin/skills/automation/SKILL.md",
+      "name": "automation",
+      "description": "<description:16>",
+      "content": "<content:12>",
+      "isBuiltin": true,
+      "scope": {
+        "globalScope": {}
+      },
+      "baseDir": "file:///Users/USER/.gemini/antigravity/builtin",
+      "discoveredIn": "builtin",
+      "discoveryCategory": "DISCOVERY_CATEGORY_BUILTIN",
+      "icon": "schedule"
+    },
+    {
+      "path": "/Users/USER/.gemini/antigravity/builtin/skills/generative_ui/SKILL.md",
+      "name": "generative_ui",
+      "description": "<description:16>",
+      "content": "<content:12>",
+      "isBuiltin": true,
+      "scope": {
+        "globalScope": {}
+      },
+      "baseDir": "file:///Users/USER/.gemini/antigravity/builtin",
+      "discoveredIn": "builtin",
+      "discoveryCategory": "DISCOVERY_CATEGORY_BUILTIN"
+    },
+    {
+      "path": "/Users/USER/.gemini/antigravity/builtin/skills/migrate-workflows/SKILL.md",
+      "name": "migrate-workflows",
+      "description": "<description:16>",
+      "content": "<content:12>",
+      "isBuiltin": true,
+      "scope": {
+        "globalScope": {}
+      },
+      "baseDir": "file:///Users/USER/.gemini/antigravity/builtin",
+      "discoveredIn": "builtin",
+      "discoveryCategory": "DISCOVERY_CATEGORY_BUILTIN"
+    },
+    {
+      "path": "/Users/USER/.gemini/antigravity/builtin/skills/permissioned-github/SKILL.md",
+      "name": "permissioned-github",
+      "description": "<description:16>",
+      "content": "<content:12>",
+      "isBuiltin": true,
+      "scope": {
+        "globalScope": {}
+      },
+      "baseDir": "file:///Users/USER/.gemini/antigravity/builtin",
+      "discoveredIn": "builtin",
+      "discoveryCategory": "DISCOVERY_CATEGORY_BUILTIN"
+    },
+    {
+      "path": "/Users/USER/.gemini/antigravity/builtin/skills/plugin/SKILL.md",
+      "name": "plugin",
+      "description": "<description:16>",
+      "content": "<content:12>",
+      "isBuiltin": true,
+      "scope": {
+        "globalScope": {}
+      },
+      "baseDir": "file:///Users/USER/.gemini/antigravity/builtin",
+      "discoveredIn": "builtin",
+      "discoveryCategory": "DISCOVERY_CATEGORY_BUILTIN"
+    },
+    {
+      "path": "/Users/USER/.gemini/antigravity/builtin/skills/run-workflow/SKILL.md",
+      "name": "run-workflow",
+      "description": "<description:16>",
+      "content": "<content:12>",
+      "isBuiltin": true,
+      "scope": {
+        "globalScope": {}
+      },
+      "baseDir": "file:///Users/USER/.gemini/antigravity/builtin",
+      "discoveredIn": "builtin",
+      "discoveryCategory": "DISCOVERY_CATEGORY_BUILTIN"
+    },
+    {
+      "path": "/Users/USER/.gemini/antigravity/builtin/skills/ui-plugin-navigation/SKILL.md",
+      "name": "ui-plugin-navigation",
+      "description": "<description:16>",
+      "content": "<content:12>",
+      "isBuiltin": true,
+      "scope": {
+        "globalScope": {}
+      },
+      "baseDir": "file:///Users/USER/.gemini/antigravity/builtin",
+      "disableSlashCommand": true,
+      "discoveredIn": "builtin",
+      "discoveryCategory": "DISCOVERY_CATEGORY_BUILTIN"
+    }
+  ]
+}

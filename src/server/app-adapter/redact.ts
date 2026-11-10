@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { homedir, tmpdir, userInfo } from 'node:os';
 import { redactString } from '../log';
 
@@ -33,7 +34,13 @@ const CONTENT_KEYS = new Set([
   'fullError',
   'query',
   'writeInResponse',
+  // Spec 005: the model prompt carries the user's global rules (<user_rules>) and the chat itself.
+  'prompt',
+  'systemPrompt',
 ]);
+/** Workspace/project folders: their names say what the user works on. Hashed, so equal folders stay equal. */
+const FOLDER_KEYS = new Set(['folderUri', 'workspaceFolderAbsoluteUri', 'workspaceUris']);
+const FOLDER = /^(file:\/\/\/(?:Users\/USER|mnt\/MOUNT|tmp\/TMP))\/(.+?)(\/?)$/;
 
 /** Permission grant lists (`command(...)`, `write_file(/path)`) hold the user's own commands and paths. */
 const GRANT_KEYS = new Set(['allow', 'ask', 'deny']);
@@ -49,6 +56,7 @@ export function sanitizeRaw(value: unknown, key = '', parent = ''): unknown {
   if (typeof value === 'string') {
     if (IDENTITY_KEYS.has(key) || (key === 'name' && NAME_PARENTS.has(parent))) return `<${key}>`;
     if (CONTENT_KEYS.has(key)) {
+      if (/^<[A-Za-z]+(:\d+)?>$/.test(value)) return value; // already sanitized (re-sanitizing a fixture)
       if (key === 'argumentsJson') return '{}';
       return `<${key}:${Math.min(value.length, 9999)}>`;
     }
@@ -56,6 +64,10 @@ export function sanitizeRaw(value: unknown, key = '', parent = ''): unknown {
     let s = value.split(HOME).join('/Users/USER').replace(MOUNT, '/mnt/MOUNT');
     if (TMP.length > 4) s = s.split(TMP).join('/tmp/TMP');
     if (USERNAME.length >= 3) s = s.split(USERNAME).join('USER');
+    if (FOLDER_KEYS.has(key) && !/^folder-[0-9a-f]{8}$/.test(s.match(FOLDER)?.[2] ?? '')) {
+      s = s.replace(FOLDER, (_, root: string, rest: string, slash: string) =>
+        `${root}/folder-${createHash('sha256').update(rest).digest('hex').slice(0, 8)}${slash}`);
+    }
     return redactString(s);
   }
   if (Array.isArray(value)) return value.map((v) => sanitizeRaw(v, key, parent));

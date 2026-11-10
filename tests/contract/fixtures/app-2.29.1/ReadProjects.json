@@ -1,0 +1,118 @@
+{
+  "projects": [
+    {
+      "id": "1816aae4-5af0-4332-99a3-0ddfedb02de6",
+      "name": "<name>",
+      "projectResources": {
+        "resources": [
+          {
+            "folderUri": "file:///Users/USER/folder-78fa27a9"
+          }
+        ]
+      },
+      "permissionGrants": {
+        "v2Migrated": true
+      },
+      "settings": {},
+      "isWorkspaceOnly": false
+    },
+    {
+      "id": "2111ca6b-4240-4dde-a509-c60e9014e79a",
+      "name": "<name>",
+      "projectResources": {
+        "resources": [
+          {
+            "folderUri": "file:///Users/USER/folder-387548d8"
+          }
+        ]
+      },
+      "permissionGrants": {
+        "v2Migrated": true
+      },
+      "settings": {},
+      "isWorkspaceOnly": false
+    },
+    {
+      "id": "3268ef4f-b8a3-4ae4-9dff-f031390cb2cd",
+      "name": "<name>",
+      "projectResources": {
+        "resources": [
+          {
+            "folderUri": "file:///Users/USER/folder-1b556171/"
+          }
+        ]
+      },
+      "permissionGrants": {
+        "v2Migrated": true
+      },
+      "settings": {},
+      "isWorkspaceOnly": false
+    },
+    {
+      "id": "b5f4b955-f499-4b00-b323-e85eb9ee3674",
+      "name": "<name>",
+      "projectResources": {
+        "resources": [
+          {
+            "folderUri": "file:///Users/USER/folder-485055cb/"
+          }
+        ]
+      },
+      "permissionGrants": {
+        "v2Migrated": true
+      },
+      "settings": {},
+      "isWorkspaceOnly": false
+    },
+    {
+      "id": "c981a689-82c8-4830-b108-e67a18a9781e",
+      "name": "<name>",
+      "projectResources": {
+        "resources": [
+          {
+            "folderUri": "file:///Users/USER/folder-cf79d04a/"
+          }
+        ]
+      },
+      "permissionGrants": {
+        "v2Migrated": true
+      },
+      "settings": {},
+      "isWorkspaceOnly": false
+    },
+    {
+      "id": "d515dea6-f37f-46ba-a6bf-2013d46f652a",
+      "name": "<name>",
+      "projectResources": {
+        "resources": [
+          {
+            "folderUri": "file:///Users/USER/folder-d30d3f90"
+          }
+        ]
+      },
+      "permissionGrants": {
+        "v2Migrated": true
+      },
+      "settings": {},
+      "isWorkspaceOnly": false
+    },
+    {
+      "id": "f57e79af-0351-4d5e-84de-5ff192d1b36d",
+      "name": "<name>",
+      "projectResources": {
+        "resources": [
+          {
+            "folderUri": "file:///Users/USER/folder-53f1f4b3"
+          }
+        ]
+      },
+      "permissionGrants": {
+        "v2Migrated": true
+      }
+    },
+    {
+      "id": "outside-of-project",
+      "name": "<name>"
+    }
+  ]
+}

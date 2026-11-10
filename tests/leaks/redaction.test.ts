@@ -101,11 +101,27 @@ describe('sanitizeRaw: Linux paths and permission grants (spec 005)', () => {
       defaultGrants: { allow: ['command(curl secret-host.example)', 'write_file(/mnt/abc/secret-file.md)'], ask: ['mcp(x/y)'] },
     };
     const out = sanitizeRaw(raw) as typeof raw;
-    expect(out.workspaceFolderAbsoluteUri).toBe('file:///mnt/MOUNT/Work');
+    expect(out.workspaceFolderAbsoluteUri).toMatch(/^file:\/\/\/mnt\/MOUNT\/folder-[0-9a-f]{8}$/);
+    expect(sanitizeRaw(out)).toEqual(out); // re-sanitizing recorded fixtures changes nothing
     expect(out.defaultGrants).toEqual({ allow: ['command(<grant>)', 'write_file(<grant>)'], ask: ['mcp(<grant>)'] });
-    for (const secret of ['0f1e2d3c', 'secret-disk', 'SecretLabel', 'Label2', 'secret-host', 'secret-file']) {
+    for (const secret of ['0f1e2d3c', 'secret-disk', 'Work', 'SecretLabel', 'Label2', 'secret-host', 'secret-file']) {
       expect(JSON.stringify(out)).not.toContain(secret);
     }
+  });
+});
+
+describe('sanitizeRaw: prompts and folder names (spec 005)', () => {
+  it('drops the model prompts (user rules, chat) and hashes folder names consistently', () => {
+    const raw = {
+      systemPrompt: '<user_rules>secret-rule-123</user_rules>',
+      prompt: '<USER_REQUEST>secret-chat-456</USER_REQUEST>',
+      a: { folderUri: 'file:///mnt/abc/SecretProject/' },
+      b: { workspaceUris: ['file:///mnt/abc/SecretProject/'] },
+    };
+    const out = sanitizeRaw(raw) as typeof raw;
+    for (const secret of ['secret-rule-123', 'secret-chat-456', 'SecretProject']) expect(JSON.stringify(out)).not.toContain(secret);
+    expect(out.a.folderUri).toBe(out.b.workspaceUris[0]);
+    expect(out.a.folderUri.endsWith('/')).toBe(true);
   });
 });
 

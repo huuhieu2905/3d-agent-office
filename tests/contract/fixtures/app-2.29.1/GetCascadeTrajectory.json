@@ -1,0 +1,2606 @@
+{
+  "trajectory": {
+    "trajectoryId": "01921889-212c-45db-a058-6ad8a6da118e",
+    "cascadeId": "548182e7-ff2c-403b-bb43-4bafb3071a90",
+    "trajectoryType": "CORTEX_TRAJECTORY_TYPE_CASCADE",
+    "steps": [
+      {
+        "type": "CORTEX_STEP_TYPE_USER_INPUT",
+        "status": "CORTEX_STEP_STATUS_DONE",
+        "metadata": {
+          "createdAt": "2026-11-10T07:16:23.526926417Z",
+          "source": "CORTEX_STEP_SOURCE_USER_EXPLICIT",
+          "executionId": "116e1784-563c-40ec-b5ed-68433de4bdbe",
+          "sourceTrajectoryStepInfo": {
+            "trajectoryId": "01921889-212c-45db-a058-6ad8a6da118e",
+            "cascadeId": "548182e7-ff2c-403b-bb43-4bafb3071a90"
+          },
+          "internalMetadata": {
+            "statusTransitions": [
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+                "timestamp": "2026-11-10T07:16:23.532553159Z"
+              }
+            ]
+          },
+          "modelApiContentId": "[REDACTED]"
+        },
+        "userInput": {
+          "items": [
+            {
+              "text": "<text:8>"
+            }
+          ],
+          "userResponse": "<userResponse:17>",
+          "activeUserState": {},
+          "userConfig": {
+            "plannerConfig": {
+              "declarativeMixinConfig": {
+                "promptSections": [
+                  {
+                    "builtinName": "identity"
+                  },
+                  {
+                    "builtinName": "terminal_sandbox"
+                  },
+                  {
+                    "builtinName": "artifacts"
+                  },
+                  {
+                    "builtinName": "conversation_transcript"
+                  },
+                  {
+                    "builtinName": "guidelines"
+                  },
+                  {
+                    "builtinName": "communication_style"
+                  },
+                  {
+                    "builtinName": "slash_commands"
+                  },
+                  {
+                    "builtinName": "messaging"
+                  },
+                  {
+                    "builtinName": "mcp_servers"
+                  },
+                  {
+                    "builtinName": "subagents"
+                  },
+                  {
+                    "builtinName": "user_rules"
+                  },
+                  {
+                    "builtinName": "skills"
+                  },
+                  {
+                    "builtinName": "featured_plugins"
+                  },
+                  {
+                    "builtinName": "user_information"
+                  },
+                  {
+                    "builtinName": "subagent_reminder"
+                  }
+                ],
+                "tools": [
+                  {
+                    "name": "read_file",
+                    "builtin": true
+                  },
+                  {
+                    "name": "run_command",
+                    "builtin": true
+                  },
+                  {
+                    "name": "list_plugin_accounts",
+                    "builtin": true
+                  },
+                  {
+                    "name": "manage_task",
+                    "builtin": true
+                  },
+                  {
+                    "name": "send_message",
+                    "builtin": true
+                  },
+                  {
+                    "name": "schedule",
+                    "builtin": true
+                  },
+                  {
+                    "name": "invoke_subagent",
+                    "builtin": true
+                  },
+                  {
+                    "name": "define_subagent",
+                    "builtin": true
+                  },
+                  {
+                    "name": "manage_subagents",
+                    "builtin": true
+                  },
+                  {
+                    "name": "write_file",
+                    "builtin": true
+                  },
+                  {
+                    "name": "edit_file",
+                    "builtin": true
+                  },
+                  {
+                    "name": "search_web",
+                    "builtin": true
+                  },
+                  {
+                    "name": "search_marketplace",
+                    "builtin": true
+                  },
+                  {
+                    "name": "ask_question",
+                    "builtin": true
+                  }
+                ],
+                "preInvocationHooks": [
+                  {
+                    "name": "message_delivery",
+                    "builtin": true
+                  },
+                  {
+                    "name": "context_summary",
+                    "builtin": true
+                  }
+                ],
+                "postInvocationHooks": [
+                  {
+                    "name": "message_continue_check",
+                    "builtin": true
+                  },
+                  {
+                    "name": "terminal_step_check",
+                    "builtin": true
+                  },
+                  {
+                    "name": "max_generator_invocations_check",
+                    "builtin": true
+                  },
+                  {
+                    "name": "empty_output_continuation_check",
+                    "builtin": true
+                  },
+                  {
+                    "name": "force_invocation",
+                    "builtin": true
+                  },
+                  {
+                    "name": "no_tool_call_check",
+                    "builtin": true
+                  }
+                ],
+                "preToolHooks": [
+                  {
+                    "name": "battle_mode_tool_args",
+                    "builtin": true
+                  },
+                  {
+                    "name": "command_assessor",
+                    "builtin": true
+                  },
+                  {
+                    "name": "timeout_long_running_search_command",
+                    "builtin": true
+                  },
+                  {
+                    "name": "auto_run_safety_gate",
+                    "builtin": true
+                  }
+                ],
+                "postToolHooks": [
+                  {
+                    "name": "command_assessor",
+                    "builtin": true
+                  }
+                ],
+                "stopHooks": [
+                  {
+                    "name": "goal_stop",
+                    "builtin": true
+                  },
+                  {
+                    "name": "idle_subagent_guard",
+                    "builtin": true
+                  }
+                ],
+                "toolDecorators": [
+                  {
+                    "name": "output_truncation",
+                    "builtin": true
+                  }
+                ],
+                "forceDisableFundamentalComponents": true
+              },
+              "customizationDiscoveryConfig": {
+                "skills": {
+                  "builtinSkillNames": [
+                    "agy-customizations",
+                    "antigravity_guide",
+                    "automation",
+                    "generative_ui",
+                    "migrate-workflows",
+                    "plugin",
+                    "ui-plugin-navigation"
+                  ]
+                },
+                "agents": {
+                  "builtinAgentNames": [
+                    "self",
+                    "research",
+                    "browser",
+                    "teamwork",
+                    "DeepCoder",
+                    "DeepInvestigator",
+                    "image-generator"
+                  ]
+                }
+              },
+              "toolConfig": {
+                "runCommand": {
+                  "autoCommandConfig": {
+                    "autoExecutionPolicy": "CASCADE_COMMANDS_AUTO_EXECUTION_AUTO"
+                  }
+                },
+                "antigravityBrowser": {
+                  "enableBrowserSubagentWebview": false
+                },
+                "notifyUser": {}
+              },
+              "planModel": "MODEL_PLACEHOLDER_M318",
+              "useAiCredits": false,
+              "supportsLatexRendering": true
+            },
+            "executorConfig": {
+              "useCoreDirect": true
+            },
+            "conversationHistoryConfig": {}
+          },
+          "userAgentSpec": {
+            "builtinAgent": {
+              "defaultAgent": {
+                "isGoogle": false,
+                "isInteractive": true,
+                "surface": "AGENT_SURFACE_HUB"
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "CORTEX_STEP_TYPE_PLANNER_RESPONSE",
+        "status": "CORTEX_STEP_STATUS_DONE",
+        "metadata": {
+          "createdAt": "2026-11-10T07:16:23.581135038Z",
+          "viewableAt": "2026-11-10T07:16:28.394472640Z",
+          "finishedGeneratingAt": "2026-11-10T07:16:28.487085738Z",
+          "startedAt": "2026-11-10T07:16:28.487085738Z",
+          "completedAt": "2026-11-10T07:16:28.487085738Z",
+          "source": "CORTEX_STEP_SOURCE_MODEL",
+          "modelUsage": {
+            "model": "MODEL_PLACEHOLDER_M318",
+            "inputTokens": "10116",
+            "outputTokens": "177",
+            "thinkingOutputTokens": "138",
+            "responseOutputTokens": "39",
+            "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+            "messageId": "bot-2900686f-d847-4c3a-93ba-105970cea71f",
+            "responseHeader": {
+              "sessionID": "-3750763034362895579"
+            },
+            "responseId": "ycTyarbWCcudz7IPvMqQoQc"
+          },
+          "generatorModel": "MODEL_PLACEHOLDER_M318",
+          "executionId": "116e1784-563c-40ec-b5ed-68433de4bdbe",
+          "sourceTrajectoryStepInfo": {
+            "trajectoryId": "01921889-212c-45db-a058-6ad8a6da118e",
+            "stepIndex": 1,
+            "cascadeId": "548182e7-ff2c-403b-bb43-4bafb3071a90"
+          },
+          "internalMetadata": {
+            "statusTransitions": [
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_GENERATING",
+                "timestamp": "2026-11-10T07:16:28.394484643Z"
+              },
+              {
+                "updatedStatus": "CORTEX_STEP_STATUS_DONE",
+                "timestamp": "2026-11-10T07:16:28.487097434Z"
+              }
+            ]
+          },
+          "modelApiContentId": "[REDACTED]"
+        },
+        "plannerResponse": {
+          "response": "<response:13>",
+          "modifiedResponse": "<modifiedResponse:21>",
+          "thinkingSignature": "<thinkingSignature:22>",
+          "messageId": "bot-2900686f-d847-4c3a-93ba-105970cea71f",
+          "stopReason": "STOP_REASON_STOP_PATTERN"
+        }
+      }
+    ],
+    "generatorMetadata": [
+      {
+        "stepIndices": [
+          1
+        ],
+        "chatModel": {
+          "systemPrompt": "<systemPrompt:9999>",
+          "messagePrompts": [
+            {
+              "source": "CHAT_MESSAGE_SOURCE_USER",
+              "prompt": "<prompt:426>",
+              "numTokens": 147,
+              "providerAssignedMessageId": "[REDACTED]"
+            },
+            {
+              "source": "CHAT_MESSAGE_SOURCE_SYSTEM",
+              "prompt": "<prompt:155>",
+              "thinkingSignature": "<thinkingSignature:22>",
+              "stepIdx": 1
+            }
+          ],
+          "messageMetadata": [
+            {},
+            {
+              "segmentIndex": 1
+            }
+          ],
+          "model": "MODEL_PLACEHOLDER_M318",
+          "usage": {
+            "model": "MODEL_PLACEHOLDER_M318",
+            "inputTokens": "10116",
+            "outputTokens": "177",
+            "thinkingOutputTokens": "138",
+            "responseOutputTokens": "39",
+            "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+            "messageId": "bot-2900686f-d847-4c3a-93ba-105970cea71f",
+            "responseHeader": {
+              "sessionID": "-3750763034362895579"
+            },
+            "responseId": "ycTyarbWCcudz7IPvMqQoQc"
+          },
+          "tools": [
+            {
+              "name": "read_file",
+              "description": "<description:16>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"Path\":{\"type\":\"string\",\"description\":\"The absolute path of the file to read.\"},\"StartLine\":{\"type\":\"integer\",\"description\":\"Start line to read (inclusive). Omit to read from the beginning of the file.\"},\"EndLine\":{\"type\":\"integer\",\"description\":\"End line to read (inclusive). Omit to read until the end of the file, within the per-read limits.\"},\"ByteOffset\":{\"type\":\"integer\",\"description\":\"Byte offset into the line range. Use to continue reading when content is truncated by the byte limit.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"Path\"]}"
+            },
+            {
+              "name": "run_command",
+              "description": "<description:16>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"CommandLine\":{\"type\":\"string\",\"description\":\"The exact command line string to execute.\"},\"toolSummary\":{\"type\":\"string\",\"description\":\"Brief 2-5 word noun phrase describing the command task. Capitalize like a sentence. Some examples: 'Git status check', 'Unit test execution', 'Package build', 'Dev server startup'.\"},\"BypassSandbox\":{\"type\":\"boolean\",\"description\":\"Set to true to run outside the sandbox (requires elevated user permission for auth exchange, network, or port binding).\"},\"WaitMsBeforeAsync\":{\"type\":\"integer\",\"description\":\"Milliseconds to wait for the command to finish before backgrounding it (500 to 10000). Set to a larger value (e.g. 5000-10000) for commands expected to finish synchronously; set to 500 for commands intended to run in the background.\"},\"IsDaemon\":{\"type\":\"boolean\",\"description\":\"Set to true for long-running support processes that are meant to keep running in the background indefinitely and are not expected to finish on their own (e.g., dev servers, file watchers, tunnels). Leave false (the default) for normal commands that are expected to terminate.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"CommandLine\",\"toolSummary\",\"WaitMsBeforeAsync\"]}"
+            },
+            {
+              "name": "list_plugin_accounts",
+              "description": "<description:16>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{},\"additionalProperties\":false,\"type\":\"object\"}"
+            },
+            {
+              "name": "manage_task",
+              "description": "<description:16>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"Action\":{\"type\":\"string\",\"enum\":[\"list\",\"kill\",\"status\",\"send_input\"],\"description\":\"'list' reports the running tasks; the other actions operate on the task named in TaskId.\"},\"TaskId\":{\"type\":\"string\",\"description\":\"Task to manage, as reported by 'list'. Required for 'kill', 'status' and 'send_input'.\"},\"Input\":{\"type\":\"string\",\"description\":\"Input to deliver to the task. Required for 'send_input'.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"Action\"]}"
+            },
+            {
+              "name": "send_message",
+              "description": "<description:16>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"Recipient\":{\"type\":\"string\",\"minLength\":1,\"description\":\"Conversation ID of the agent to message.\"},\"Message\":{\"type\":\"string\",\"minLength\":1,\"description\":\"Content of the message.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"Recipient\",\"Message\"]}"
+            },
+            {
+              "name": "schedule",
+              "description": "<description:16>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"DurationSeconds\":{\"type\":\"integer\",\"description\":\"Seconds to wait for a one-shot timer. Mutually exclusive with CronExpression.\"},\"CronExpression\":{\"type\":\"string\",\"description\":\"Standard 5-field cron expression for a recurring schedule (e.g. '*/5 * * * *' for every 5 minutes). Mutually exclusive with DurationSeconds.\"},\"MaxIterations\":{\"type\":\"integer\",\"description\":\"Cron only. Maximum number of triggers before the schedule stops; defaults to unlimited.\"},\"TimerCondition\":{\"type\":\"string\",\"description\":\"Timer only. Cancels the timer early when a matching message arrives: 'never' (default), 'any' (any message), or a sender ID (a message from that subagent or background task).\"},\"Prompt\":{\"type\":\"string\",\"description\":\"Message sent to you as a high-priority notification when the timer fires or the cron triggers.\"},\"IsDaemon\":{\"type\":\"boolean\",\"description\":\"Cron only. Set true only for an independent standing job that should keep firing after the current task is done.\"},\"ExactTiming\":{\"type\":\"boolean\",\"description\":\"Cron only. Set true only when the user explicitly requires the schedule to fire at the exact wall-clock time without jitter. Leave false (the default) for polling, monitoring, or periodic tasks so triggers are jittered to avoid load spikes.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"Prompt\"]}"
+            },
+            {
+              "name": "invoke_subagent",
+              "description": "<description:16>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"TypeName\":{\"type\":\"string\",\"description\":\"Type name of the subagent to invoke.\"},\"Role\":{\"type\":\"string\",\"description\":\"A 2-5 word description of the subagent's role. Should read similar to a job title, e.g. 'Codebase Researcher', 'Database Debugger', etc. Should also be detailed enough to distinguish between different subagents who might share similar purposes.\"},\"Prompt\":{\"type\":\"string\",\"description\":\"A clear, actionable task description for the subagent. Be specific about what the subagent should do and what information it should return.\"},\"Workspace\":{\"type\":\"string\",\"description\":\"Workspace mode for the subagent. 'inherit' (default) uses the same workspace as the parent. 'branch' creates a new isolated workspace branched or cloned from the parent. 'share' creates a new workspace sharing the parent's underlying repository directory (similar to a git worktree or Mercurial 'hg share'), allowing independent branching without duplicating storage. If omitted, defaults to 'inherit'.\"},\"Model\":{\"type\":\"string\",\"enum\":[\"inherit\",\"flash_lite\",\"flash\",\"pro\"],\"description\":\"Model for the subagent. 'inherit' (default) uses your model. 'flash_lite' and 'flash' are lighter, faster models for simple tasks. 'pro' is a larger model for complex work.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"TypeName\",\"Role\",\"Prompt\"]}"
+            },
+            {
+              "name": "define_subagent",
+              "description": "<description:16>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"Name\":{\"type\":\"string\",\"minLength\":1,\"description\":\"Unique name used to invoke the subagent.\"},\"Description\":{\"type\":\"string\",\"minLength\":1,\"description\":\"What this subagent does and when it should be used.\"},\"SystemPrompt\":{\"type\":\"string\",\"minLength\":1,\"description\":\"System prompt for the subagent.\"},\"EnableWriteTools\":{\"type\":\"boolean\",\"description\":\"Grant tools to create and edit files, and run commands.\"},\"EnableSubagentTools\":{\"type\":\"boolean\",\"description\":\"Grant tools to define and invoke its own subagents.\"},\"EnableMCPTools\":{\"type\":\"boolean\",\"description\":\"Grant access to MCP tools.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"Name\",\"Description\",\"SystemPrompt\"]}"
+            },
+            {
+              "name": "manage_subagents",
+              "description": "<description:16>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"Action\":{\"type\":\"string\",\"enum\":[\"list\",\"kill\",\"kill_all\"],\"description\":\"'list' lists active direct subagents; 'kill' terminates the subagents named in ConversationIds; 'kill_all' terminates all.\"},\"ConversationIds\":{\"items\":{\"type\":\"string\"},\"type\":\"array\",\"description\":\"Subagents to kill. Required for 'kill'.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"Action\"]}"
+            },
+            {
+              "name": "write_file",
+              "description": "<description:16>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"Path\":{\"type\":\"string\",\"minLength\":1,\"description\":\"The absolute path of the file to create.\"},\"Content\":{\"type\":\"string\",\"description\":\"The full contents to write to the file.\"},\"Overwrite\":{\"type\":\"boolean\",\"description\":\"Whether to overwrite an existing file, replacing its entire contents.\"},\"Append\":{\"type\":\"boolean\",\"description\":\"Whether to append Content to the end of the file (creating the file if it does not exist). Cannot be combined with Overwrite=true.\"},\"ArtifactMetadata\":{\"properties\":{\"Summary\":{\"type\":\"string\",\"description\":\"Detailed multi-line summary of the artifact's contents and purpose.\"},\"UserFacing\":{\"type\":\"boolean\",\"description\":\"Whether this artifact should be presented to the user.\"},\"RequestFeedback\":{\"type\":\"boolean\",\"description\":\"Whether to request user feedback on this artifact if its contents are executable (e.g., a plan). The user is given a 'Proceed' button to execute it.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"Summary\",\"UserFacing\",\"RequestFeedback\"],\"description\":\"Metadata that defines artifact properties. ONLY provide when creating an artifact file in the artifact directory. Omit this field when creating non-artifact files.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"Path\",\"Content\"]}"
+            },
+            {
+              "name": "edit_file",
+              "description": "<description:16>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"Path\":{\"type\":\"string\",\"minLength\":1,\"description\":\"The absolute path of the file to modify.\"},\"Target\":{\"type\":\"string\",\"minLength\":1,\"description\":\"The exact string to be replaced. This must be the exact character-sequence to be replaced, including whitespace. Be very careful to include any leading whitespace otherwise this will not work at all. If the string appears multiple times in the file, every occurrence is replaced.\"},\"Replacement\":{\"type\":\"string\",\"description\":\"The content to replace the target with. Leave empty to delete the target.\"},\"ArtifactMetadata\":{\"properties\":{\"Summary\":{\"type\":\"string\",\"description\":\"Detailed multi-line summary of the artifact's contents and purpose.\"},\"UserFacing\":{\"type\":\"boolean\",\"description\":\"Whether this artifact should be presented to the user.\"},\"RequestFeedback\":{\"type\":\"boolean\",\"description\":\"Whether to request user feedback on this artifact if its contents are executable (e.g., a plan). The user is given a 'Proceed' button to execute it.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"Summary\",\"UserFacing\",\"RequestFeedback\"],\"description\":\"Metadata updates if updating an artifact file in the artifact directory. Omit this field when editing non-artifact files. Should be updated if the content is changing meaningfully.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"Path\",\"Target\",\"Replacement\"]}"
+            },
+            {
+              "name": "search_web",
+              "description": "<description:16>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"query\":{\"type\":\"string\"},\"domain\":{\"type\":\"string\",\"description\":\"Optional domain to recommend the search prioritize\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"query\"]}"
+            },
+            {
+              "name": "search_marketplace",
+              "description": "<description:16>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"queries\":{\"items\":{\"type\":\"string\"},\"type\":\"array\",\"minItems\":1,\"description\":\"One to three short keyword variants in a single call: the product name, its common abbreviation, and the capability (e.g. [\\\"google calendar\\\", \\\"gcal\\\", \\\"calendar\\\"]); queries beyond the third are ignored. Each is matched case-insensitively as a substring of entry names and descriptions, so prefer single words or short phrases over sentences.\"},\"kind\":{\"type\":\"string\",\"enum\":[\"plugin\",\"skill\",\"all\"],\"description\":\"Which kind of entry to return. Defaults to plugin.\"},\"limit\":{\"type\":\"integer\",\"description\":\"Maximum number of results to return. Defaults to 5, at most 15.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"queries\"]}"
+            },
+            {
+              "name": "ask_question",
+              "description": "<description:16>",
+              "jsonSchemaString": "{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"questions\":{\"items\":{\"properties\":{\"question\":{\"type\":\"string\",\"minLength\":1,\"description\":\"The question, without 'select all that apply' or similar; the UI adds that.\"},\"options\":{\"items\":{\"type\":\"string\"},\"type\":\"array\",\"minItems\":2,\"description\":\"Answers to choose from, unnumbered and without an 'Other' option; the UI adds both. Put a recommended answer first, prefixed with '(Recommended)'.\"},\"is_multi_select\":{\"type\":\"boolean\",\"description\":\"Whether the user can select several options.\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"question\",\"options\"]},\"type\":\"array\",\"minItems\":1}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"questions\"]}"
+            }
+          ],
+          "chatStartMetadata": {
+            "checkpointIndex": -1,
+            "contextWindowMetadata": {
+              "estimatedTokensUsed": 14667,
+              "tokenBreakdown": {
+                "groups": [
+                  {
+                    "name": "System Prompt",
+                    "type": "TOKEN_TYPE_SYSTEM_PROMPT",
+                    "source": "TOKEN_SOURCE_SYSTEM",
+                    "numTokens": 8742,
+                    "children": [
+                      {
+                        "name": "identity",
+                        "numTokens": 159
+                      },
+                      {
+                        "name": "terminal_sandbox",
+                        "numTokens": 1125
+                      },
+                      {
+                        "name": "artifacts",
+                        "numTokens": 1295
+                      },
+                      {
+                        "name": "conversation_transcript",
+                        "numTokens": 656
+                      },
+                      {
+                        "name": "guidelines",
+                        "numTokens": 238
+                      },
+                      {
+                        "name": "communication_style",
+                        "numTokens": 427
+                      },
+                      {
+                        "name": "slash_commands",
+                        "numTokens": 613
+                      },
+                      {
+                        "name": "messaging",
+                        "numTokens": 293
+                      },
+                      {
+                        "name": "subagents",
+                        "numTokens": 689
+                      },
+                      {
+                        "name": "skills",
+                        "numTokens": 1403
+                      },
+                      {
+                        "name": "featured_plugins",
+                        "numTokens": 1566
+                      },
+                      {
+                        "name": "user_information",
+                        "numTokens": 278
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Tools",
+                    "type": "TOKEN_TYPE_TOOLS",
+                    "source": "TOKEN_SOURCE_SYSTEM",
+                    "numTokens": 5778,
+                    "children": [
+                      {
+                        "name": "read_file",
+                        "numTokens": 254
+                      },
+                      {
+                        "name": "run_command",
+                        "numTokens": 564
+                      },
+                      {
+                        "name": "list_plugin_accounts",
+                        "numTokens": 300
+                      },
+                      {
+                        "name": "manage_task",
+                        "numTokens": 280
+                      },
+                      {
+                        "name": "send_message",
+                        "numTokens": 147
+                      },
+                      {
+                        "name": "schedule",
+                        "numTokens": 681
+                      },
+                      {
+                        "name": "invoke_subagent",
+                        "numTokens": 663
+                      },
+                      {
+                        "name": "define_subagent",
+                        "numTokens": 314
+                      },
+                      {
+                        "name": "manage_subagents",
+                        "numTokens": 246
+                      },
+                      {
+                        "name": "write_file",
+                        "numTokens": 562
+                      },
+                      {
+                        "name": "edit_file",
+                        "numTokens": 623
+                      },
+                      {
+                        "name": "search_web",
+                        "numTokens": 127
+                      },
+                      {
+                        "name": "search_marketplace",
+                        "numTokens": 703
+                      },
+                      {
+                        "name": "ask_question",
+                        "numTokens": 314
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Chat Messages",
+                    "type": "TOKEN_TYPE_CHAT_MESSAGES",
+                    "numTokens": 147,
+                    "children": [
+                      {
+                        "name": "0: USER_INPUT",
+                        "numTokens": 147
+                      }
+                    ]
+                  }
+                ],
+                "totalTokens": 14667
+              },
+              "maxContextTokens": 256000
+            }
+          },
+          "timeToFirstToken": "4.813337603s",
+          "streamingDuration": "0.092611743s",
+          "promptSections": [
+            {
+              "title": "<title:9>",
+              "content": "<content:12>",
+              "metadata": {
+                "sourceType": "PROMPT_SECTION_SOURCE_TYPE_TEMPLATE",
+                "templateKey": "identity"
+              },
+              "tokenType": "TOKEN_TYPE_SYSTEM_PROMPT",
+              "tokenSource": "TOKEN_SOURCE_SYSTEM"
+            },
+            {
+              "title": "<title:10>",
+              "content": "<content:12>",
+              "metadata": {
+                "sourceType": "PROMPT_SECTION_SOURCE_TYPE_RAW"
+              },
+              "tokenType": "TOKEN_TYPE_SYSTEM_PROMPT",
+              "tokenSource": "TOKEN_SOURCE_SYSTEM"
+            },
+            {
+              "title": "<title:9>",
+              "content": "<content:12>",
+              "metadata": {
+                "sourceType": "PROMPT_SECTION_SOURCE_TYPE_TEMPLATE",
+                "templateKey": "artifacts"
+              },
+              "tokenType": "TOKEN_TYPE_SYSTEM_PROMPT",
+              "tokenSource": "TOKEN_SOURCE_SYSTEM"
+            },
+            {
+              "title": "<title:10>",
+              "content": "<content:12>",
+              "metadata": {
+                "sourceType": "PROMPT_SECTION_SOURCE_TYPE_TEMPLATE",
+                "templateKey": "conversation_transcript"
+              },
+              "tokenType": "TOKEN_TYPE_SYSTEM_PROMPT",
+              "tokenSource": "TOKEN_SOURCE_SYSTEM"
+            },
+            {
+              "title": "<title:10>",
+              "content": "<content:12>",
+              "metadata": {
+                "sourceType": "PROMPT_SECTION_SOURCE_TYPE_TEMPLATE",
+                "templateKey": "guidelines"
+              },
+              "tokenType": "TOKEN_TYPE_SYSTEM_PROMPT",
+              "tokenSource": "TOKEN_SOURCE_SYSTEM"
+            },
+            {
+              "title": "<title:10>",
+              "content": "<content:12>",
+              "metadata": {
+                "sourceType": "PROMPT_SECTION_SOURCE_TYPE_TEMPLATE",
+                "templateKey": "communication_style"
+              },
+              "tokenType": "TOKEN_TYPE_SYSTEM_PROMPT",
+              "tokenSource": "TOKEN_SOURCE_SYSTEM"
+            },
+            {
+              "title": "<title:10>",
+              "content": "<content:12>",
+              "metadata": {
+                "sourceType": "PROMPT_SECTION_SOURCE_TYPE_TEMPLATE",
+                "templateKey": "slash_commands"
+              },
+              "tokenType": "TOKEN_TYPE_SYSTEM_PROMPT",
+              "tokenSource": "TOKEN_SOURCE_SYSTEM"
+            },
+            {
+              "title": "<title:9>",
+              "content": "<content:12>",
+              "metadata": {
+                "sourceType": "PROMPT_SECTION_SOURCE_TYPE_RAW"
+              },
+              "tokenType": "TOKEN_TYPE_SYSTEM_PROMPT",
+              "tokenSource": "TOKEN_SOURCE_SYSTEM"
+            },
+            {
+              "title": "<title:9>",
+              "content": "<content:12>",
+              "metadata": {
+                "sourceType": "PROMPT_SECTION_SOURCE_TYPE_RAW"
+              },
+              "tokenType": "TOKEN_TYPE_SYSTEM_PROMPT",
+              "tokenSource": "TOKEN_SOURCE_SYSTEM"
+            },
+            {
+              "title": "<title:9>",
+              "content": "<content:12>",
+              "metadata": {
+                "sourceType": "PROMPT_SECTION_SOURCE_TYPE_TEMPLATE",
+                "templateKey": "skills"
+              },
+              "tokenType": "TOKEN_TYPE_SYSTEM_PROMPT",
+              "tokenSource": "TOKEN_SOURCE_SYSTEM"
+            },
+            {
+              "title": "<title:10>",
+              "content": "<content:12>",
+              "metadata": {
+                "sourceType": "PROMPT_SECTION_SOURCE_TYPE_RAW"
+              },
+              "tokenType": "TOKEN_TYPE_SYSTEM_PROMPT",
+              "tokenSource": "TOKEN_SOURCE_SYSTEM"
+            },
+            {
+              "title": "<title:10>",
+              "content": "<content:12>",
+              "metadata": {
+                "sourceType": "PROMPT_SECTION_SOURCE_TYPE_RAW"
+              },
+              "tokenType": "TOKEN_TYPE_SYSTEM_PROMPT",
+              "tokenSource": "TOKEN_SOURCE_SYSTEM"
+            }
+          ],
+          "retryInfos": [
+            {
+              "usage": {
+                "model": "MODEL_PLACEHOLDER_M318",
+                "inputTokens": "10116",
+                "outputTokens": "177",
+                "thinkingOutputTokens": "138",
+                "responseOutputTokens": "39",
+                "apiProvider": "API_PROVIDER_GOOGLE_GEMINI",
+                "messageId": "bot-2900686f-d847-4c3a-93ba-105970cea71f",
+                "responseHeader": {
+                  "sessionID": "-3750763034362895579"
+                },
+                "responseId": "ycTyarbWCcudz7IPvMqQoQc"
+              },
+              "traceId": "1625ddaa853fdbc2"
+            }
+          ],
+          "responseModel": "gemini-3.8-flash-n",
+          "customMetadata": {
+            "cascade_id": "548182e7-ff2c-403b-bb43-4bafb3071a90",
+            "last_step_index": "0",
+            "model_enum": "MODEL_PLACEHOLDER_M318",
+            "request_id": "01921889-212c-45db-a058-6ad8a6da118e-0",
+            "root_cascade_id": "548182e7-ff2c-403b-bb43-4bafb3071a90",
+            "trajectory_id": "01921889-212c-45db-a058-6ad8a6da118e",
+            "used_claude": "false",
+            "used_claude_conservative": "false",
+            "used_non_gemini_model": "false"
+          },
+          "modelDisplayName": "Gemini 3.8 Flash (High)"
+        },
+        "plannerConfig": {
+          "declarativeMixinConfig": {
+            "promptSections": [
+              {
+                "builtinName": "identity"
+              },
+              {
+                "builtinName": "terminal_sandbox"
+              },
+              {
+                "builtinName": "artifacts"
+              },
+              {
+                "builtinName": "conversation_transcript"
+              },
+              {
+                "builtinName": "guidelines"
+              },
+              {
+                "builtinName": "communication_style"
+              },
+              {
+                "builtinName": "slash_commands"
+              },
+              {
+                "builtinName": "messaging"
+              },
+              {
+                "builtinName": "mcp_servers"
+              },
+              {
+                "builtinName": "subagents"
+              },
+              {
+                "builtinName": "user_rules"
+              },
+              {
+                "builtinName": "skills"
+              },
+              {
+                "builtinName": "featured_plugins"
+              },
+              {
+                "builtinName": "user_information"
+              },
+              {
+                "builtinName": "subagent_reminder"
+              }
+            ],
+            "tools": [
+              {
+                "name": "read_file",
+                "builtin": true
+              },
+              {
+                "name": "run_command",
+                "builtin": true
+              },
+              {
+                "name": "list_plugin_accounts",
+                "builtin": true
+              },
+              {
+                "name": "manage_task",
+                "builtin": true
+              },
+              {
+                "name": "send_message",
+                "builtin": true
+              },
+              {
+                "name": "schedule",
+                "builtin": true
+              },
+              {
+                "name": "invoke_subagent",
+                "builtin": true
+              },
+              {
+                "name": "define_subagent",
+                "builtin": true
+              },
+              {
+                "name": "manage_subagents",
+                "builtin": true
+              },
+              {
+                "name": "write_file",
+                "builtin": true
+              },
+              {
+                "name": "edit_file",
+                "builtin": true
+              },
+              {
+                "name": "search_web",
+                "builtin": true
+              },
+              {
+                "name": "search_marketplace",
+                "builtin": true
+              },
+              {
+                "name": "ask_question",
+                "builtin": true
+              }
+            ],
+            "preInvocationHooks": [
+              {
+                "name": "message_delivery",
+                "builtin": true
+              },
+              {
+                "name": "context_summary",
+                "builtin": true
+              }
+            ],
+            "postInvocationHooks": [
+              {
+                "name": "message_continue_check",
+                "builtin": true
+              },
+              {
+                "name": "terminal_step_check",
+                "builtin": true
+              },
+              {
+                "name": "max_generator_invocations_check",
+                "builtin": true
+              },
+              {
+                "name": "empty_output_continuation_check",
+                "builtin": true
+              },
+              {
+                "name": "force_invocation",
+                "builtin": true
+              },
+              {
+                "name": "no_tool_call_check",
+                "builtin": true
+              }
+            ],
+            "preToolHooks": [
+              {
+                "name": "battle_mode_tool_args",
+                "builtin": true
+              },
+              {
+                "name": "command_assessor",
+                "builtin": true
+              },
+              {
+                "name": "timeout_long_running_search_command",
+                "builtin": true
+              },
+              {
+                "name": "auto_run_safety_gate",
+                "builtin": true
+              }
+            ],
+            "postToolHooks": [
+              {
+                "name": "command_assessor",
+                "builtin": true
+              }
+            ],
+            "stopHooks": [
+              {
+                "name": "goal_stop",
+                "builtin": true
+              },
+              {
+                "name": "idle_subagent_guard",
+                "builtin": true
+              }
+            ],
+            "toolDecorators": [
+              {
+                "name": "output_truncation",
+                "builtin": true
+              }
+            ],
+            "forceDisableFundamentalComponents": true
+          },
+          "customizationDiscoveryConfig": {
+            "skills": {
+              "builtinSkillNames": [
+                "agy-customizations",
+                "antigravity_guide",
+                "automation",
+                "generative_ui",
+                "migrate-workflows",
+                "plugin",
+                "ui-plugin-navigation"
+              ],
+              "exclude": [
+                "permissioned-github"
+              ]
+            },
+            "agents": {
+              "builtinAgentNames": [
+                "self",
+                "research",
+                "browser",
+                "teamwork",
+                "DeepCoder",
+                "DeepInvestigator",
+                "image-generator"
+              ]
+            },
+            "kindEnablement": {
+              "agent": true,
+              "flow": false,
+              "hooks": true,
+              "mcp": true,
+              "plugin": true,
+              "rule": true,
+              "skill": true,
+              "workflow": true
+            }
+          },
+          "toolConfig": {
+            "code": {
+              "disableExtensions": [
+                ".ipynb"
+              ],
+              "allowEditGitignore": false,
+              "applyEdits": true,
+              "skipAwaitLintErrors": false,
+              "autoFixLintsConfig": {
+                "enabled": true,
+                "notifyingPrompt": "As IDE feedback, the following lint errors may be related to your recent edits up to this point. Consider whether they deserve immediate attention. If worth addressing, clearly comment on them and/or fix them. Be explicit in acknowledging lints and explaining your fix's approach. AVOID unproductive loops; if you detect yourself repeatedly creating/fixing lints in a short period, offer some thoughts but MOVE ON."
+              },
+              "replaceContentToolConfig": {
+                "maxFuzzyEditDistanceFraction": 0.001,
+                "allowPartialReplacementSuccess": true,
+                "fastApplyFallbackConfig": {
+                  "enabled": false,
+                  "promptUnchangedThreshold": 5,
+                  "contentViewRadiusLines": 200,
+                  "contentEditRadiusLines": 5,
+                  "fastApplyModel": "MODEL_GOOGLE_GEMINI_2_5_FLASH"
+                },
+                "showTriggeredMemories": true,
+                "disableAllowMultiple": false,
+                "useLineRange": true
+              },
+              "classifyEdit": false,
+              "provideImportance": false,
+              "useSedEdit": false,
+              "maxStoredDiffBytes": 1048576,
+              "useReplaceContentProposeCode": false
+            },
+            "intent": {
+              "intentModel": "MODEL_PLACEHOLDER_M50",
+              "maxContextTokens": 40000
+            },
+            "grep": {
+              "maxGrepResults": 50,
+              "useCodeSearch": false,
+              "disableFallbackToLocalExecution": false
+            },
+            "find": {
+              "maxFindResults": 50,
+              "useCodeSearch": false,
+              "disableFallbackToLocalExecution": false,
+              "forceDisable": true
+            },
+            "runCommand": {
+              "maxCharsCommandStdout": 8192,
+              "forceDisable": false,
+              "autoCommandConfig": {
+                "systemAllowlist": [
+                  "cd"
+                ],
+                "sandboxSystemAllowlist": [
+                  "head",
+                  "tail",
+                  "mkdir",
+                  "cd",
+                  "cp",
+                  "mv",
+                  "cat",
+                  "find",
+                  "grep",
+                  "rm",
+                  "touch",
+                  "less",
+                  "clear",
+                  "ls"
+                ],
+                "autoExecutionPolicy": "CASCADE_COMMANDS_AUTO_EXECUTION_AUTO"
+              },
+              "enableIdeTerminalExecution": false,
+              "forceGoTerminalExecution": false,
+              "shellName": "bash",
+              "shellPath": "bash",
+              "forbidSearchCommands": false,
+              "enablePty": true,
+              "enablePersistentMode": true,
+              "enableTerminalSandbox": true,
+              "enableTimeoutNotification": false,
+              "enableDaemonCommands": true,
+              "enableFastOutputClose": true,
+              "searchFallbackMode": "SEARCH_FALLBACK_NONE",
+              "enablePluginAuth": true
+            },
+            "viewFile": {
+              "allowViewGitignore": false,
+              "splitOutlineTool": true,
+              "showTriggeredMemories": true,
+              "maxLinesPerView": 800,
+              "includeLineNumbers": true,
+              "maxBytesPerView": 46080,
+              "maxFileSizeBytes": 104857600,
+              "maxTotalOutlineBytes": 8192,
+              "maxBytesPerOutlineItem": 512,
+              "showFullFileBytes": 8192
+            },
+            "suggestedResponse": {
+              "forceDisable": true
+            },
+            "searchWeb": {
+              "forceDisable": false,
+              "thirdPartyConfig": {
+                "provider": "THIRD_PARTY_WEB_SEARCH_PROVIDER_GEMINI"
+              }
+            },
+            "mcp": {
+              "forceDisable": false,
+              "maxOutputBytes": 10240,
+              "nonBlockingTurnLoad": true
+            },
+            "listDir": {},
+            "commandStatus": {
+              "useDelta": true,
+              "maxOutputCharacters": 8192,
+              "minOutputCharacters": 1024,
+              "maxWaitDurationSeconds": 300,
+              "outputStabilizationDurationSeconds": 5,
+              "enableInputDetection": true,
+              "inputDetectionModel": "MODEL_GOOGLE_GEMINI_2_5_FLASH_LITE"
+            },
+            "antigravityBrowser": {
+              "enableBrowserSubagentV2": true,
+              "enableArk": false,
+              "enableBrowserSubagentWebview": false,
+              "browserJsExecutionPolicy": "BROWSER_JS_EXECUTION_POLICY_ALWAYS_ASK"
+            },
+            "codeSearch": {
+              "forceDisable": false,
+              "useDetailedSearchGuidanceInDi": true,
+              "enableCsQueryOptimizations": false
+            },
+            "internalSearch": {
+              "maxResults": 10,
+              "maxContentLength": 5000
+            },
+            "finish": {},
+            "notebookEdit": {
+              "enabled": false
+            },
+            "invokeSubagent": {
+              "enabled": true,
+              "maxNestingDepth": 10,
+              "alwaysInheritModel": false,
+              "allowFork": false,
+              "sendInitialPromptAsMessage": true
+            },
+            "askQuestion": {
+              "enabled": true
+            },
+            "permissionConfig": {
+              "enterpriseConfig": {
+                "enforceWorkspaceValidation": true
+              },
+              "effectiveGrants": {
+                "allow": [
+                  "write_file(<grant>)",
+                  "write_file(<grant>)",
+                  "command(<grant>)",
+                  "write_file(<grant>)",
+                  "command(<grant>)",
+                  "command(<grant>)",
+                  "command(<grant>)",
+                  "write_file(<grant>)",
+                  "command(<grant>)",
+                  "command(<grant>)",
+                  "command(<grant>)",
+                  "command(<grant>)",
+                  "command(<grant>)",
+                  "command(<grant>)",
+                  "write_file(<grant>)",
+                  "write_file(<grant>)",
+                  "write_file(<grant>)",
+                  "command(<grant>)",
+                  "write_file(<grant>)",
+                  "command(<grant>)",
+                  "write_file(<grant>)",
+                  "command(<grant>)",
+                  "command(<grant>)",
+                  "command(<grant>)",
+                  "command(<grant>)",
+                  "command(<grant>)",
+                  "command(<grant>)",
+                  "command(<grant>)",
+                  "command(<grant>)",
+                  "command(<grant>)",
+                  "command(<grant>)",
+                  "command(<grant>)"
+                ],
+                "ask": [
+                  "mcp(<grant>)"
+                ]
+              },
+              "defaultGrants": {},
+              "permissionsV2": true,
+              "effectivePermissionPreset": "AGENT_PERMISSION_PRESET_AUTO"
+            },
+            "userInteractionTimeoutSeconds": 0,
+            "wait": {
+              "enabled": false
+            },
+            "listPluginAccounts": {
+              "enabled": true
+            },
+            "toolOutput": {
+              "maxOutputBytes": 10240
+            },
+            "schedule": {
+              "enabled": true,
+              "enableDaemon": true
+            },
+            "forceEnableSendMessageTool": false,
+            "notifyUser": {
+              "artifactReviewMode": "ARTIFACT_REVIEW_MODE_ALWAYS"
+            },
+            "autoAllowAllInteractions": false
+          },
+          "planModel": "MODEL_PLACEHOLDER_M318",
+          "modelName": "gemini-3.8-flash-high",
+          "maxOutputTokens": 65536,
+          "noToolExplanation": true,
+          "noToolSummary": false,
+          "ephemeralMessagesConfig": {
+            "enabled": false,
+            "persistenceLevel": "EPHEMERAL_MESSAGE_PERSISTENCE_LEVEL_LATEST_ONLY",
+            "browserEphemeralOptions": [
+              "BROWSER_EPHEMERAL_OPTION_SCREENSHOT",
+              "BROWSER_EPHEMERAL_OPTION_DOM"
+            ],
+            "disabledHeuristics": [
+              "planning_mode",
+              "bash_command_reminder",
+              "running_tasks_reminder"
+            ],
+            "useAllowlist": false
+          },
+          "retryConfig": {
+            "modelOutputRetry": {
+              "maxRetries": 4,
+              "forbidToolUse": true,
+              "retryOnlyOnInvalidArgs": false
+            },
+            "apiRetry": {
+              "maxRetries": 8,
+              "initialSleepDurationMs": 4000,
+              "exponentialMultiplier": 2,
+              "includeErrorFeedback": true,
+              "range": 0.4
+            }
+          },
+          "knowledgeConfig": {
+            "enabled": false,
+            "model": "MODEL_PLACEHOLDER_M18",
+            "maxContextTokens": 200000,
+            "minTurnsBetweenKnowledgeGeneration": 10000,
+            "maxKnowledgeItems": 20,
+            "maxArtifactsPerKi": 20,
+            "maxTitleLength": 100,
+            "maxSummaryLength": 1000,
+            "maxInvocations": 20
+          },
+          "agenticModeConfig": {
+            "useSlashPlan": true
+          },
+          "noWaitForPreviousTools": false,
+          "experiments": {
+            "values": {
+              "convenient-multi-agent-coordination": {
+                "boolValue": false
+              },
+              "default_subagent_interaction_timeout_seconds": {
+                "numberValue": 60
+              },
+              "disable-teamwork-forced-flash-model": {
+                "boolValue": false
+              },
+              "enable-agent-plugins-spec": {
+                "boolValue": true
+              },
+              "enable-browser-subagent-webview-script": {
+                "boolValue": false
+              },
+              "enable-browser-subagent-webview-ux": {
+                "boolValue": false
+              },
+              "enable-citc-top-level-write-guard": {
+                "boolValue": false
+              },
+              "enable-citc-workspace-hygiene-rule": {
+                "boolValue": true
+              },
+              "enable-compact-slash-command": {
+                "boolValue": true
+              },
+              "enable-cost-accumulator": {
+                "boolValue": false
+              },
+              "enable-generative-hooks": {
+                "boolValue": false
+              },
+              "enable-iapi-tool-steps": {
+                "boolValue": false
+              },
+              "enable-owl-slash-command": {
+                "boolValue": true
+              },
+              "enable-permissioned-github": {
+                "boolValue": false
+              },
+              "enable-programmatic-tools": {
+                "boolValue": false
+              },
+              "enable-rpc-sandbox-proxy": {
+                "boolValue": false
+              },
+              "enable-subagent-hub": {
+                "boolValue": false
+              },
+              "enable-teamwork-subagent": {
+                "boolValue": true
+              },
+              "enable-trustedcli-config-files": {
+                "boolValue": false
+              },
+              "enable-url-artifacts": {
+                "boolValue": false
+              },
+              "jetski-autonomous-mode": {
+                "boolValue": false
+              },
+              "jetski-generative-ui": {
+                "boolValue": true
+              },
+              "jetski-unified-customizations-panel-enabled": {
+                "boolValue": false
+              },
+              "native-swarm-spanner-board": {
+                "boolValue": false
+              }
+            }
+          },
+          "disableLoopDetection": true,
+          "useAiCredits": false,
+          "supportsLatexRendering": true,
+          "customizationTokenBudget": 20000,
+          "rulesTokenBudget": 20000
+        },
+        "executionId": "116e1784-563c-40ec-b5ed-68433de4bdbe",
+        "mendelExperimentIds": [
+          1714249,
+          105856899,
+          105867469,
+          105867471,
+          105887299,
+          105979531,
+          105979552,
+          105979553,
+          105979574,
+          106015328,
+          106015333,
+          106021688,
+          106032301,
+          106032303,
+          106064028,
+          106064030,
+          106100625,
+          106100654,
+          106121399,
+          106121401,
+          106121604,
+          106121607,
+          106123597,
+          106123599,
+          106140402,
+          106143956,
+          106228452,
+          106260793,
+          106263850,
+          106264532,
+          106281951,
+          106380926,
+          106511968,
+          106544525,
+          106568390,
+          106568772,
+          106588527,
+          106596396,
+          106597020,
+          106640124,
+          106640126,
+          106643242,
+          106644204,
+          106644207,
+          106676368,
+          106712040,
+          106724031,
+          106749607,
+          106754391,
+          106778026,
+          106786387,
+          106786388,
+          106788235,
+          106791759,
+          106791765,
+          106793263,
+          106793266,
+          106798730,
+          106798741,
+          106805272,
+          106806117,
+          106811917,
+          106822474,
+          106825242,
+          106825244,
+          106826239,
+          106826316,
+          106827293,
+          106827294,
+          106828852,
+          106828853,
+          106828854,
+          106828998,
+          106833630,
+          106838234,
+          106848320,
+          106863826,
+          106863827,
+          106865004,
+          106865005,
+          106865006,
+          106898384,
+          106913264,
+          107002400,
+          107002418,
+          107023280
+        ]
+      }
+    ],
+    "executorMetadatas": [
+      {
+        "terminationReason": "EXECUTOR_TERMINATION_REASON_NO_TOOL_CALL",
+        "numGeneratorInvocations": 1,
+        "lastStepIdx": 1,
+        "executionId": "116e1784-563c-40ec-b5ed-68433de4bdbe",
+        "cascadeConfig": {
+          "plannerConfig": {
+            "declarativeMixinConfig": {
+              "promptSections": [
+                {
+                  "builtinName": "identity"
+                },
+                {
+                  "builtinName": "terminal_sandbox"
+                },
+                {
+                  "builtinName": "artifacts"
+                },
+                {
+                  "builtinName": "conversation_transcript"
+                },
+                {
+                  "builtinName": "guidelines"
+                },
+                {
+                  "builtinName": "communication_style"
+                },
+                {
+                  "builtinName": "slash_commands"
+                },
+                {
+                  "builtinName": "messaging"
+                },
+                {
+                  "builtinName": "mcp_servers"
+                },
+                {
+                  "builtinName": "subagents"
+                },
+                {
+                  "builtinName": "user_rules"
+                },
+                {
+                  "builtinName": "skills"
+                },
+                {
+                  "builtinName": "featured_plugins"
+                },
+                {
+                  "builtinName": "user_information"
+                },
+                {
+                  "builtinName": "subagent_reminder"
+                }
+              ],
+              "tools": [
+                {
+                  "name": "read_file",
+                  "builtin": true
+                },
+                {
+                  "name": "run_command",
+                  "builtin": true
+                },
+                {
+                  "name": "list_plugin_accounts",
+                  "builtin": true
+                },
+                {
+                  "name": "manage_task",
+                  "builtin": true
+                },
+                {
+                  "name": "send_message",
+                  "builtin": true
+                },
+                {
+                  "name": "schedule",
+                  "builtin": true
+                },
+                {
+                  "name": "invoke_subagent",
+                  "builtin": true
+                },
+                {
+                  "name": "define_subagent",
+                  "builtin": true
+                },
+                {
+                  "name": "manage_subagents",
+                  "builtin": true
+                },
+                {
+                  "name": "write_file",
+                  "builtin": true
+                },
+                {
+                  "name": "edit_file",
+                  "builtin": true
+                },
+                {
+                  "name": "search_web",
+                  "builtin": true
+                },
+                {
+                  "name": "search_marketplace",
+                  "builtin": true
+                },
+                {
+                  "name": "ask_question",
+                  "builtin": true
+                }
+              ],
+              "preInvocationHooks": [
+                {
+                  "name": "message_delivery",
+                  "builtin": true
+                },
+                {
+                  "name": "context_summary",
+                  "builtin": true
+                }
+              ],
+              "postInvocationHooks": [
+                {
+                  "name": "message_continue_check",
+                  "builtin": true
+                },
+                {
+                  "name": "terminal_step_check",
+                  "builtin": true
+                },
+                {
+                  "name": "max_generator_invocations_check",
+                  "builtin": true
+                },
+                {
+                  "name": "empty_output_continuation_check",
+                  "builtin": true
+                },
+                {
+                  "name": "force_invocation",
+                  "builtin": true
+                },
+                {
+                  "name": "no_tool_call_check",
+                  "builtin": true
+                }
+              ],
+              "preToolHooks": [
+                {
+                  "name": "battle_mode_tool_args",
+                  "builtin": true
+                },
+                {
+                  "name": "command_assessor",
+                  "builtin": true
+                },
+                {
+                  "name": "timeout_long_running_search_command",
+                  "builtin": true
+                },
+                {
+                  "name": "auto_run_safety_gate",
+                  "builtin": true
+                }
+              ],
+              "postToolHooks": [
+                {
+                  "name": "command_assessor",
+                  "builtin": true
+                }
+              ],
+              "stopHooks": [
+                {
+                  "name": "goal_stop",
+                  "builtin": true
+                },
+                {
+                  "name": "idle_subagent_guard",
+                  "builtin": true
+                }
+              ],
+              "toolDecorators": [
+                {
+                  "name": "output_truncation",
+                  "builtin": true
+                }
+              ],
+              "forceDisableFundamentalComponents": true
+            },
+            "customizationDiscoveryConfig": {
+              "skills": {
+                "builtinSkillNames": [
+                  "agy-customizations",
+                  "antigravity_guide",
+                  "automation",
+                  "generative_ui",
+                  "migrate-workflows",
+                  "plugin",
+                  "ui-plugin-navigation"
+                ],
+                "exclude": [
+                  "permissioned-github"
+                ]
+              },
+              "agents": {
+                "builtinAgentNames": [
+                  "self",
+                  "research",
+                  "browser",
+                  "teamwork",
+                  "DeepCoder",
+                  "DeepInvestigator",
+                  "image-generator"
+                ]
+              },
+              "kindEnablement": {
+                "agent": true,
+                "flow": false,
+                "hooks": true,
+                "mcp": true,
+                "plugin": true,
+                "rule": true,
+                "skill": true,
+                "workflow": true
+              }
+            },
+            "toolConfig": {
+              "code": {
+                "disableExtensions": [
+                  ".ipynb"
+                ],
+                "allowEditGitignore": false,
+                "applyEdits": true,
+                "skipAwaitLintErrors": false,
+                "autoFixLintsConfig": {
+                  "enabled": true,
+                  "notifyingPrompt": "As IDE feedback, the following lint errors may be related to your recent edits up to this point. Consider whether they deserve immediate attention. If worth addressing, clearly comment on them and/or fix them. Be explicit in acknowledging lints and explaining your fix's approach. AVOID unproductive loops; if you detect yourself repeatedly creating/fixing lints in a short period, offer some thoughts but MOVE ON."
+                },
+                "replaceContentToolConfig": {
+                  "maxFuzzyEditDistanceFraction": 0.001,
+                  "allowPartialReplacementSuccess": true,
+                  "fastApplyFallbackConfig": {
+                    "enabled": false,
+                    "promptUnchangedThreshold": 5,
+                    "contentViewRadiusLines": 200,
+                    "contentEditRadiusLines": 5,
+                    "fastApplyModel": "MODEL_GOOGLE_GEMINI_2_5_FLASH"
+                  },
+                  "showTriggeredMemories": true,
+                  "disableAllowMultiple": false,
+                  "useLineRange": true
+                },
+                "classifyEdit": false,
+                "provideImportance": false,
+                "useSedEdit": false,
+                "maxStoredDiffBytes": 1048576,
+                "useReplaceContentProposeCode": false
+              },
+              "intent": {
+                "intentModel": "MODEL_PLACEHOLDER_M50",
+                "maxContextTokens": 40000
+              },
+              "grep": {
+                "maxGrepResults": 50,
+                "useCodeSearch": false,
+                "disableFallbackToLocalExecution": false
+              },
+              "find": {
+                "maxFindResults": 50,
+                "useCodeSearch": false,
+                "disableFallbackToLocalExecution": false,
+                "forceDisable": true
+              },
+              "runCommand": {
+                "maxCharsCommandStdout": 8192,
+                "forceDisable": false,
+                "autoCommandConfig": {
+                  "systemAllowlist": [
+                    "cd"
+                  ],
+                  "sandboxSystemAllowlist": [
+                    "head",
+                    "tail",
+                    "mkdir",
+                    "cd",
+                    "cp",
+                    "mv",
+                    "cat",
+                    "find",
+                    "grep",
+                    "rm",
+                    "touch",
+                    "less",
+                    "clear",
+                    "ls"
+                  ],
+                  "autoExecutionPolicy": "CASCADE_COMMANDS_AUTO_EXECUTION_AUTO"
+                },
+                "enableIdeTerminalExecution": false,
+                "forceGoTerminalExecution": false,
+                "shellName": "bash",
+                "shellPath": "bash",
+                "forbidSearchCommands": false,
+                "enablePty": true,
+                "enablePersistentMode": true,
+                "enableTerminalSandbox": true,
+                "enableTimeoutNotification": false,
+                "enableDaemonCommands": true,
+                "enableFastOutputClose": true,
+                "searchFallbackMode": "SEARCH_FALLBACK_NONE",
+                "enablePluginAuth": true
+              },
+              "viewFile": {
+                "allowViewGitignore": false,
+                "splitOutlineTool": true,
+                "showTriggeredMemories": true,
+                "maxLinesPerView": 800,
+                "includeLineNumbers": true,
+                "maxBytesPerView": 46080,
+                "maxFileSizeBytes": 104857600,
+                "maxTotalOutlineBytes": 8192,
+                "maxBytesPerOutlineItem": 512,
+                "showFullFileBytes": 8192
+              },
+              "suggestedResponse": {
+                "forceDisable": true
+              },
+              "searchWeb": {
+                "forceDisable": false,
+                "thirdPartyConfig": {
+                  "provider": "THIRD_PARTY_WEB_SEARCH_PROVIDER_GEMINI"
+                }
+              },
+              "mcp": {
+                "forceDisable": false,
+                "maxOutputBytes": 10240,
+                "nonBlockingTurnLoad": true
+              },
+              "listDir": {},
+              "commandStatus": {
+                "useDelta": true,
+                "maxOutputCharacters": 8192,
+                "minOutputCharacters": 1024,
+                "maxWaitDurationSeconds": 300,
+                "outputStabilizationDurationSeconds": 5,
+                "enableInputDetection": true,
+                "inputDetectionModel": "MODEL_GOOGLE_GEMINI_2_5_FLASH_LITE"
+              },
+              "antigravityBrowser": {
+                "enableBrowserSubagentV2": true,
+                "enableArk": false,
+                "enableBrowserSubagentWebview": false,
+                "browserJsExecutionPolicy": "BROWSER_JS_EXECUTION_POLICY_ALWAYS_ASK"
+              },
+              "codeSearch": {
+                "forceDisable": false,
+                "useDetailedSearchGuidanceInDi": true,
+                "enableCsQueryOptimizations": false
+              },
+              "internalSearch": {
+                "maxResults": 10,
+                "maxContentLength": 5000
+              },
+              "finish": {},
+              "notebookEdit": {
+                "enabled": false
+              },
+              "invokeSubagent": {
+                "enabled": true,
+                "maxNestingDepth": 10,
+                "alwaysInheritModel": false,
+                "allowFork": false,
+                "sendInitialPromptAsMessage": true
+              },
+              "askQuestion": {
+                "enabled": true
+              },
+              "permissionConfig": {
+                "enterpriseConfig": {
+                  "enforceWorkspaceValidation": true
+                },
+                "effectiveGrants": {
+                  "allow": [
+                    "write_file(<grant>)",
+                    "write_file(<grant>)",
+                    "command(<grant>)",
+                    "write_file(<grant>)",
+                    "command(<grant>)",
+                    "command(<grant>)",
+                    "command(<grant>)",
+                    "write_file(<grant>)",
+                    "command(<grant>)",
+                    "command(<grant>)",
+                    "command(<grant>)",
+                    "command(<grant>)",
+                    "command(<grant>)",
+                    "command(<grant>)",
+                    "write_file(<grant>)",
+                    "write_file(<grant>)",
+                    "write_file(<grant>)",
+                    "command(<grant>)",
+                    "write_file(<grant>)",
+                    "command(<grant>)",
+                    "write_file(<grant>)",
+                    "command(<grant>)",
+                    "command(<grant>)",
+                    "command(<grant>)",
+                    "command(<grant>)",
+                    "command(<grant>)",
+                    "command(<grant>)",
+                    "command(<grant>)",
+                    "command(<grant>)",
+                    "command(<grant>)",
+                    "command(<grant>)",
+                    "command(<grant>)"
+                  ],
+                  "ask": [
+                    "mcp(<grant>)"
+                  ]
+                },
+                "defaultGrants": {},
+                "permissionsV2": true,
+                "effectivePermissionPreset": "AGENT_PERMISSION_PRESET_AUTO"
+              },
+              "userInteractionTimeoutSeconds": 0,
+              "wait": {
+                "enabled": false
+              },
+              "listPluginAccounts": {
+                "enabled": true
+              },
+              "toolOutput": {
+                "maxOutputBytes": 10240
+              },
+              "schedule": {
+                "enabled": true,
+                "enableDaemon": true
+              },
+              "forceEnableSendMessageTool": false,
+              "notifyUser": {
+                "artifactReviewMode": "ARTIFACT_REVIEW_MODE_ALWAYS"
+              },
+              "autoAllowAllInteractions": false
+            },
+            "planModel": "MODEL_PLACEHOLDER_M318",
+            "modelName": "gemini-3.8-flash-high",
+            "maxOutputTokens": 65536,
+            "noToolExplanation": true,
+            "noToolSummary": false,
+            "ephemeralMessagesConfig": {
+              "enabled": false,
+              "persistenceLevel": "EPHEMERAL_MESSAGE_PERSISTENCE_LEVEL_LATEST_ONLY",
+              "browserEphemeralOptions": [
+                "BROWSER_EPHEMERAL_OPTION_SCREENSHOT",
+                "BROWSER_EPHEMERAL_OPTION_DOM"
+              ],
+              "disabledHeuristics": [
+                "planning_mode",
+                "bash_command_reminder",
+                "running_tasks_reminder"
+              ],
+              "useAllowlist": false
+            },
+            "retryConfig": {
+              "modelOutputRetry": {
+                "maxRetries": 4,
+                "forbidToolUse": true,
+                "retryOnlyOnInvalidArgs": false
+              },
+              "apiRetry": {
+                "maxRetries": 8,
+                "initialSleepDurationMs": 4000,
+                "exponentialMultiplier": 2,
+                "includeErrorFeedback": true,
+                "range": 0.4
+              }
+            },
+            "knowledgeConfig": {
+              "enabled": false,
+              "model": "MODEL_PLACEHOLDER_M18",
+              "maxContextTokens": 200000,
+              "minTurnsBetweenKnowledgeGeneration": 10000,
+              "maxKnowledgeItems": 20,
+              "maxArtifactsPerKi": 20,
+              "maxTitleLength": 100,
+              "maxSummaryLength": 1000,
+              "maxInvocations": 20
+            },
+            "agenticModeConfig": {
+              "useSlashPlan": true
+            },
+            "noWaitForPreviousTools": false,
+            "experiments": {
+              "values": {
+                "convenient-multi-agent-coordination": {
+                  "boolValue": false
+                },
+                "default_subagent_interaction_timeout_seconds": {
+                  "numberValue": 60
+                },
+                "disable-teamwork-forced-flash-model": {
+                  "boolValue": false
+                },
+                "enable-agent-plugins-spec": {
+                  "boolValue": true
+                },
+                "enable-browser-subagent-webview-script": {
+                  "boolValue": false
+                },
+                "enable-browser-subagent-webview-ux": {
+                  "boolValue": false
+                },
+                "enable-citc-top-level-write-guard": {
+                  "boolValue": false
+                },
+                "enable-citc-workspace-hygiene-rule": {
+                  "boolValue": true
+                },
+                "enable-compact-slash-command": {
+                  "boolValue": true
+                },
+                "enable-cost-accumulator": {
+                  "boolValue": false
+                },
+                "enable-generative-hooks": {
+                  "boolValue": false
+                },
+                "enable-iapi-tool-steps": {
+                  "boolValue": false
+                },
+                "enable-owl-slash-command": {
+                  "boolValue": true
+                },
+                "enable-permissioned-github": {
+                  "boolValue": false
+                },
+                "enable-programmatic-tools": {
+                  "boolValue": false
+                },
+                "enable-rpc-sandbox-proxy": {
+                  "boolValue": false
+                },
+                "enable-subagent-hub": {
+                  "boolValue": false
+                },
+                "enable-teamwork-subagent": {
+                  "boolValue": true
+                },
+                "enable-trustedcli-config-files": {
+                  "boolValue": false
+                },
+                "enable-url-artifacts": {
+                  "boolValue": false
+                },
+                "jetski-autonomous-mode": {
+                  "boolValue": false
+                },
+                "jetski-generative-ui": {
+                  "boolValue": true
+                },
+                "jetski-unified-customizations-panel-enabled": {
+                  "boolValue": false
+                },
+                "native-swarm-spanner-board": {
+                  "boolValue": false
+                }
+              }
+            },
+            "disableLoopDetection": true,
+            "useAiCredits": false,
+            "supportsLatexRendering": true,
+            "customizationTokenBudget": 20000,
+            "rulesTokenBudget": 20000
+          },
+          "checkpointConfig": {
+            "maxOverheadRatio": 0.15,
+            "maxTokenLimit": 256000,
+            "maxOutputTokens": 32768,
+            "checkpointModel": "MODEL_PLACEHOLDER_M50",
+            "maxUserRequests": 10,
+            "maxUserRequestBytes": 1024,
+            "maxUserRequestMediaTokens": 1200,
+            "maxSubagentSnapshots": 20,
+            "retryConfig": {
+              "maxRetries": 4,
+              "initialSleepDurationMs": 1000,
+              "exponentialMultiplier": 2,
+              "includeErrorFeedback": false,
+              "range": 0.4
+            },
+            "enableFallback": true,
+            "strategy": "CHECKPOINT_STRATEGY_SAME_MODEL",
+            "sessionSummaryPromptOverride": "You have been working on the task described above but have not yet completed\nit. Write a continuation summary that will allow you (or another instance of\nyourself) to resume work efficiently in a future context window where the\nfull conversation history will NOT be available—only this summary.\n\nThis summary is all that will be available to you going forward in the future\ncontext window. Do not call any tools, simply just provide the summary based on\nthe information available in the current context window.\n\nYour summary must be structured, concise, and actionable. Optimize for enabling immediate resumption with zero redundant work.\n\nInclude the following sections:\n\n1. **Task Overview**\n   - The user's core request, success criteria, and requested deliverables. Record any target IDs, URLs, or reporting recipients from the request.\n   - Scope boundaries or task-specific constraints\n   - Any ambiguities that were resolved (and how)\n\n2. **Progress**\n   - What has been completed, with concrete references (file paths,\n     test or verification commands run and their outcomes, resource identifiers, tool outputs, URLs, etc.)\n   - Key plans, design docs, or artifacts produced and their current state\n   - Skills, documentation, or reference files that were read or inspected\n   - What is in progress or only inspected/planned, and its current state. Distinguish completed edits from files that were only read or partially edited, and do not mark unverified test commands as completed or passed.\n\n3. **Key Findings**\n   - Technical constraints, requirements, or domain details uncovered\n   - Decisions made and their rationale\n\n4. **Errors & Fixes**\n   This list should be exhaustive across the entire session so that no resolved or unresolved failure is omitted:\n   - All errors, failed commands, or test/build failures encountered during the session. Include both errors that were resolved or worked around and any unresolved failures, with specific error messages and root causes.\n   - How each error was fixed or worked around, and any user feedback on the error\n   - Approaches that were tried and abandoned (and why—this prevents\n     the successor from repeating them)\n\n5. **Active Context**\n   - State of any external resources, sessions, environments, or multi-agent context, such as parent or child agents in use.\n   - Relevant intermediate results, hypotheses, or working assumptions\n   - Dependencies between components or steps\n\n6. **Next Steps**\n   The next steps should provide all information required to continue working on the task. This includes any remaining features, bugs, points of investigation, and verification items. This list should be exhaustive, so that an agent working with this list can complete the full original task end-to-end. For example:\n   - Remaining steps from any agreed plan, design doc, or active workflows and instructions, in priority order. Preserve specific uncompleted items rather than collapsing checklists into high-level summaries.\n   - Remaining files to create, modify, move, copy, or delete, with the key changes needed in each\n   - Remaining verification steps, test or build commands, or deliverables needed to complete the task\n   - Any required cleanup, such as removing temporary files, debug code, or temporary configuration changes.\n   - Known blockers, open questions, prerequisites, or risks for each step\n\n7. **Commitments & Constraints**\n   - Standing rules, personas, or response formatting requirements from user instructions, rules files, or reference documents.\n   - Promises made to the user (e.g., \"I said I would do X before Y\")\n   - User preferences or style requirements\n   - Any boundaries the user set on approach, tools, or scope\n\nBe concise but complete—err on the side of including concrete details needed to\nprevent duplicate work, omitted plan steps, repeated mistakes, or broken promises.\n\nWrap your response in <summary></summary> tags.\n",
+            "useLastPlannerModel": true,
+            "includeArtifactSnapshots": true,
+            "includeSubagentSnapshots": true,
+            "includeRunningTaskSnapshots": true,
+            "maxArtifactSectionBytes": 4096,
+            "mediaTokensPerSecond": "300",
+            "useModelReportedTokenCount": true,
+            "enabled": true,
+            "includeConversationLog": false,
+            "tokenThreshold": 50000,
+            "isSync": true,
+            "includeLastUserMessage": true
+          },
+          "executorConfig": {
+            "disableAsync": false,
+            "maxGeneratorInvocations": -1,
+            "useAggressiveSnapshotting": false,
+            "requireFinishTool": false,
+            "queueAllSteps": true,
+            "storeGenSvcRequest": false,
+            "enableTasks": true,
+            "enableAfkStopHook": false,
+            "useCoreDirect": true,
+            "commandAssessorConfig": {
+              "enabled": true,
+              "policyGuardianConfig": {
+                "modelTier": "MODEL_TIER_FLASH_LITE",
+                "vettedTools": [
+                  "run_command",
+                  "read_url_content",
+                  "open_browser_url"
+                ],
+                "maxToolRounds": 10,
+                "enableUrlVetting": true,
+                "httpTimeoutSeconds": 30
+              },
+              "allowExperimentalMonitors": false,
+              "allowPssExperimentalMonitors": false,
+              "activeTags": [
+                "jetski_mode_auto"
+              ]
+            },
+            "maxStopHookContinuations": 10,
+            "enableHookStatus": true
+          },
+          "trajectoryConversionConfig": {
+            "wrapToolResponses": false,
+            "logArtifactsConfig": {
+              "enabled": true,
+              "hideNominalToolSteps": false,
+              "hidePlannerResponseText": false,
+              "maxBytesPerStep": 4096,
+              "maxBytesPerToolArg": 2048,
+              "hideSystemSteps": false,
+              "hideUserImplicitSteps": false
+            },
+            "appendEphemeralToPreviousToolResult": true,
+            "disableStepId": true,
+            "enableToolTimestamp": true,
+            "useRawUserMessage": false,
+            "disableSystemMessageMerging": false,
+            "enableContextRole": false,
+            "maxTokensPerStep": 16384,
+            "discardLoopingPlannerResponses": false,
+            "discardErroredPlannerResponses": false,
+            "errorOnTruncationWithoutCheckpoint": false,
+            "raiseStepConversionError": false,
+            "maxTokensPerUserInputStep": 64000,
+            "useStructuredToolResponses": true,
+            "showModelSelectionChange": true,
+            "disableSystemMessageTag": false,
+            "taskDetailsSuffix": "\nYOU MUST TAKE ONE OF THE FOLLOWING TWO ACTIONS: A) either proceed to other relevant work (if any) or, B) simply update the user with a short message (that you have launched the command and will wait for it to finish) and end the turn.\n DO NOTHING ELSE."
+          },
+          "conversationHistoryConfig": {
+            "enabled": true,
+            "maxConversations": 20,
+            "maxTitleChars": 100,
+            "maxUserIntentChars": 1000,
+            "maxConversationLogsChars": 1000,
+            "maxArtifactSummaryChars": 2000
+          },
+          "messageConfig": {
+            "enabled": true
+          },
+          "agentApiConfig": {
+            "enabled": false
+          },
+          "battleModeConfig": {
+            "maxTurns": 0
+          }
+        },
+        "mendelExperimentIds": [
+          1714249,
+          105856899,
+          105867469,
+          105867471,
+          105887299,
+          105979531,
+          105979552,
+          105979553,
+          105979574,
+          106015328,
+          106015333,
+          106021688,
+          106032301,
+          106032303,
+          106064028,
+          106064030,
+          106100625,
+          106100654,
+          106121399,
+          106121401,
+          106121604,
+          106121607,
+          106123597,
+          106123599,
+          106140402,
+          106143956,
+          106228452,
+          106260793,
+          106263850,
+          106264532,
+          106281951,
+          106380926,
+          106511968,
+          106544525,
+          106568390,
+          106568772,
+          106588527,
+          106596396,
+          106597020,
+          106640124,
+          106640126,
+          106643242,
+          106644204,
+          106644207,
+          106676368,
+          106712040,
+          106724031,
+          106749607,
+          106754391,
+          106778026,
+          106786387,
+          106786388,
+          106788235,
+          106791759,
+          106791765,
+          106793263,
+          106793266,
+          106798730,
+          106798741,
+          106805272,
+          106806117,
+          106811917,
+          106822474,
+          106825242,
+          106825244,
+          106826239,
+          106826316,
+          106827293,
+          106827294,
+          106828852,
+          106828853,
+          106828854,
+          106828998,
+          106833630,
+          106838234,
+          106848320,
+          106863826,
+          106863827,
+          106865004,
+          106865005,
+          106865006,
+          106898384,
+          106913264,
+          107002400,
+          107002418,
+          107023280
+        ],
+        "agentConfigResolution": {
+          "requestedAgentSpec": {
+            "builtinAgent": {
+              "defaultAgent": {
+                "isGoogle": false,
+                "isInteractive": true,
+                "surface": "AGENT_SURFACE_HUB"
+              }
+            }
+          },
+          "contribVariantMetadata": {}
+        },
+        "requestOverrideConfig": {
+          "plannerConfig": {
+            "declarativeMixinConfig": {
+              "promptSections": [
+                {
+                  "builtinName": "identity"
+                },
+                {
+                  "builtinName": "terminal_sandbox"
+                },
+                {
+                  "builtinName": "artifacts"
+                },
+                {
+                  "builtinName": "conversation_transcript"
+                },
+                {
+                  "builtinName": "guidelines"
+                },
+                {
+                  "builtinName": "communication_style"
+                },
+                {
+                  "builtinName": "slash_commands"
+                },
+                {
+                  "builtinName": "messaging"
+                },
+                {
+                  "builtinName": "mcp_servers"
+                },
+                {
+                  "builtinName": "subagents"
+                },
+                {
+                  "builtinName": "user_rules"
+                },
+                {
+                  "builtinName": "skills"
+                },
+                {
+                  "builtinName": "featured_plugins"
+                },
+                {
+                  "builtinName": "user_information"
+                },
+                {
+                  "builtinName": "subagent_reminder"
+                }
+              ],
+              "tools": [
+                {
+                  "name": "read_file",
+                  "builtin": true
+                },
+                {
+                  "name": "run_command",
+                  "builtin": true
+                },
+                {
+                  "name": "list_plugin_accounts",
+                  "builtin": true
+                },
+                {
+                  "name": "manage_task",
+                  "builtin": true
+                },
+                {
+                  "name": "send_message",
+                  "builtin": true
+                },
+                {
+                  "name": "schedule",
+                  "builtin": true
+                },
+                {
+                  "name": "invoke_subagent",
+                  "builtin": true
+                },
+                {
+                  "name": "define_subagent",
+                  "builtin": true
+                },
+                {
+                  "name": "manage_subagents",
+                  "builtin": true
+                },
+                {
+                  "name": "write_file",
+                  "builtin": true
+                },
+                {
+                  "name": "edit_file",
+                  "builtin": true
+                },
+                {
+                  "name": "search_web",
+                  "builtin": true
+                },
+                {
+                  "name": "search_marketplace",
+                  "builtin": true
+                },
+                {
+                  "name": "ask_question",
+                  "builtin": true
+                }
+              ],
+              "preInvocationHooks": [
+                {
+                  "name": "message_delivery",
+                  "builtin": true
+                },
+                {
+                  "name": "context_summary",
+                  "builtin": true
+                }
+              ],
+              "postInvocationHooks": [
+                {
+                  "name": "message_continue_check",
+                  "builtin": true
+                },
+                {
+                  "name": "terminal_step_check",
+                  "builtin": true
+                },
+                {
+                  "name": "max_generator_invocations_check",
+                  "builtin": true
+                },
+                {
+                  "name": "empty_output_continuation_check",
+                  "builtin": true
+                },
+                {
+                  "name": "force_invocation",
+                  "builtin": true
+                },
+                {
+                  "name": "no_tool_call_check",
+                  "builtin": true
+                }
+              ],
+              "preToolHooks": [
+                {
+                  "name": "battle_mode_tool_args",
+                  "builtin": true
+                },
+                {
+                  "name": "command_assessor",
+                  "builtin": true
+                },
+                {
+                  "name": "timeout_long_running_search_command",
+                  "builtin": true
+                },
+                {
+                  "name": "auto_run_safety_gate",
+                  "builtin": true
+                }
+              ],
+              "postToolHooks": [
+                {
+                  "name": "command_assessor",
+                  "builtin": true
+                }
+              ],
+              "stopHooks": [
+                {
+                  "name": "goal_stop",
+                  "builtin": true
+                },
+                {
+                  "name": "idle_subagent_guard",
+                  "builtin": true
+                }
+              ],
+              "toolDecorators": [
+                {
+                  "name": "output_truncation",
+                  "builtin": true
+                }
+              ],
+              "forceDisableFundamentalComponents": true
+            },
+            "customizationDiscoveryConfig": {
+              "skills": {
+                "builtinSkillNames": [
+                  "agy-customizations",
+                  "antigravity_guide",
+                  "automation",
+                  "generative_ui",
+                  "migrate-workflows",
+                  "plugin",
+                  "ui-plugin-navigation"
+                ]
+              },
+              "agents": {
+                "builtinAgentNames": [
+                  "self",
+                  "research",
+                  "browser",
+                  "teamwork",
+                  "DeepCoder",
+                  "DeepInvestigator",
+                  "image-generator"
+                ]
+              }
+            },
+            "toolConfig": {
+              "runCommand": {
+                "autoCommandConfig": {
+                  "autoExecutionPolicy": "CASCADE_COMMANDS_AUTO_EXECUTION_AUTO"
+                }
+              },
+              "antigravityBrowser": {
+                "enableBrowserSubagentWebview": false
+              },
+              "notifyUser": {}
+            },
+            "planModel": "MODEL_PLACEHOLDER_M318",
+            "useAiCredits": false,
+            "supportsLatexRendering": true
+          },
+          "executorConfig": {
+            "useCoreDirect": true
+          },
+          "conversationHistoryConfig": {}
+        },
+        "loadedCustomizations": {
+          "customizations": [
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_SKILL",
+              "name": "agy-customizations",
+              "path": "/Users/USER/.gemini/antigravity/builtin/skills/agy-customizations/SKILL.md",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_SKILL",
+              "name": "antigravity-guide",
+              "path": "/Users/USER/.gemini/antigravity/builtin/skills/antigravity_guide/SKILL.md",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_SKILL",
+              "name": "automation",
+              "path": "/Users/USER/.gemini/antigravity/builtin/skills/automation/SKILL.md",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_SKILL",
+              "name": "generative_ui",
+              "path": "/Users/USER/.gemini/antigravity/builtin/skills/generative_ui/SKILL.md",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_SKILL",
+              "name": "migrate-workflows",
+              "path": "/Users/USER/.gemini/antigravity/builtin/skills/migrate-workflows/SKILL.md",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_SKILL",
+              "name": "plugin",
+              "path": "/Users/USER/.gemini/antigravity/builtin/skills/plugin/SKILL.md",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_SKILL",
+              "name": "ui-plugin-navigation",
+              "path": "/Users/USER/.gemini/antigravity/builtin/skills/ui-plugin-navigation/SKILL.md",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_AGENT",
+              "name": "research",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_AGENT",
+              "name": "browser",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_AGENT",
+              "name": "image-generator",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_AGENT",
+              "name": "teamwork",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_AGENT",
+              "name": "DeepCoder",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            },
+            {
+              "type": "REFRESH_CUSTOMIZATION_TYPE_AGENT",
+              "name": "DeepInvestigator",
+              "scope": "SCOPE_BUILTIN",
+              "status": "STATUS_ENABLED"
+            }
+          ]
+        }
+      }
+    ],
+    "source": "CORTEX_TRAJECTORY_SOURCE_CASCADE_CLIENT",
+    "metadata": {
+      "createdAt": "2026-11-10T07:16:23.205458610Z",
+      "initializationStateId": "11bdfd45-2857-4746-a5bd-3a9ddaff8ba4",
+      "rootConversationId": "548182e7-ff2c-403b-bb43-4bafb3071a90",
+      "mendelExperimentIds": [
+        1714249,
+        105856899,
+        105867469,
+        105867471,
+        105887299,
+        105979531,
+        105979552,
+        105979553,
+        105979574,
+        106015328,
+        106015333,
+        106021688,
+        106032301,
+        106032303,
+        106064028,
+        106064030,
+        106100625,
+        106100654,
+        106121399,
+        106121401,
+        106121604,
+        106121607,
+        106123597,
+        106123599,
+        106140402,
+        106143956,
+        106228452,
+        106260793,
+        106263850,
+        106264532,
+        106281951,
+        106380926,
+        106511968,
+        106544525,
+        106568390,
+        106568772,
+        106588527,
+        106596396,
+        106597020,
+        106640124,
+        106640126,
+        106643242,
+        106644204,
+        106644207,
+        106676368,
+        106712040,
+        106724031,
+        106749607,
+        106754391,
+        106778026,
+        106786387,
+        106786388,
+        106788235,
+        106791759,
+        106791765,
+        106793263,
+        106793266,
+        106798730,
+        106798741,
+        106805272,
+        106806117,
+        106811917,
+        106822474,
+        106825242,
+        106825244,
+        106826239,
+        106826316,
+        106827293,
+        106827294,
+        106828852,
+        106828853,
+        106828854,
+        106828998,
+        106833630,
+        106838234,
+        106848320,
+        106863826,
+        106863827,
+        106865004,
+        106865005,
+        106865006,
+        106898384,
+        106913264,
+        107002400,
+        107002418,
+        107023280
+      ],
+      "projectId": "outside-of-project"
+    }
+  },
+  "status": "CASCADE_RUN_STATUS_IDLE",
+  "numTotalSteps": 2,
+  "numTotalGeneratorMetadata": 1,
+  "numTotalExecutorMetadata": 1
+}
