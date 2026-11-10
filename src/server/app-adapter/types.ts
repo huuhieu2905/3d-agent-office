@@ -37,6 +37,11 @@ export interface AppAdapter {
   answerPermission(conversationId: string, requestId: string, decision: 'allow' | 'deny'): Promise<void>;
   /** Spec 003 A3-3: answer an agent's ask_question. Only on an explicit user action (FR-011). */
   answerQuestion(conversationId: string, requestId: string, answer: QuestionAnswer): Promise<void>;
+  /**
+   * Spec 004 A4-1: permanently delete a conversation. Only after the user confirmed it (Constitution III).
+   * The App also deletes every subagent of it.
+   */
+  deleteConversation(conversationId: string): Promise<void>;
 }
 
 /** Spec 003 US4 (data-model §6): result of the read-only compatibility check. Names and counts only. */

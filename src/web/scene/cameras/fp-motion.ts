@@ -1,14 +1,26 @@
-import type { OfficeGrid } from '../grid/grid';
+import type { Cell } from '../grid/grid';
 
 // Collision-aware movement for the first-person camera (FR-071, R15): a circle of radius 0.2 m slides
 // along walls/furniture using the same cell grid as pathfinding. Pure so it can be unit-tested.
+// 004 US4 (R4-07): the grid is the SiteGrid (office + park), so the user walks out of the door and around
+// the park; employees (`others`) block the way too (FR-035).
 
 export const EYE_HEIGHT = 1.65;
 // Must stay below half a cell (0.25 m) so a body centred in a cell next to a wall is not "inside" it.
 export const RADIUS = 0.2;
+/** Keep this far (m) from an employee's centre. */
+export const PERSON_GAP = RADIUS + 0.2;
 
-/** Is a circle at (x, z) free of blocked cells and blocked edges? */
-export function freeAt(grid: OfficeGrid, x: number, z: number, r = RADIUS): boolean {
+export interface MotionGrid {
+  toCell(x: number, z: number): Cell;
+  walkable(x: number, z: number): boolean;
+  canStep(a: Cell, b: Cell): boolean;
+}
+
+export type Others = Iterable<{ x: number; z: number }>;
+
+/** Is a circle at (x, z) free of blocked cells, blocked edges and people? */
+export function freeAt(grid: MotionGrid, x: number, z: number, r = RADIUS, others?: Others): boolean {
   const c = grid.toCell(x, z);
   if (!grid.walkable(c.x, c.z)) return false;
   // Check the four points of the circle; each must be in a walkable cell reachable from the centre cell.
@@ -22,14 +34,17 @@ export function freeAt(grid: OfficeGrid, x: number, z: number, r = RADIUS): bool
     if (n.x === c.x && n.z === c.z) continue;
     if (!grid.canStep(c, n)) return false;
   }
+  if (others) for (const o of others) if (Math.hypot(o.x - x, o.z - z) < PERSON_GAP) return false;
   return true;
 }
 
 /** Move from (x, z) by (dx, dz), sliding along obstacles axis by axis. */
-export function slide(grid: OfficeGrid, x: number, z: number, dx: number, dz: number): { x: number; z: number } {
+export function slide(grid: MotionGrid, x: number, z: number, dx: number, dz: number, others?: Others): { x: number; z: number } {
+  // Someone already too close (they walked into us): only accept moves that do not get closer.
+  const list = others ? [...others].filter((o) => Math.hypot(o.x - x, o.z - z) >= PERSON_GAP) : undefined;
   let nx = x;
   let nz = z;
-  if (freeAt(grid, x + dx, z)) nx = x + dx;
-  if (freeAt(grid, nx, z + dz)) nz = z + dz;
+  if (freeAt(grid, x + dx, z, RADIUS, list)) nx = x + dx;
+  if (freeAt(grid, nx, z + dz, RADIUS, list)) nz = z + dz;
   return { x: nx, z: nz };
 }

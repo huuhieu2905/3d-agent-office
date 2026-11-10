@@ -33,6 +33,9 @@ export const settingsSchema = z.object({
   autoLowerDetail: z.boolean(),
   camera: z.enum(['overview', 'first_person']),
   defaultModel: z.string().max(200).nullable(),
+  // 004: optional on purpose — a required field would make JsonStore reset older settings.json files.
+  legendCollapsed: z.boolean().optional(),
+  screensOff: z.array(z.string().min(1).max(100)).max(50).optional(),
 });
 
 const rotationSchema = z.union([z.literal(0), z.literal(90), z.literal(180), z.literal(270)]);

@@ -22,6 +22,18 @@ export class MockApp {
   answeredWith: Record<string, unknown>[] | null = null;
   /** 003 US2 U3-2: make the App reject question answers with HTTP 400. */
   rejectQuestion = false;
+  /** 004 US2 (L4-3): conversations the "App" deleted, ids running individually, child → parent links. */
+  deleted = new Set<string>();
+  runningIds = new Set<string>();
+  parents: Record<string, string> = {};
+  /** 004 US2: make DeleteCascadeTrajectory fail with HTTP 500. */
+  failDelete = false;
+  /** 004 US1: give every conversation its own project, so the legend lists one project per employee. */
+  projectPerConversation = false;
+  private manyProjectIds(): string[] {
+    const ids = Object.keys(fixture<{ trajectorySummaries: Record<string, unknown> }>('GetAllCascadeTrajectories').trajectorySummaries);
+    return ids.map((_, i) => `00000000-0000-4000-8000-00000000f${String(i).padStart(3, '0')}`);
+  }
 
   constructor() {
     const t = this.transport;
@@ -44,10 +56,17 @@ export class MockApp {
     t.handlers.ReadProjects = (body) => {
       const ids = (body as { ids: string[] }).ids;
       const base = fixture<{ projects: { id: string }[] }>('ReadProjects').projects;
-      return { projects: [...base, ...this.created].filter((p) => ids.includes(p.id)) };
+      const many = this.projectPerConversation
+        ? this.manyProjectIds().map((id, i) => ({ id, name: `Dự án thử ${i + 1}`, projectResources: { resources: [] } }))
+        : [];
+      return { projects: [...base, ...this.created, ...many].filter((p) => ids.includes(p.id)) };
     };
     t.handlers.ListProjects = () => ({
-      projectIds: [...fixture<{ projectIds: string[] }>('ListProjects').projectIds, ...this.created.map((p) => p.id)],
+      projectIds: [
+        ...fixture<{ projectIds: string[] }>('ListProjects').projectIds,
+        ...this.created.map((p) => p.id),
+        ...(this.projectPerConversation ? this.manyProjectIds() : []),
+      ],
     });
     t.handlers.GetUserStatus = () => {
       const data = fixture<{ userStatus: { cascadeModelConfigData: { clientModelConfigs: { modelOrAlias?: { model?: string } }[] } } }>('GetUserStatus');
@@ -73,10 +92,33 @@ export class MockApp {
       this.waiting = false;
       return {};
     };
+    t.handlers.DeleteCascadeTrajectory = (body) => {
+      this.sent.push({ method: 'DeleteCascadeTrajectory', body });
+      if (this.failDelete) throw new RpcError('app', 'DeleteCascadeTrajectory: HTTP 500', 500);
+      const root = (body as { cascadeId: string }).cascadeId;
+      // Like the real App: deleting a conversation deletes all its subagents (any depth).
+      const gone = new Set([root]);
+      for (let grew = true; grew; ) {
+        grew = false;
+        for (const [child, parent] of Object.entries(this.parents)) {
+          if (gone.has(parent) && !gone.has(child)) {
+            gone.add(child);
+            grew = true;
+          }
+        }
+      }
+      for (const id of gone) this.deleted.add(id);
+      return {};
+    };
     t.handlers.GetAllCascadeTrajectories = () => {
       const data = fixture<{ trajectorySummaries: Record<string, Record<string, unknown>> }>('GetAllCascadeTrajectories');
-      for (const v of Object.values(data.trajectorySummaries)) {
-        if (this.runningAll) v.status = 'CASCADE_RUN_STATUS_RUNNING';
+      for (const id of this.deleted) delete data.trajectorySummaries[id];
+      const many = this.projectPerConversation ? this.manyProjectIds() : [];
+      for (const [i, [id, v]] of Object.entries(data.trajectorySummaries).entries()) {
+        if (many[i]) v.trajectoryMetadata = { ...((v.trajectoryMetadata as object) ?? {}), projectId: many[i] };
+        if (this.runningAll || this.runningIds.has(id)) v.status = 'CASCADE_RUN_STATUS_RUNNING';
+        const parent = this.parents[id];
+        if (parent) v.trajectoryMetadata = { ...((v.trajectoryMetadata as object) ?? {}), parentConversationId: parent };
         // Keep summaries consistent with the steps fixture being served (the real App always is).
         v.stepCount = (this.waiting ? 7 : 20) + this.extraSteps.length + (this.question ? 1 : 0);
       }

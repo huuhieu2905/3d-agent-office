@@ -7,6 +7,7 @@ import { useEmployees } from '../state/employees';
 import { useConnection } from '../state/connection';
 import { useSettings } from '../state/settings';
 import { useWeather } from '../state/weather';
+import { BRAINS } from '../scene/Employee';
 import type { DetailLevel } from '@shared/domain';
 
 // T058 / SC-004: 20 fake employees whose state changes every 2 s in the default office, with a fixed
@@ -14,7 +15,7 @@ import type { DetailLevel } from '@shared/domain';
 
 const STATES: VisualState[] = ['idle', 'working', 'thinking', 'waiting_for_boss', 'error', 'stopped'];
 /** Scenarios understood by ?scenario= (T003). */
-const KNOWN_SCENARIOS: string[] = ['crowd'];
+const KNOWN_SCENARIOS: string[] = ['crowd', 'outing'];
 
 const APPEARANCES = ['worker-a', 'worker-b', 'worker-c', 'worker-d', 'worker-e', 'worker-f', 'worker-g', 'worker-h'];
 
@@ -83,7 +84,10 @@ function benchFloor(): { width: number; depth: number } | undefined {
 }
 
 export function Bench() {
-  const layout = defaultBenchLayout(benchFloor());
+  // 004 T042 "outing": all 20 idle, dry weather, a sofa, breaks every 10 s → sofa rests and shop trips
+  // up to the outing cap (a third of the staff outside) while the FPS is measured.
+  const outing = new URLSearchParams(location.search).get('scenario') === 'outing';
+  const layout = defaultBenchLayout(benchFloor(), { sofa: outing });
   const deskIds = layout.items.filter((i) => i.type === 'desk').map((d) => d.id);
 
   useEffect(() => {
@@ -97,15 +101,23 @@ export function Bench() {
     if (floor && !/^\d+x\d+$/.test(floor)) console.warn(`bench: bad floor "${floor}", expected WxD in metres`);
     const detail: DetailLevel = q === 'low' || q === 'high' ? q : 'medium';
     useSettings.getState().set({ detailLevel: detail, city: 'hanoi', theme: 'light', autoLowerDetail: false });
-    useWeather.getState().set({ city: 'hanoi', condition: 'rain', isDay: true, temperatureC: 26, fetchedAt: new Date().toISOString(), source: 'open-meteo' });
+    useWeather.getState().set({ city: 'hanoi', condition: outing ? 'clear' : 'rain', isDay: true, temperatureC: 26, fetchedAt: new Date().toISOString(), source: 'open-meteo' });
     useConnection.getState().setServerOnline(true);
     useConnection.getState().setApp({ kind: 'connected', appVersion: 'bench', versionSupported: true, verifiedVersions: [] });
     let tick = 0;
-    useEmployees.getState().snapshot(fakeEmployees(tick, deskIds, scenario === 'crowd'), 0);
-    window.__bench = { frames: [], startedAt: performance.now(), ...(scenario === 'crowd' ? { overlaps: 0 } : {}) };
+    const idle = scenario === 'crowd' || outing;
+    useEmployees.getState().snapshot(fakeEmployees(tick, deskIds, idle), 0);
+    window.__bench = { frames: [], startedAt: performance.now(), ...(idle ? { overlaps: 0 } : {}) };
+    const tuned = new WeakSet<object>();
     const id = setInterval(() => {
       tick++;
-      useEmployees.getState().snapshot(fakeEmployees(tick, deskIds, scenario === 'crowd'), 0);
+      useEmployees.getState().snapshot(fakeEmployees(tick, deskIds, idle), 0);
+      if (outing)
+        for (const b of BRAINS.values())
+          if (!tuned.has(b)) {
+            tuned.add(b);
+            b.setBreakInterval(10_000);
+          }
     }, 2000);
     return () => clearInterval(id);
   }, []); // once, on mount

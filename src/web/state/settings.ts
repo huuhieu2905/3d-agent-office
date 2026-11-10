@@ -4,6 +4,9 @@ import { api } from '../api/client';
 
 // Settings (FR-053/060/064/065): loaded from the server once, saved (debounced) on every change.
 
+/** Stable fallback for optional list settings: a selector must never return a new [] (endless re-render). */
+export const NO_IDS: readonly string[] = Object.freeze([]);
+
 const prefersDark = typeof matchMedia !== 'undefined' && matchMedia('(prefers-color-scheme: dark)').matches;
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -14,6 +17,8 @@ export const DEFAULT_SETTINGS: Settings = {
   autoLowerDetail: true,
   camera: 'overview',
   defaultModel: null,
+  legendCollapsed: false,
+  screensOff: [],
 };
 
 interface SettingsStore {

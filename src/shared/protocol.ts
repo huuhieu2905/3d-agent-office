@@ -30,10 +30,11 @@ export type ErrorCode =
   | 'QUESTION_NOT_PENDING'
   | 'APP_REJECTED'
   | 'PROJECT_NAME_TAKEN'
+  | 'AGENT_BUSY'
   | 'INTERNAL';
 
 export interface ErrorBody {
-  error: { code: ErrorCode; message: string };
+  error: { code: ErrorCode; message: string; /** 004 L4-1 AGENT_BUSY: which conversation of the tree is busy. */ busyId?: string; visualState?: string };
 }
 
 export const DEFAULT_PORT = 4317;

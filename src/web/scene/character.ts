@@ -9,7 +9,7 @@ import * as THREE from 'three';
 
 export const TARGET_HEIGHT = 1.36; // metres when standing
 
-export type Clip = 'Idle' | 'Walking' | 'Sitting' | 'Standing' | 'Wave' | 'Yes' | 'No' | 'ThumbsUp' | 'Jump' | 'Dance';
+export type Clip = 'Idle' | 'Walking' | 'Sitting' | 'Standing' | 'Wave' | 'Yes' | 'No' | 'ThumbsUp' | 'Jump' | 'Dance' | 'Lying' | 'Drinking' | 'Resting';
 export type Expression = 'neutral' | 'Sad' | 'Surprised' | 'Angry';
 
 /** Outfits from concept-decision.md (tops/bottoms in the D palette), skin and hair tones. */
@@ -59,6 +59,12 @@ interface Rig {
   eyes: THREE.Mesh[];
   joints: Joint[];
   hipY: number;
+  /** 004: animation speed (running back to the desk plays the walk faster). */
+  speed: number;
+  /** 004: props shown with some clips / states. */
+  cup: THREE.Object3D;
+  umbrella: THREE.Object3D;
+  umbrellaOn: boolean;
 }
 
 /** `shadows: false` for background people (park): they are outside the office's shadow frustum anyway. */
@@ -142,11 +148,25 @@ export function instantiate(appearance: string, opts: { shadows?: boolean } = {}
     return { shoulder, elbow };
   });
 
+  // 004 US3: a paper cup in the right hand (Drinking) and an umbrella held over the head (rain).
+  const cup = new THREE.Group();
+  cup.position.set(0, -S.arm / 2 - 0.02, 0.06);
+  arms[1]!.elbow.add(cup);
+  mesh(new THREE.CylinderGeometry(0.035, 0.028, 0.09, 12), mat('#fffaf0', 0.5), cup);
+  cup.visible = false;
+  const umbrella = new THREE.Group();
+  umbrella.position.set(0.12, 0, 0.05);
+  root.add(umbrella);
+  mesh(new THREE.CylinderGeometry(0.012, 0.012, 1.1, 6), mat('#3b3b3b', 0.4), umbrella, 0, 1.3, 0);
+  const canopy = mesh(new THREE.ConeGeometry(0.62, 0.28, 16, 1, true), mat('#c2603a', 0.7), umbrella, 0, 1.92, 0);
+  (canopy.material as THREE.MeshStandardMaterial).side = THREE.DoubleSide;
+  umbrella.visible = false;
+
   const joints: Joint[] = [];
   const j = (obj: THREE.Object3D) => joints.push({ obj, target: new THREE.Euler() });
   [hips, torso, head, ...legs.flatMap((l) => [l.thigh, l.knee]), ...arms.flatMap((a) => [a.shoulder, a.elbow])].forEach(j);
 
-  const rig: Rig = { clip: 'Idle', t: 0, seated: false, expression: 'neutral', hips, torso, head, legs, arms, eyes, joints, hipY: S.hip };
+  const rig: Rig = { clip: 'Idle', t: 0, seated: false, expression: 'neutral', hips, torso, head, legs, arms, eyes, joints, hipY: S.hip, speed: 1, cup, umbrella, umbrellaOn: false };
   const c: CharacterInstance = {
     root,
     rig,
@@ -168,7 +188,7 @@ export function instantiate(appearance: string, opts: { shadows?: boolean } = {}
 /** Switch clip; joints ease to the new pose (the fade is implicit). */
 export function play(c: CharacterInstance, clip: Clip, fade = 0.3, timeScale = 1): void {
   void fade; // kept for callers written for the glTF mixer; the procedural rig eases on its own
-  void timeScale;
+  c.rig.speed = timeScale;
   if (c.rig.clip === clip) return;
   c.rig.clip = clip;
   c.rig.t = 0;
@@ -181,6 +201,12 @@ export function setSeated(c: CharacterInstance, seated: boolean): void {
 
 export function setFace(c: CharacterInstance, expression: Expression): void {
   c.rig.expression = expression;
+}
+
+/** 004 FR-029: hold an umbrella over the head (walking back in the rain). */
+export function setUmbrella(c: CharacterInstance, on: boolean): void {
+  c.rig.umbrellaOn = on;
+  c.rig.umbrella.visible = on;
 }
 
 const set = (e: THREE.Euler, x = 0, y = 0, z = 0) => e.set(x, y, z);
@@ -237,6 +263,30 @@ function targetFor(r: Rig): void {
       set(rSh!, -0.7, 0, 0.15);
       break;
     }
+    case 'Lying': {
+      // 004: asleep on the sofa — on one side along the cushion (head towards local −x), legs straight.
+      set(hips!, 0, 0, Math.PI / 2 - 0.05);
+      set(lThigh!, 0.05);
+      set(rThigh!, 0.05);
+      set(lKnee!, 0.1);
+      set(rKnee!, 0.1);
+      set(lSh!, -0.2, 0, -0.25);
+      set(rSh!, -0.6, 0, 0.35);
+      set(head!, 0.25 + Math.sin(t * 0.8) * 0.03);
+      r.hipY = 0.5;
+      break;
+    }
+    case 'Resting': {
+      // 004: sitting back on the sofa or a stool, hands on the lap.
+      set(torso!, -0.18);
+      set(lSh!, -0.55, 0, -0.1);
+      set(rSh!, -0.55, 0, 0.1);
+      set(lEl!, -0.6);
+      set(rEl!, -0.6);
+      set(head!, Math.sin(t * 0.6) * 0.06, Math.sin(t * 0.4) * 0.2);
+      break;
+    }
+    case 'Drinking':
     case 'Yes': {
       // Drinking at the cooler: cup to the mouth now and then, nodding.
       const sip = Math.max(0, Math.sin(t * 1.6));
@@ -266,8 +316,15 @@ function targetFor(r: Rig): void {
 }
 
 function animate(r: Rig, dt: number, snap = false): void {
-  r.t += dt;
+  r.t += dt * r.speed;
   targetFor(r);
+  r.cup.visible = r.clip === 'Drinking';
+  if (r.umbrellaOn) {
+    // Right hand up on the umbrella pole.
+    const [, , , , , , , , , rSh, rEl] = r.joints.map((j) => j.target);
+    rSh!.set(-0.35, 0, 0.55);
+    rEl!.set(-1.1, 0, 0);
+  }
   const k = snap ? 1 : 1 - Math.exp(-dt * 10);
   for (const jt of r.joints) {
     const o = jt.obj.rotation;
@@ -277,6 +334,6 @@ function animate(r: Rig, dt: number, snap = false): void {
   }
   r.hips.position.y += (r.hipY - r.hips.position.y) * k;
   // Expressions: round eyes, wider when surprised, half-closed when sad.
-  const ey = r.expression === 'Surprised' ? 1.35 : r.expression === 'Sad' ? 0.45 : r.expression === 'Angry' ? 0.7 : 1;
+  const ey = r.clip === 'Lying' ? 0.08 : r.expression === 'Surprised' ? 1.35 : r.expression === 'Sad' ? 0.45 : r.expression === 'Angry' ? 0.7 : 1;
   for (const e of r.eyes) e.scale.y += (ey - e.scale.y) * (snap ? 1 : 1 - Math.exp(-dt * 12));
 }

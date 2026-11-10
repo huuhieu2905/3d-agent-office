@@ -4,7 +4,7 @@ import type { OfficeLayout, PlacedItem } from '@shared/domain';
 // Layout v2; mirrors src/server/services/default-layout.ts (the web bundle must not import server code).
 // `floor` (T003/T056): a larger office, e.g. 40 × 40 m, keeps the same desk block in its north-west.
 
-export function defaultBenchLayout(floor?: { width: number; depth: number }): OfficeLayout {
+export function defaultBenchLayout(floor?: { width: number; depth: number }, opts: { sofa?: boolean } = {}): OfficeLayout {
   const items: PlacedItem[] = [];
   let n = 0;
   const add = (type: PlacedItem['type'], x: number, z: number, rotation: PlacedItem['rotation'] = 0) =>
@@ -21,6 +21,8 @@ export function defaultBenchLayout(floor?: { width: number; depth: number }): Of
     }
   add('wall_screen', 6.5, 0.2);
   add('water_cooler', 14.5, 10.5);
+  // 004 bench "outing": a sofa so every kind of break happens.
+  if (opts.sofa) add('sofa', 10.5, 10);
   for (const [x, z] of [
     [0.25, 0.5],
     [15.25, 0.5],

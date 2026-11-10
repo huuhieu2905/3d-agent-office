@@ -81,6 +81,9 @@ function createInternal(deps: AdapterDeps): { adapter: AppAdapter; rpc: RpcClien
    * Live steps for one conversation: StreamAgentStateUpdates signals changes (and carries growing
    * `thinking`), then steps are re-read. Falls back to polling (500 ms running / 5 s idle).
    */
+  /** Stop functions of the live watches per conversation, so deleting one can end them first (004). */
+  const watchers = new Map<string, Set<() => void>>();
+
   function watch(conversationId: string, cb: (steps: Step[]) => void): Unsubscribe {
     let stopped = false;
     let stream: StreamHandle | null = null;
@@ -153,12 +156,16 @@ function createInternal(deps: AdapterDeps): { adapter: AppAdapter; rpc: RpcClien
 
     void emitChanged();
     startStream();
-    return () => {
+    const stop = () => {
       stopped = true;
       stream?.close();
       if (timer) clearTimeout(timer);
       if (throttle) clearTimeout(throttle);
+      watchers.get(conversationId)?.delete(stop);
     };
+    if (!watchers.has(conversationId)) watchers.set(conversationId, new Set());
+    watchers.get(conversationId)!.add(stop);
+    return stop;
   }
 
 
@@ -260,6 +267,28 @@ function createInternal(deps: AdapterDeps): { adapter: AppAdapter; rpc: RpcClien
         interaction: { trajectoryId, stepIndex, [kind]: answer },
       });
     },
+    async deleteConversation(conversationId: string): Promise<void> {
+      // Spec 004 A4-1. Never cancels first (Clarifications Q4); the App deletes the subagents too.
+      // Found on the real App (spec 004 T060): while the chat of the conversation is open, its step stream / step
+      // polling brings the deleted conversation back. End those watches first; the chat closes after a
+      // successful delete anyway.
+      for (const stop of [...(watchers.get(conversationId) ?? [])]) stop();
+      const listed = () => adapter.listConversations().then((l) => l.some((c) => c.id === conversationId));
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          await call('DeleteCascadeTrajectory', { cascadeId: conversationId });
+        } catch (err) {
+          if (!(err instanceof RpcError) || (err.kind !== 'app' && err.kind !== 'protocol')) throw err;
+          // Already gone (deleted elsewhere, or a retry): deleting is idempotent.
+          if (await listed()) throw new AppRejectedError();
+          return;
+        }
+        // Make sure it is really gone before the office lets the employee leave (FR-014).
+        await new Promise((r) => setTimeout(r, 250 * (attempt + 1)));
+        if (!(await listed())) return;
+      }
+      throw new AppRejectedError();
+    },
     async answerQuestion(conversationId: string, requestId: string, answer: QuestionAnswer): Promise<void> {
       // Spec 003 R3-04: HandleCascadeUserInteraction {cascadeId, interaction:{trajectoryId, stepIndex,
       // askQuestion:{responses:[{question, selectedOptionIds, writeInResponse?}]}}} — the same shape the App
@@ -331,7 +360,7 @@ export async function recordRaw(method: ReadOnlyRpc, body: unknown, deps: Adapte
  * as a test conversation ("[agent-office-test]"). Used by tests/live and spikes (constitution workflow).
  */
 export async function deleteTestConversation(conversationId: string, deps: AdapterDeps = {}): Promise<boolean> {
-  const { adapter, rpc } = createInternal({ ...deps, healthIntervalMs: 60_000 });
+  const { adapter } = createInternal({ ...deps, healthIntervalMs: 60_000 });
   await adapter.start();
   try {
     if (adapter.getConnection().kind !== 'connected') throw new AppUnavailableError();
@@ -340,7 +369,7 @@ export async function deleteTestConversation(conversationId: string, deps: Adapt
     const first = (await adapter.getSteps(conversationId)).find((s) => s.kind === 'user');
     const isTest = conv.title.includes('[agent-office-test]') || (first?.text ?? '').startsWith('[agent-office-test]');
     if (!isTest) throw new Error('Refusing to delete a conversation that is not marked [agent-office-test]');
-    await rpc.call('DeleteCascadeTrajectory', { cascadeId: conversationId });
+    await adapter.deleteConversation(conversationId);
     return true;
   } finally {
     await adapter.stop();

@@ -47,7 +47,7 @@ export function FirstPersonHelp() {
       Bấm vào cảnh để điều khiển · <kbd>W</kbd>
       <kbd>A</kbd>
       <kbd>S</kbd>
-      <kbd>D</kbd> đi lại · <kbd>Shift</kbd> đi nhanh · nhắm vào nhân viên rồi bấm để trò chuyện · <kbd>Esc</kbd> nhả chuột ·{' '}
+      <kbd>D</kbd> đi lại · <kbd>Shift</kbd> đi nhanh · <kbd>E</kbd> dùng đồ vật · nhắm vào nhân viên rồi bấm để trò chuyện · <kbd>Esc</kbd> nhả chuột ·{' '}
       <kbd>V</kbd> về toàn cảnh
     </div>
   );

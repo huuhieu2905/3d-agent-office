@@ -9,14 +9,6 @@ const TOKEN = 'e2e-session-token-0123456789abcdefghij';
 const auth = { authorization: `Bearer ${TOKEN}` };
 const ctl = (a: string) => fetch(`http://127.0.0.1:${Number(process.env.E2E_PORT ?? 4399) + 1}/${a}`);
 
-declare global {
-  interface Window {
-    __agentOffice?: {
-      project(x: number, z: number, y?: number): { x: number; y: number };
-      arrange(): { active: boolean; selectedId: string | null; drag: unknown; seating: Record<string, string | null>; past: number };
-    };
-  }
-}
 
 type Item = { id: string; type: string; pos: { x: number; z: number }; rotation: number };
 type Layout = { floor: { width: number; depth: number }; items: Item[] };

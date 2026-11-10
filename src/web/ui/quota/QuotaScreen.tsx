@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import type { OfficeLayout, Quota } from '@shared/domain';
 import { itemTransform } from '../../scene/furniture/Furniture';
 import { useQuota } from '../../state/quota';
+import { useSettings } from '../../state/settings';
 
 // T091 / FR-040 / FR-043: the wall screen shows quota bars (canvas texture); one click opens QuotaPanel.
 
@@ -57,6 +58,8 @@ export function QuotaScreen({ layout }: { layout: OfficeLayout }) {
   const quota = useQuota((s) => s.quota);
   const setOpen = useQuota((s) => s.setPanelOpen);
   const screen = layout.items.find((i) => i.type === 'wall_screen');
+  // 004 FR-031: a screen switched off shows nothing.
+  const off = useSettings((s) => (screen ? (s.settings.screensOff ?? []).includes(screen.id) : false));
   const { canvas, texture } = useMemo(() => {
     const canvas = document.createElement('canvas');
     canvas.width = W;
@@ -82,7 +85,7 @@ export function QuotaScreen({ layout }: { layout: OfficeLayout }) {
   }, [quota, canvas, texture]);
   useEffect(() => () => texture.dispose(), [texture]);
 
-  if (!screen) return null;
+  if (!screen || off) return null;
   const t = itemTransform(screen, layout.floor);
   return (
     <group position={t.position} rotation-y={t.rotationY}>

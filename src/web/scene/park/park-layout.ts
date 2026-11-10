@@ -66,10 +66,101 @@ export function kioskSpot(f: ParkFrame): { x: number; z: number; facing: number 
   return { x: p.x, z: p.z, facing: Math.atan2(-p.x, -p.z) };
 }
 
-/** May a tree stand here for this office? Keeps the lawn, the loop path, the spokes and the kiosk free. */
+// ---- 004 US3: shops around the park (research R4-04, data-model §5) -----------------------------------
+
+export interface Spot {
+  id: string;
+  x: number;
+  z: number;
+  /** Heading (radians, 0 = facing +z) of someone using the spot. */
+  facing: number;
+}
+
+export type ShopId = 'cafe' | 'grocery' | 'sugarcane' | 'banhmi';
+export type ShopKind = 'kiosk' | 'grocery' | 'cart';
+
+export interface ParkShop {
+  id: ShopId;
+  kind: ShopKind;
+  x: number;
+  z: number;
+  /** rotation-y of the pavilion; its local +z faces the office. */
+  facing: number;
+  /** Pavilion box in world space (for SiteGrid): centre, half sizes along the pavilion's own axes, rotation. */
+  box: { x: number; z: number; hw: number; hd: number; rot: number };
+  /** Small tables (blocking circles). */
+  tables: { x: number; z: number; r: number }[];
+  /** Plastic stools, facing their table. */
+  seats: Spot[];
+  /** Places to stand in front of the counter. */
+  stands: Spot[];
+}
+
+/** Pavilion width (m); every park shop uses the kiosk's shape (Shops.tsx `Kiosk`). */
+export const SHOP_WIDTH = 4.3;
+/** Angle on the loop path, per shop — four diagonals, away from the straight spokes and the exercise group. */
+const SHOP_ANGLES: [ShopId, ShopKind, number][] = [
+  ['cafe', 'kiosk', -2.2], // same place as the 002 kiosk
+  ['grocery', 'grocery', -0.85],
+  ['sugarcane', 'cart', 0.85],
+  ['banhmi', 'cart', 2.3],
+];
+
+function local(o: { x: number; z: number; facing: number }, lx: number, lz: number): { x: number; z: number } {
+  const c = Math.cos(o.facing);
+  const s = Math.sin(o.facing);
+  return { x: o.x + lx * c + lz * s, z: o.z - lx * s + lz * c };
+}
+
+export function parkShops(f: ParkFrame): ParkShop[] {
+  // Shop() draws its two tables at x = −0.28·w and 0.18·w, z = 1.7, with w = min(width − 0.3, 6).
+  const w = Math.min(SHOP_WIDTH - 0.3, 6);
+  const tablesL = [-w * 0.28, w * 0.18];
+  return SHOP_ANGLES.map(([id, kind, a]) => {
+    const p = onPath(f, a, PATH_WIDTH / 2 + 4);
+    const o = { x: p.x, z: p.z, facing: Math.atan2(-p.x, -p.z) };
+    const centre = local(o, 0, -1.15);
+    const seats: Spot[] = [];
+    tablesL.forEach((tx, t) => {
+      for (const side of [-1, 1]) {
+        const s = local(o, tx + side * 0.5, 1.7);
+        // Facing the table: −x side looks along +x (local heading π/2) and vice versa.
+        seats.push({ id: `${id}:seat${t}${side < 0 ? 'L' : 'R'}`, x: s.x, z: s.z, facing: o.facing + (side < 0 ? Math.PI / 2 : -Math.PI / 2) });
+      }
+    });
+    const stands: Spot[] = [-0.4, 1.2].map((lx, i) => {
+      const s = local(o, lx, 0.85);
+      return { id: `${id}:stand${i}`, x: s.x, z: s.z, facing: o.facing + Math.PI };
+    });
+    return {
+      id,
+      kind,
+      ...o,
+      box: { x: centre.x, z: centre.z, hw: SHOP_WIDTH / 2, hd: 1.5, rot: o.facing },
+      // r 0.2 (+ the grid's 0.15 m margin) keeps the stools 0.5 m away in walkable cells (T066: a 0.3 m
+      // table put stool cells inside the obstacle and people could not get up from them).
+      tables: tablesL.map((tx) => ({ ...local(o, tx, 1.7), r: 0.2 })),
+      seats,
+      stands,
+    };
+  });
+}
+
+/** The trees actually drawn by Trees.tsx (same seed, filter and count), so collisions match what is seen. */
+export function visibleTrees(f: ParkFrame, seed: number, count: number): TreeSpot[] {
+  return treeCandidates(seed * 31, count * 2)
+    .filter((t) => treeAllowed(f, t.x, t.z))
+    .slice(0, count);
+}
+
+/** May a tree stand here for this office? Keeps the lawn, the loop path, the spokes and the shops free. */
 export function treeAllowed(f: ParkFrame, x: number, z: number): boolean {
   const k = kioskSpot(f);
   if (Math.hypot(x - k.x, z - k.z) < 4) return false;
+  for (const [, , a] of SHOP_ANGLES) {
+    const p = onPath(f, a, PATH_WIDTH / 2 + 4);
+    if (Math.hypot(x - p.x, z - p.z) < 4) return false;
+  }
   if (Math.abs(x) < f.hw + CLEAR && Math.abs(z) < f.hd + CLEAR) return false;
   const e = ellipseScale(f, x, z);
   const margin = (PATH_WIDTH / 2 + 1.5) / Math.min(f.rx, f.rz);

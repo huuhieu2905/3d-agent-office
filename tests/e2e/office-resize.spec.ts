@@ -3,14 +3,6 @@ import { TID } from './testids';
 
 // 002 US4 / T050 / FR-022..027 / U-4: choose the office length and width in arrange mode.
 
-declare global {
-  interface Window {
-    __agentOffice?: {
-      project(x: number, z: number, y?: number): { x: number; y: number };
-      arrange(): { active: boolean; selectedId: string | null; drag: unknown; seating: Record<string, string | null>; past: number };
-    };
-  }
-}
 
 const TOKEN = 'e2e-session-token-0123456789abcdefghij';
 const auth = { authorization: `Bearer ${TOKEN}` };

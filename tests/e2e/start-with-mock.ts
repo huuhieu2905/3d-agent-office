@@ -50,8 +50,21 @@ createServer((req, res) => {
     mock.question = null;
     mock.answeredWith = null;
     mock.rejectQuestion = false;
+    mock.deleted.clear();
+    mock.runningIds.clear();
+    mock.parents = {};
+    mock.failDelete = false;
+    mock.projectPerConversation = false;
   }
   else if (action === 'error-and-search') mock.addErrorAndSearchSteps();
+  else if (action === 'delete-fail') mock.failDelete = true;
+  else if (action === 'many-projects') mock.projectPerConversation = true;
+  else if (action?.startsWith('run/')) mock.runningIds.add(action.slice('run/'.length));
+  else if (action?.startsWith('idle/')) mock.runningIds.delete(action.slice('idle/'.length));
+  else if (action?.startsWith('parent/')) {
+    const [child, parent] = action.slice('parent/'.length).split('/');
+    if (child && parent) mock.parents[child] = parent;
+  }
   else if (action === 'question') {
     mock.question = 'waiting';
     mock.runningAll = true;

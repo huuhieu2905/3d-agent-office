@@ -10,6 +10,9 @@ const STYLE = {
   cafe: { facade: '#1f6f6a', awning: ['#1f6f6a', '#efe4cc'], sign: '#c2603a', ink: '#fff4e0', umbrella: '#1f6f6a' },
   resto: { facade: '#c2603a', awning: ['#d93a2b', '#f6e6c8'], sign: '#f2c14e', ink: '#7a1e14', umbrella: '#c2603a' },
   kiosk: { facade: '#efe4cc', awning: ['#1f6f6a', '#fffaf0'], sign: '#1f6f6a', ink: '#fffaf0', umbrella: '#c2603a' },
+  // 004 US3: park grocery and drink / bánh mì carts, same palette (concept "Soft Studio · Sài Gòn").
+  grocery: { facade: '#f2c94c', awning: ['#2f80a5', '#fffaf0'], sign: '#2f80a5', ink: '#fffaf0', umbrella: '#2f80a5' },
+  cart: { facade: '#9ccfb4', awning: ['#3fae7a', '#fffaf0'], sign: '#c2603a', ink: '#fffaf0', umbrella: '#3fae7a' },
 } as const;
 type Kind = keyof typeof STYLE;
 
@@ -64,7 +67,7 @@ function stripes(a: string, b: string): THREE.CanvasTexture {
 }
 
 /** One shop front. Local frame: +z faces the park, origin at the middle of the front at ground level. */
-export function Shop({ kind, name, width, night }: { kind: Kind; name: string; width: number; night: boolean }) {
+export function Shop({ kind, name, width, night, umbrellas = true }: { kind: Kind; name: string; width: number; night: boolean; umbrellas?: boolean }) {
   const s = STYLE[kind];
   const fontsReady = useFontsReady();
   // Redrawn once the bundled font is ready (canvas text does not swap fonts by itself).
@@ -113,14 +116,18 @@ export function Shop({ kind, name, width, night }: { kind: Kind; name: string; w
               <meshStandardMaterial color={stool[(i + j) % 2]} roughness={0.5} />
             </mesh>
           ))}
-          <mesh position={[0, 1.1, 0]}>
-            <cylinderGeometry args={[0.02, 0.02, 2.2, 6]} />
-            <meshStandardMaterial color="#ffffff" />
-          </mesh>
-          <mesh position={[0, 2.25, 0]}>
-            <coneGeometry args={[1.1, 0.35, 16]} />
-            <meshStandardMaterial color={i ? s.umbrella : '#efe4cc'} roughness={0.8} />
-          </mesh>
+          {umbrellas && (
+            <>
+              <mesh position={[0, 1.1, 0]}>
+                <cylinderGeometry args={[0.02, 0.02, 2.2, 6]} />
+                <meshStandardMaterial color="#ffffff" />
+              </mesh>
+              <mesh position={[0, 2.25, 0]}>
+                <coneGeometry args={[1.1, 0.35, 16]} />
+                <meshStandardMaterial color={i ? s.umbrella : '#efe4cc'} roughness={0.8} />
+              </mesh>
+            </>
+          )}
         </group>
       ))}
     </group>
@@ -147,15 +154,41 @@ export function StreetShops({ buildings, night }: { buildings: CityBuilding[]; n
   );
 }
 
-/** The park kiosk café: a small cream pavilion with the same shop front. */
-export function Kiosk({ x, z, facing, name, night }: { x: number; z: number; facing: number; name: string; night: boolean }) {
+/**
+ * A park pavilion with the shop front: the kiosk café, and (004 US3) the grocery and the drink / bánh mì
+ * carts. A cart stands on two wheels. Same footprint for all (park-layout.ts `parkShops`).
+ */
+export function Kiosk({
+  x,
+  z,
+  facing,
+  name,
+  night,
+  kind = 'kiosk',
+  umbrellas = true,
+}: {
+  x: number;
+  z: number;
+  facing: number;
+  name: string;
+  night: boolean;
+  kind?: 'kiosk' | 'grocery' | 'cart';
+  umbrellas?: boolean;
+}) {
   return (
     <group position={[x, 0, z]} rotation-y={facing}>
       <mesh position={[0, 1.65, -1.3]}>
         <boxGeometry args={[4.2, 3.3, 2.6]} />
-        <meshStandardMaterial color={STYLE.kiosk.facade} roughness={0.8} />
+        <meshStandardMaterial color={STYLE[kind].facade} roughness={0.8} />
       </mesh>
-      <Shop kind="kiosk" name={name} width={4.3} night={night} />
+      {kind === 'cart' &&
+        [-1.5, 1.5].map((wx) => (
+          <mesh key={wx} position={[wx, 0.32, 0.45]} rotation-y={Math.PI / 2} rotation-z={Math.PI / 2}>
+            <cylinderGeometry args={[0.32, 0.32, 0.1, 18]} />
+            <meshStandardMaterial color="#3b3b3b" roughness={0.6} />
+          </mesh>
+        ))}
+      <Shop kind={kind} name={name} width={4.3} night={night} umbrellas={umbrellas} />
     </group>
   );
 }

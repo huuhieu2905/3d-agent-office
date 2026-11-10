@@ -6,4 +6,12 @@ export const TID = {
   floorDepthInput: 'floor-depth-input',
   modelPicker: 'model-picker',
   modelUnavailable: 'model-unavailable',
+  // 004 (contracts/ui-interactions.md U4-1…U4-3)
+  legendToggle: 'legend-toggle',
+  legendList: 'legend-list',
+  employeeDelete: 'employee-delete',
+  confirmDelete: 'confirm-delete',
+  confirmDeleteOk: 'confirm-delete-ok',
+  confirmDeleteError: 'confirm-delete-error',
+  fpHint: 'fp-hint',
 } as const;

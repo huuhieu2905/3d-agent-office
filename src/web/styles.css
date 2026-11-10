@@ -128,13 +128,51 @@ body,
   flex-direction: column;
   gap: 8px;
   max-width: 320px;
+  /* 004 US1: never taller than the screen (the top 64 px hold the toolbar and banners). */
+  max-height: calc(100% - 76px);
   z-index: 5;
+}
+
+.hud-left > * {
+  flex-shrink: 0;
 }
 
 .legend {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 4px;
+}
+
+.hud-left > .legend {
+  flex-shrink: 1;
+  min-height: 0;
+}
+
+.legend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.legend-toggle {
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 6px;
+  border-radius: 8px;
+  align-self: flex-start;
+}
+
+.legend-toggle:hover {
+  background: rgba(127, 127, 127, 0.15);
 }
 
 .legend-item,
@@ -896,5 +934,71 @@ kbd {
   color: var(--accent);
 }
 .app a:visited {
+  color: var(--accent);
+}
+
+/* 004 US2: the delete button is disabled while an agent of the tree is busy. */
+.icon:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+[role='alertdialog'] p {
+  line-height: 1.5;
+}
+
+/* 004 US4: first-person hint and the short water / plant effect (U4-3). */
+.fp-hint {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 22px);
+  transform: translateX(-50%);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 13px;
+  pointer-events: none;
+  z-index: 4;
+  white-space: nowrap;
+}
+.fp-effect {
+  position: absolute;
+  left: 50%;
+  bottom: 18%;
+  transform: translateX(-50%);
+  font-size: 64px;
+  pointer-events: none;
+  z-index: 4;
+  animation: fp-effect 1.5s ease-out forwards;
+}
+@keyframes fp-effect {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 30px);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+}
+/* 004 FR-031: wall screen power button (overview). */
+.screen-power {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--muted);
+  border-radius: 999px;
+  width: 26px;
+  height: 26px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.screen-power.on {
   color: var(--accent);
 }
