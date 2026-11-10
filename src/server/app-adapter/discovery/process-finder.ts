@@ -1,7 +1,8 @@
 import { DarwinProcessFinder } from './process-darwin';
+import { LinuxProcessFinder } from './process-linux';
 
-// OS-specific process discovery sits behind this interface (Constitution VI v2.0.0):
-// only macOS is implemented; Linux is deferred.
+// OS-specific process discovery sits behind this interface (Constitution VI v2.2.0):
+// macOS (ps + lsof) and Linux (/proc). Windows is out of scope.
 
 export interface LanguageServerProcess {
   pid: number;
@@ -15,5 +16,6 @@ export interface ProcessFinder {
 
 export function createProcessFinder(platform: NodeJS.Platform = process.platform): ProcessFinder {
   if (platform === 'darwin') return new DarwinProcessFinder();
-  throw new Error(`Platform "${platform}" is not supported yet (macOS only; Linux/Windows deferred).`);
+  if (platform === 'linux') return new LinuxProcessFinder();
+  throw new Error(`Platform "${platform}" is not supported (supported: macOS, Linux).`);
 }

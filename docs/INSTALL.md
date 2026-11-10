@@ -1,9 +1,10 @@
-# Cài đặt Agent Office (macOS)
+# Cài đặt Agent Office (macOS, Linux)
 
 Agent Office là một văn phòng 3D chạy trong trình duyệt, biến các conversation của **Antigravity App**
 trên máy bạn thành nhân viên. Mọi thứ chạy **local**: không có Docker, không có máy chủ đám mây.
 
-> **Hệ điều hành**: macOS 13 trở lên (Apple Silicon hoặc Intel). Linux sẽ được hỗ trợ sau. Windows chưa có kế hoạch.
+> **Hệ điều hành**: macOS 13 trở lên (Apple Silicon hoặc Intel), và Linux: **CachyOS x86_64** (đang thử nghiệm,
+> xem [phần Linux](#linux)). Bản phân phối Linux khác có thể chạy được nhưng không được cam kết. Windows chưa có kế hoạch.
 
 ## Yêu cầu
 
@@ -12,7 +13,7 @@ trên máy bạn thành nhân viên. Mọi thứ chạy **local**: không có Do
 | Antigravity App | **2.29.0** (đã kiểm chứng cả 2.24.0), đã đăng nhập |
 | Node.js | **22** trở lên |
 | Trình duyệt | Chrome, Edge hoặc Firefox bản mới (có WebGL 2) |
-| git | có sẵn trên macOS (Xcode Command Line Tools) |
+| git | có sẵn trên macOS (Xcode Command Line Tools); Linux: `sudo pacman -S git` |
 
 ## Các bước (khoảng 5–10 phút)
 
@@ -53,12 +54,35 @@ Script sẽ kiểm tra Node, cài thư viện và build giao diện.
 
 Terminal sẽ in `Antigravity App 2.29.0: connected` khi kết nối thành công.
 
+## Linux
+
+Đang **thử nghiệm**: chưa có phiên bản Antigravity App nào được kiểm chứng trên Linux, nên hệ thống sẽ hiện
+cảnh báo "hệ điều hành này đang ở giai đoạn thử nghiệm". Mọi tính năng vẫn dùng được.
+
+- **Máy được cam kết**: CachyOS, CPU x86_64. Các bản phân phối khác (Ubuntu, Fedora…) và CPU ARM không được kiểm chứng.
+- **Antigravity App** bản Linux, cài ở `/opt/Antigravity/`, chạy dưới **chính user của bạn** (không qua Flatpak/Snap).
+- **Node.js ≥ 22**: `sudo pacman -S nodejs npm` (hoặc dùng `fnm` như bước 1).
+- Không cần cài thêm công cụ hệ thống nào: hệ thống đọc `/proc` để tìm App.
+
+Các bước 2 và 3 ở trên giống hệt macOS. Nếu trình duyệt không tự mở, copy đường link mà `npm start` in ra.
+
+- **Dữ liệu** (bố cục, cài đặt) nằm ở `~/.local/share/agent-office/` (hoặc `$XDG_DATA_HOME/agent-office/`).
+- **Hiệu năng 3D trên Linux chưa được đo.** Nếu văn phòng chậm, kiểm tra `chrome://gpu` xem trình duyệt có dùng
+  tăng tốc phần cứng không.
+- Cần gửi dòng lệnh của App khi báo lỗi? Luôn che cả hai khoá:
+
+  ```bash
+  ps -axww -o pid=,args= | grep '[l]anguage_server' | sed -E 's/(csrf_token|host_bridge_token)([= ])[^ ]+/\1\2<ĐÃ_CHE>/g'
+  ```
+
 ## Xử lý sự cố
 
 | Hiện tượng | Cách xử lý |
 |---|---|
 | Banner "Chưa kết nối được Antigravity App" | Mở Antigravity App. Hệ thống tự kết nối trong vài giây, không cần tải lại trang. |
-| Cảnh báo "Antigravity App x.y.z chưa được kiểm chứng" | Hệ thống đã kiểm chứng trên **2.29.0** và **2.24.0**. Bản khác vẫn chạy nhưng có thể thiếu tính năng. |
+| Cảnh báo "Antigravity App x.y.z chưa được kiểm chứng" | Trên macOS, hệ thống đã kiểm chứng **2.29.0** và **2.24.0**. Bản khác vẫn chạy nhưng có thể thiếu tính năng. |
+| Cảnh báo "hệ điều hành này đang ở giai đoạn thử nghiệm" (Linux) | Bình thường: chưa có bản App nào được kiểm chứng trên Linux. |
+| Linux: "Cannot read the Antigravity App process info" | App đang chạy dưới user khác hoặc trong sandbox (Flatpak/Snap). Hãy chạy App và `npm start` bằng cùng một user, với bản App cài ở `/opt/Antigravity/`. |
 | Banner "Thiếu mã phiên" | Bạn đã mở `http://127.0.0.1:4317` mà không có `#k=…`. Hãy dùng đúng đường link `npm start` in ra. |
 | `EADDRINUSE` / cổng 4317 bận | Chạy với cổng khác: `AGENT_OFFICE_PORT=4400 npm start` |
 | Trình duyệt không tự mở | Copy đường link trong terminal vào trình duyệt. |
@@ -72,7 +96,7 @@ Terminal sẽ in `Antigravity App 2.29.0: connected` khi kết nối thành côn
 ## Dữ liệu và quyền riêng tư
 
 - Bố cục văn phòng, chỗ ngồi, model đã chọn cho từng cuộc trò chuyện và cài đặt được lưu ở
-  `~/Library/Application Support/agent-office/`.
+  `~/Library/Application Support/agent-office/` (macOS) hoặc `~/.local/share/agent-office/` (Linux).
 - Khi nâng cấp từ bản đầu tiên, bố cục cũ được tự chuyển sang định dạng mới; bản gốc được giữ ở
   `layout.v1.bak.json` trong cùng thư mục (không bao giờ bị ghi đè). Muốn quay lại bố cục cũ thì đổi tên file
   này thành `layout.json` khi hệ thống đang tắt.
@@ -84,7 +108,8 @@ Terminal sẽ in `Antigravity App 2.29.0: connected` khi kết nối thành côn
 ## Gỡ cài đặt
 
 ```bash
-rm -rf agent-office "$HOME/Library/Application Support/agent-office"
+rm -rf agent-office "$HOME/Library/Application Support/agent-office"   # macOS
+rm -rf agent-office "${XDG_DATA_HOME:-$HOME/.local/share}/agent-office"  # Linux
 ```
 
 ## Đã kiểm chứng
@@ -94,6 +119,7 @@ rm -rf agent-office "$HOME/Library/Application Support/agent-office"
 | 2026-11-06 | MacBook Pro M1 Pro, macOS, Antigravity App 2.24.0 | Cài Node 22 qua `fnm`: khoảng 1 phút. `git clone` + `./scripts/install.sh` + `npm start` từ bản clone sạch: **6 giây** (npm cache có sẵn). Kết nối App thành công. |
 | 2026-11-07 | MacBook Pro M1 Pro, macOS, Node 26.13 (Homebrew), Antigravity App 2.24.0 | Bản 002 (concept E+, có thêm gói font): `git clone` + `./scripts/install.sh` với **npm cache trống** (giả lập máy mới, tải khoảng 88 MB): **11 giây**. `npm start`: in `Antigravity App 2.24.0: connected`. Lần đầu thử bị lỗi build vì `.gitignore` đã bỏ qua `src/web/ui/build/`; đã sửa trước khi đo. |
 | 2026-11-09 | MacBook Pro M1 Pro, macOS, Node 26.13 (Homebrew), Antigravity App 2.29.0 | Bản 003: `git clone` + `./scripts/install.sh` + `npm start` từ bản clone sạch: **10 giây** (npm cache có sẵn). `npm start` in `Antigravity App 2.29.0: connected`, không có cảnh báo phiên bản. |
+| 2026-11-10 | MacBook Pro M1 Pro, macOS, Node 26.13.0, Antigravity App 2.29.0 | Bản 005 (thêm Linux): bản sao sạch của mã nguồn + `./scripts/install.sh` + `npm start`: **13 giây** (npm cache có sẵn). `npm start` in `Antigravity App 2.29.0: connected`, không có cảnh báo. macOS không bị ảnh hưởng. |
 
 > Chưa kiểm chứng trên **một máy Mac khác**. Lần đo ngày 2026-11-07 dùng npm cache trống trên cùng máy để giả lập
 > máy mới; thời gian thực tế phụ thuộc tốc độ mạng (khoảng 88 MB tải về, khoảng 370 MB sau khi giải nén).

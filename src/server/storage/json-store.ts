@@ -8,7 +8,7 @@ import type { ZodType } from 'zod';
 
 export function defaultDataDir(): string {
   if (process.env.AGENT_OFFICE_DATA_DIR) return process.env.AGENT_OFFICE_DATA_DIR;
-  // macOS: ~/Library/Application Support/agent-office
+  // macOS: ~/Library/Application Support/agent-office · Linux: ~/.local/share/agent-office (XDG_DATA_HOME)
   return envPaths('agent-office', { suffix: '' }).data;
 }
 
