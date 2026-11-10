@@ -13,3 +13,5 @@ test-results/
 .vscode/
 .idea/
 .env*
+__pycache__/
+*.pyc
