@@ -30,17 +30,17 @@ dừng agent hoặc "tuyển" nhân viên mới.
   nhân viên và bấm để chat. Phím <kbd>E</kbd> dùng đồ vật: bật/tắt màn hình, ngồi sofa (<kbd>Shift</kbd>+<kbd>E</kbd>
   để nằm), uống nước, tưới cây
 
-- Chạy **local** trên macOS, giao diện trong trình duyệt
-- Kết nối trực tiếp với Antigravity App trên cùng máy (đã kiểm chứng 2.29.0 và 2.24.0)
+- Chạy **local** trên macOS và Linux (CachyOS, thử nghiệm), giao diện trong trình duyệt
+- Kết nối trực tiếp với Antigravity App trên cùng máy (đã kiểm chứng trên macOS: 2.29.0 và 2.24.0)
 - Không lưu nội dung chat, không gửi dữ liệu ra ngoài
 
 👉 **Cài đặt**: xem [docs/INSTALL.md](docs/INSTALL.md)
 
-| Nền tảng  | Trạng thái          |
-| --------- | ------------------- |
-| macOS 13+ | ✅ hỗ trợ           |
-| Linux     | ⏳ hoãn, sẽ bàn sau |
-| Windows   | ✗ ngoài phạm vi     |
+| Nền tảng  | Trạng thái                                                              |
+| --------- | ----------------------------------------------------------------------- |
+| macOS 13+ | ✅ hỗ trợ                                                               |
+| Linux     | 🧪 CachyOS x86_64, thử nghiệm (✅ khi có bản App Linux được kiểm chứng) |
+| Windows   | ✗ ngoài phạm vi                                                         |
 
 ## Dành cho người phát triển
 

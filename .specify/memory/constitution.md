@@ -23,18 +23,20 @@ thái, người dùng mất niềm tin và phải quay về App, nghĩa là dự
   nhất** (adapter). Phần còn lại của hệ thống chỉ được dùng các khái niệm của miền nghiệp vụ
   (nhân viên, cuộc trò chuyện, trạng thái, quota), KHÔNG ĐƯỢC gọi API nội bộ hay đọc file của
   App trực tiếp.
-- Lớp kết nối PHẢI nhắm tới **danh sách phiên bản App đã kiểm chứng**. Danh sách hiện gồm
-  **2.29.0** (kiểm chứng 2026-11-09, feature `003-antigravity-2-29-compat`) và **2.24.0** (giữ
-  lại để hỗ trợ máy chưa cập nhật). Danh sách này PHẢI nằm ở **một nơi duy nhất** trong lớp
-  kết nối.
+- Lớp kết nối PHẢI nhắm tới **danh sách phiên bản App đã kiểm chứng**, ghi rõ mỗi phiên bản
+  được kiểm chứng trên **hệ điều hành nào**. Danh sách hiện gồm, trên macOS: **2.29.0** (kiểm
+  chứng 2026-11-09, feature `003-antigravity-2-29-compat`) và **2.24.0** (giữ lại để hỗ trợ máy
+  chưa cập nhật). Trên Linux: **chưa có** phiên bản nào. Danh sách này PHẢI nằm ở **một nơi duy
+  nhất** trong lớp kết nối.
   - **Mã nguồn** và mọi **thông báo hiển thị cho người dùng** (cảnh báo phiên bản, log ở
     terminal) PHẢI lấy phiên bản từ danh sách đó, KHÔNG ĐƯỢC ghi cứng số phiên bản.
   - **Tài liệu, script cài đặt và kiểm thử** được phép nêu số phiên bản cụ thể, vì chúng không
     đọc được danh sách lúc chạy, và kiểm thử cần giá trị cụ thể để so sánh. Nhưng chúng PHẢI được
     cập nhật **trong cùng một thay đổi** với danh sách, để không bao giờ lệch nhau.
-- Một phiên bản chỉ được thêm vào danh sách sau khi: (1) bộ dữ liệu mẫu ghi từ chính bản đó đã
-  được thêm vào kiểm thử hợp đồng và chạy qua, và (2) kiểm thử với App thật, gồm cả thao tác
-  **đọc và ghi** và tự kết nối lại, đã chạy qua trên bản đó. Bỏ một phiên bản khỏi danh sách
+- Một phiên bản chỉ được thêm vào danh sách **cho một hệ điều hành** sau khi, trên đúng hệ điều
+  hành đó: (1) bộ dữ liệu mẫu ghi từ chính bản đó đã được thêm vào kiểm thử hợp đồng và chạy
+  qua, và (2) kiểm thử với App thật, gồm cả thao tác **đọc và ghi** và tự kết nối lại, đã chạy
+  qua trên bản đó. Bỏ một phiên bản khỏi danh sách
   cũng PHẢI được ghi lại lý do.
 - Khi khởi động, lớp kết nối PHẢI kiểm tra phiên bản App. Với bản ngoài danh sách, hệ thống vẫn
   chạy nhưng PHẢI cảnh báo rõ ràng, nêu cả bản đang chạy lẫn các bản đã kiểm chứng. Hệ thống
@@ -92,35 +94,44 @@ theo quyết định "go" để tránh bỏ dở và để kiểm chứng sớm 
 - Cảnh 3D PHẢI đạt tối thiểu **60 FPS** trên trình duyệt của một máy cấu hình phổ thông (máy
   tham chiếu sẽ được ghi rõ trong plan) với số nhân viên tối đa mà spec cam kết. Tính năng làm
   tụt dưới ngưỡng này PHẢI có cơ chế giảm chi tiết hoặc tắt được.
+- Ngưỡng 60 FPS hiện **chỉ áp dụng cho macOS**. Trên Linux, hiệu năng chưa được đo và chưa là
+  cổng chất lượng; muốn áp dụng cho Linux PHẢI có một spec riêng và một lần sửa constitution.
 - Mở cuộc trò chuyện với một nhân viên PHẢI chỉ cần **đúng 1 lần bấm** vào nhân viên đó từ màn
   hình chính.
 
 **Lý do**: Giá trị cốt lõi của dự án là cảm hứng và trải nghiệm. Đẹp mà giật lag hay khó dùng
 thì người dùng sẽ quay về App.
 
-### VI. Cài đặt đơn giản trên macOS
+### VI. Cài đặt đơn giản trên macOS và Linux
 
-- Hệ thống PHẢI chạy được trên **macOS**. **Linux được hoãn**: sẽ bàn lại sau khi hệ thống chạy
-  ổn định trên macOS, và việc thêm Linux PHẢI đi qua một lần sửa constitution. Windows nằm ngoài
-  phạm vi.
+- Hệ thống PHẢI chạy được trên **macOS** và **Linux**. Windows nằm ngoài phạm vi.
+- Với Linux, chỉ cam kết **một bản phân phối tham chiếu**: **CachyOS trên x86_64** (máy thật của
+  chủ dự án: CPU Intel, GPU AMD Radeon RX 6900 XT). Bản phân phối hay kiến trúc CPU khác chạy được
+  thì tốt nhưng không được cam kết và không kiểm chứng. Đổi bản phân phối tham chiếu PHẢI qua một
+  lần sửa constitution.
+- Linux chỉ được coi là **đã hỗ trợ** khi trong danh sách của Nguyên tắc II có ít nhất một phiên
+  bản App được kiểm chứng trên Linux. Trước đó, khi chạy trên Linux hệ thống PHẢI cảnh báo rằng
+  nền tảng này đang ở giai đoạn thử nghiệm.
 - KHÔNG dùng Docker. Hệ thống PHẢI cài và chạy local bằng một quy trình được mô tả trong hướng
-  dẫn cài đặt. Một người mới PHẢI cài xong và chạy được trong ≤ 15 phút trên máy macOS đã có
-  Antigravity App, chỉ dựa vào hướng dẫn.
-- Hướng dẫn cài đặt PHẢI được kiểm chứng trên macOS trước khi một đợt được coi là hoàn thành.
-- Mọi phần phụ thuộc hệ điều hành (đường dẫn, cách dò tiến trình App) PHẢI nằm trong lớp kết nối
-  (Nguyên tắc II) và sau một giao diện riêng theo hệ điều hành, để sau này thêm Linux mà không
-  phải sửa phần còn lại của hệ thống.
+  dẫn cài đặt. Một người mới PHẢI cài xong và chạy được trong ≤ 15 phút trên máy macOS, hoặc máy
+  Linux tham chiếu, đã có Antigravity App, chỉ dựa vào hướng dẫn.
+- Mọi phần phụ thuộc hệ điều hành (đường dẫn, cách dò tiến trình App và cổng) PHẢI nằm trong lớp
+  kết nối (Nguyên tắc II), sau giao diện riêng theo hệ điều hành. Phần còn lại của hệ thống KHÔNG
+  ĐƯỢC rẽ nhánh theo hệ điều hành.
+- Trên hệ điều hành không hỗ trợ, hệ thống PHẢI báo rõ "chưa hỗ trợ" và nêu các hệ điều hành
+  được hỗ trợ.
 
-**Lý do**: Người dùng chưa có máy Linux để kiểm chứng (2026-11-06), và chưa xác nhận Antigravity
-App có bản Linux. Cam kết một nền tảng chưa kiểm chứng được sẽ làm hỏng cổng chất lượng của mọi
-đợt.
+**Lý do**: Ngày 2026-11-10 chủ dự án có máy Linux để kiểm chứng và cho biết Antigravity App có
+bản Linux. Mã đã tách phần phụ thuộc hệ điều hành từ đầu (v2.0.0), nên thêm Linux chỉ chạm lớp
+kết nối và phần cài đặt. Chỉ cam kết một bản phân phối và chưa đặt ngưỡng hiệu năng để cổng chất
+lượng vẫn kiểm chứng được bằng đúng một máy.
 
 ## Ràng buộc kỹ thuật
 
 - **Nền tảng**: ứng dụng web chạy trên trình duyệt, kèm một tiến trình server local làm cầu
   nối với Antigravity App (trình duyệt không thể tự đọc tiến trình hay file của App).
-- **Đối tượng kết nối**: chỉ Antigravity App (desktop), các phiên bản trong danh sách đã kiểm
-  chứng của Nguyên tắc II (hiện gồm 2.29.0 và 2.24.0). CLI `agy` và Antigravity IDE không phải
+- **Đối tượng kết nối**: chỉ Antigravity App (desktop) trên macOS và Linux, các phiên bản trong
+  danh sách đã kiểm chứng của Nguyên tắc II (hiện gồm 2.29.0 và 2.24.0 trên macOS; Linux chưa có). CLI `agy` và Antigravity IDE không phải
   nguồn dữ liệu.
 - **Điều kiện chạy**: Antigravity App PHẢI đang mở thì hệ thống mới thao tác được. Đây là ràng
   buộc đã được chấp nhận, không phải lỗi.
@@ -144,10 +155,12 @@ App có bản Linux. Cam kết một nền tảng chưa kiểm chứng được 
   3. Kiểm tra không có token, email hay nội dung conversation trong log và file xuất ra
      (Nguyên tắc III).
   4. Kiểm tra ngân sách hiệu năng ≥ 60 FPS trên máy tham chiếu, và mở chat bằng 1 lần bấm
-     (Nguyên tắc V). Đo hiệu năng và chạy e2e PHẢI dùng GPU thật (Chromium với ANGLE/Metal);
+     (Nguyên tắc V), trên macOS. Đo hiệu năng và chạy e2e PHẢI dùng GPU thật (Chromium với ANGLE/Metal);
      kết quả đo bằng render phần mềm (SwiftShader) không được dùng để kết luận đạt hay không
      đạt. Lấy kết quả từ lần đo thứ hai trở đi, vì lần đầu sau khi build là lần khởi động nguội.
-  5. Hướng dẫn cài đặt được chạy thử trên macOS (Nguyên tắc VI).
+  5. Hướng dẫn cài đặt được chạy thử trên macOS (Nguyên tắc VI). Nếu đợt thay đổi lớp kết nối,
+     phần phụ thuộc hệ điều hành hoặc quy trình cài đặt, thì cổng 1, 2, 3 và 5 PHẢI chạy qua cả
+     trên máy Linux tham chiếu.
 - **Thử nghiệm với App thật**: thao tác ghi (tạo conversation, gửi tin nhắn) khi phát triển
   PHẢI dùng conversation thử nghiệm được đặt tên rõ ràng, và PHẢI được dọn sau khi thử.
 - **Phức tạp phải có lý do**: mọi thành phần, thư viện hay lớp trừu tượng vượt quá nhu cầu của
@@ -165,10 +178,11 @@ App có bản Linux. Cam kết một nền tảng chưa kiểm chứng được 
   - PATCH: làm rõ câu chữ, sửa lỗi chính tả, thay đổi không mang nghĩa.
 - **Rà soát tuân thủ**: `/speckit-plan` PHẢI có bước Constitution Check đối chiếu với 6 nguyên
   tắc. `/speckit-analyze` PHẢI coi vi phạm constitution là lỗi nghiêm trọng. Khi Antigravity
-  App đổi phiên bản mục tiêu, Nguyên tắc II và mục Ràng buộc kỹ thuật PHẢI được xem lại.
+  App đổi phiên bản mục tiêu, trên bất kỳ hệ điều hành nào, Nguyên tắc II và mục Ràng buộc kỹ
+  thuật PHẢI được xem lại.
 - **Thay đổi danh sách phiên bản đã kiểm chứng**: thêm hoặc bớt một phiên bản trong danh sách
   của Nguyên tắc II mà không đổi quy tắc kiểm chứng được tính là sửa đổi **PATCH**. Việc này vẫn
   PHẢI qua `/speckit-constitution` và nêu bằng chứng kiểm chứng (feature spec và kết quả kiểm thử
   với App thật).
 
-**Version**: 2.1.2 | **Ratified**: 2026-11-06 | **Last Amended**: 2026-11-09
+**Version**: 2.2.0 | **Ratified**: 2026-11-06 | **Last Amended**: 2026-11-10

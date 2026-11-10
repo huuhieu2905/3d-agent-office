@@ -34,7 +34,7 @@ if hits=$(grep -RInE '\.(sendMessage|startConversation|cancel|answerPermission|a
 fi
 
 # (d) App version numbers are named only in the verified-version list.
-if hits=$(grep -RInE '\b2\.(24|29)\.0\b' src --include='*.ts' --include='*.tsx' | grep -v '^src/server/app-adapter/versions.ts:'); then
+if hits=$(grep -RInE '\b2\.(24|29)\.[0-9]+\b' src --include='*.ts' --include='*.tsx' | grep -v '^src/server/app-adapter/versions.ts:'); then
   echo "✗ (d) App version literal outside versions.ts:"; echo "$hits"; fail=1
 fi
 
