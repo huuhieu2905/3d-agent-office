@@ -84,17 +84,23 @@ export function OfficeScene({
   const disconnected = useConnection(isDisconnected);
   const served = useEmployees(useShallow(selectVisible));
   // Arrange mode: employees moved in the draft walk to their draft desk before anything is saved (T036).
+  const { seating, meetingSeating } = build;
   const visible = useMemo(() => {
-    if (!build.active || Object.keys(build.seating).length === 0) return served;
-    return served.map((e) => (e.conversationId in build.seating ? { ...e, deskId: build.seating[e.conversationId] ?? null } : e));
-  }, [served, build.active, build.seating]);
+    if (!build.active || (Object.keys(seating).length === 0 && Object.keys(meetingSeating).length === 0)) return served;
+    return served.map((e) => {
+      const id = e.conversationId;
+      if (!(id in seating) && !(id in meetingSeating)) return e;
+      return { ...e, deskId: id in seating ? (seating[id] ?? null) : e.deskId, meetingSeatId: id in meetingSeating ? (meetingSeating[id] ?? null) : e.meetingSeatId };
+    });
+  }, [served, build.active, seating, meetingSeating]);
   const currentDesks = useMemo(() => Object.fromEntries(served.map((e) => [e.conversationId, e.deskId])), [served]);
+  const currentSeats = useMemo(() => Object.fromEntries(served.map((e) => [e.conversationId, e.meetingSeatId])), [served]);
   const highlight = useUi((s) => s.highlightProjectId);
   const cameraMode = useUi((s) => s.camera);
   const positions = useRef(new Map<string, THREE.Vector3>()).current;
 
   // Subagents without a desk fold into their parent's badge (T057).
-  const onStage = useMemo(() => visible.filter((e) => !(e.isSubagent && !e.deskId)), [visible]);
+  const onStage = useMemo(() => visible.filter((e) => !(e.isSubagent && !e.deskId && !e.meetingSeatId)), [visible]);
   const folded = useMemo(() => subagentOverflow(visible), [visible]);
   const { entries, onLeft } = useEmployeeStage(onStage, !!grid);
   useEffect(() => spots.setPopulation(onStage.length), [spots, onStage.length]);
@@ -146,7 +152,7 @@ export function OfficeScene({
             weather={condition}
             enter={enter}
             leaving={leaving}
-            lobbySlot={employee.deskId ? 0 : lobbySlot++}
+            lobbySlot={employee.deskId || employee.meetingSeatId ? 0 : lobbySlot++}
             dimmed={!!highlight && employee.projectId !== highlight}
             onLeft={onLeft}
             positions={positions}
@@ -157,7 +163,7 @@ export function OfficeScene({
         <SubagentLinks employees={visible} positions={positions} />
         {!benchMode && !build.active && <QuotaScreen layout={layout} />}
         {build.active && <BuildGizmo layout={layout} />}
-        {build.active && <DragLayer layout={layout} currentDesks={currentDesks} />}
+        {build.active && <DragLayer layout={layout} currentDesks={currentDesks} currentSeats={currentSeats} />}
         {testHooksEnabled() && <TestHooks layout={layout} />}
       </Office>
     </>

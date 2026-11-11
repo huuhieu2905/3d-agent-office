@@ -121,3 +121,56 @@ export function limewashTexture(): THREE.CanvasTexture {
   cache.set('lime', t);
   return t;
 }
+
+/**
+ * 007 US5: default pictures for frames, drawn in code (no third-party files). `painting`: a soft Sài Gòn-ish
+ * landscape (sky, sun, hills, river); `photo`: a pastel abstract with a little palm.
+ */
+export function defaultPictureTexture(kind: 'painting' | 'photo'): THREE.CanvasTexture {
+  const key = `picture-${kind}`;
+  if (cache.has(key)) return cache.get(key)!;
+  const t = canvasTexture(
+    kind === 'painting' ? 384 : 256,
+    256,
+    (g, w, h) => {
+      const sky = g.createLinearGradient(0, 0, 0, h);
+      sky.addColorStop(0, kind === 'painting' ? '#f6c98f' : '#cfe7e4');
+      sky.addColorStop(1, kind === 'painting' ? '#f3e3c3' : '#f6eee0');
+      g.fillStyle = sky;
+      g.fillRect(0, 0, w, h);
+      g.fillStyle = kind === 'painting' ? '#e8774a' : '#f2a65a';
+      g.beginPath();
+      g.arc(w * 0.7, h * 0.35, h * 0.13, 0, Math.PI * 2);
+      g.fill();
+      if (kind === 'painting') {
+        g.fillStyle = '#5f9a6e';
+        g.beginPath();
+        g.moveTo(0, h * 0.7);
+        g.quadraticCurveTo(w * 0.3, h * 0.45, w * 0.6, h * 0.68);
+        g.quadraticCurveTo(w * 0.8, h * 0.55, w, h * 0.66);
+        g.lineTo(w, h);
+        g.lineTo(0, h);
+        g.fill();
+        g.fillStyle = '#4c8fa3';
+        g.fillRect(0, h * 0.82, w, h * 0.18);
+      } else {
+        g.strokeStyle = '#3f7d5a';
+        g.lineWidth = 6;
+        g.beginPath();
+        g.moveTo(w * 0.35, h);
+        g.quadraticCurveTo(w * 0.38, h * 0.6, w * 0.3, h * 0.4);
+        g.stroke();
+        g.fillStyle = '#4f9a64';
+        for (const a of [-1.1, -0.4, 0.3, 1.0]) {
+          g.beginPath();
+          g.ellipse(w * 0.3 + Math.cos(a) * 30, h * 0.4 + Math.sin(a) * 12, 34, 9, a, 0, Math.PI * 2);
+          g.fill();
+        }
+      }
+    },
+    [1, 1],
+  );
+  t.colorSpace = THREE.SRGBColorSpace;
+  cache.set(key, t);
+  return t;
+}

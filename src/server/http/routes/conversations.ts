@@ -102,7 +102,7 @@ export const conversationRoutes: FastifyPluginAsync<RouteDeps> = async (app, dep
         }
       }
       await adapter.deleteConversation(id);
-      for (const cid of tree) await services.profiles.update(cid, { deskId: null });
+      for (const cid of tree) await services.profiles.update(cid, { deskId: null, meetingSeatId: null });
       void services.employees.refresh();
       log.info({ id, removed: tree.length, code: 'OK' }, 'conversation deleted');
       return reply.code(200).send({ removed: tree });

@@ -1,11 +1,12 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ThreeEvent } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import { beginDrag } from './interaction/DragLayer';
 import type { OfficeLayout, PlacedItem } from '@shared/domain';
 import { POS_STEP } from '@shared/domain';
-import { footprintRect, isEdge, sizeM, snap } from '@shared/catalog';
+import { CATALOG, CELL, footprintRect, isWallMounted, onEdgeGrid, sizeM, snap } from '@shared/catalog';
 import { insideFloor, validateLayout } from '@shared/layout-validation';
+import { findSeat } from '@shared/nav-core';
 import { useBuild } from '../state/build';
 import { floorToWorld } from './furniture/Furniture';
 
@@ -13,6 +14,39 @@ import { floorToWorld } from './furniture/Furniture';
 // 0.05 m steps (Shift: 0.5 m; walls always 0.5 m) and a click places it; the selected item gets an
 // outline; while dragging, a ghost shows the drop (green = valid, red = not) and the desk under a dragged
 // employee lights up (green = free, amber = occupied → swap). Dragging itself lives in DragLayer.
+
+type Placement = Pick<PlacedItem, 'pos' | 'rotation'>;
+
+/**
+ * Where an item goes for a floor point: centred under the pointer (edge items: snapped to the 0.5 m edge
+ * grid). 007: a frame snaps to the nearest edge and faces the side the pointer is on; each R flips it.
+ */
+function placementFor(p: { x: number; z: number; shift: boolean }, type: PlacedItem['type'], rot: PlacedItem['rotation']): Placement {
+  if (isWallMounted(type)) {
+    const half = (CATALOG[type].footprint.w * CELL) / 2;
+    const xr = snap(p.x, 0.5);
+    const zr = snap(p.z, 0.5);
+    const flip = (rot / 90) % 2 === 1;
+    if (Math.abs(p.z - zr) <= Math.abs(p.x - xr)) {
+      const south = p.z >= zr !== flip;
+      return { pos: { x: snap(p.x - half, 0.5), z: zr }, rotation: south ? 0 : 180 };
+    }
+    const east = p.x >= xr !== flip;
+    return { pos: { x: xr, z: snap(p.z - half, 0.5) }, rotation: east ? 90 : 270 };
+  }
+  return { pos: posFor(p, type, rot), rotation: rot };
+}
+
+/** Item position for a floor point: centred under the pointer (edge items: snapped to the 0.5 m edge grid). */
+function posFor(p: { x: number; z: number; shift: boolean }, type: PlacedItem['type'], rot: PlacedItem['rotation']): { x: number; z: number } {
+  if (onEdgeGrid(type)) {
+    const half = (CATALOG[type].footprint.w * CELL) / 2;
+    return rot === 0 || rot === 180 ? { x: snap(p.x - half, 0.5), z: snap(p.z, 0.5) } : { x: snap(p.x, 0.5), z: snap(p.z - half, 0.5) };
+  }
+  const step = p.shift ? 0.5 : POS_STEP;
+  const s = sizeM(type, rot);
+  return { x: snap(p.x - s.w / 2, step), z: snap(p.z - s.d / 2, step) };
+}
 
 function ghostValid(layout: OfficeLayout, ghost: PlacedItem): boolean {
   if (!insideFloor(layout, ghost)) return false;
@@ -22,22 +56,25 @@ function ghostValid(layout: OfficeLayout, ghost: PlacedItem): boolean {
 
 export function BuildGizmo({ layout }: { layout: OfficeLayout }) {
   const { palette, rotation, place, selectedId, drag, select, resizeBlockers } = useBuild();
-  const [hover, setHover] = useState<{ x: number; z: number } | null>(null);
+  const [hover, setHover] = useState<Placement | null>(null);
   const { width: w, depth: d } = layout.floor;
 
+  // Last pointer point on the floor, so a rotation (R) can re-anchor the ghost without a mouse move (007 US1).
+  const lastPoint = useRef<{ x: number; z: number; shift: boolean } | null>(null);
   const posAt = (e: ThreeEvent<PointerEvent | MouseEvent>, type: PlacedItem['type'], rot: PlacedItem['rotation']) => {
-    const p = { x: e.point.x + w / 2, z: e.point.z + d / 2 };
-    if (isEdge(type)) return { x: snap(p.x - 0.25, 0.5), z: snap(p.z, 0.5) };
-    const step = e.nativeEvent.shiftKey ? 0.5 : POS_STEP;
-    const s = sizeM(type, rot);
-    return { x: snap(p.x - s.w / 2, step), z: snap(p.z - s.d / 2, step) };
+    lastPoint.current = { x: e.point.x + w / 2, z: e.point.z + d / 2, shift: e.nativeEvent.shiftKey };
+    return placementFor(lastPoint.current, type, rot);
   };
+  useEffect(() => {
+    if (palette && lastPoint.current) setHover(placementFor(lastPoint.current, palette, rotation));
+  }, [palette, rotation]);
 
-  const ghost: PlacedItem | null = useMemo(() => (hover && palette ? { id: '__ghost__', type: palette, pos: hover, rotation } : null), [hover, palette, rotation]);
+  const ghost: PlacedItem | null = useMemo(() => (hover && palette ? { id: '__ghost__', type: palette, ...hover } : null), [hover, palette]);
   const valid = ghost ? ghostValid(layout, ghost) : false;
   const selected = selectedId ? layout.items.find((i) => i.id === selectedId) : undefined;
   const dragged = drag?.kind === 'item' ? layout.items.find((i) => i.id === drag.id) : undefined;
   const targetDesk = drag?.kind === 'employee' && drag.deskId ? layout.items.find((i) => i.id === drag.deskId) : undefined;
+  const targetSeat = drag?.kind === 'employee' && drag.seatId ? findSeat(layout, drag.seatId) : null;
 
   return (
     <group>
@@ -54,9 +91,8 @@ export function BuildGizmo({ layout }: { layout: OfficeLayout }) {
           // Place from the click position itself, not from the hover ghost: on a slow frame the click can
           // arrive before the ghost has been drawn.
           if (palette) {
-            const pos = posAt(e, palette, rotation);
-            const g: PlacedItem = { id: '__ghost__', type: palette, pos, rotation };
-            if (ghostValid(layout, g)) place({ type: g.type, pos, rotation: g.rotation });
+            const g: PlacedItem = { id: '__ghost__', type: palette, ...posAt(e, palette, rotation) };
+            if (ghostValid(layout, g)) place({ type: g.type, pos: g.pos, rotation: g.rotation });
           } else if (!drag) select(null); // click on empty floor deselects (U-3)
         }}
       >
@@ -68,6 +104,12 @@ export function BuildGizmo({ layout }: { layout: OfficeLayout }) {
       {selected && !dragged && <GhostBox item={selected} layout={layout} color="ok" outline />}
       {dragged && drag && <GhostBox item={{ ...dragged, pos: drag.pos }} layout={layout} color={drag.valid ? 'ok' : 'bad'} />}
       {targetDesk && <GhostBox item={targetDesk} layout={layout} color={drag?.occupied ? 'swap' : 'ok'} />}
+      {targetSeat && (
+        <mesh position={floorToWorld(layout.floor, targetSeat.x, targetSeat.z).map((v, i) => (i === 1 ? 0.6 : v)) as [number, number, number]}>
+          <boxGeometry args={[0.5, 1.2, 0.5]} />
+          <meshBasicMaterial color={drag?.occupied ? COLORS.swap : COLORS.ok} transparent opacity={0.35} depthWrite={false} />
+        </mesh>
+      )}
       {/* US4 / U-4: edge handles (east, south) resize the office in 0.5 m steps. */}
       {(['east', 'south'] as const).map((side) => {
         const at = side === 'east' ? { x: w, z: d / 2 } : { x: w / 2, z: d };
@@ -120,7 +162,7 @@ const COLORS = { ok: '#2ec4b6', bad: '#d64545', swap: '#e0a21b' } as const;
 
 function GhostBox({ item, layout, color, outline = false }: { item: PlacedItem; layout: OfficeLayout; color: keyof typeof COLORS; outline?: boolean }) {
   const r = footprintRect(item);
-  const edge = isEdge(item.type);
+  const edge = onEdgeGrid(item.type);
   const w = Math.max(r.x1 - r.x0, edge ? 0.1 : 0);
   const d = Math.max(r.z1 - r.z0, edge ? 0.1 : 0);
   const [x, , z] = floorToWorld(layout.floor, (r.x0 + r.x1) / 2, (r.z0 + r.z1) / 2);

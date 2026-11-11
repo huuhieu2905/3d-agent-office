@@ -11,6 +11,7 @@ import { QuotaService } from './quota';
 import { FolderService } from './folders';
 import { WeatherService } from './weather';
 import { SettingsStore } from './settings';
+import { prunePictures } from './pictures';
 
 // Registry of long-running server services. Each user story adds its service here.
 
@@ -73,6 +74,8 @@ export function createServices(deps: ServiceDeps): Services {
     layout,
     employees,
     async start() {
+      // 007 FR-018: pictures left over from a cancelled build session (or an older save) are removed.
+      await prunePictures(dataDir, await layout.get(), deps.log);
       employees.start();
       quota.start();
     },

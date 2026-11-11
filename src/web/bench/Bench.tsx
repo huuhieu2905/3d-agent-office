@@ -15,7 +15,7 @@ import type { DetailLevel } from '@shared/domain';
 
 const STATES: VisualState[] = ['idle', 'working', 'thinking', 'waiting_for_boss', 'error', 'stopped'];
 /** Scenarios understood by ?scenario= (T003). */
-const KNOWN_SCENARIOS: string[] = ['crowd', 'outing'];
+const KNOWN_SCENARIOS: string[] = ['crowd', 'outing', 'rooms'];
 
 const APPEARANCES = ['worker-a', 'worker-b', 'worker-c', 'worker-d', 'worker-e', 'worker-f', 'worker-g', 'worker-h'];
 
@@ -48,6 +48,7 @@ function fakeEmployees(tick: number, deskIds: string[], allIdle = false): Employ
     visualState: allIdle ? 'idle' : STATES[(i + tick) % STATES.length]!,
     appearance: APPEARANCES[i % APPEARANCES.length]!,
     deskId: deskIds[i] ?? null,
+    meetingSeatId: null,
     projectId: `p${i % 3}`,
     projectColor: ['#e4572e', '#2f6fed', '#2ec4b6'][i % 3]!,
     isSubagent: false,
@@ -87,7 +88,8 @@ export function Bench() {
   // 004 T042 "outing": all 20 idle, dry weather, a sofa, breaks every 10 s → sofa rests and shop trips
   // up to the outing cap (a third of the staff outside) while the FPS is measured.
   const outing = new URLSearchParams(location.search).get('scenario') === 'outing';
-  const layout = defaultBenchLayout(benchFloor(), { sofa: outing });
+  const rooms = new URLSearchParams(location.search).get('scenario') === 'rooms';
+  const layout = defaultBenchLayout(benchFloor() ?? (rooms ? { width: 24, depth: 16 } : undefined), { sofa: outing, rooms });
   const deskIds = layout.items.filter((i) => i.type === 'desk').map((d) => d.id);
 
   useEffect(() => {

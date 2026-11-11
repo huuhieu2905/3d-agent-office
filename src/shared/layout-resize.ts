@@ -1,5 +1,6 @@
 import { DOOR_WIDTH, type OfficeLayout } from './domain';
 import { floorSizeValid, minFloorSize, resizeBlockers } from './layout-validation';
+import { CATALOG, CELL, isWallMounted } from './catalog';
 
 // 002 US4 / R2-05: change the office size. Anchored at the north-west corner, so item positions never
 // change; the glass façade stays north. Shrinking is refused while furniture would end up outside the
@@ -20,5 +21,16 @@ export function resizeLayout(layout: OfficeLayout, width: number, depth: number)
   const { side, offset } = layout.shell.door;
   const sideLen = side === 'south' ? width : depth;
   const door = { side, offset: Math.min(Math.max(0, offset), sideLen - DOOR_WIDTH) };
-  return { ok: true, layout: { ...layout, floor: { width, depth }, shell: { ...layout.shell, door } } };
+  // 007: frames on the east / south outer wall move with that wall (and slide back along it if the wall got
+  // shorter). They are never dropped here; one that now overlaps another or the door shows up in validation.
+  const { width: W, depth: D } = layout.floor;
+  const items = layout.items.map((it) => {
+    if (!isWallMounted(it.type)) return it;
+    const len = CATALOG[it.type].footprint.w * CELL;
+    if (it.rotation === 270 && Math.abs(it.pos.x - W) < 1e-6) return { ...it, pos: { x: width, z: Math.min(it.pos.z, depth - len) } };
+    if (it.rotation === 180 && Math.abs(it.pos.z - D) < 1e-6) return { ...it, pos: { x: Math.min(it.pos.x, width - len), z: depth } };
+    if (it.rotation === 90 && Math.abs(it.pos.x) < 1e-6) return { ...it, pos: { x: 0, z: Math.min(it.pos.z, depth - len) } };
+    return it;
+  });
+  return { ok: true, layout: { ...layout, floor: { width, depth }, shell: { ...layout.shell, door }, items } };
 }

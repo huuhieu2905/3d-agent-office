@@ -2,14 +2,15 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { RoundedBox } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useEmployees } from '../../state/employees';
-import { CONCEPT, limewashTexture } from '../../theme/concept';
+import { CONCEPT, defaultPictureTexture, limewashTexture } from '../../theme/concept';
 import type React from 'react';
 import * as THREE from 'three';
 import type { ItemType, OfficeLayout, PlacedItem } from '@shared/domain';
-import { footprintRect, isEdge } from '@shared/catalog';
+import { CATALOG, CELL, footprintRect, isEdge, isWallMounted, seatPoints } from '@shared/catalog';
+import { coverFit, loadPictureTexture } from '../../ui/build/picture';
 
 // Procedural furniture in the chosen concept E+ (002 US6 / T071): soft rounded shapes, PBR materials,
-// cream desks on teal legs, rattan chairs, terracotta pots. No third-party files (assets/LICENSES.md).
+// cream desks on teal legs, office chairs (007), terracotta pots. No third-party files (assets/LICENSES.md).
 // Units: metres.
 
 /** Kept for callers that still pick a floor colour; the floor itself is a wood texture (Office.tsx). */
@@ -24,8 +25,9 @@ const mats = {
   leg: new THREE.MeshStandardMaterial({ color: CONCEPT.deskLeg, roughness: 0.5 }),
   monitor: new THREE.MeshStandardMaterial({ color: CONCEPT.monitor, roughness: 0.4, metalness: 0.2 }),
   keyboard: new THREE.MeshStandardMaterial({ color: '#e8e1d2', roughness: 0.6 }),
-  rattan: new THREE.MeshStandardMaterial({ color: CONCEPT.chair, roughness: 0.85 }),
   chairFrame: new THREE.MeshStandardMaterial({ color: CONCEPT.chairFrame, roughness: 0.5 }),
+  chairBase: new THREE.MeshStandardMaterial({ color: '#3b3a38', roughness: 0.45, metalness: 0.3 }),
+  fabric: new THREE.MeshStandardMaterial({ color: CONCEPT.fabric, roughness: 0.9 }),
   sofa: new THREE.MeshStandardMaterial({ color: CONCEPT.sofa, roughness: 0.9 }),
   cushion: new THREE.MeshStandardMaterial({ color: '#efe4cc', roughness: 0.95 }),
   leaf: new THREE.MeshStandardMaterial({ color: CONCEPT.plant, roughness: 0.75, side: THREE.DoubleSide }),
@@ -90,20 +92,111 @@ export function Desk({ screenOn = false }: { screenOn?: boolean }) {
   );
 }
 
-/** Rattan chair (concept D colours, E shapes). */
+/**
+ * 007 US4: ergonomic office chair — five-point base on casters, gas lift, padded seat, high back (behind the
+ * sitter, +z like the old rattan chair) and armrests. Seat top ≈ 0.49 m, same height as before, so seated
+ * employees keep their pose.
+ */
+const CASTERS = [0, 1, 2, 3, 4].map((i) => {
+  const a = (i / 5) * Math.PI * 2;
+  return [Math.sin(a) * 0.27, Math.cos(a) * 0.27] as const;
+});
 export function Chair() {
   return (
     <group>
-      <Box size={[0.48, 0.07, 0.46]} position={[0, 0.45, 0]} material={mats.rattan} radius={0.03} />
-      <Box size={[0.46, 0.42, 0.06]} position={[0, 0.7, 0.22]} material={mats.rattan} radius={0.03} />
-      {[
-        [-0.2, -0.18],
-        [0.2, -0.18],
-        [-0.2, 0.18],
-        [0.2, 0.18],
-      ].map(([x, z], i) => (
-        <Cyl key={i} r={0.02} h={0.42} position={[x!, 0.21, z!]} material={mats.chairFrame} seg={8} />
+      {/* Five-point base: a flat pentagonal star plus one caster under each point. */}
+      <Cyl r={0.29} rTop={0.06} h={0.05} position={[0, 0.075, 0]} material={mats.chairBase} seg={5} />
+      {CASTERS.map(([x, z], i) => (
+        <Cyl key={i} r={0.025} h={0.04} position={[x, 0.025, z]} material={mats.chairBase} seg={8} />
       ))}
+      <Cyl r={0.025} h={0.3} position={[0, 0.25, 0]} material={mats.chairFrame} seg={10} />
+      <Box size={[0.48, 0.08, 0.46]} position={[0, 0.45, 0]} material={mats.fabric} radius={0.035} />
+      <Box size={[0.44, 0.56, 0.07]} position={[0, 0.8, 0.22]} material={mats.fabric} radius={0.035} />
+      {[-0.255, 0.255].map((x) => (
+        <group key={x}>
+          <Box size={[0.035, 0.18, 0.04]} position={[x, 0.57, 0.05]} material={mats.chairBase} radius={0.01} />
+          <Box size={[0.06, 0.03, 0.26]} position={[x, 0.67, 0.0]} material={mats.chairFrame} radius={0.012} />
+        </group>
+      ))}
+    </group>
+  );
+}
+
+/**
+ * 007 US3: meeting table (cream top on teal legs, like the desks) with an office chair at every seat of its
+ * catalog entry, each turned to face the table. Drawn in the item's own frame, centred on the footprint.
+ */
+export function MeetingTable({ type }: { type: 'meeting_table_4' | 'meeting_table_8' }) {
+  const { w, d } = CATALOG[type].footprint;
+  const tw = w * CELL - 0.05;
+  const td = d * CELL - 0.05;
+  const seats = useMemo(() => seatPoints({ id: '', type, pos: { x: 0, z: 0 }, rotation: 0 }).map((s) => s.local), [type]);
+  const legs = [
+    [-tw / 2 + 0.12, -td / 2 + 0.12],
+    [tw / 2 - 0.12, -td / 2 + 0.12],
+    [-tw / 2 + 0.12, td / 2 - 0.12],
+    [tw / 2 - 0.12, td / 2 - 0.12],
+  ];
+  return (
+    <group>
+      <Box size={[tw, 0.05, td]} position={[0, 0.74, 0]} material={mats.deskTop} radius={0.025} />
+      {legs.map(([x, z], i) => (
+        <Cyl key={i} r={0.04} h={0.72} position={[x!, 0.36, z!]} material={mats.leg} seg={14} />
+      ))}
+      {seats.map((s, i) => (
+        // The chair back is at its +z; turn it square to the side of the table it stands at, back outwards.
+        <group key={i} position={[s.x, 0, s.z]} rotation-y={Math.abs(s.z) > td / 2 ? (s.z > 0 ? 0 : Math.PI) : s.x > 0 ? Math.PI / 2 : -Math.PI / 2}>
+          <Chair />
+        </group>
+      ))}
+    </group>
+  );
+}
+
+/** 007 US5: outer frame size and picture size (metres) of each frame type. */
+const FRAME_SIZE = {
+  painting: { w: 1.0, h: 0.7, pw: 0.9, ph: 0.6 },
+  photo_frame: { w: 0.4, h: 0.5, pw: 0.32, ph: 0.42 },
+} as const;
+const FRAME_Y = 1.5;
+
+/**
+ * 007 US5: a painting or photo frame hanging on its wall, centred on its group and facing +z (the group is
+ * turned to the side it hangs on). Shows the user's uploaded picture, cropped to fill, or a default picture
+ * when there is none or it cannot be loaded. The frame's back is visible through glass from the other side.
+ */
+export function PictureFrame({ type, picture, low = false }: { type: 'painting' | 'photo_frame'; picture?: string; low?: boolean }) {
+  const s = FRAME_SIZE[type];
+  const [tex, setTex] = useState<THREE.Texture | null>(null);
+  useEffect(() => {
+    if (!picture) {
+      setTex(null);
+      return;
+    }
+    let alive = true;
+    let loaded: THREE.Texture | null = null;
+    loadPictureTexture(picture)
+      .then((t) => {
+        loaded = t;
+        if (!alive) return t?.dispose();
+        if (t) coverFit(t, s.pw / s.ph);
+        setTex(t);
+      })
+      .catch(() => alive && setTex(null));
+    return () => {
+      alive = false;
+      loaded?.dispose();
+    };
+  }, [picture, s.pw, s.ph]);
+  const map = tex ?? defaultPictureTexture(type === 'painting' ? 'painting' : 'photo');
+  return (
+    // `low`: the solid wall behind it is cut down (overview camera), so the frame stands on the wall's top edge.
+    <group position={[0, low ? CUTAWAY_WALL_H + s.h / 2 : FRAME_Y, 0.06]}>
+      <Box size={[s.w, s.h, 0.035]} position={[0, 0, 0]} material={mats.frame} radius={0.008} />
+      <mesh position={[0, 0, 0.019]}>
+        <planeGeometry args={[s.pw, s.ph]} />
+        <meshStandardMaterial map={map} roughness={0.6} />
+      </mesh>
     </group>
   );
 }
@@ -253,6 +346,28 @@ export function Door({ cutaway = true, isNear }: { cutaway?: boolean; isNear?: (
 
 const WALL_H = 2.6;
 
+/**
+ * 007 US2: interior office door, 1 m wide, centred on its group; `vertical` runs along z. Thin frame
+ * (posts + header) and a glass leaf standing open at 90° on its hinge. Visual only: the doorway never
+ * blocks the navigation grid (catalog `blocks: 'none'`).
+ */
+export function OfficeDoor({ vertical }: { vertical: boolean }) {
+  const H = 2.2;
+  return (
+    <group rotation-y={vertical ? Math.PI / 2 : 0}>
+      <Box size={[0.06, WALL_H, 0.1]} position={[-0.47, WALL_H / 2, 0]} material={mats.frame} radius={0.02} />
+      <Box size={[0.06, WALL_H, 0.1]} position={[0.47, WALL_H / 2, 0]} material={mats.frame} radius={0.02} />
+      <Box size={[1.0, WALL_H - H, 0.1]} position={[0, (WALL_H + H) / 2, 0]} material={mats.frame} radius={0.02} />
+      <group position={[-0.44, 0, 0]} rotation-y={-Math.PI / 2}>
+        <mesh position={[0.43, H / 2, 0]} material={mats.glass}>
+          <boxGeometry args={[0.86, H - 0.02, 0.04]} />
+        </mesh>
+        <Box size={[0.03, 0.2, 0.05]} position={[0.8, 1.0, 0.03]} material={mats.frame} radius={0.01} />
+      </group>
+    </group>
+  );
+}
+
 /** In the overview ("dollhouse") camera, solid walls are cut down so they never hide the office. */
 export const CUTAWAY_WALL_H = 0.45;
 
@@ -282,9 +397,11 @@ export function floorToWorld(floor: OfficeLayout['floor'], x: number, z: number)
 export function itemTransform(item: PlacedItem, floor: OfficeLayout['floor']): { position: [number, number, number]; rotationY: number } {
   const r = footprintRect(item);
   const edge = isEdge(item.type);
+  // 007: a frame's rotation is the direction it faces (0 south, 90 east, …), so its model's +z turns that way.
+  const a = (item.rotation * Math.PI) / 180;
   return {
     position: floorToWorld(floor, (r.x0 + r.x1) / 2, (r.z0 + r.z1) / 2),
-    rotationY: edge ? 0 : -(item.rotation * Math.PI) / 180,
+    rotationY: edge ? 0 : isWallMounted(item.type) ? a : -a,
   };
 }
 

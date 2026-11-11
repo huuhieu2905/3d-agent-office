@@ -19,6 +19,10 @@ each package's `LICENSE` file.
   `src/web/scene/character.ts`. (Feature 001's CC0 robot model, RobotExpressive by Tomás Laulhé /
   Quaternius, is no longer shipped.)
 - **Furniture, walls, glass, door mat, plants, water cooler**: `src/web/scene/furniture/`.
+- **007 build items** (original work, built from primitives in `src/web/scene/furniture/Furniture.tsx`):
+  long glass wall, interior office door, ergonomic office chair, meeting tables (4 and 8 seats), painting and
+  photo frames. The frames' default pictures are canvas drawings generated in code. Pictures the user uploads
+  are their own files, stored only in the local data folder and never shipped.
 - **Floor and wall textures** (light-oak planks, lime-wash): canvas textures in `src/web/theme/concept.ts`.
 - **Lighting environment**: three.js `RoomEnvironment` (part of the three.js package, MIT) rendered into a
   PMREM at start-up instead of an HDRI file — `src/web/scene/OfficeMood.tsx`.

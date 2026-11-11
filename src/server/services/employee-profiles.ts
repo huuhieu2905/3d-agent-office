@@ -58,7 +58,7 @@ export class EmployeeProfiles {
 
   async update(
     conversationId: string,
-    patch: Partial<Pick<EmployeeProfile, 'deskId' | 'appearance'>> & { preferredModel?: string | null },
+    patch: Partial<Pick<EmployeeProfile, 'deskId' | 'appearance' | 'meetingSeatId'>> & { preferredModel?: string | null },
     now = Date.now(),
   ): Promise<EmployeeProfile> {
     const p = await this.get(conversationId);
@@ -72,6 +72,7 @@ export class EmployeeProfiles {
       }
       p.deskId = patch.deskId;
     }
+    if (patch.meetingSeatId !== undefined) p.meetingSeatId = patch.meetingSeatId;
     if (patch.appearance !== undefined) p.appearance = patch.appearance;
     // 002 US1: remember the model picked for this conversation (null forgets it). The profile — and so
     // the choice — is dropped with the rest of the profile when the conversation disappears (touch()).
@@ -95,6 +96,21 @@ export class EmployeeProfiles {
       if (!(id in seating) && p.deskId && claimed.has(p.deskId)) p.deskId = null;
     }
     for (const [id, deskId] of Object.entries(seating)) (await this.get(id)).deskId = deskId;
+    this.dirty = true;
+    await this.flush();
+  }
+
+  /**
+   * 007 US3: apply meeting seats from arrange mode, like setSeats: listed conversations get their seat (null =
+   * left the meeting); anyone else holding one of those seats loses it. Desks are not touched (they stay reserved).
+   */
+  async setMeetingSeats(seating: Record<string, string | null>): Promise<void> {
+    const data = await this.load();
+    const claimed = new Set(Object.values(seating).filter((d): d is string => !!d));
+    for (const [id, p] of Object.entries(data.profiles)) {
+      if (!(id in seating) && p.meetingSeatId && claimed.has(p.meetingSeatId)) p.meetingSeatId = null;
+    }
+    for (const [id, seat] of Object.entries(seating)) (await this.get(id)).meetingSeatId = seat;
     this.dirty = true;
     await this.flush();
   }

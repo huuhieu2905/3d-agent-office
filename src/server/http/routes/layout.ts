@@ -3,6 +3,8 @@ import { layoutPutSchema, profilePatchSchema } from '../../../shared/schemas';
 import { isLayoutV1, migrateV1toV2 } from '../../../shared/layout-migrate';
 import { insideFloor, minFloorSize, validateLayout } from '../../../shared/layout-validation';
 import type { OfficeLayout, OfficeLayoutV1 } from '../../../shared/domain';
+import { findSeat } from '../../../shared/nav-core';
+import { prunePictures } from '../../services/pictures';
 import { sendError } from '../security';
 import type { RouteDeps } from './index';
 
@@ -20,6 +22,7 @@ export const layoutRoutes: FastifyPluginAsync<RouteDeps> = async (app, deps) => 
     const raw = ('layout' in parsed.data ? parsed.data.layout : parsed.data) as OfficeLayout | OfficeLayoutV1;
     const layout: OfficeLayout = isLayoutV1(raw) ? migrateV1toV2(raw) : raw;
     const seating = 'layout' in parsed.data ? (parsed.data.seating ?? {}) : {};
+    const meetingSeating = 'layout' in parsed.data ? (parsed.data.meetingSeating ?? {}) : {};
     // L2-2: shrinking the office below its furniture is its own error, with the items in the way.
     const saved = await services.layout.get();
     const shrank = layout.floor.width < saved.floor.width || layout.floor.depth < saved.floor.depth;
@@ -45,14 +48,25 @@ export const layoutRoutes: FastifyPluginAsync<RouteDeps> = async (app, deps) => 
         return !deskIds.has(desk) || all.findIndex(([, d]) => d === desk) !== i;
       })
       .map(([id]) => id);
-    if (badSeats.length) {
-      return reply.code(422).send({ error: { code: 'INVALID_SEATING', message: 'Invalid seating' }, conversationIds: badSeats });
+    // 007 L7-1: meeting seats must be `<meeting table of this layout>#<n>` in range, one employee per seat.
+    const badMeeting = Object.entries(meetingSeating)
+      .filter(([id, seat], i, all) => {
+        if (!ID.test(id) || !services.employees.conversation(id)) return true;
+        if (seat === null) return false;
+        return !seat.includes('#') || !findSeat(layout, seat) || all.findIndex(([, s]) => s === seat) !== i;
+      })
+      .map(([id]) => id);
+    if (badSeats.length || badMeeting.length) {
+      return reply.code(422).send({ error: { code: 'INVALID_SEATING', message: 'Invalid seating' }, conversationIds: [...badSeats, ...badMeeting] });
     }
     await services.layout.save(layout);
     if (Object.keys(seating).length) await services.profiles.setSeats(seating);
+    if (Object.keys(meetingSeating).length) await services.profiles.setMeetingSeats(meetingSeating);
+    // 007 FR-018: pictures no saved frame uses any more are deleted.
+    await prunePictures(services.dataDir, layout, deps.log);
     // Employees whose desk disappeared go back to the lobby; others keep their seats.
     void services.employees.refresh();
-    return { layout, seating };
+    return { layout, seating, meetingSeating };
   });
 
   app.put<{ Params: { conversationId: string } }>('/api/employees/:conversationId/profile', async (req, reply) => {

@@ -1,4 +1,4 @@
-import { CATALOG, footprintRect, isEdge, rectsOverlap, seatPoint, type Rect } from './catalog';
+import { CATALOG, CELL, footprintRect, isEdge, isMeetingTable, isWallMounted, onEdgeGrid, rectsOverlap, seatPoint, seatPoints, type Rect } from './catalog';
 import { DOOR_WIDTH, FLOOR_MAX, FLOOR_MIN, FLOOR_STEP, POS_STEP, WALL_STEP, type OfficeLayout, type PlacedItem } from './domain';
 import { OfficeGrid } from './nav-core';
 
@@ -36,6 +36,53 @@ function solid(item: PlacedItem): boolean {
   return CATALOG[item.type].blocks === 'cell' || item.type === 'chair';
 }
 
+/** Keys of the 0.5 m edge segments an edge-grid item covers: `n:x,z` (east-west edge) or `w:x,z` (north-south). */
+export function edgeSegments(item: Pick<PlacedItem, 'type' | 'pos' | 'rotation'>): string[] {
+  const r = footprintRect(item);
+  const ns = item.rotation === 0 || item.rotation === 180;
+  const n = Math.round((ns ? r.x1 - r.x0 : r.z1 - r.z0) / CELL);
+  const keys: string[] = [];
+  for (let i = 0; i < n; i++) {
+    const x = Math.round((ns ? r.x0 + i * CELL : r.x0) * 1000) / 1000;
+    const z = Math.round((ns ? r.z0 : r.z0 + i * CELL) * 1000) / 1000;
+    keys.push(`${ns ? 'n' : 'w'}:${x},${z}`);
+  }
+  return keys;
+}
+
+const WALL_TYPES = new Set(['wall', 'glass_wall', 'long_glass']);
+
+/**
+ * Can this frame hang where it is? Every 0.5 m segment under it must hold a wall / glass / long glass, or be
+ * the inside of the office's outer wall (west, east or south; never the north glass façade or the main door).
+ * Facing: rotation 0 → south, 90 → east, 180 → north, 270 → west.
+ */
+export function frameSupported(layout: Pick<OfficeLayout, 'floor' | 'shell' | 'items'>, frame: Pick<PlacedItem, 'type' | 'pos' | 'rotation'>): boolean {
+  const walls = new Set<string>();
+  for (const it of layout.items) if (WALL_TYPES.has(it.type)) for (const k of edgeSegments(it)) walls.add(k);
+  const { width: W, depth: D } = layout.floor;
+  const { side, offset } = layout.shell.door;
+  const eq = (a: number, b: number) => Math.abs(a - b) < 1e-6;
+  const inDoor = (along: number) => along + CELL > offset + 1e-6 && along < offset + DOOR_WIDTH - 1e-6;
+  const r = footprintRect(frame);
+  const ns = frame.rotation === 0 || frame.rotation === 180;
+  return edgeSegments(frame).every((k, i) => {
+    if (walls.has(k)) return true;
+    const x = ns ? r.x0 + i * CELL : r.x0;
+    const z = ns ? r.z0 : r.z0 + i * CELL;
+    if (!ns && eq(x, 0) && frame.rotation === 90) return !(side === 'west' && inDoor(z));
+    if (!ns && eq(x, W) && frame.rotation === 270) return !(side === 'east' && inDoor(z));
+    if (ns && eq(z, D) && frame.rotation === 180) return !(side === 'south' && inDoor(x));
+    return false;
+  });
+}
+
+/** Frames whose wall is gone (deleted, moved, rotated away) are removed with it (007 spec edge case). */
+export function dropUnsupportedFrames(layout: OfficeLayout): OfficeLayout {
+  const items = layout.items.filter((i) => !isWallMounted(i.type) || frameSupported(layout, i));
+  return items.length === layout.items.length ? layout : { ...layout, items };
+}
+
 export function validateLayout(layout: OfficeLayout): ValidationResult {
   const reasons: Record<string, string> = {};
   if (!floorSizeValid(layout.floor.width) || !floorSizeValid(layout.floor.depth)) {
@@ -46,8 +93,8 @@ export function validateLayout(layout: OfficeLayout): ValidationResult {
     if (ids.has(it.id)) reasons[it.id] = 'Duplicate item id';
     ids.add(it.id);
     if (it.type === 'door') reasons[it.id] ??= 'The main door is part of the office shell and cannot be placed as an item';
-    const step = isEdge(it.type) ? WALL_STEP : POS_STEP;
-    if (!onStep(it.pos.x, step) || !onStep(it.pos.z, step)) reasons[it.id] ??= isEdge(it.type) ? 'Walls must sit on the 0.5 m grid' : 'Position must be in 5 cm steps';
+    const step = onEdgeGrid(it.type) ? WALL_STEP : POS_STEP;
+    if (!onStep(it.pos.x, step) || !onStep(it.pos.z, step)) reasons[it.id] ??= onEdgeGrid(it.type) ? 'Walls must sit on the 0.5 m grid' : 'Position must be in 5 cm steps';
     if (!insideFloor(layout, it)) reasons[it.id] ??= 'Outside the floor';
   }
 
@@ -61,13 +108,27 @@ export function validateLayout(layout: OfficeLayout): ValidationResult {
       if (rectsOverlap(footprintRect(a), footprintRect(b))) reasons[b.id] ??= 'Overlaps another item';
     }
 
-  // Edge items: one per edge segment.
+  // Edge items: one per 0.5 m edge segment (a long glass wall covers 4, an office door 2).
   const edges = new Set<string>();
   for (const it of layout.items) {
     if (!isEdge(it.type)) continue;
-    const k = `${it.rotation === 0 || it.rotation === 180 ? 'n' : 'w'}:${it.pos.x},${it.pos.z}`;
-    if (edges.has(k)) reasons[it.id] ??= 'Another wall is already here';
-    else edges.add(k);
+    for (const k of edgeSegments(it)) {
+      if (edges.has(k)) reasons[it.id] ??= 'Another wall is already here';
+      else edges.add(k);
+    }
+  }
+
+  // 007 US5: frames hang on a wall, glass or the inside of the outer wall; one per side of a segment.
+  const faces = new Set<string>();
+  for (const it of layout.items) {
+    if (it.picture !== undefined && !isWallMounted(it.type)) reasons[it.id] ??= 'Only picture frames can show a picture';
+    if (!isWallMounted(it.type)) continue;
+    if (!frameSupported(layout, it)) reasons[it.id] ??= 'A picture must hang on a wall';
+    for (const k of edgeSegments(it)) {
+      const f = `${k}@${it.rotation}`;
+      if (faces.has(f)) reasons[it.id] ??= 'Another picture is already here';
+      else faces.add(f);
+    }
   }
 
   // Door within its side, and every desk seat reachable from it.
@@ -80,10 +141,14 @@ export function validateLayout(layout: OfficeLayout): ValidationResult {
     if (!grid.walkable(door.x, door.z)) reasons['__door__'] = 'The main door entrance is blocked';
     else {
       const reach = reachable(grid, door);
-      for (const desk of layout.items.filter((i) => i.type === 'desk')) {
-        const s = grid.seatOf(desk.id)!;
-        if (!grid.walkable(s.x, s.z)) reasons[desk.id] ??= 'The desk seat is blocked';
-        else if (!reach.has(s.z * grid.width + s.x)) reasons[desk.id] ??= 'No path from the door to this desk';
+      // Every seat of every desk and meeting table (007 FR-007).
+      for (const item of layout.items.filter((i) => i.type === 'desk' || isMeetingTable(i.type))) {
+        const desk = item.type === 'desk';
+        for (const seat of seatPoints(item)) {
+          const s = grid.seatOf(seat.id);
+          if (!s || !grid.walkable(s.x, s.z)) reasons[item.id] ??= desk ? 'The desk seat is blocked' : 'A seat of this table is blocked';
+          else if (!reach.has(s.z * grid.width + s.x)) reasons[item.id] ??= desk ? 'No path from the door to this desk' : 'No path from the door to this table';
+        }
       }
     }
   }
@@ -117,6 +182,7 @@ export function minFloorSize(layout: OfficeLayout): { width: number; depth: numb
   let maxZ = 0;
   const rects = new Map<string, Rect>();
   for (const it of layout.items) {
+    if (isWallMounted(it.type)) continue; // 007: frames on the outer wall move with it
     const r = footprintRect(it);
     rects.set(it.id, r);
     maxX = Math.max(maxX, r.x1);
@@ -132,6 +198,7 @@ export function minFloorSize(layout: OfficeLayout): { width: number; depth: numb
 export function resizeBlockers(layout: OfficeLayout, width: number, depth: number): string[] {
   return layout.items
     .filter((it) => {
+      if (isWallMounted(it.type)) return false; // 007: frames on the outer wall move with it
       const r = footprintRect(it);
       return r.x1 + 0.5 > width + 1e-6 || r.z1 + 0.5 > depth + 1e-6;
     })

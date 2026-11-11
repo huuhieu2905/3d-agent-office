@@ -2,10 +2,10 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import type { OfficeLayout } from '@shared/domain';
-import { footprintRect, rectsOverlap } from '@shared/catalog';
+import { footprintRect, isMeetingTable, onEdgeGrid, rectsOverlap, seatPoints, snap } from '@shared/catalog';
 import { floorSizeValid, insideFloor, resizeBlockers, validateLayout } from '@shared/layout-validation';
 import { FLOOR_MAX, FLOOR_MIN } from '@shared/domain';
-import { chairsOf, effectiveDesks, useBuild } from '../../state/build';
+import { chairsOf, effectiveDesks, effectiveMeetingSeats, useBuild } from '../../state/build';
 import { DragController, type DragKind, type DragState, type Pt } from './DragController';
 
 // 002 US2 / T032 (R2-02): the arrange-mode drag layer. Draggable objects call beginDrag() from their
@@ -37,6 +37,29 @@ export function deskAt(layout: OfficeLayout, p: Pt): string | null {
   return hit?.id ?? null;
 }
 
+/** 007: nearest meeting-table seat within 0.4 m of a floor point. */
+export function seatAt(layout: OfficeLayout, p: Pt): string | null {
+  let best: string | null = null;
+  let bestD = 0.4;
+  for (const t of layout.items) {
+    if (!isMeetingTable(t.type)) continue;
+    for (const s of seatPoints(t)) {
+      const d = Math.hypot(s.x - p.x, s.z - p.z);
+      if (d < bestD) {
+        bestD = d;
+        best = s.id;
+      }
+    }
+  }
+  return best;
+}
+
+/** Walls, glass, doors and frames stay on the 0.5 m edge grid while dragged (007). */
+function itemPos(layout: OfficeLayout, id: string, p: Pt): Pt {
+  const it = layout.items.find((i) => i.id === id);
+  return it && onEdgeGrid(it.type) ? { x: snap(p.x, 0.5), z: snap(p.z, 0.5) } : p;
+}
+
 /** Floor size from a dragged edge handle (`origin` = the edge position when the drag began). */
 export function sizeFromHandle(layout: OfficeLayout, id: string, at: Pt): { width: number; depth: number } {
   const clamp = (v: number) => Math.min(FLOOR_MAX, Math.max(FLOOR_MIN, v));
@@ -58,7 +81,7 @@ export function moveIsValid(layout: OfficeLayout, id: string, pos: Pt): boolean 
   const group = new Set([id, ...followers]);
   const r = footprintRect(self);
   for (const o of moved) {
-    if (group.has(o.id) || o.type === 'wall' || o.type === 'glass_wall' || o.type === 'wall_screen') continue;
+    if (group.has(o.id) || onEdgeGrid(o.type) || o.type === 'wall_screen') continue;
     if (rectsOverlap(r, footprintRect(o))) return false;
   }
   // Seats still reachable, door still free, nothing else made invalid.
@@ -68,7 +91,16 @@ export function moveIsValid(layout: OfficeLayout, id: string, pos: Pt): boolean 
   return after.invalidItems.every((x) => before.has(x) && !group.has(x));
 }
 
-export function DragLayer({ layout, currentDesks }: { layout: OfficeLayout; currentDesks: Record<string, string | null> }) {
+export function DragLayer({
+  layout,
+  currentDesks,
+  currentSeats,
+}: {
+  layout: OfficeLayout;
+  currentDesks: Record<string, string | null>;
+  /** 007: served meeting seat of every employee. */
+  currentSeats: Record<string, string | null>;
+}) {
   const camera = useThree((s) => s.camera);
   const gl = useThree((s) => s.gl);
   const controls = useThree((s) => s.controls) as unknown as { enabled: boolean } | null;
@@ -78,6 +110,8 @@ export function DragLayer({ layout, currentDesks }: { layout: OfficeLayout; curr
   const desksRef = useRef(currentDesks);
   layoutRef.current = layout;
   desksRef.current = currentDesks;
+  const seatsRef = useRef(currentSeats);
+  seatsRef.current = currentSeats;
 
   useEffect(() => {
     const el = gl.domElement;
@@ -94,16 +128,22 @@ export function DragLayer({ layout, currentDesks }: { layout: OfficeLayout; curr
     const build = () => useBuild.getState();
     const preview = (s: DragState) => {
       const draft = build().draft ?? layoutRef.current;
-      if (s.kind === 'item') build().setDrag({ kind: 'item', id: s.id, pos: s.current, valid: moveIsValid(draft, s.id, s.current) });
+      if (s.kind === 'item') {
+        const pos = itemPos(draft, s.id, s.current);
+        build().setDrag({ kind: 'item', id: s.id, pos, valid: moveIsValid(draft, s.id, pos) });
+      }
       else if (s.kind === 'handle') {
         const size = sizeFromHandle(draft, s.id, s.current);
         const ok = floorSizeValid(size.width) && floorSizeValid(size.depth) && resizeBlockers(draft, size.width, size.depth).length === 0;
         build().setDrag({ kind: 'handle', id: s.id, pos: s.current, valid: ok, size });
       } else {
-        const deskId = deskAt(draft, s.current);
-        const desks = effectiveDesks(desksRef.current, build().seating);
-        const occupied = !!deskId && Object.entries(desks).some(([id, d]) => d === deskId && id !== s.id);
-        build().setDrag({ kind: 'employee', id: s.id, pos: s.current, valid: !!deskId, deskId, occupied });
+        // 007: a meeting-table seat under the cursor wins over a desk.
+        const seatId = seatAt(draft, s.current);
+        const deskId = seatId ? null : deskAt(draft, s.current);
+        const taken = seatId ? effectiveMeetingSeats(seatsRef.current, build().meetingSeating) : effectiveDesks(desksRef.current, build().seating);
+        const target = seatId ?? deskId;
+        const occupied = !!target && Object.entries(taken).some(([id, d]) => d === target && id !== s.id);
+        build().setDrag({ kind: 'employee', id: s.id, pos: s.current, valid: !!target, deskId, seatId, occupied });
       }
     };
     const restore = () => {
@@ -116,13 +156,16 @@ export function DragLayer({ layout, currentDesks }: { layout: OfficeLayout; curr
         const draft = build().draft;
         if (!draft) return;
         if (s.kind === 'item') {
-          if (moveIsValid(draft, s.id, s.current)) build().move(s.id, s.current);
+          const pos = itemPos(draft, s.id, s.current);
+          if (moveIsValid(draft, s.id, pos)) build().move(s.id, pos);
         } else if (s.kind === 'handle') {
           const size = sizeFromHandle(draft, s.id, s.current);
           build().resizeFloor(size.width, size.depth);
         } else {
-          const deskId = deskAt(draft, s.current);
-          if (deskId) build().assignSeat(s.id, deskId, desksRef.current);
+          const seatId = seatAt(draft, s.current);
+          const deskId = seatId ? null : deskAt(draft, s.current);
+          if (seatId) build().assignMeetingSeat(s.id, seatId, seatsRef.current);
+          else if (deskId) build().assignSeat(s.id, deskId, desksRef.current);
         }
       },
     });
