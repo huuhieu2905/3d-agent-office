@@ -29,6 +29,7 @@ export type ErrorCode =
   | 'NOT_SUPPORTED'
   | 'QUESTION_NOT_PENDING'
   | 'APP_REJECTED'
+  | 'OFFICE_FULL'
   | 'PROJECT_NAME_TAKEN'
   | 'AGENT_BUSY'
   | 'INTERNAL';

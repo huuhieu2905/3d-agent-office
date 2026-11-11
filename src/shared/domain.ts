@@ -176,11 +176,33 @@ export interface EmployeeProfile {
   preferredModel?: PreferredModel | null;
   /** When this conversation was last seen in the App; used for 30-day cleanup. */
   lastSeenAt: ISODateTime;
+  /** 009: when the boss hired it into the office (new or existing); null/absent = not in the office. */
+  memberSince?: ISODateTime | null;
 }
 
 export interface EmployeeProfilesFile {
   schemaVersion: 1;
   profiles: Record<string, EmployeeProfile>;
+  /** 009 R5: set once the employees visible before 009 were made members. */
+  membersSeeded?: boolean;
+}
+
+/** 009 FR-009: at most this many members (top-level conversations the boss chose) in the office. */
+export const OFFICE_LIMIT = 20;
+
+/** 009 contracts/api.md: one item of GET /api/projects/:id/conversations. */
+export interface ProjectConversation {
+  id: string;
+  title: string;
+  lastActivityAt: ISODateTime;
+  runStatus: RunStatus;
+  inOffice: boolean;
+}
+
+export interface ProjectConversations {
+  members: number;
+  limit: number;
+  conversations: ProjectConversation[];
 }
 
 export interface Project {

@@ -1,9 +1,10 @@
-import type { ConnectionState, Conversation, Employee, Step } from '../../shared/domain';
+import { OFFICE_LIMIT, type ConnectionState, type Conversation, type Employee, type Step } from '../../shared/domain';
 import { latestRequestedModel } from '../../shared/model';
 import type { AppAdapter } from '../app-adapter/index';
 import type { WsHub } from '../http/ws-hub';
 import type { Logger } from '../log';
 import { colorFor } from '../../shared/colors';
+import { pickLeaver } from '../../shared/office';
 import { desks } from './default-layout';
 import { findSeat } from '../../shared/nav-core';
 import type { EmployeeProfiles } from './employee-profiles';
@@ -13,6 +14,26 @@ import { computeVisualState } from './visual-state';
 // Conversations + profiles → Employees, polled every second (research.md R7), pushed as patches.
 
 export const MAX_VISIBLE = 20;
+/** 009 U3: successful polls a just-hired conversation may stay unlisted before its place is released. */
+export const PENDING_POLLS = 10;
+
+/** 009 FR-009: the office has OFFICE_LIMIT members and all of them are busy (nobody can make room). */
+export class OfficeFullError extends Error {
+  constructor(readonly members: number) {
+    super('The office is full');
+  }
+}
+
+/** Top-level ancestor of a conversation (itself if top-level); stops on a cycle. */
+function rootOf(id: string, byId: Map<string, Pick<Conversation, 'parentId'>>): string {
+  const seen = new Set<string>();
+  let cur = id;
+  for (let p = byId.get(cur)?.parentId; p && byId.has(p) && !seen.has(p); p = byId.get(cur)?.parentId) {
+    seen.add(cur);
+    cur = p;
+  }
+  return cur;
+}
 
 /** 004 FR-016: a conversation and all its subagents (any depth). The App deletes them together. */
 export function subtreeIds(rootId: string, conversations: Pick<Conversation, 'id' | 'parentId'>[]): string[] {
@@ -56,6 +77,9 @@ export class EmployeesService {
   private listeners = new Set<Listener>();
   private primed = false;
   private lastOverflow = -1;
+  /** 009 R3: hired ids the App has not listed yet → successful polls waited. */
+  private pending = new Map<string, number>();
+  private lock: Promise<unknown> = Promise.resolve();
 
   constructor(private readonly o: EmployeesServiceOptions) {}
 
@@ -113,6 +137,8 @@ export class EmployeesService {
       // FR-005: drop remembered models of conversations the App no longer has (flushed in rebuild()).
       await this.o.profiles.forgetMissingModels(list.map((c) => c.id));
       this.conversations = new Map(list.map((c) => [c.id, c]));
+      await this.seedMembers(list);
+      await this.agePending();
 
       // Fetch the last step only where something may have changed.
       let newUserInputs = 0;
@@ -155,10 +181,14 @@ export class EmployeesService {
     const { profiles } = this.o;
     await profiles.touch(list.map((c) => c.id), now);
 
-    // Visible = the 20 most recently active (FR-004); subagents count towards the limit.
+    // 009 FR-008/FR-018: members are always shown; their subagents fill the rest of the MAX_VISIBLE
+    // places, most recently active first. Nobody else is in the office.
     const sorted = [...list].sort((a, b) => Date.parse(b.lastActivityAt) - Date.parse(a.lastActivityAt));
-    const visibleIds = new Set(sorted.slice(0, MAX_VISIBLE).map((c) => c.id));
-    this.overflow = Math.max(0, sorted.length - MAX_VISIBLE);
+    const members = await this.memberIds(list);
+    const byId = new Map(list.map((c) => [c.id, c]));
+    const subagents = sorted.filter((c) => c.parentId && members.has(rootOf(c.id, byId)));
+    const visibleIds = new Set([...members, ...subagents.slice(0, Math.max(0, MAX_VISIBLE - members.size)).map((c) => c.id)]);
+    this.overflow = 0;
 
     await this.assignDesks(sorted.filter((c) => visibleIds.has(c.id)));
 
@@ -216,6 +246,83 @@ export class EmployeesService {
     if (upserted.length || removed.length || overflowChanged) {
       this.o.hub.broadcast({ type: 'employees.patch', payload: { upserted, removed, overflow: this.overflow } });
     }
+  }
+
+  /** 009: top-level conversations in `list` whose profile says they joined the office. */
+  private async memberIds(list: Conversation[]): Promise<Set<string>> {
+    const out = new Set<string>();
+    for (const c of list) if (!c.parentId && (await this.o.profiles.isMember(c.id))) out.add(c.id);
+    return out;
+  }
+
+  /** 009 R5 / FR-017: once, make the employees the old rule showed members. Never on an empty list (App hiccup). */
+  private async seedMembers(list: Conversation[]): Promise<void> {
+    if (list.length === 0 || (await this.o.profiles.membersSeeded())) return;
+    const recent = [...list].sort((a, b) => Date.parse(b.lastActivityAt) - Date.parse(a.lastActivityAt)).slice(0, MAX_VISIBLE);
+    for (const c of recent) if (!c.parentId) await this.o.profiles.setMember(c.id, true);
+    await this.o.profiles.markMembersSeeded();
+  }
+
+  /** 009 U3/U4: drop pending ids the App now lists; give up (and leave) after PENDING_POLLS polls. */
+  private async agePending(): Promise<void> {
+    for (const [id, n] of this.pending) {
+      if (this.conversations.has(id)) this.pending.delete(id);
+      else if (n + 1 >= PENDING_POLLS) {
+        this.pending.delete(id);
+        await this.o.profiles.setMember(id, false);
+      } else this.pending.set(id, n + 1);
+    }
+  }
+
+  /** 009 R3: members = listed top-level members plus hires the App has not listed yet. */
+  async memberCount(): Promise<number> {
+    const listed = await this.memberIds([...this.conversations.values()]);
+    let n = listed.size;
+    for (const id of this.pending.keys()) if (!listed.has(id) && (await this.o.profiles.isMember(id))) n++;
+    return n;
+  }
+
+  async isMemberNow(id: string): Promise<boolean> {
+    return (this.conversations.has(id) || this.pending.has(id)) && (await this.o.profiles.isMember(id));
+  }
+
+  /** 009 R8: the listed member that would leave to make room, or null if every member is busy. */
+  private async leaver(): Promise<{ conversationId: string; title: string } | null> {
+    const candidates = [];
+    for (const id of await this.memberIds([...this.conversations.values()])) {
+      const c = this.conversations.get(id)!;
+      const p = await this.o.profiles.get(id);
+      candidates.push({ id, lastActivityAt: c.lastActivityAt, memberSince: p.memberSince ?? null, visualState: this.employees.get(id)?.visualState ?? 'unknown' });
+    }
+    const id = pickLeaver(candidates);
+    return id ? { conversationId: id, title: this.conversations.get(id)!.title } : null;
+  }
+
+  /**
+   * 009 R3/R8: hire one conversation into the office, one hire at a time. When the office is full, the idle
+   * member inactive the longest leaves (decided before `fn`, applied after it succeeds); if everyone is busy,
+   * OfficeFullError is thrown before `fn` runs. `fn` may create the conversation in the App.
+   */
+  admit<T extends { conversationId: string }>(
+    fn: () => Promise<T>,
+    opts: { deskId?: string; existingId?: string } = {},
+  ): Promise<T & { alreadyMember: boolean; evicted: { conversationId: string; title: string } | null }> {
+    const run = async () => {
+      if (opts.existingId && (await this.isMemberNow(opts.existingId))) return { ...(await fn()), alreadyMember: true, evicted: null };
+      const members = await this.memberCount();
+      const evicted = members >= OFFICE_LIMIT ? await this.leaver() : null;
+      if (members >= OFFICE_LIMIT && !evicted) throw new OfficeFullError(members);
+      const res = await fn();
+      if (evicted) await this.o.profiles.setMember(evicted.conversationId, false);
+      await this.o.profiles.setMember(res.conversationId, true);
+      if (!this.conversations.has(res.conversationId)) this.pending.set(res.conversationId, 0);
+      if (opts.deskId) await this.o.profiles.takeFreeDesk(res.conversationId, opts.deskId);
+      await this.refresh();
+      return { ...res, alreadyMember: false, evicted };
+    };
+    const next = this.lock.then(run, run);
+    this.lock = next.catch(() => undefined);
+    return next;
   }
 
   /** New visible employees get a free desk; subagents prefer the free desk closest to their parent. */

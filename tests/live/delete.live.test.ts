@@ -19,7 +19,7 @@ describe('live: delete a conversation', () => {
     await a.start();
     expect(a.getConnection().kind).toBe('connected');
     let conversationId: string | null = null;
-    const services = { employees: { refresh: async () => undefined }, profiles: { update: async () => undefined } } as never;
+    const services = { employees: { refresh: async () => undefined }, profiles: { setMember: async () => undefined } } as never;
     const server = await createHttpServer({ adapter: a, log: createLogger(), sessionToken: SESSION, port: 0, webRoot: '/nonexistent', services });
     const port = await server.listen();
     try {

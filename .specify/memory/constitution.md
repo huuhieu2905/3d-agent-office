@@ -166,6 +166,12 @@ lượng vẫn kiểm chứng được bằng đúng một máy.
   PHẢI dùng conversation thử nghiệm được đặt tên rõ ràng, và PHẢI được dọn sau khi thử.
 - **Phức tạp phải có lý do**: mọi thành phần, thư viện hay lớp trừu tượng vượt quá nhu cầu của
   đợt hiện tại PHẢI được giải thích trong plan (mục Complexity Tracking).
+- **Ngôn ngữ tài liệu**: mọi tài liệu mới của Spec Kit (spec, plan, research, data-model,
+  contracts, quickstart, tasks, checklists) và mọi tài liệu dự án mới PHẢI viết bằng tiếng Việt.
+  Giữ nguyên tiếng Anh cho: tên định danh trong mã, đường dẫn file, tên route/API, test id, lệnh,
+  và chữ hiển thị trên giao diện (giao diện bằng tiếng Anh theo feature 006, guard f). Quy ước
+  của mã nguồn và comment trong mã không đổi. Tài liệu đã có trước ngày 2026-11-11 không bắt buộc
+  dịch lại.
 
 ## Governance
 
@@ -186,4 +192,4 @@ lượng vẫn kiểm chứng được bằng đúng một máy.
   PHẢI qua `/speckit-constitution` và nêu bằng chứng kiểm chứng (feature spec và kết quả kiểm thử
   với App thật).
 
-**Version**: 2.2.1 | **Ratified**: 2026-11-06 | **Last Amended**: 2026-11-10
+**Version**: 2.3.0 | **Ratified**: 2026-11-06 | **Last Amended**: 2026-11-11

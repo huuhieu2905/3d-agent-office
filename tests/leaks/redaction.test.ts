@@ -162,7 +162,7 @@ describe('DELETE /api/conversations/:id logging', () => {
     transport.handlers.DeleteCascadeTrajectory = () => ((gone = true), {});
     const adapter = createAppAdapter({ finder: new FakeFinder(), transport, healthIntervalMs: 60_000 });
     await adapter.start();
-    const services = { employees: { refresh: async () => undefined }, profiles: { update: async () => undefined } } as never;
+    const services = { employees: { refresh: async () => undefined }, profiles: { setMember: async () => undefined } } as never;
     const server = await createHttpServer({ adapter, log: logger, sessionToken: SESSION, port: 0, webRoot: '/nonexistent', services });
     const port = await server.listen();
     const res = await fetch(`http://127.0.0.1:${port}/api/conversations/${ID}`, { method: 'DELETE', headers: { authorization: `Bearer ${SESSION}` } });

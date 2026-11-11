@@ -58,7 +58,7 @@ async function setup(convs: Record<string, Conv>, onDelete: () => unknown = () =
   let refreshed = 0;
   const services = {
     employees: { refresh: async () => void refreshed++ },
-    profiles: { update: async (id: string, p: { deskId?: string | null }) => void (p.deskId === null && desks.set(id, null)) },
+    profiles: { setMember: async (id: string, on: boolean) => void (!on && desks.set(id, null)) },
   } as never;
   const lines: string[] = [];
   const log = createLogger(

@@ -16,6 +16,8 @@ declare global {
       itemWorld(id: string): { x: number; z: number } | null;
       /** 008: office door states. */
       doors(): { id: string; openness: number }[];
+      /** 009 T028: open the hire dialog as if an empty desk was clicked. */
+      openHireAtDesk(deskId: string): void;
     };
   }
 }

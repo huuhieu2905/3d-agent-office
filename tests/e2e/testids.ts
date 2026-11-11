@@ -14,4 +14,13 @@ export const TID = {
   confirmDeleteOk: 'confirm-delete-ok',
   confirmDeleteError: 'confirm-delete-error',
   fpHint: 'fp-hint',
+  // 009 (contracts/ui.md)
+  hireModeNew: 'hire-mode-new',
+  hireModeExisting: 'hire-mode-existing',
+  hireConversationList: 'hire-conversation-list',
+  hireConversationItem: 'hire-conversation-item',
+  hireFilter: 'hire-filter',
+  hireOfficeCount: 'hire-office-count',
+  hireOfficeFull: 'hire-office-full',
+  chatRemoveFromOffice: 'chat-remove-from-office',
 } as const;
