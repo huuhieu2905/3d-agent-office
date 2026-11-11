@@ -71,11 +71,15 @@ export function Employee({ employee, grid, enter, leaving, lobbySlot, dimmed, on
 
   // 007: a meeting seat wins over the (reserved) desk; a seat whose table is gone falls back to the desk.
   const seat = (employee.meetingSeatId ? grid.seatOf(employee.meetingSeatId) : null) ?? (employee.deskId ? grid.seatOf(employee.deskId) : null);
+  // The walk-in from the door plays once: brains rebuilt for a new grid (build mode, edits) start seated.
+  const entered = useRef(false);
   const brain = useMemo(
-    () => new EmployeeBrain({ grid, seat, enter, lobbySlot, crowd, spots, shops, frame, doors, id: employee.conversationId, ...debugBreaks() }),
+    () => new EmployeeBrain({ grid, seat, enter: enter && !entered.current, lobbySlot, crowd, spots, shops, frame, doors, id: employee.conversationId, ...debugBreaks() }),
     // The brain survives desk/state changes; it is recreated only if the office grid changes.
     [grid],
   );
+  // Set after mount, not inside the memo: StrictMode runs the memo twice on mount.
+  useEffect(() => void (entered.current = true), []);
   useEffect(() => () => brain.dispose(), [brain]);
   // Test hooks (004 U4-4) read every live brain.
   useEffect(() => {
