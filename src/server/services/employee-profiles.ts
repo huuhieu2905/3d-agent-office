@@ -28,6 +28,7 @@ export function appearanceFor(conversationId: string): string {
 export class EmployeeProfiles {
   private store: JsonStore<EmployeeProfilesFile>;
   private data: EmployeeProfilesFile | null = null;
+  private loading: Promise<EmployeeProfilesFile> | null = null;
   private dirty = false;
   /** Consecutive successful polls each conversation with a remembered model was missing from. */
   private missing = new Map<string, number>();
@@ -41,8 +42,9 @@ export class EmployeeProfiles {
   }
 
   async load(): Promise<EmployeeProfilesFile> {
-    if (!this.data) this.data = await this.store.read();
-    return this.data;
+    // One read shared by concurrent first callers, so nobody keeps changes on an object that is then replaced.
+    this.loading ??= this.store.read().then((d) => (this.data = d));
+    return this.loading;
   }
 
   async get(conversationId: string): Promise<EmployeeProfile> {
@@ -82,6 +84,38 @@ export class EmployeeProfiles {
     this.dirty = true;
     await this.flush();
     return p;
+  }
+
+  /** 009: join (on) or leave (off) the office. Leaving frees the desk and meeting seat. */
+  async setMember(conversationId: string, on: boolean, now = Date.now()): Promise<void> {
+    const p = await this.get(conversationId);
+    if (on) p.memberSince ??= new Date(now).toISOString();
+    else Object.assign(p, { memberSince: null, deskId: null, meetingSeatId: null });
+    this.dirty = true;
+    await this.flush();
+  }
+
+  async isMember(conversationId: string): Promise<boolean> {
+    return !!(await this.load()).profiles[conversationId]?.memberSince;
+  }
+
+  async membersSeeded(): Promise<boolean> {
+    return !!(await this.load()).membersSeeded;
+  }
+
+  async markMembersSeeded(): Promise<void> {
+    (await this.load()).membersSeeded = true;
+    this.dirty = true;
+    await this.flush();
+  }
+
+  /** 009 I1: give a desk only if nobody holds it (unlike update(), never swaps). Returns whether it was given. */
+  async takeFreeDesk(conversationId: string, deskId: string): Promise<boolean> {
+    if ((await this.assignedDesks()).has(deskId)) return false;
+    (await this.get(conversationId)).deskId = deskId;
+    this.dirty = true;
+    await this.flush();
+    return true;
   }
 
   /**

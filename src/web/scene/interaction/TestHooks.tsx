@@ -7,6 +7,7 @@ import { fpControl } from '../cameras/FirstPerson';
 import { footprintRect } from '@shared/catalog';
 import type { OfficeLayout, PlacedItem } from '@shared/domain';
 import { useBuild } from '../../state/build';
+import { useUi } from '../../state/ui';
 import type { DoorBook } from '../doors';
 
 // e2e support (002 T029): project a floor-space point (metres from the office's north-west corner) to
@@ -34,6 +35,8 @@ declare global {
       itemWorld(id: string): { x: number; z: number } | null;
       /** 008: office door states. */
       doors(): { id: string; openness: number }[];
+      /** 009 T028: open the hire dialog as if an empty desk was clicked. */
+      openHireAtDesk(deskId: string): void;
     };
   }
 }
@@ -75,6 +78,9 @@ export function TestHooks({ layout, doors }: { layout: OfficeLayout; doors?: Doo
       },
       doors() {
         return doors ? doors.ids.map((id) => ({ id, openness: doors.openness(id) })) : [];
+      },
+      openHireAtDesk(deskId) {
+        useUi.getState().setHireDesk(deskId);
       },
     };
     return () => {

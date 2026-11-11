@@ -101,12 +101,17 @@ export const employeeProfileSchema = z.object({
   meetingSeatId: z.string().max(100).nullable().optional(),
   lastSeenAt: z.string(),
   preferredModel: z.object({ modelId: z.string().regex(MODEL_ID_RE), chosenAt: z.string() }).nullable().optional(),
+  memberSince: z.string().nullable().optional(),
 });
 
 export const employeeProfilesFileSchema = z.object({
   schemaVersion: z.literal(1),
   profiles: z.record(z.string(), employeeProfileSchema),
+  membersSeeded: z.boolean().optional(),
 });
+
+/** 009 contracts/api.md: POST /api/conversations/:id/join. */
+export const joinSchema = z.object({ deskId: z.string().max(200).optional() });
 
 export const profilePatchSchema = z.object({
   deskId: z.string().max(100).nullable().optional(),

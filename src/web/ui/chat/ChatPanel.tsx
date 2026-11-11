@@ -34,7 +34,7 @@ const STATE_LABEL: Record<string, string> = {
 const BUSY = new Set(['working', 'thinking', 'waiting_for_boss']);
 
 /** Subagents of `id` (any depth) among the employees the client knows. */
-// shortcut: counts only employees on screen (≤ MAX_VISIBLE); the server checks the full tree before deleting.
+// shortcut: counts the subagents the client store knows (every App conversation, shown or not); the server checks the full tree before deleting.
 function subagentsOf(id: string, byId: Record<string, Employee>): Employee[] {
   const out: Employee[] = [];
   const ids = new Set([id]);
@@ -146,6 +146,19 @@ export function ChatPanel() {
           <strong>{employee?.name ?? 'Employee'}</strong>
           <span className={`state state-${employee?.visualState}`}>{STATE_LABEL[employee?.visualState ?? 'unknown']}</span>
         </div>
+        {employee && !employee.isSubagent && (
+          <button
+            className="icon"
+            data-testid="chat-remove-from-office"
+            aria-label="Remove from office"
+            title="Remove from office (keeps the conversation in the App)"
+            onClick={() => {
+              void api(`/api/conversations/${id}/leave`, { method: 'POST' }).then(close, () => undefined);
+            }}
+          >
+            ⇥
+          </button>
+        )}
         <button
           className="icon"
           data-testid="employee-delete"

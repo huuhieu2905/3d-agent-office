@@ -30,6 +30,8 @@ export class MockApp {
   failDelete = false;
   /** 004 US1: give every conversation its own project, so the legend lists one project per employee. */
   projectPerConversation = false;
+  /** 009 T007: conversations the "App" gained after the office started (not members). */
+  extraConversations: Record<string, Record<string, unknown>> = {};
   private manyProjectIds(): string[] {
     const ids = Object.keys(fixture<{ trajectorySummaries: Record<string, unknown> }>('GetAllCascadeTrajectories').trajectorySummaries);
     return ids.map((_, i) => `00000000-0000-4000-8000-00000000f${String(i).padStart(3, '0')}`);
@@ -112,6 +114,7 @@ export class MockApp {
     };
     t.handlers.GetAllCascadeTrajectories = () => {
       const data = fixture<{ trajectorySummaries: Record<string, Record<string, unknown>> }>('GetAllCascadeTrajectories');
+      for (const [id, v] of Object.entries(this.extraConversations)) data.trajectorySummaries[id] = structuredClone(v);
       for (const id of this.deleted) delete data.trajectorySummaries[id];
       const many = this.projectPerConversation ? this.manyProjectIds() : [];
       for (const [i, [id, v]] of Object.entries(data.trajectorySummaries).entries()) {
@@ -124,6 +127,21 @@ export class MockApp {
       }
       return data;
     };
+  }
+
+  /** 009 T007: a conversation created in the "App" itself, e.g. after the office started. */
+  addConversation(id: string, o: { title: string; projectId: string; lastModifiedTime?: string }): void {
+    this.extraConversations[id] = {
+      summary: o.title,
+      status: 'CASCADE_RUN_STATUS_IDLE',
+      lastModifiedTime: o.lastModifiedTime ?? new Date().toISOString(),
+      trajectoryMetadata: { projectId: o.projectId },
+    };
+  }
+
+  /** Ids of the recorded fixture conversations. */
+  fixtureIds(): string[] {
+    return Object.keys(fixture<{ trajectorySummaries: Record<string, unknown> }>('GetAllCascadeTrajectories').trajectorySummaries);
   }
 
   /** Two sub-questions: single choice (2 options) and multi-select (3 options). Shape as recorded on App 2.29.0. */

@@ -29,7 +29,7 @@ await adapter.start();
 await services.start();
 await server.listen();
 
-createServer((req, res) => {
+createServer(async (req, res) => {
   const action = req.url?.slice(1);
   if (action === 'quit') mock.quit();
   else if (action === 'open') mock.open();
@@ -55,11 +55,21 @@ createServer((req, res) => {
     mock.parents = {};
     mock.failDelete = false;
     mock.projectPerConversation = false;
+    // 009: specs start from the same office: fixture conversations are members, nothing else.
+    for (const id of Object.keys(mock.extraConversations)) await services.profiles.setMember(id, false);
+    mock.extraConversations = {};
+    for (const id of mock.fixtureIds()) await services.profiles.setMember(id, true);
+    await services.employees.refresh();
   }
   else if (action === 'error-and-search') mock.addErrorAndSearchSteps();
   else if (action === 'delete-fail') mock.failDelete = true;
   else if (action === 'many-projects') mock.projectPerConversation = true;
   // bug new-hire-reenters-door: hide a conversation, then show it again so it arrives after page load.
+  // 009: add/<id>/<projectId>/<title> — a conversation created in the App after the office started.
+  else if (action?.startsWith('add/')) {
+    const [id, projectId, title] = action.slice('add/'.length).split('/').map(decodeURIComponent);
+    if (id && projectId) mock.addConversation(id, { title: title ?? id, projectId });
+  }
   else if (action?.startsWith('hide/')) mock.deleted.add(action.slice('hide/'.length));
   else if (action?.startsWith('show/')) mock.deleted.delete(action.slice('show/'.length));
   else if (action?.startsWith('run/')) mock.runningIds.add(action.slice('run/'.length));

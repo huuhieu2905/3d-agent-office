@@ -1,9 +1,10 @@
 import type { FastifyPluginAsync, FastifyReply } from 'fastify';
 import { AppNotSupportedError, AppRejectedError, AppUnavailableError } from '../../app-adapter/index';
-import { subtreeIds } from '../../services/employees';
+import { OfficeFullError, subtreeIds } from '../../services/employees';
 import { computeVisualState } from '../../services/visual-state';
 import { newConversationSchema, userInputSchema } from '../../../shared/schemas';
 import { sendError } from '../security';
+import { officeFull } from './employees';
 import type { RouteDeps } from './index';
 
 // T064 (contracts/local-api.md). Agent-changing calls live ONLY here (FR-030, check-guards (c)).
@@ -49,12 +50,13 @@ export const conversationRoutes: FastifyPluginAsync<RouteDeps> = async (app, dep
     if (!body.success) return sendError(reply, 400, 'BAD_REQUEST', 'invalid conversation');
     try {
       const { deskId, ...input } = body.data;
-      const res = await adapter.startConversation(input);
-      if (deskId) await services.profiles.update(res.conversationId, { deskId });
+      // 009 FR-009: limit checked before anything is created in the App; the new conversation becomes a member.
+      const res = await services.employees.admit(() => adapter.startConversation(input), { deskId });
       void services.usage.sentViaOffice();
-      void services.employees.refresh();
-      return reply.code(201).send(res);
+      if (res.evicted) log.info({ id: res.conversationId, evictedId: res.evicted.conversationId, code: 'OK' }, 'employee left to make room');
+      return reply.code(201).send({ conversationId: res.conversationId, evicted: res.evicted });
     } catch (err) {
+      if (err instanceof OfficeFullError) return officeFull(reply, err);
       return fail(reply, err);
     }
   });
@@ -102,7 +104,7 @@ export const conversationRoutes: FastifyPluginAsync<RouteDeps> = async (app, dep
         }
       }
       await adapter.deleteConversation(id);
-      for (const cid of tree) await services.profiles.update(cid, { deskId: null, meetingSeatId: null });
+      for (const cid of tree) await services.profiles.setMember(cid, false);
       void services.employees.refresh();
       log.info({ id, removed: tree.length, code: 'OK' }, 'conversation deleted');
       return reply.code(200).send({ removed: tree });
