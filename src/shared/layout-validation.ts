@@ -1,4 +1,4 @@
-import { CATALOG, CELL, footprintRect, isEdge, isMeetingTable, isWallMounted, onEdgeGrid, rectsOverlap, seatPoint, seatPoints, type Rect } from './catalog';
+import { CATALOG, CELL, FRAME_HEIGHT_DEFAULT, FRAME_OUTER_H, footprintRect, isEdge, isMeetingTable, isWallMounted, rectsOverlap, seatPoint, seatPoints, WALL_HEIGHT, type Rect } from './catalog';
 import { DOOR_WIDTH, FLOOR_MAX, FLOOR_MIN, FLOOR_STEP, POS_STEP, WALL_STEP, type OfficeLayout, type PlacedItem } from './domain';
 import { OfficeGrid } from './nav-core';
 
@@ -51,30 +51,77 @@ export function edgeSegments(item: Pick<PlacedItem, 'type' | 'pos' | 'rotation'>
 }
 
 const WALL_TYPES = new Set(['wall', 'glass_wall', 'long_glass']);
+const GLASS_TYPES = new Set(['glass_wall', 'long_glass']);
+const EPS = 1e-6;
+
+/** A frame's wall line and its span along it (008): `ns` = an east-west line at z = `c`, else north-south at x = `c`. */
+function frameSpan(frame: Pick<PlacedItem, 'type' | 'pos' | 'rotation'>): { ns: boolean; c: number; a0: number; a1: number } {
+  const ns = frame.rotation === 0 || frame.rotation === 180;
+  const len = CATALOG[frame.type].footprint.w * CELL;
+  const a0 = ns ? frame.pos.x : frame.pos.z;
+  return { ns, c: ns ? frame.pos.z : frame.pos.x, a0, a1: a0 + len };
+}
+
+/** Intervals along a wall line covered by items of `types` lying on it. */
+function itemIntervals(layout: Pick<OfficeLayout, 'items'>, ns: boolean, c: number, types: Set<string>): [number, number][] {
+  const out: [number, number][] = [];
+  for (const it of layout.items) {
+    if (!types.has(it.type) || (it.rotation === 0 || it.rotation === 180) !== ns) continue;
+    const r = footprintRect(it);
+    if (Math.abs((ns ? r.z0 : r.x0) - c) > EPS) continue;
+    out.push(ns ? [r.x0, r.x1] : [r.z0, r.z1]);
+  }
+  return out;
+}
+
+/** Is [a0, a1] fully covered by the union of `intervals`? */
+function covered(intervals: [number, number][], a0: number, a1: number): boolean {
+  let reach = a0;
+  for (const [s, e] of [...intervals].sort((p, q) => p[0] - q[0])) {
+    if (s > reach + EPS) break;
+    reach = Math.max(reach, e);
+    if (reach >= a1 - EPS) return true;
+  }
+  return reach >= a1 - EPS;
+}
 
 /**
- * Can this frame hang where it is? Every 0.5 m segment under it must hold a wall / glass / long glass, or be
- * the inside of the office's outer wall (west, east or south; never the north glass façade or the main door).
+ * Can this frame hang where it is? There must be wall behind its whole width (008 R8-06): wall / glass / long
+ * glass on its line, or the inside of the office's outer wall facing into the office — the north glass façade
+ * included (008 US3), the main door span excluded. Office doors never count as wall.
  * Facing: rotation 0 → south, 90 → east, 180 → north, 270 → west.
  */
 export function frameSupported(layout: Pick<OfficeLayout, 'floor' | 'shell' | 'items'>, frame: Pick<PlacedItem, 'type' | 'pos' | 'rotation'>): boolean {
-  const walls = new Set<string>();
-  for (const it of layout.items) if (WALL_TYPES.has(it.type)) for (const k of edgeSegments(it)) walls.add(k);
+  const { ns, c, a0, a1 } = frameSpan(frame);
+  const intervals = itemIntervals(layout, ns, c, WALL_TYPES);
   const { width: W, depth: D } = layout.floor;
   const { side, offset } = layout.shell.door;
-  const eq = (a: number, b: number) => Math.abs(a - b) < 1e-6;
-  const inDoor = (along: number) => along + CELL > offset + 1e-6 && along < offset + DOOR_WIDTH - 1e-6;
-  const r = footprintRect(frame);
-  const ns = frame.rotation === 0 || frame.rotation === 180;
-  return edgeSegments(frame).every((k, i) => {
-    if (walls.has(k)) return true;
-    const x = ns ? r.x0 + i * CELL : r.x0;
-    const z = ns ? r.z0 : r.z0 + i * CELL;
-    if (!ns && eq(x, 0) && frame.rotation === 90) return !(side === 'west' && inDoor(z));
-    if (!ns && eq(x, W) && frame.rotation === 270) return !(side === 'east' && inDoor(z));
-    if (ns && eq(z, D) && frame.rotation === 180) return !(side === 'south' && inDoor(x));
-    return false;
-  });
+  const eq = (a: number, b: number) => Math.abs(a - b) < EPS;
+  const shell = (len: number, doorHere: boolean) => {
+    if (!doorHere) intervals.push([0, len]);
+    else intervals.push([0, offset], [offset + DOOR_WIDTH, len]);
+  };
+  if (ns && eq(c, 0) && frame.rotation === 0) shell(W, false); // north glass façade, facing in
+  if (ns && eq(c, D) && frame.rotation === 180) shell(W, side === 'south');
+  if (!ns && eq(c, 0) && frame.rotation === 90) shell(D, side === 'west');
+  if (!ns && eq(c, W) && frame.rotation === 270) shell(D, side === 'east');
+  return covered(intervals, a0, a1);
+}
+
+/** Does glass (glass wall or long glass) cover the middle of this frame? (overview: glass is never cut down) */
+export function frameOnGlass(layout: Pick<OfficeLayout, 'items'>, frame: Pick<PlacedItem, 'type' | 'pos' | 'rotation'>): boolean {
+  const { ns, c, a0, a1 } = frameSpan(frame);
+  const mid = (a0 + a1) / 2;
+  return itemIntervals(layout, ns, c, GLASS_TYPES).some(([s, e]) => s <= mid + EPS && mid <= e + EPS);
+}
+
+/** Centre height of a frame (m). */
+export const frameHeight = (frame: Pick<PlacedItem, 'height'>): number => frame.height ?? FRAME_HEIGHT_DEFAULT;
+
+/** Allowed centre heights for a frame type: 0.2 m above the floor up to the wall top. */
+export function frameHeightRange(type: PlacedItem['type']): { min: number; max: number } {
+  const h = FRAME_OUTER_H[type] ?? 0;
+  return { min: Math.round((0.2 + h / 2) * 100) / 100, max: Math.round((WALL_HEIGHT - h / 2) * 100) / 100 };
 }
 
 /** Frames whose wall is gone (deleted, moved, rotated away) are removed with it (007 spec edge case). */
@@ -93,8 +140,15 @@ export function validateLayout(layout: OfficeLayout): ValidationResult {
     if (ids.has(it.id)) reasons[it.id] = 'Duplicate item id';
     ids.add(it.id);
     if (it.type === 'door') reasons[it.id] ??= 'The main door is part of the office shell and cannot be placed as an item';
-    const step = onEdgeGrid(it.type) ? WALL_STEP : POS_STEP;
-    if (!onStep(it.pos.x, step) || !onStep(it.pos.z, step)) reasons[it.id] ??= onEdgeGrid(it.type) ? 'Walls must sit on the 0.5 m grid' : 'Position must be in 5 cm steps';
+    if (isWallMounted(it.type)) {
+      // 008: frames sit on a 0.5 m wall line but slide along it in 5 cm steps.
+      const ns = it.rotation === 0 || it.rotation === 180;
+      const [across, along] = ns ? [it.pos.z, it.pos.x] : [it.pos.x, it.pos.z];
+      if (!onStep(across, WALL_STEP) || !onStep(along, POS_STEP)) reasons[it.id] ??= 'Position must be in 5 cm steps';
+    } else {
+      const step = isEdge(it.type) ? WALL_STEP : POS_STEP;
+      if (!onStep(it.pos.x, step) || !onStep(it.pos.z, step)) reasons[it.id] ??= isEdge(it.type) ? 'Walls must sit on the 0.5 m grid' : 'Position must be in 5 cm steps';
+    }
     if (!insideFloor(layout, it)) reasons[it.id] ??= 'Outside the floor';
   }
 
@@ -118,16 +172,31 @@ export function validateLayout(layout: OfficeLayout): ValidationResult {
     }
   }
 
-  // 007 US5: frames hang on a wall, glass or the inside of the outer wall; one per side of a segment.
-  const faces = new Set<string>();
+  // 007/008: frames hang on a wall, glass or the inside of the outer wall, at an allowed height, not behind a
+  // wall screen, and do not overlap another frame on the same side of the same wall.
+  const frames = layout.items.filter((i) => isWallMounted(i.type));
+  const screens = layout.items.filter((i) => i.type === 'wall_screen').map((i) => footprintRect(i));
   for (const it of layout.items) {
     if (it.picture !== undefined && !isWallMounted(it.type)) reasons[it.id] ??= 'Only picture frames can show a picture';
-    if (!isWallMounted(it.type)) continue;
+    if (it.height !== undefined && !isWallMounted(it.type)) reasons[it.id] ??= 'Only picture frames have a height';
+  }
+  for (let i = 0; i < frames.length; i++) {
+    const it = frames[i]!;
     if (!frameSupported(layout, it)) reasons[it.id] ??= 'A picture must hang on a wall';
-    for (const k of edgeSegments(it)) {
-      const f = `${k}@${it.rotation}`;
-      if (faces.has(f)) reasons[it.id] ??= 'Another picture is already here';
-      else faces.add(f);
+    const s = frameSpan(it);
+    if (s.ns && it.rotation === 0 && Math.abs(s.c) < EPS && screens.some((r) => r.z0 < 1 && r.x0 < s.a1 - EPS && s.a0 < r.x1 - EPS)) {
+      reasons[it.id] ??= 'Hidden behind the wall screen';
+    }
+    const h = frameHeight(it);
+    const range = frameHeightRange(it.type);
+    if (!onStep(h, POS_STEP) || h < range.min - EPS || h > range.max + EPS) reasons[it.id] ??= 'The picture is too high or too low';
+    for (let j = 0; j < i; j++) {
+      const o = frames[j]!;
+      const t = frameSpan(o);
+      if (o.rotation !== it.rotation || t.ns !== s.ns || Math.abs(t.c - s.c) > EPS) continue;
+      const alongOverlap = s.a0 < t.a1 - EPS && t.a0 < s.a1 - EPS;
+      const heightOverlap = Math.abs(frameHeight(o) - h) < ((FRAME_OUTER_H[o.type] ?? 0) + (FRAME_OUTER_H[it.type] ?? 0)) / 2 - EPS;
+      if (alongOverlap && heightOverlap) reasons[it.id] ??= 'Another picture is already here';
     }
   }
 

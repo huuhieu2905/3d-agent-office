@@ -15,24 +15,26 @@ import { floorToWorld } from './furniture/Furniture';
 // outline; while dragging, a ghost shows the drop (green = valid, red = not) and the desk under a dragged
 // employee lights up (green = free, amber = occupied → swap). Dragging itself lives in DragLayer.
 
-type Placement = Pick<PlacedItem, 'pos' | 'rotation'>;
+type Placement = Pick<PlacedItem, 'pos' | 'rotation' | 'height'>;
 
 /**
  * Where an item goes for a floor point: centred under the pointer (edge items: snapped to the 0.5 m edge
  * grid). 007: a frame snaps to the nearest edge and faces the side the pointer is on; each R flips it.
  */
-function placementFor(p: { x: number; z: number; shift: boolean }, type: PlacedItem['type'], rot: PlacedItem['rotation']): Placement {
+function placementFor(p: { x: number; z: number; shift: boolean }, type: PlacedItem['type'], rot: PlacedItem['rotation'], height: number): Placement {
   if (isWallMounted(type)) {
+    // 008: centred under the pointer along the wall in 5 cm steps (Shift: 0.5 m), at the last height used.
     const half = (CATALOG[type].footprint.w * CELL) / 2;
+    const step = p.shift ? 0.5 : POS_STEP;
     const xr = snap(p.x, 0.5);
     const zr = snap(p.z, 0.5);
     const flip = (rot / 90) % 2 === 1;
     if (Math.abs(p.z - zr) <= Math.abs(p.x - xr)) {
       const south = p.z >= zr !== flip;
-      return { pos: { x: snap(p.x - half, 0.5), z: zr }, rotation: south ? 0 : 180 };
+      return { pos: { x: snap(p.x - half, step), z: zr }, rotation: south ? 0 : 180, height };
     }
     const east = p.x >= xr !== flip;
-    return { pos: { x: xr, z: snap(p.z - half, 0.5) }, rotation: east ? 90 : 270 };
+    return { pos: { x: xr, z: snap(p.z - half, step) }, rotation: east ? 90 : 270, height };
   }
   return { pos: posFor(p, type, rot), rotation: rot };
 }
@@ -55,7 +57,7 @@ function ghostValid(layout: OfficeLayout, ghost: PlacedItem): boolean {
 }
 
 export function BuildGizmo({ layout }: { layout: OfficeLayout }) {
-  const { palette, rotation, place, selectedId, drag, select, resizeBlockers } = useBuild();
+  const { palette, rotation, place, selectedId, drag, select, resizeBlockers, frameHeight } = useBuild();
   const [hover, setHover] = useState<Placement | null>(null);
   const { width: w, depth: d } = layout.floor;
 
@@ -63,13 +65,17 @@ export function BuildGizmo({ layout }: { layout: OfficeLayout }) {
   const lastPoint = useRef<{ x: number; z: number; shift: boolean } | null>(null);
   const posAt = (e: ThreeEvent<PointerEvent | MouseEvent>, type: PlacedItem['type'], rot: PlacedItem['rotation']) => {
     lastPoint.current = { x: e.point.x + w / 2, z: e.point.z + d / 2, shift: e.nativeEvent.shiftKey };
-    return placementFor(lastPoint.current, type, rot);
+    return placementFor(lastPoint.current, type, rot, frameHeight);
   };
   useEffect(() => {
-    if (palette && lastPoint.current) setHover(placementFor(lastPoint.current, palette, rotation));
-  }, [palette, rotation]);
+    if (palette && lastPoint.current) setHover(placementFor(lastPoint.current, palette, rotation, frameHeight));
+  }, [palette, rotation, frameHeight]);
 
-  const ghost: PlacedItem | null = useMemo(() => (hover && palette ? { id: '__ghost__', type: palette, ...hover } : null), [hover, palette]);
+  const ghost: PlacedItem | null = useMemo(() => {
+    if (!hover || !palette) return null;
+    const { height, ...rest } = hover;
+    return { id: '__ghost__', type: palette, ...rest, ...(height !== undefined ? { height } : {}) };
+  }, [hover, palette]);
   const valid = ghost ? ghostValid(layout, ghost) : false;
   const selected = selectedId ? layout.items.find((i) => i.id === selectedId) : undefined;
   const dragged = drag?.kind === 'item' ? layout.items.find((i) => i.id === drag.id) : undefined;
@@ -92,7 +98,7 @@ export function BuildGizmo({ layout }: { layout: OfficeLayout }) {
           // arrive before the ghost has been drawn.
           if (palette) {
             const g: PlacedItem = { id: '__ghost__', type: palette, ...posAt(e, palette, rotation) };
-            if (ghostValid(layout, g)) place({ type: g.type, pos: g.pos, rotation: g.rotation });
+            if (ghostValid(layout, g)) place({ type: g.type, pos: g.pos, rotation: g.rotation, ...(g.height !== undefined ? { height: g.height } : {}) });
           } else if (!drag) select(null); // click on empty floor deselects (U-3)
         }}
       >

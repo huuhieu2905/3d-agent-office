@@ -8,7 +8,8 @@ import { useUi } from '../../state/ui';
 import { NO_IDS, useSettings } from '../../state/settings';
 import type { Crowd } from '../crowd/crowd';
 import { PLAYER, sofaOf, sofaSpots, type SpotBook } from '../break-spots';
-import { aimTarget, buildInteractables, toggledScreens, type Interactable } from '../interaction/interactables';
+import { aimTarget, buildInteractables, doorAction, toggledScreens, type Interactable } from '../interaction/interactables';
+import type { DoorBook } from '../doors';
 import { EYE_HEIGHT, nearestFree, slide } from './fp-motion';
 
 // T116 / T117 / FR-070, FR-071: walk the office at eye height (WASD/arrows, Shift to hurry), no walking
@@ -37,12 +38,15 @@ export function FirstPersonCamera({
   layout,
   crowd,
   spots,
+  doors,
 }: {
   site: SiteGrid;
   positions: Map<string, THREE.Vector3>;
   layout: OfficeLayout;
   crowd?: Crowd;
   spots?: SpotBook;
+  /** 008: office doors — `E` toggles them, a closed one blocks the way. */
+  doors?: DoorBook;
 }) {
   const camera = useThree((s) => s.camera);
   const gl = useThree((s) => s.gl);
@@ -119,6 +123,7 @@ export function FirstPersonCamera({
       useSettings.getState().update({ screensOff: toggledScreens(cur, it.itemId, layout) });
     } else if (it.type === 'sofa') useSofa(it.itemId, lie);
     else if (it.type === 'water_cooler') ui.setFpEffect({ kind: 'water', until: now + EFFECT_MS });
+    else if (it.type === 'office_door') doors?.toggleUser(it.itemId);
     else if (it.type === 'plant') {
       ui.waterPlant(it.itemId, now + FRESH_MS);
       ui.setFpEffect({ kind: 'plant', until: now + EFFECT_MS });
@@ -187,14 +192,16 @@ export function FirstPersonCamera({
       const speed = SPEED * (k.has('ShiftLeft') || k.has('ShiftRight') ? 1.8 : 1) * Math.min(dt, 0.1);
       const dx = (fwd.current.x * f + right.current.x * s) * speed;
       const dz = (fwd.current.z * f + right.current.z * s) * speed;
-      const next = slide(site, camera.position.x, camera.position.z, dx, dz, positions.values());
+      const next = slide(site, camera.position.x, camera.position.z, dx, dz, positions.values(), doors ? (x0, z0, x1, z1) => doors.blocksMove(x0, z0, x1, z1) : undefined);
       camera.position.set(next.x, EYE_HEIGHT, next.z);
     }
     // The user is a person in the crowd: employees give way and walk around (R4-07).
     if (crowd && !resting.current) crowd.place(PLAYER, camera.position.x, camera.position.z, { seated: false, priority: 9 });
     // What the crosshair is on (FR-030); the store only changes when the target does.
     camera.getWorldDirection(look.current);
-    const hit = resting.current ? null : aimTarget(camera.position, look.current, items);
+    const target = resting.current ? null : aimTarget(camera.position, look.current, items);
+    // 008: a door's hint follows its live state.
+    const hit = target?.type === 'office_door' && doors ? { ...target, action: doorAction(doors.isOpen(target.itemId) || doors.isUserOpen(target.itemId)) } : target;
     aim.current = hit;
     const cur = useUi.getState().fpAim;
     if ((hit?.itemId ?? null) !== (cur?.itemId ?? null) || (hit && hit.action !== cur?.action)) useUi.getState().setFpAim(hit ? { itemId: hit.itemId, action: hit.action } : null);

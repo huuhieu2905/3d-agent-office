@@ -22,6 +22,8 @@ import { SiteGrid } from '@shared/site-nav';
 import { parkFrame, parkShops, visibleTrees } from './park/park-layout';
 import { DETAIL, PARK_RADIUS } from './park/detail';
 import { SpotBook } from './break-spots';
+import { DoorBook } from './doors';
+import { DoorTicker } from './DoorTicker';
 import { useSettings } from '../state/settings';
 import { useWeather } from '../state/weather';
 import { LIGHT_FACTOR } from './weather/Weather';
@@ -76,6 +78,8 @@ export function OfficeScene({
   useEffect(() => site?.setCircles(circles), [site, circles]);
   // One booking table for sofa seats, shop stools and outing slots, kept across layout edits.
   const spots = useMemo(() => new SpotBook(), []);
+  // 008: office doors (open/closed), rebuilt with the grid so a moved or deleted door starts closed.
+  const doors = useMemo(() => (grid ? new DoorBook(grid.layout) : null), [grid]);
   // One crowd per office grid (US3 T044): employees never overlap and give way to each other.
   const crowd = useMemo(() => (site ? new Crowd(site) : null), [site]);
   useEffect(() => {
@@ -119,11 +123,12 @@ export function OfficeScene({
     <>
       <OfficeMood disconnected={disconnected} theme={theme} weatherFactor={LIGHT_FACTOR[condition]} floor={layout.floor} />
       <Surroundings city={city} detail={detailLevel} theme={theme} floor={floorSize} />
-      {!benchMode && (cameraMode === 'first_person' && !build.active ? <FirstPersonCamera site={site} positions={positions} layout={layout} crowd={crowd ?? undefined} spots={spots} /> : <OverviewCamera size={size} />)}
+      {!benchMode && (cameraMode === 'first_person' && !build.active ? <FirstPersonCamera site={site} positions={positions} layout={layout} crowd={crowd ?? undefined} spots={spots} doors={doors ?? undefined} /> : <OverviewCamera size={size} />)}
       <Office
         layout={layout}
         positions={positions}
         employeesByDesk={byDesk}
+        doors={doors ?? undefined}
         theme={theme}
         cutaway={cameraMode !== 'first_person' || build.active}
         onItemPress={
@@ -157,14 +162,16 @@ export function OfficeScene({
             onLeft={onLeft}
             positions={positions}
             crowd={crowd ?? undefined}
+            doors={doors ?? undefined}
             layout={layout}
           />
         ))}
         <SubagentLinks employees={visible} positions={positions} />
+        {doors && <DoorTicker doors={doors} positions={positions} />}
         {!benchMode && !build.active && <QuotaScreen layout={layout} />}
         {build.active && <BuildGizmo layout={layout} />}
         {build.active && <DragLayer layout={layout} currentDesks={currentDesks} currentSeats={currentSeats} />}
-        {testHooksEnabled() && <TestHooks layout={layout} />}
+        {testHooksEnabled() && <TestHooks layout={layout} doors={doors} />}
       </Office>
     </>
   );

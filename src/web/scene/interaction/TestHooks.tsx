@@ -7,6 +7,7 @@ import { fpControl } from '../cameras/FirstPerson';
 import { footprintRect } from '@shared/catalog';
 import type { OfficeLayout, PlacedItem } from '@shared/domain';
 import { useBuild } from '../../state/build';
+import type { DoorBook } from '../doors';
 
 // e2e support (002 T029): project a floor-space point (metres from the office's north-west corner) to
 // page coordinates, so tests can press and drag on real objects in the 3D canvas. Read-only.
@@ -31,11 +32,13 @@ declare global {
       teleportPlayer(x: number, z: number, yaw: number, pitch?: number): void;
       /** 004: world position (centre) of a layout item. */
       itemWorld(id: string): { x: number; z: number } | null;
+      /** 008: office door states. */
+      doors(): { id: string; openness: number }[];
     };
   }
 }
 
-export function TestHooks({ layout }: { layout: OfficeLayout }) {
+export function TestHooks({ layout, doors }: { layout: OfficeLayout; doors?: DoorBook | null }) {
   const camera = useThree((s) => s.camera);
   const gl = useThree((s) => s.gl);
   useEffect(() => {
@@ -70,10 +73,13 @@ export function TestHooks({ layout }: { layout: OfficeLayout }) {
         const r = footprintRect(it);
         return { x: (r.x0 + r.x1) / 2 - layout.floor.width / 2, z: (r.z0 + r.z1) / 2 - layout.floor.depth / 2 };
       },
+      doors() {
+        return doors ? doors.ids.map((id) => ({ id, openness: doors.openness(id) })) : [];
+      },
     };
     return () => {
       delete window.__agentOffice;
     };
-  }, [camera, gl, layout]);
+  }, [camera, gl, layout, doors]);
   return null;
 }

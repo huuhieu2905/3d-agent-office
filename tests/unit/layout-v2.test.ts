@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { dropUnsupportedFrames, edgeSegments, minFloorSize, resizeBlockers, validateLayout } from '../../src/shared/layout-validation';
+import { dropUnsupportedFrames, edgeSegments, frameHeightRange, minFloorSize, resizeBlockers, validateLayout } from '../../src/shared/layout-validation';
 import { resizeLayout } from '../../src/shared/layout-resize';
 import { defaultLayout } from '../../src/server/services/default-layout';
 import { OfficeGrid } from '../../src/shared/nav-core';
@@ -234,10 +234,11 @@ describe('007 frames', () => {
     expect(v([item('d', 'office_door', 6, 3), item('f', 'photo_frame', 6, 3)]).reasons['f']).toBe('A picture must hang on a wall');
   });
 
-  it('hangs on the inside of the outer wall, never on the north façade or the main door', () => {
+  it('hangs on the inside of the outer wall (008: the north façade too), never facing out or on the main door', () => {
     expect(v([item('f', 'painting', 0, 2, 90)]).ok).toBe(true); // west wall, facing east
     expect(v([item('f', 'painting', 0, 2, 270)]).ok).toBe(false); // facing out
-    expect(v([item('f', 'painting', 3, 0, 0)]).ok).toBe(false); // north glass façade
+    expect(v([item('f', 'painting', 3, 0, 0)]).ok).toBe(true); // north glass façade, facing in (008 US3)
+    expect(v([item('f', 'painting', 3, 0, 180)]).ok).toBe(false); // north façade, facing the park
     expect(v([item('f', 'photo_frame', 4.5, 8, 180)]).ok).toBe(false); // main door span (x 4–5)
     expect(v([item('f', 'photo_frame', 6, 8, 180)]).ok).toBe(true); // south wall
   });
@@ -262,5 +263,60 @@ describe('007 frames', () => {
     const l: OfficeLayout = { ...base, items: [glass, item('f', 'painting', 2.5, 3, 0)] };
     expect(dropUnsupportedFrames({ ...l, items: [l.items[1]!] }).items).toEqual([]);
     expect(dropUnsupportedFrames(l)).toBe(l);
+  });
+});
+
+// 008 US3 + US4: façade next to the wall screen; free placement along the wall and in height.
+describe('008 frames', () => {
+  const base: OfficeLayout = { schemaVersion: 2, floor: { width: 10, depth: 8 }, shell: { glassSide: 'north', door: { side: 'south', offset: 4 } }, items: [] };
+  const item = (id: string, type: PlacedItem['type'], x: number, z: number, rotation: PlacedItem['rotation'] = 0, extra: Partial<PlacedItem> = {}): PlacedItem => ({ id, type, pos: { x, z }, rotation, ...extra });
+  const v = (items: PlacedItem[]) => validateLayout({ ...base, items });
+  const screen = item('ws', 'wall_screen', 4, 0.5); // x 4–5.5, standing 0.5 m in front of the façade
+
+  it('not behind the wall screen; next to it is fine; moving the screen in front flags the frame, never drops it', () => {
+    expect(v([screen, item('f', 'painting', 4.5, 0)]).reasons['f']).toBe('Hidden behind the wall screen');
+    expect(v([screen, item('f', 'painting', 2.5, 0)]).ok).toBe(true);
+    const l: OfficeLayout = { ...base, items: [item('ws', 'wall_screen', 2, 0.5), item('f', 'painting', 2.5, 0)] };
+    expect(validateLayout(l).reasons['f']).toBe('Hidden behind the wall screen');
+    expect(dropUnsupportedFrames(l)).toBe(l);
+  });
+
+  it('slides along the wall in 5 cm steps; the wall line stays on 0.5 m', () => {
+    const glass = item('g', 'long_glass', 2, 3);
+    expect(v([glass, item('f', 'photo_frame', 2.15, 3)]).ok).toBe(true);
+    expect(v([glass, item('f', 'photo_frame', 2.13, 3)]).reasons['f']).toBe('Position must be in 5 cm steps');
+    expect(v([glass, item('f', 'photo_frame', 2.15, 3.05)]).ok).toBe(false);
+  });
+
+  it('needs wall behind its whole width: two glass pieces in one line are fine, a gap is not, an office door never counts', () => {
+    const short = item('s', 'glass_wall', 1.5, 3);
+    const long = item('l', 'long_glass', 2, 3);
+    expect(v([short, long, item('f', 'painting', 1.7, 3)]).ok).toBe(true); // 1.7–2.7 across both pieces
+    expect(v([item('s', 'glass_wall', 1, 3), long, item('f', 'painting', 1.2, 3)]).reasons['f']).toBe('A picture must hang on a wall'); // gap 1.5–2
+    expect(v([long, item('d', 'office_door', 4, 3), item('f', 'painting', 3.5, 3)]).ok).toBe(false);
+  });
+
+  it('height: 5 cm steps between 0.2 m + half its height and the wall top − half its height', () => {
+    const glass = item('g', 'long_glass', 2, 3);
+    expect(frameHeightRange('painting')).toEqual({ min: 0.55, max: 2.25 });
+    expect(v([glass, item('f', 'painting', 2, 3, 0, { height: 0.55 })]).ok).toBe(true);
+    expect(v([glass, item('f', 'painting', 2, 3, 0, { height: 2.25 })]).ok).toBe(true);
+    expect(v([glass, item('f', 'painting', 2, 3, 0, { height: 2.3 })]).reasons['f']).toBe('The picture is too high or too low');
+    expect(v([glass, item('f', 'painting', 2, 3, 0, { height: 1.52 })]).ok).toBe(false);
+    expect(v([item('s', 'sofa', 6, 5, 0, { height: 1 })]).reasons['s']).toBe('Only picture frames have a height');
+  });
+
+  it('two frames overlap only when both their spans and their heights overlap', () => {
+    const glass = item('g', 'long_glass', 2, 3);
+    const low = item('a', 'photo_frame', 2.5, 3, 0, { height: 1.0 });
+    expect(v([glass, low, item('b', 'photo_frame', 2.5, 3, 0, { height: 1.8 })]).ok).toBe(true);
+    expect(v([glass, low, item('b', 'photo_frame', 2.5, 3, 0, { height: 1.3 })]).reasons['b']).toBe('Another picture is already here');
+  });
+
+  it('a 007 frame without a height is valid at 1.5 m and resizes as before (SC-006)', () => {
+    const l: OfficeLayout = { ...base, items: [item('e', 'painting', 10, 2, 270)] };
+    expect(validateLayout(l).ok).toBe(true);
+    const r = resizeLayout(l, 12, 9);
+    expect(r.ok && r.layout.items[0]).toEqual({ id: 'e', type: 'painting', pos: { x: 12, z: 2 }, rotation: 270 });
   });
 });

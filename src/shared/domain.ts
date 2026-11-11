@@ -237,6 +237,8 @@ export interface PlacedItem {
   rotation: Rotation;
   /** 007: frames only — id of an uploaded picture in the local data folder; absent = default picture. */
   picture?: string;
+  /** 008: frames only — centre above the floor (m), 5 cm steps; absent = 1.5 m (007 frames). */
+  height?: number;
 }
 
 export type DoorSide = 'south' | 'east' | 'west';

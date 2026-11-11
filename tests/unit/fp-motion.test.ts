@@ -95,3 +95,22 @@ describe('standing up from the sofa (fp-sofa-standup-stuck)', () => {
     }
   });
 });
+
+describe('first person and office doors (008)', () => {
+  it('a closed door stops the walk; an open one lets it through', async () => {
+    const { DoorBook } = await import('../../src/web/scene/doors');
+    const layout = { ...defaultLayout(), items: [...defaultLayout().items, { id: 'd', type: 'office_door' as const, pos: { x: 14, z: 3 }, rotation: 90 as const }] };
+    const g = new OfficeGrid(layout);
+    const doors = new DoorBook(layout);
+    // Door line: floor x = 14, z 3–4 → world x = 6, z −3…−2. Walk east across it at z = −2.5.
+    const walk = () => {
+      let p = { x: 5.4, z: -2.5 };
+      for (let i = 0; i < 20; i++) p = slide(g, p.x, p.z, 0.05, 0, undefined, (a, b, c, d) => doors.blocksMove(a, b, c, d));
+      return p;
+    };
+    expect(walk().x).toBeLessThan(6);
+    doors.toggleUser('d');
+    for (let i = 0; i < 60; i++) doors.tick(1 / 60, 10_000 + i * 16, []);
+    expect(walk().x).toBeGreaterThan(6);
+  });
+});

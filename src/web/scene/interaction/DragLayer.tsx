@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import type { OfficeLayout } from '@shared/domain';
-import { footprintRect, isMeetingTable, onEdgeGrid, rectsOverlap, seatPoints, snap } from '@shared/catalog';
+import { footprintRect, isMeetingTable, isWallMounted, onEdgeGrid, rectsOverlap, seatPoints, snap } from '@shared/catalog';
 import { floorSizeValid, insideFloor, resizeBlockers, validateLayout } from '@shared/layout-validation';
 import { FLOOR_MAX, FLOOR_MIN } from '@shared/domain';
 import { chairsOf, effectiveDesks, effectiveMeetingSeats, useBuild } from '../../state/build';
@@ -54,10 +54,13 @@ export function seatAt(layout: OfficeLayout, p: Pt): string | null {
   return best;
 }
 
-/** Walls, glass, doors and frames stay on the 0.5 m edge grid while dragged (007). */
+/** Walls, glass and doors stay on the 0.5 m edge grid while dragged (007); a frame slides along its own wall
+ * line in the drag's 5 cm steps (008). */
 function itemPos(layout: OfficeLayout, id: string, p: Pt): Pt {
   const it = layout.items.find((i) => i.id === id);
-  return it && onEdgeGrid(it.type) ? { x: snap(p.x, 0.5), z: snap(p.z, 0.5) } : p;
+  if (!it || !onEdgeGrid(it.type)) return p;
+  if (isWallMounted(it.type)) return it.rotation === 0 || it.rotation === 180 ? { x: p.x, z: it.pos.z } : { x: it.pos.x, z: p.z };
+  return { x: snap(p.x, 0.5), z: snap(p.z, 0.5) };
 }
 
 /** Floor size from a dragged edge handle (`origin` = the edge position when the drag began). */

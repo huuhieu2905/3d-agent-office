@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import type { ItemType, OfficeLayout, PlacedItem, Rotation } from '@shared/domain';
 import { dropUnsupportedFrames, frameSupported, validateLayout, type ValidationResult } from '@shared/layout-validation';
-import { footprintRect, isMeetingTable, isWallMounted, onEdgeGrid, rectsOverlap, seatPoint, snap } from '@shared/catalog';
+import { FRAME_HEIGHT_DEFAULT, footprintRect, isMeetingTable, isWallMounted, onEdgeGrid, rectsOverlap, seatPoint, snap } from '@shared/catalog';
 import { resizeLayout, type ResizeResult } from '@shared/layout-resize';
 
 // Arrange ("build") mode state: a draft layout plus draft seating, with undo/redo over both
@@ -54,6 +54,10 @@ interface BuildStore {
   place(item: Omit<PlacedItem, 'id'>): void;
   move(id: string, pos: { x: number; z: number }): void;
   rotateSelected(): void;
+  /** 008: height (m) for the next frame placed; follows the last frame placed or raised. */
+  frameHeight: number;
+  /** 008: set a frame's height (one undo step); also remembered for the next frame. */
+  setFrameHeight(id: string, height: number): void;
   /** 007 US5: show an uploaded picture in a frame (undefined = back to the default picture). One undo step. */
   setPicture(id: string, picture: string | undefined): void;
   removeSelected(): void;
@@ -115,6 +119,7 @@ export const useBuild = create<BuildStore>((set, get) => ({
   drag: null,
   validation: null,
   resizeBlockers: [],
+  frameHeight: FRAME_HEIGHT_DEFAULT,
   begin: (layout) =>
     set({ active: true, draft: structuredClone(layout), seating: {}, meetingSeating: {}, past: [], future: [], selectedId: null, palette: null, drag: null, validation: validateLayout(layout) }),
   end: () => set({ active: false, draft: null, seating: {}, meetingSeating: {}, past: [], future: [], selectedId: null, palette: null, drag: null, validation: null, resizeBlockers: [] }),
@@ -141,6 +146,7 @@ export const useBuild = create<BuildStore>((set, get) => ({
     const { draft } = get();
     if (!draft) return;
     const placed: PlacedItem = { ...item, id: newId(item.type) };
+    if (isWallMounted(item.type)) set({ frameHeight: item.height ?? FRAME_HEIGHT_DEFAULT });
     const extra: PlacedItem[] = [];
     // A new desk comes with its chair on the seat (if that spot is free).
     if (item.type === 'desk') {
@@ -177,6 +183,12 @@ export const useBuild = create<BuildStore>((set, get) => ({
     const rotation = isWallMounted(it.type) ? (((it.rotation + 180) % 360) as Rotation) : nextRot(it.rotation);
     if (isWallMounted(it.type) && !frameSupported(draft, { ...it, rotation })) return;
     get().apply(dropUnsupportedFrames({ ...draft, items: draft.items.map((i) => (i.id === it.id ? { ...i, rotation } : i)) }));
+  },
+  setFrameHeight: (id, height) => {
+    const { draft } = get();
+    if (!draft) return;
+    get().apply({ ...draft, items: draft.items.map((i) => (i.id === id ? { ...i, height } : i)) });
+    set({ frameHeight: height });
   },
   setPicture: (id, picture) => {
     const { draft } = get();

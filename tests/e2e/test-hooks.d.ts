@@ -14,6 +14,8 @@ declare global {
       player(): { x: number; z: number; pose: 'standing' | 'sit' | 'lie'; aim: { itemId: string; action: string } | null } | null;
       teleportPlayer(x: number, z: number, yaw: number, pitch?: number): void;
       itemWorld(id: string): { x: number; z: number } | null;
+      /** 008: office door states. */
+      doors(): { id: string; openness: number }[];
     };
   }
 }

@@ -6,12 +6,13 @@ import { jiggleOf } from './furniture/PropJiggle';
 import type { Employee, OfficeLayout, PlacedItem } from '@shared/domain';
 import { DOOR_WIDTH } from '@shared/domain';
 import { CATALOG, CELL, isEdge } from '@shared/catalog';
-import { edgeSegments } from '@shared/layout-validation';
+import { frameOnGlass } from '@shared/layout-validation';
 import { Desk, Door, EdgePanel, floorToWorld, furnitureFor, itemTransform, MeetingTable, OfficeDoor, PictureFrame, WallScreenFrame } from './furniture/Furniture';
 import { NO_IDS, useSettings } from '../state/settings';
 import { toggledScreens } from './interaction/interactables';
 import { woodFloorTexture } from '../theme/concept';
 import { useUi } from '../state/ui';
+import type { DoorBook } from './doors';
 
 // Floor, shell and furniture from the OfficeLayout v2 (FR-050/FR-054, 002 R2-03/R2-05). The shell
 // (perimeter walls, the glass façade facing the park and the main door) is generated from the floor
@@ -113,6 +114,7 @@ export function Office({
   onItemPress,
   children,
   positions,
+  doors,
 }: {
   /** 004 US4: where employees are, so the door opens for them (FR-034). */
   positions?: Map<string, THREE.Vector3>;
@@ -120,6 +122,8 @@ export function Office({
   employeesByDesk: Map<string, Employee>;
   theme: 'light' | 'dark';
   cutaway?: boolean;
+  /** 008: office door states (the leaf swings with them). */
+  doors?: DoorBook;
   /** Arrange mode: pressing an item selects it and may start a drag (002 US2). */
   onItemPress?: (item: PlacedItem, e: PointerEvent) => void;
   children?: React.ReactNode;
@@ -127,11 +131,6 @@ export function Office({
   const { width: w, depth: d } = layout.floor;
   const items = useMemo(() => layout.items, [layout]);
   const shell = useMemo(() => shellPanels(layout), [layout]);
-  // 007: frames on glass stay at full height in the cut-away view; frames on solid walls sit on the cut wall.
-  const glassSegments = useMemo(
-    () => new Set(items.filter((i) => i.type === 'glass_wall' || i.type === 'long_glass').flatMap((i) => edgeSegments(i))),
-    [items],
-  );
   const door = doorTransform(layout);
   const setHireDesk = useUi((s) => s.setHireDesk);
   const screensOff = useSettings((s) => s.settings.screensOff) ?? NO_IDS;
@@ -175,7 +174,7 @@ export function Office({
         let content: React.ReactNode;
         const vertical = item.rotation === 90 || item.rotation === 270;
         if (item.type === 'office_door') {
-          content = <OfficeDoor vertical={vertical} />;
+          content = <OfficeDoor vertical={vertical} openness={doors ? () => doors.openness(item.id) : undefined} />;
         } else if (isEdge(item.type)) {
           const length = CATALOG[item.type].footprint.w * CELL;
           content = <EdgePanel type={item.type === 'wall' ? 'wall' : 'glass_wall'} vertical={vertical} length={length} cutaway={cutaway} />;
@@ -189,7 +188,7 @@ export function Office({
             </>
           );
         } else if (item.type === 'painting' || item.type === 'photo_frame') {
-          content = <PictureFrame type={item.type} picture={item.picture} low={cutaway && !glassSegments.has(edgeSegments(item)[0]!)} />;
+          content = <PictureFrame type={item.type} picture={item.picture} height={item.height} low={cutaway && !frameOnGlass(layout, item)} />;
         } else if (item.type === 'meeting_table_4' || item.type === 'meeting_table_8') {
           content = <MeetingTable type={item.type} />;
         } else if (item.type === 'desk') {

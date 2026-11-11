@@ -6,6 +6,7 @@ import { avoiding, RADIUS_SEATED, RADIUS_WALKING, type BumpEvent, type Crowd } f
 import { sofaOf, sofaSpots, type SpotBook } from './break-spots';
 import { edgeExit, outdoorRoute, routeLength, type Pt } from './outdoor-route';
 import type { ParkFrame, ParkShop, Spot } from './park/park-layout';
+import type { DoorBook } from './doors';
 
 // Per-employee behaviour (FR-012, R15): sit at the assigned desk, act out the real status, and when idle
 // do a random break every 5 ± 2 minutes (stretch, or walk to the water cooler and back to the SAME desk).
@@ -131,6 +132,8 @@ export interface BrainOptions {
   /** 004 US3: the park shops and the park frame (needs a SiteGrid to leave the office). */
   shops?: ParkShop[];
   frame?: ParkFrame;
+  /** 008: office doors — a closed one is opened before walking through it. */
+  doors?: DoorBook;
 }
 
 export class EmployeeBrain {
@@ -165,6 +168,8 @@ export class EmployeeBrain {
   private returning = false;
   /** Jam detector: where and when the current window started. */
   private jam = { x: 0, z: 0, at: 0 };
+  /** 008: the office door this employee asked to open (released once it is behind them). */
+  private heldDoor: string | null = null;
 
   constructor(private readonly o: BrainOptions) {
     this.rng = o.rng ?? Math.random;
@@ -237,6 +242,7 @@ export class EmployeeBrain {
   dispose(): void {
     this.o.crowd?.remove(this.id);
     this.o.spots?.release(this.id);
+    this.o.doors?.releaseAll(this.id);
   }
 
   /** A* grid: indoor cells only when the grid also covers the park (SiteGrid). */
@@ -672,6 +678,7 @@ export class EmployeeBrain {
     // Disconnected: freeze, unless walking back from a break (004 FR-028 — back to the desk first).
     if (this.visual === 'disconnected' && !this.returning) return this.pose('Idle', m.kind === 'seated');
     this.takeBumps(now);
+    if (this.heldDoor && m.kind !== 'entering' && m.kind !== 'walking') this.releaseDoor();
     // A recall that could not get up from the sofa last frame (someone in front): try again.
     if (this.returning && m.kind === 'resting') this.recall({}, now);
 
@@ -691,6 +698,8 @@ export class EmployeeBrain {
         if (this.reaction && now < this.reaction.until) return this.pose('Idle', false);
         // Shared spots (cooler, lobby) take whoever is close enough once the way is blocked: they queue
         // around it instead of all fighting for the same cell (FR-016 edge case). A seat must be reached.
+        // 008: a closed office door ahead — stop, open it, then walk on (FR-002).
+        if (this.waitAtDoor(m)) return this.pose('Idle', false);
         const relaxed = m.kind === 'walking' && m.then === 'drink';
         const arrived = this.followPath(m, dt, now, relaxed);
         if (!arrived && this.o.crowd) this.checkJam(m, now);
@@ -738,6 +747,39 @@ export class EmployeeBrain {
       case 'left':
         return this.pose('Idle', false);
     }
+  }
+
+  /**
+   * 008 (research R8-02): look at the next few steps of the path; if one crosses an office door within
+   * 0.6 m, hold the door open and wait while it is not open yet. A door that is behind us is released.
+   * Waiting does not count as being blocked (no skip / re-plan around a closing door).
+   */
+  private waitAtDoor(m: { path: Cell[]; i: number }): boolean {
+    const doors = this.o.doors;
+    if (!doors) return false;
+    let ahead: string | null = null;
+    let px = this.x;
+    let pz = this.z;
+    for (let k = m.i; k < Math.min(m.path.length, m.i + 4) && !ahead; k++) {
+      const [qx, , qz] = this.o.grid.toWorld(m.path[k]!);
+      const id = doors.doorBetween(px, pz, qx, qz);
+      if (id && doors.doorNear(this.x, this.z, 0.6) === id) ahead = id;
+      px = qx;
+      pz = qz;
+    }
+    if (this.heldDoor && this.heldDoor !== ahead) this.releaseDoor();
+    if (!ahead) return false;
+    doors.request(ahead, this.id);
+    this.heldDoor = ahead;
+    if (doors.isOpen(ahead)) return false;
+    const [tx, , tz] = this.o.grid.toWorld(m.path[m.i] ?? m.path.at(-1)!);
+    if (Math.hypot(tx - this.x, tz - this.z) > 1e-4) this.heading = Math.atan2(tx - this.x, tz - this.z);
+    return true;
+  }
+
+  private releaseDoor(): void {
+    if (this.heldDoor) this.o.doors?.release(this.heldDoor, this.id);
+    this.heldDoor = null;
   }
 
   private takeBumps(now: number): void {

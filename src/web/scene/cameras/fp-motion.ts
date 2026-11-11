@@ -38,14 +38,23 @@ export function freeAt(grid: MotionGrid, x: number, z: number, r = RADIUS, other
   return true;
 }
 
-/** Move from (x, z) by (dx, dz), sliding along obstacles axis by axis. */
-export function slide(grid: MotionGrid, x: number, z: number, dx: number, dz: number, others?: Others): { x: number; z: number } {
+/** Move from (x, z) by (dx, dz), sliding along obstacles axis by axis. 008: `blocked` refuses a move
+ * that would pass through something not in the grid (a closed office door). */
+export function slide(
+  grid: MotionGrid,
+  x: number,
+  z: number,
+  dx: number,
+  dz: number,
+  others?: Others,
+  blocked?: (x0: number, z0: number, x1: number, z1: number) => boolean,
+): { x: number; z: number } {
   // Someone already too close (they walked into us): only accept moves that do not get closer.
   const list = others ? [...others].filter((o) => Math.hypot(o.x - x, o.z - z) >= PERSON_GAP) : undefined;
   let nx = x;
   let nz = z;
-  if (freeAt(grid, x + dx, z, RADIUS, list)) nx = x + dx;
-  if (freeAt(grid, nx, z + dz, RADIUS, list)) nz = z + dz;
+  if (freeAt(grid, x + dx, z, RADIUS, list) && !blocked?.(x, z, x + dx, z)) nx = x + dx;
+  if (freeAt(grid, nx, z + dz, RADIUS, list) && !blocked?.(nx, z, nx, z + dz)) nz = z + dz;
   return { x: nx, z: nz };
 }
 
