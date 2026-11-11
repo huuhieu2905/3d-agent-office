@@ -59,6 +59,9 @@ createServer((req, res) => {
   else if (action === 'error-and-search') mock.addErrorAndSearchSteps();
   else if (action === 'delete-fail') mock.failDelete = true;
   else if (action === 'many-projects') mock.projectPerConversation = true;
+  // bug new-hire-reenters-door: hide a conversation, then show it again so it arrives after page load.
+  else if (action?.startsWith('hide/')) mock.deleted.add(action.slice('hide/'.length));
+  else if (action?.startsWith('show/')) mock.deleted.delete(action.slice('show/'.length));
   else if (action?.startsWith('run/')) mock.runningIds.add(action.slice('run/'.length));
   else if (action?.startsWith('idle/')) mock.runningIds.delete(action.slice('idle/'.length));
   else if (action?.startsWith('parent/')) {
