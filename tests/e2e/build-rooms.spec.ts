@@ -168,3 +168,148 @@ test('hang a photo frame and show an uploaded picture; a non-image is refused; n
   expect((await page.request.get(`/api/pictures/${picture}`, { headers: auth })).status()).toBe(200);
   expect([...hosts]).toEqual(['127.0.0.1']);
 });
+
+// 008 US1: a room east of the desk rows (x 13–16, z 3–9) whose west wall has an office door at x = 13, z 5–6.
+function roomLayout(base: { items: Item[] }) {
+  const add = (id: string, type: string, x: number, z: number, rotation = 0) => ({ id, type, pos: { x, z }, rotation });
+  return {
+    ...base,
+    items: [
+      ...base.items.filter((i) => i.type !== 'water_cooler'),
+      add('n1', 'long_glass', 14, 3), add('n2', 'glass_wall', 13, 3), add('n3', 'glass_wall', 13.5, 3),
+      add('w1', 'long_glass', 13, 3, 90), add('wd', 'office_door', 13, 5, 90), add('w2', 'long_glass', 13, 6, 90),
+      add('w3', 'glass_wall', 13, 8, 90), add('w4', 'glass_wall', 13, 8.5, 90),
+      add('s1', 'long_glass', 14, 9), add('s2', 'glass_wall', 13, 9), add('s3', 'glass_wall', 13.5, 9),
+      add('room-desk', 'desk', 14, 4),
+    ],
+  };
+}
+
+test('employees open an office door, walk through, and it closes behind them', async ({ page }) => {
+  await expect.poll(async () => (await getEmployees(page)).filter((e) => e.visible && e.deskId).length).toBeGreaterThan(1);
+  const emp = (await getEmployees(page)).find((e) => e.visible && e.deskId)!;
+  const base = await (await page.request.get('/api/layout', { headers: auth })).json();
+  const put = await page.request.put('/api/layout', { headers: auth, data: { layout: roomLayout(base), seating: { [emp.conversationId]: 'room-desk' } } });
+  expect(put.status()).toBe(200);
+  await page.reload();
+  const brainOf = () => page.evaluate((id) => window.__agentOffice?.brains().find((b) => b.id === id) ?? null, emp.conversationId);
+  // Seated inside the room (world x > 13 − 16/2 = 5).
+  await expect.poll(async () => { const b = await brainOf(); return !!b && b.mode === 'seated' && b.x > 5; }, { timeout: 40_000 }).toBe(true);
+
+  // Sample every frame in the page: did the employee cross the door line (x = 5) while the door was closed?
+  await page.evaluate((id) => {
+    const w = window as unknown as { __doorLog: { crossedClosed: boolean; maxOpen: number; done: boolean; crossings: number } };
+    w.__doorLog = { crossedClosed: false, maxOpen: 0, done: false, crossings: 0 };
+    let side = 1;
+    const loop = () => {
+      const h = window.__agentOffice!;
+      const b = h.brains().find((x) => x.id === id);
+      const open = h.doors().find((d) => d.id === 'wd')?.openness ?? 0;
+      w.__doorLog.maxOpen = Math.max(w.__doorLog.maxOpen, open);
+      if (b) {
+        const s = Math.sign(b.x - 5);
+        if (s !== 0 && s !== side) {
+          w.__doorLog.crossings++;
+          if (open < 0.8) w.__doorLog.crossedClosed = true;
+        }
+        if (s !== 0) side = s;
+      }
+      if (!w.__doorLog.done) requestAnimationFrame(loop);
+    };
+    loop();
+  }, emp.conversationId);
+
+  // Move them to a desk outside the room: they must leave through the door.
+  await page.request.put(`/api/employees/${emp.conversationId}/profile`, { headers: auth, data: { deskId: 'desk-1' } });
+  await expect.poll(async () => { const b = await brainOf(); return !!b && b.mode === 'seated' && b.x < 5; }, { timeout: 40_000 }).toBe(true);
+  await page.waitForTimeout(3000);
+  const log = await page.evaluate(() => (window as unknown as { __doorLog: { crossedClosed: boolean; maxOpen: number; done: boolean; crossings: number } }).__doorLog);
+  expect(log.crossings).toBe(1);
+  expect(log.maxOpen).toBeGreaterThanOrEqual(0.8);
+  expect(log.crossedClosed).toBe(false);
+  expect((await page.evaluate(() => window.__agentOffice!.doors()))[0]!.openness).toBe(0);
+});
+
+// Same room, but the door sits between two desk rows (x = 13, z 3–4) so a first-person body (0.4 m) can reach it.
+function fpRoomLayout(base: { items: Item[] }) {
+  const room = roomLayout(base);
+  const moved: Record<string, Item> = {
+    w1: { id: 'w1', type: 'long_glass', pos: { x: 13, z: 4 }, rotation: 90 },
+    wd: { id: 'wd', type: 'office_door', pos: { x: 13, z: 3 }, rotation: 90 },
+    w2: { id: 'w2', type: 'long_glass', pos: { x: 13, z: 6 }, rotation: 90 },
+  };
+  return { ...room, items: room.items.map((i) => moved[i.id] ?? i) };
+}
+
+test('first person: E opens and closes an office door; a closed door blocks the way', async ({ page }) => {
+  const base = await (await page.request.get('/api/layout', { headers: auth })).json();
+  expect((await page.request.put('/api/layout', { headers: auth, data: fpRoomLayout(base) })).status()).toBe(200);
+  try {
+    await page.reload();
+    await expect(page.locator('.tag').first()).toBeVisible({ timeout: 20_000 });
+    await page.waitForTimeout(800);
+    if (!(await page.locator('.crosshair').isVisible())) await page.keyboard.press('v');
+    const player = () => page.evaluate(() => window.__agentOffice?.player() ?? null);
+    const openness = () => page.evaluate(() => window.__agentOffice!.doors().find((d) => d.id === 'wd')!.openness);
+    await expect.poll(player, { timeout: 10_000 }).not.toBeNull();
+    // The door line is world x = 5, z −1…0. West of it a desk ends at x = 4.5, so stand in the gap beside
+    // the door and look east and down at it.
+    const face = (x: number, yaw: number, pitch: number) => page.evaluate(([x, yaw, pitch]) => window.__agentOffice!.teleportPlayer(x!, -2.5, yaw!, pitch), [x, yaw, pitch]);
+    await face(4.8, Math.PI / 2, -1.1);
+    await expect.poll(async () => (await player())?.aim?.action).toBe('Open door');
+    await page.keyboard.press('e');
+    await expect.poll(openness).toBeGreaterThanOrEqual(0.8);
+    await page.keyboard.down('KeyW');
+    await expect.poll(async () => (await player())!.x, { timeout: 5000 }).toBeGreaterThan(5.4);
+    await page.keyboard.up('KeyW');
+    // From inside: close it, then try to walk back out.
+    await face(5.8, -Math.PI / 2, -0.55);
+    await expect.poll(async () => (await player())?.aim?.action).toBe('Close door');
+    await page.keyboard.press('e');
+    await expect.poll(openness, { timeout: 5000 }).toBe(0);
+    await page.keyboard.down('KeyW');
+    await page.waitForTimeout(1500);
+    await page.keyboard.up('KeyW');
+    expect((await player())!.x).toBeGreaterThan(5);
+  } finally {
+    const settings = await (await page.request.get('/api/settings', { headers: auth })).json();
+    delete settings.firstRun;
+    await page.request.put('/api/settings', { headers: auth, data: { ...settings, camera: 'overview' } });
+  }
+});
+
+test('008: a painting hangs on the glass façade next to the wall screen and survives a reload', async ({ page }) => {
+  await enterArrange(page);
+  // Just inside the north façade, west of the wall screen (x 6.5–8): the pointer is south of the line → faces in.
+  await placeAt(page, 'painting', 4.25, 0.15);
+  const p = (await items(page)).find((i) => i.type === 'painting')!;
+  expect(p).toMatchObject({ pos: { x: 3.75, z: 0 }, rotation: 0 });
+  await bar(page).getByRole('button', { name: 'Save' }).click();
+  await expect(bar(page)).toBeHidden({ timeout: 20_000 });
+  await page.reload();
+  const saved: { items: Item[] } = await (await page.request.get('/api/layout', { headers: auth })).json();
+  expect(saved.items.find((i) => i.id === p.id)).toMatchObject({ pos: { x: 3.75, z: 0 }, rotation: 0 });
+});
+
+test('008: a frame moves 15 cm along its wall and 40 cm up with the keys, takes a typed height, and is saved', async ({ page }) => {
+  await enterArrange(page);
+  await placeAt(page, 'photo_frame', 0.15, 6.25); // west outer wall, z 6–6.5, facing east
+  const frame = (await items(page)).find((i) => i.type === 'photo_frame')!;
+  expect(frame).toMatchObject({ pos: { x: 0, z: 6 }, rotation: 90, height: 1.5 });
+  await page.keyboard.press('Escape');
+  const f = await project(page, 0.08, 6.25, 0.7); // on a cut-down wall the frame stands on its top edge
+  await page.mouse.click(f.x, f.y);
+  await expect(page.getByTestId('frame-height-input')).toBeVisible();
+  for (let i = 0; i < 3; i++) await page.keyboard.press('ArrowRight');
+  for (let i = 0; i < 8; i++) await page.keyboard.press('ArrowUp');
+  const moved = (await items(page)).find((i) => i.id === frame.id)!;
+  expect(moved.pos).toEqual({ x: 0, z: 6.15 });
+  expect((moved as Item & { height?: number }).height).toBeCloseTo(1.9, 5);
+  await page.getByTestId('frame-height-input').fill('1.2');
+  await expect.poll(async () => ((await items(page)).find((i) => i.id === frame.id) as Item & { height?: number }).height).toBe(1.2);
+  await bar(page).getByRole('button', { name: 'Save' }).click();
+  await expect(bar(page)).toBeHidden({ timeout: 20_000 });
+  await page.reload();
+  const saved: { items: (Item & { height?: number })[] } = await (await page.request.get('/api/layout', { headers: auth })).json();
+  expect(saved.items.find((i) => i.id === frame.id)).toMatchObject({ pos: { x: 0, z: 6.15 }, height: 1.2 });
+});

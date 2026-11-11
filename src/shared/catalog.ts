@@ -56,6 +56,11 @@ export const CATALOG: Record<ItemType, CatalogEntry> = {
   photo_frame: { type: 'photo_frame', label: 'Photo frame', footprint: { w: 1, d: 1 }, mount: 'wall', blocks: 'none' },
 };
 
+/** 008: frames — default centre height (m) and the outer height of each frame; walls are 2.6 m tall. */
+export const FRAME_HEIGHT_DEFAULT = 1.5;
+export const FRAME_OUTER_H: Partial<Record<ItemType, number>> = { painting: 0.7, photo_frame: 0.5 };
+export const WALL_HEIGHT = 2.6;
+
 /** On the 0.5 m edge grid, taking the edge (walls, glass, office doors). */
 export const isEdge = (type: ItemType): boolean => CATALOG[type].mount === 'edge';
 /** Hangs on an edge (paintings, photo frames). */

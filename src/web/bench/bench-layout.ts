@@ -38,6 +38,8 @@ export function defaultBenchLayout(floor?: { width: number; depth: number }, opt
     add('meeting_table_8', 18, 8, 90);
     for (const z of [2, 3.5, 5, 6.5]) items.push({ id: `photo-${z}`, type: 'photo_frame', pos: { x: 0, z }, rotation: 90, picture: `bench-${z}` });
     for (const x of [2, 4, 10, 12]) items.push({ id: `painting-${x}`, type: 'painting', pos: { x, z: depth }, rotation: 180, picture: `bench-${x}` });
+    // 008 SC-007: six office doors on the line x = 17, between the desks and the meeting tables.
+    for (const z of [1, 3, 5, 7, 9, 11]) add('office_door', 17, z, 90);
   }
   return { schemaVersion: 2, floor: { width, depth }, shell: { glassSide: 'north', door: { side: 'south', offset: Math.min(7, width - 1) } }, items };
 }

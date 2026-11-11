@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import type { Employee as EmployeeT, OfficeLayout, VisualState, WeatherCondition } from '@shared/domain';
 import type { SiteGrid } from '@shared/site-nav';
 import type { SpotBook } from './break-spots';
+import type { DoorBook } from './doors';
 import type { ParkFrame, ParkShop } from './park/park-layout';
 import type { Crowd } from './crowd/crowd';
 import { kickNearest } from './furniture/PropJiggle';
@@ -51,6 +52,8 @@ export interface EmployeeProps {
   grid: SiteGrid;
   /** 004 US3: break-spot bookings, park shops and frame, current weather. */
   spots?: SpotBook;
+  /** 008: office doors (opened before walking through). */
+  doors?: DoorBook;
   shops?: ParkShop[];
   frame?: ParkFrame;
   weather?: WeatherCondition;
@@ -62,14 +65,14 @@ export interface EmployeeProps {
   positions: Map<string, THREE.Vector3>;
 }
 
-export function Employee({ employee, grid, enter, leaving, lobbySlot, dimmed, onLeft, positions, crowd, layout, spots, shops, frame, weather = 'clear' }: EmployeeProps) {
+export function Employee({ employee, grid, enter, leaving, lobbySlot, dimmed, onLeft, positions, crowd, layout, spots, shops, frame, doors, weather = 'clear' }: EmployeeProps) {
   const character = useMemo(() => instantiate(employee.appearance), [employee.appearance]);
   useEffect(() => () => character.dispose(), [character]);
 
   // 007: a meeting seat wins over the (reserved) desk; a seat whose table is gone falls back to the desk.
   const seat = (employee.meetingSeatId ? grid.seatOf(employee.meetingSeatId) : null) ?? (employee.deskId ? grid.seatOf(employee.deskId) : null);
   const brain = useMemo(
-    () => new EmployeeBrain({ grid, seat, enter, lobbySlot, crowd, spots, shops, frame, id: employee.conversationId, ...debugBreaks() }),
+    () => new EmployeeBrain({ grid, seat, enter, lobbySlot, crowd, spots, shops, frame, doors, id: employee.conversationId, ...debugBreaks() }),
     // The brain survives desk/state changes; it is recreated only if the office grid changes.
     [grid],
   );

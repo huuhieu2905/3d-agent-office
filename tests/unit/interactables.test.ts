@@ -41,3 +41,13 @@ describe('interactables', () => {
     expect(toggledScreens(['gone'], id, layout)).toEqual([id]);
   });
 });
+
+describe('office doors (008)', () => {
+  it('an office door can be used with E; its hint follows the door state', async () => {
+    const { doorAction } = await import('../../src/web/scene/interaction/interactables');
+    const layout = { ...defaultLayout(), items: [...defaultLayout().items, { id: 'd', type: 'office_door' as const, pos: { x: 14, z: 3 }, rotation: 90 as const }] };
+    const door = buildInteractables(layout).find((i) => i.itemId === 'd')!;
+    expect(door).toMatchObject({ type: 'office_door', action: 'Open door', y: 1.1 });
+    expect(doorAction(true)).toBe('Close door');
+  });
+});

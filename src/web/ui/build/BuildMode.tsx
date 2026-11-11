@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { CATALOG, isWallMounted, snap } from '@shared/catalog';
 import { PictureError, preparePicture, uploadPicture } from './picture';
 import { moveIsValid } from '../../scene/interaction/DragLayer';
-import { FLOOR_MAX, FLOOR_MIN, PLACEABLE_TYPES, type OfficeLayout } from '@shared/domain';
-import { floorSizeValid } from '@shared/layout-validation';
+import { FLOOR_MAX, FLOOR_MIN, PLACEABLE_TYPES, type OfficeLayout, type PlacedItem } from '@shared/domain';
+import { floorSizeValid, frameHeight, frameHeightRange, validateLayout } from '@shared/layout-validation';
 import { api, ApiError } from '../../api/client';
 import { useBuild } from '../../state/build';
 import { useUi } from '../../state/ui';
@@ -66,6 +66,19 @@ export function BuildMode() {
         const it = st.draft.items.find((i) => i.id === st.selectedId);
         if (!it) return;
         const step = e.shiftKey ? 0.5 : 0.05;
+        if (isWallMounted(it.type)) {
+          // 008: ←/→ slide a frame along its wall, ↑/↓ raise or lower it (refused when the result is invalid).
+          if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+            const h = snap(frameHeight(it) + (e.key === 'ArrowUp' ? step : -step), 0.05);
+            if (frameHeightValid(st.draft, it.id, h)) st.setFrameHeight(it.id, h);
+            return;
+          }
+          const d = e.key === 'ArrowLeft' ? -step : step;
+          const ns = it.rotation === 0 || it.rotation === 180;
+          const pos = ns ? { x: snap(it.pos.x + d, 0.05), z: it.pos.z } : { x: it.pos.x, z: snap(it.pos.z + d, 0.05) };
+          if (moveIsValid(st.draft, it.id, pos)) st.move(it.id, pos);
+          return;
+        }
         const dx = e.key === 'ArrowLeft' ? -step : e.key === 'ArrowRight' ? step : 0;
         const dz = e.key === 'ArrowUp' ? -step : e.key === 'ArrowDown' ? step : 0;
         const pos = { x: snap(it.pos.x + dx, 0.05), z: snap(it.pos.z + dz, 0.05) };
@@ -129,10 +142,11 @@ export function BuildMode() {
       {selected && (
         <div className="build-selected" role="group" aria-label="Selected item">
           <strong>{CATALOG[selected.type].label}</strong>
-          <span className="muted small">arrows: move 5 cm</span>
+          <span className="muted small">{isWallMounted(selected.type) ? '←/→ along the wall · ↑/↓ height (5 cm)' : 'arrows: move 5 cm'}</span>
           <button className="btn" onClick={s.rotateSelected}>
             ⟳ Rotate <kbd>R</kbd>
           </button>
+          {isWallMounted(selected.type) && <FrameHeight item={selected} />}
           {isWallMounted(selected.type) && <FramePicture id={selected.id} picture={selected.picture} />}
           <button className="btn" onClick={s.removeSelected}>
             Delete
@@ -173,6 +187,53 @@ export function BuildMode() {
         </button>
       </div>
     </div>
+  );
+}
+
+/** Would this frame be valid at height `h`? */
+function frameHeightValid(draft: OfficeLayout, id: string, h: number): boolean {
+  return !validateLayout({ ...draft, items: draft.items.map((i) => (i.id === id ? { ...i, height: h } : i)) }).reasons[id];
+}
+
+/** 008 US4 (contracts/ui.md U8-3): type the selected frame's height. */
+function FrameHeight({ item }: { item: PlacedItem }) {
+  const draft = useBuild((st) => st.draft);
+  const setFrameHeight = useBuild((st) => st.setFrameHeight);
+  const current = frameHeight(item);
+  const [text, setText] = useState(String(current));
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => setText(String(current)), [current]);
+  const range = frameHeightRange(item.type);
+  const apply = (v: string) => {
+    setText(v);
+    const h = Number(v.replace(',', '.'));
+    if (!draft || !Number.isFinite(h) || Math.abs(h / 0.05 - Math.round(h / 0.05)) > 1e-6 || !frameHeightValid(draft, item.id, h)) {
+      setError(`${range.min}–${range.max} m in 5 cm steps, not overlapping another picture`);
+      return;
+    }
+    setError(null);
+    setFrameHeight(item.id, snap(h, 0.05));
+  };
+  return (
+    <label className="small">
+      Height (m)
+      <input
+        type="number"
+        data-testid="frame-height-input"
+        min={range.min}
+        max={range.max}
+        step={0.05}
+        value={text}
+        aria-invalid={!!error}
+        className={error ? 'invalid' : ''}
+        onChange={(e) => apply(e.target.value)}
+      />
+      {error && (
+        <span className="send-failed" role="alert">
+          {error}
+        </span>
+      )}
+    </label>
   );
 }
 

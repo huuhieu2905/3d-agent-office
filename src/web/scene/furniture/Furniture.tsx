@@ -165,7 +165,7 @@ const FRAME_Y = 1.5;
  * turned to the side it hangs on). Shows the user's uploaded picture, cropped to fill, or a default picture
  * when there is none or it cannot be loaded. The frame's back is visible through glass from the other side.
  */
-export function PictureFrame({ type, picture, low = false }: { type: 'painting' | 'photo_frame'; picture?: string; low?: boolean }) {
+export function PictureFrame({ type, picture, low = false, height = FRAME_Y }: { type: 'painting' | 'photo_frame'; picture?: string; low?: boolean; height?: number }) {
   const s = FRAME_SIZE[type];
   const [tex, setTex] = useState<THREE.Texture | null>(null);
   useEffect(() => {
@@ -191,7 +191,7 @@ export function PictureFrame({ type, picture, low = false }: { type: 'painting' 
   const map = tex ?? defaultPictureTexture(type === 'painting' ? 'painting' : 'photo');
   return (
     // `low`: the solid wall behind it is cut down (overview camera), so the frame stands on the wall's top edge.
-    <group position={[0, low ? CUTAWAY_WALL_H + s.h / 2 : FRAME_Y, 0.06]}>
+    <group position={[0, low ? CUTAWAY_WALL_H + s.h / 2 : height, 0.06]}>
       <Box size={[s.w, s.h, 0.035]} position={[0, 0, 0]} material={mats.frame} radius={0.008} />
       <mesh position={[0, 0, 0.019]}>
         <planeGeometry args={[s.pw, s.ph]} />
@@ -348,17 +348,22 @@ const WALL_H = 2.6;
 
 /**
  * 007 US2: interior office door, 1 m wide, centred on its group; `vertical` runs along z. Thin frame
- * (posts + header) and a glass leaf standing open at 90° on its hinge. Visual only: the doorway never
- * blocks the navigation grid (catalog `blocks: 'none'`).
+ * (posts + header) and a glass leaf on its hinge. 008: the leaf swings with the door's openness (DoorBook);
+ * the doorway stays passable in the navigation grid, and employees open a closed door before walking through.
  */
-export function OfficeDoor({ vertical }: { vertical: boolean }) {
+export function OfficeDoor({ vertical, openness }: { vertical: boolean; openness?: () => number }) {
   const H = 2.2;
+  // 008: the leaf swings from closed (in the wall line) to 90° open on its hinge, read every frame.
+  const leaf = useRef<THREE.Group>(null);
+  useFrame(() => {
+    if (leaf.current) leaf.current.rotation.y = -(openness?.() ?? 1) * (Math.PI / 2);
+  });
   return (
     <group rotation-y={vertical ? Math.PI / 2 : 0}>
       <Box size={[0.06, WALL_H, 0.1]} position={[-0.47, WALL_H / 2, 0]} material={mats.frame} radius={0.02} />
       <Box size={[0.06, WALL_H, 0.1]} position={[0.47, WALL_H / 2, 0]} material={mats.frame} radius={0.02} />
       <Box size={[1.0, WALL_H - H, 0.1]} position={[0, (WALL_H + H) / 2, 0]} material={mats.frame} radius={0.02} />
-      <group position={[-0.44, 0, 0]} rotation-y={-Math.PI / 2}>
+      <group ref={leaf} position={[-0.44, 0, 0]} rotation-y={-Math.PI / 2}>
         <mesh position={[0.43, H / 2, 0]} material={mats.glass}>
           <boxGeometry args={[0.86, H - 0.02, 0.04]} />
         </mesh>

@@ -2,10 +2,11 @@ import type { OfficeLayout, PlacedItem } from '@shared/domain';
 import { footprintRect } from '@shared/catalog';
 
 // 004 US4 (research R4-08): things the first-person user can use — wall screens, sofas, the water cooler,
-// plants — and which one is under the crosshair. The door is not here: it opens by itself (FR-034).
+// plants — and which one is under the crosshair. The main door is not here: it opens by itself (FR-034).
+// 008: office doors are — `E` opens or closes them.
 // Pure (no React/three) for unit tests.
 
-export type InteractableType = 'wall_screen' | 'sofa' | 'water_cooler' | 'plant';
+export type InteractableType = 'wall_screen' | 'sofa' | 'water_cooler' | 'plant' | 'office_door';
 
 export interface Interactable {
   itemId: string;
@@ -18,7 +19,7 @@ export interface Interactable {
   action: string;
 }
 
-const HEIGHT: Record<InteractableType, number> = { wall_screen: 1.6, sofa: 0.45, water_cooler: 0.95, plant: 0.75 };
+const HEIGHT: Record<InteractableType, number> = { wall_screen: 1.6, sofa: 0.45, water_cooler: 0.95, plant: 0.75, office_door: 1.1 };
 
 function actionFor(type: InteractableType, on: boolean): string {
   switch (type) {
@@ -30,8 +31,13 @@ function actionFor(type: InteractableType, on: boolean): string {
       return 'Drink water';
     case 'plant':
       return 'Water the plant';
+    case 'office_door':
+      return on ? 'Close door' : 'Open door';
   }
 }
+
+/** Hint for an office door in its current state (008). */
+export const doorAction = (open: boolean): string => actionFor('office_door', open);
 
 export function buildInteractables(layout: OfficeLayout, screensOff: readonly string[] = []): Interactable[] {
   // Screens are on unless switched off (Settings.screensOff).
@@ -46,7 +52,8 @@ export function buildInteractables(layout: OfficeLayout, screensOff: readonly st
       x: (r.x0 + r.x1) / 2 - layout.floor.width / 2,
       y: HEIGHT[type],
       z: (r.z0 + r.z1) / 2 - layout.floor.depth / 2,
-      action: actionFor(type, !screensOff.includes(it.id)),
+      // Doors start closed; FirstPerson refreshes the hint from the live door state.
+      action: actionFor(type, type === 'office_door' ? false : !screensOff.includes(it.id)),
     });
   }
   return out;

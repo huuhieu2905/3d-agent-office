@@ -70,6 +70,7 @@ export const placedItemSchema = z.object({
   pos: z.object({ x: z.number().min(0).max(FLOOR_MAX), z: z.number().min(0).max(FLOOR_MAX) }),
   rotation: rotationSchema,
   picture: z.string().regex(PICTURE_ID_RE).optional(),
+  height: z.number().min(0).max(3).optional(),
 });
 
 export const officeLayoutSchema = z.object({
