@@ -5,8 +5,9 @@ import type * as THREE from 'three';
 import { jiggleOf } from './furniture/PropJiggle';
 import type { Employee, OfficeLayout, PlacedItem } from '@shared/domain';
 import { DOOR_WIDTH } from '@shared/domain';
-import { isEdge } from '@shared/catalog';
-import { Desk, Door, EdgePanel, floorToWorld, furnitureFor, itemTransform, WallScreenFrame } from './furniture/Furniture';
+import { CATALOG, CELL, isEdge } from '@shared/catalog';
+import { edgeSegments } from '@shared/layout-validation';
+import { Desk, Door, EdgePanel, floorToWorld, furnitureFor, itemTransform, MeetingTable, OfficeDoor, PictureFrame, WallScreenFrame } from './furniture/Furniture';
 import { NO_IDS, useSettings } from '../state/settings';
 import { toggledScreens } from './interaction/interactables';
 import { woodFloorTexture } from '../theme/concept';
@@ -126,6 +127,11 @@ export function Office({
   const { width: w, depth: d } = layout.floor;
   const items = useMemo(() => layout.items, [layout]);
   const shell = useMemo(() => shellPanels(layout), [layout]);
+  // 007: frames on glass stay at full height in the cut-away view; frames on solid walls sit on the cut wall.
+  const glassSegments = useMemo(
+    () => new Set(items.filter((i) => i.type === 'glass_wall' || i.type === 'long_glass').flatMap((i) => edgeSegments(i))),
+    [items],
+  );
   const door = doorTransform(layout);
   const setHireDesk = useUi((s) => s.setHireDesk);
   const screensOff = useSettings((s) => s.settings.screensOff) ?? NO_IDS;
@@ -167,8 +173,12 @@ export function Office({
       {items.map((item) => {
         const t = itemTransform(item, layout.floor);
         let content: React.ReactNode;
-        if (isEdge(item.type)) {
-          content = <EdgePanel type={item.type as 'wall' | 'glass_wall'} vertical={item.rotation === 90 || item.rotation === 270} length={0.5} cutaway={cutaway} />;
+        const vertical = item.rotation === 90 || item.rotation === 270;
+        if (item.type === 'office_door') {
+          content = <OfficeDoor vertical={vertical} />;
+        } else if (isEdge(item.type)) {
+          const length = CATALOG[item.type].footprint.w * CELL;
+          content = <EdgePanel type={item.type === 'wall' ? 'wall' : 'glass_wall'} vertical={vertical} length={length} cutaway={cutaway} />;
         } else if (item.type === 'wall_screen') {
           // The first screen's content is the quota (QuotaScreen); the others show a status board.
           const on = !screensOff.includes(item.id);
@@ -178,6 +188,10 @@ export function Office({
               {!onItemPress && cutaway && <ScreenPower on={on} onToggle={() => toggleScreen(item.id)} />}
             </>
           );
+        } else if (item.type === 'painting' || item.type === 'photo_frame') {
+          content = <PictureFrame type={item.type} picture={item.picture} low={cutaway && !glassSegments.has(edgeSegments(item)[0]!)} />;
+        } else if (item.type === 'meeting_table_4' || item.type === 'meeting_table_8') {
+          content = <MeetingTable type={item.type} />;
         } else if (item.type === 'desk') {
           const e = employeesByDesk.get(item.id);
           content = <Desk screenOn={e?.visualState === 'working' || e?.visualState === 'thinking'} />;

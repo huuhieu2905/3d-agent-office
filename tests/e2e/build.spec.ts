@@ -46,7 +46,7 @@ test('build mode opens a toolbar with the furniture palette and can be cancelled
   await page.getByRole('button', { name: /Build/ }).click();
   const bar = page.getByRole('toolbar', { name: 'Build mode' });
   await expect(bar.getByRole('button', { name: 'Desk' })).toBeVisible();
-  await expect(bar.getByRole('button', { name: 'Glass wall' })).toBeVisible();
+  await expect(bar.getByRole('button', { name: 'Glass wall', exact: true })).toBeVisible();
   await bar.getByRole('button', { name: 'Cancel' }).click();
   await expect(bar).toBeHidden();
 });

@@ -1,6 +1,6 @@
 /// <reference lib="dom" />
 // SC-004 / quality gate 4: run the /bench scene for 60 s at 1920×1080 and fail if average FPS < 60.
-// Usage: npm run bench:fps [-- --seconds 60 --headed --detail medium --scenario crowd --floor 40x40]
+// Usage: npm run bench:fps [-- --seconds 60 --headed --detail medium --scenario crowd|outing|rooms --floor 40x40]
 import { spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { chromium } from '@playwright/test';

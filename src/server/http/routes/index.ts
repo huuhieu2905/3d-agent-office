@@ -10,6 +10,7 @@ import { commandRoutes } from './commands';
 import { projectRoutes } from './projects';
 import { layoutRoutes } from './layout';
 import { settingsRoutes } from './settings';
+import { pictureRoutes } from './pictures';
 
 // Every route plugin MUST be registered here (tasks.md conventions).
 
@@ -28,4 +29,5 @@ export async function registerRoutes(app: FastifyInstance, deps: RouteDeps): Pro
   await app.register(projectRoutes, deps);
   await app.register(layoutRoutes, deps);
   await app.register(settingsRoutes, deps);
+  await app.register(pictureRoutes, deps);
 }

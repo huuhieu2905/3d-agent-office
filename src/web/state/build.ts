@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import type { ItemType, OfficeLayout, PlacedItem, Rotation } from '@shared/domain';
-import { validateLayout, type ValidationResult } from '@shared/layout-validation';
-import { footprintRect, rectsOverlap, seatPoint, snap } from '@shared/catalog';
+import { dropUnsupportedFrames, frameSupported, validateLayout, type ValidationResult } from '@shared/layout-validation';
+import { footprintRect, isMeetingTable, isWallMounted, onEdgeGrid, rectsOverlap, seatPoint, snap } from '@shared/catalog';
 import { resizeLayout, type ResizeResult } from '@shared/layout-resize';
 
 // Arrange ("build") mode state: a draft layout plus draft seating, with undo/redo over both
@@ -13,6 +13,8 @@ export type Seating = Record<string, string | null>;
 interface Snapshot {
   layout: OfficeLayout;
   seating: Seating;
+  /** 007 US3: conversationId → meeting seat `<tableId>#<n>` (null = left the meeting), this session only. */
+  meetingSeating: Seating;
 }
 
 export interface DragPreview {
@@ -23,8 +25,9 @@ export interface DragPreview {
   valid: boolean;
   /** Handle: the floor size the drop would give. */
   size?: { width: number; depth: number };
-  /** Employee: desk under the cursor and whether someone sits there. */
+  /** Employee: desk (or 007 meeting seat) under the cursor and whether someone sits there. */
   deskId?: string | null;
+  seatId?: string | null;
   occupied?: boolean;
 }
 
@@ -32,6 +35,7 @@ interface BuildStore {
   active: boolean;
   draft: OfficeLayout | null;
   seating: Seating;
+  meetingSeating: Seating;
   past: Snapshot[];
   future: Snapshot[];
   palette: ItemType | null;
@@ -46,13 +50,17 @@ interface BuildStore {
   setPalette(t: ItemType | null): void;
   rotate(): void;
   select(id: string | null): void;
-  apply(next: OfficeLayout, seating?: Seating): void;
+  apply(next: OfficeLayout, seating?: Seating, meetingSeating?: Seating): void;
   place(item: Omit<PlacedItem, 'id'>): void;
   move(id: string, pos: { x: number; z: number }): void;
   rotateSelected(): void;
+  /** 007 US5: show an uploaded picture in a frame (undefined = back to the default picture). One undo step. */
+  setPicture(id: string, picture: string | undefined): void;
   removeSelected(): void;
   /** Seat an employee; whoever had the desk takes the employee's old desk (FR-011). */
   assignSeat(conversationId: string, deskId: string, currentDesks: Record<string, string | null>): void;
+  /** 007: seat an employee at a meeting-table seat; whoever sat there takes the employee's old meeting seat. */
+  assignMeetingSeat(conversationId: string, seatId: string, currentSeats: Record<string, string | null>): void;
   setDrag(d: DragPreview | null): void;
   /** Change the floor size (US4). Returns why it was refused, if it was. */
   resizeFloor(width: number, depth: number): ResizeResult;
@@ -79,10 +87,26 @@ export function effectiveDesks(current: Record<string, string | null>, seating: 
   return { ...current, ...seating };
 }
 
+/** Effective meeting seat of every employee: server value overlaid with this session's draft moves. */
+export function effectiveMeetingSeats(current: Record<string, string | null>, meetingSeating: Seating): Record<string, string | null> {
+  return { ...current, ...meetingSeating };
+}
+
+/** Meeting seats pointing at a table that is no longer in the layout are cleared (007). */
+function pruneMeetingSeating(layout: OfficeLayout, m: Seating): Seating {
+  const tables = new Set(layout.items.filter((i) => isMeetingTable(i.type)).map((i) => i.id));
+  let out = m;
+  for (const [id, seat] of Object.entries(m)) {
+    if (seat && !tables.has(seat.slice(0, seat.lastIndexOf('#')))) out = { ...out, [id]: null };
+  }
+  return out;
+}
+
 export const useBuild = create<BuildStore>((set, get) => ({
   active: false,
   draft: null,
   seating: {},
+  meetingSeating: {},
   past: [],
   future: [],
   palette: null,
@@ -92,16 +116,26 @@ export const useBuild = create<BuildStore>((set, get) => ({
   validation: null,
   resizeBlockers: [],
   begin: (layout) =>
-    set({ active: true, draft: structuredClone(layout), seating: {}, past: [], future: [], selectedId: null, palette: null, drag: null, validation: validateLayout(layout) }),
-  end: () => set({ active: false, draft: null, seating: {}, past: [], future: [], selectedId: null, palette: null, drag: null, validation: null, resizeBlockers: [] }),
+    set({ active: true, draft: structuredClone(layout), seating: {}, meetingSeating: {}, past: [], future: [], selectedId: null, palette: null, drag: null, validation: validateLayout(layout) }),
+  end: () => set({ active: false, draft: null, seating: {}, meetingSeating: {}, past: [], future: [], selectedId: null, palette: null, drag: null, validation: null, resizeBlockers: [] }),
   setPalette: (palette) => set({ palette, selectedId: null }),
   rotate: () => set((s) => ({ rotation: nextRot(s.rotation) })),
   select: (selectedId) => set({ selectedId, palette: null }),
-  apply: (next, seating) => {
+  apply: (next, seating, meetingSeating) => {
     const { draft, past } = get();
     if (!draft) return;
     const s = seating ?? get().seating;
-    set({ draft: next, seating: s, past: [...past.slice(-49), { layout: draft, seating: get().seating }], future: [], validation: validateLayout(next) });
+    // Seats at a table that was just deleted are dropped, but only for employees moved this session; the
+    // server clears the others when it saves (employees.assignDesks).
+    const m = pruneMeetingSeating(next, meetingSeating ?? get().meetingSeating);
+    set({
+      draft: next,
+      seating: s,
+      meetingSeating: m,
+      past: [...past.slice(-49), { layout: draft, seating: get().seating, meetingSeating: get().meetingSeating }],
+      future: [],
+      validation: validateLayout(next),
+    });
   },
   place: (item) => {
     const { draft } = get();
@@ -113,7 +147,7 @@ export const useBuild = create<BuildStore>((set, get) => ({
       const seat = seatPoint(placed);
       const chair: PlacedItem = { id: newId('chair'), type: 'chair', pos: { x: snap(seat.x - 0.25, 0.05), z: snap(seat.z - 0.25, 0.05) }, rotation: item.rotation };
       const cr = footprintRect(chair);
-      const taken = draft.items.some((i) => i.type !== 'wall' && i.type !== 'glass_wall' && rectsOverlap(footprintRect(i), cr));
+      const taken = draft.items.some((i) => !onEdgeGrid(i.type) && rectsOverlap(footprintRect(i), cr));
       if (!taken) extra.push(chair);
     }
     get().apply({ ...draft, items: [...draft.items, placed, ...extra] });
@@ -126,22 +160,41 @@ export const useBuild = create<BuildStore>((set, get) => ({
     const dx = pos.x - it.pos.x;
     const dz = pos.z - it.pos.z;
     const followers = new Set(it.type === 'desk' ? chairsOf(draft, it).map((c) => c.id) : []);
-    get().apply({
-      ...draft,
-      items: draft.items.map((i) =>
-        i.id === id ? { ...i, pos } : followers.has(i.id) ? { ...i, pos: { x: snap(i.pos.x + dx, 0.05), z: snap(i.pos.z + dz, 0.05) } } : i,
-      ),
-    });
+    get().apply(
+      dropUnsupportedFrames({
+        ...draft,
+        items: draft.items.map((i) =>
+          i.id === id ? { ...i, pos } : followers.has(i.id) ? { ...i, pos: { x: snap(i.pos.x + dx, 0.05), z: snap(i.pos.z + dz, 0.05) } } : i,
+        ),
+      }),
+    );
   },
   rotateSelected: () => {
     const { draft, selectedId } = get();
-    if (!draft || !selectedId) return;
-    get().apply({ ...draft, items: draft.items.map((i) => (i.id === selectedId ? { ...i, rotation: nextRot(i.rotation) } : i)) });
+    const it = draft?.items.find((i) => i.id === selectedId);
+    if (!draft || !it) return;
+    // 007: a frame flips to the other side of the same wall; on the outer wall (no other side) it stays.
+    const rotation = isWallMounted(it.type) ? (((it.rotation + 180) % 360) as Rotation) : nextRot(it.rotation);
+    if (isWallMounted(it.type) && !frameSupported(draft, { ...it, rotation })) return;
+    get().apply(dropUnsupportedFrames({ ...draft, items: draft.items.map((i) => (i.id === it.id ? { ...i, rotation } : i)) }));
+  },
+  setPicture: (id, picture) => {
+    const { draft } = get();
+    if (!draft) return;
+    get().apply({
+      ...draft,
+      items: draft.items.map((i) => {
+        if (i.id !== id) return i;
+        const next = { ...i, picture };
+        if (!picture) delete next.picture; // absent, not undefined: the saved JSON stays as before
+        return next;
+      }),
+    });
   },
   removeSelected: () => {
     const { draft, selectedId } = get();
     if (!draft || !selectedId) return;
-    get().apply({ ...draft, items: draft.items.filter((i) => i.id !== selectedId) });
+    get().apply(dropUnsupportedFrames({ ...draft, items: draft.items.filter((i) => i.id !== selectedId) }));
     set({ selectedId: null });
   },
   assignSeat: (conversationId, deskId, currentDesks) => {
@@ -149,11 +202,27 @@ export const useBuild = create<BuildStore>((set, get) => ({
     if (!draft) return;
     const desks = effectiveDesks(currentDesks, seating);
     const mine = desks[conversationId] ?? null;
-    if (mine === deskId) return;
+    if (mine === deskId) {
+      // 007: back onto their own (reserved) desk — leave the meeting if they were in one.
+      if (get().meetingSeating[conversationId] !== null) get().apply(draft, seating, { ...get().meetingSeating, [conversationId]: null });
+      return;
+    }
     const occupant = Object.entries(desks).find(([id, d]) => d === deskId && id !== conversationId)?.[0];
     const next: Seating = { ...seating, [conversationId]: deskId };
     if (occupant) next[occupant] = mine;
-    get().apply(draft, next);
+    // 007: dropping onto any desk ends the meeting for that employee.
+    get().apply(draft, next, { ...get().meetingSeating, [conversationId]: null });
+  },
+  assignMeetingSeat: (conversationId, seatId, currentSeats) => {
+    const { draft, meetingSeating } = get();
+    if (!draft) return;
+    const seats = effectiveMeetingSeats(currentSeats, meetingSeating);
+    const mine = seats[conversationId] ?? null;
+    if (mine === seatId) return;
+    const occupant = Object.entries(seats).find(([id, s]) => s === seatId && id !== conversationId)?.[0];
+    const next: Seating = { ...meetingSeating, [conversationId]: seatId };
+    if (occupant) next[occupant] = mine;
+    get().apply(draft, undefined, next);
   },
   setDrag: (drag) => set({ drag }),
   resizeFloor: (width, depth) => {
@@ -168,15 +237,29 @@ export const useBuild = create<BuildStore>((set, get) => ({
     return r;
   },
   undo: () => {
-    const { draft, seating, past, future } = get();
+    const { draft, seating, meetingSeating, past, future } = get();
     const prev = past.at(-1);
     if (!draft || !prev) return;
-    set({ draft: prev.layout, seating: prev.seating, past: past.slice(0, -1), future: [{ layout: draft, seating }, ...future], validation: validateLayout(prev.layout) });
+    set({
+      draft: prev.layout,
+      seating: prev.seating,
+      meetingSeating: prev.meetingSeating,
+      past: past.slice(0, -1),
+      future: [{ layout: draft, seating, meetingSeating }, ...future],
+      validation: validateLayout(prev.layout),
+    });
   },
   redo: () => {
-    const { draft, seating, past, future } = get();
+    const { draft, seating, meetingSeating, past, future } = get();
     const next = future[0];
     if (!draft || !next) return;
-    set({ draft: next.layout, seating: next.seating, past: [...past, { layout: draft, seating }], future: future.slice(1), validation: validateLayout(next.layout) });
+    set({
+      draft: next.layout,
+      seating: next.seating,
+      meetingSeating: next.meetingSeating,
+      past: [...past, { layout: draft, seating, meetingSeating }],
+      future: future.slice(1),
+      validation: validateLayout(next.layout),
+    });
   },
 }));

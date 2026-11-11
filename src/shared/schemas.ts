@@ -39,6 +39,9 @@ export const settingsSchema = z.object({
   mouseSensitivity: z.number().min(0.25).max(3).optional(),
 });
 
+/** 007: uploaded picture id (research R7-06); the strict shape also rules out path traversal. */
+export const PICTURE_ID_RE = /^[0-9a-f]{32}\.(webp|jpg|png)$/;
+
 const rotationSchema = z.union([z.literal(0), z.literal(90), z.literal(180), z.literal(270)]);
 const ID = z.string().min(1).max(100);
 
@@ -66,6 +69,7 @@ export const placedItemSchema = z.object({
   type: z.enum(PLACEABLE_TYPES as [string, ...string[]]),
   pos: z.object({ x: z.number().min(0).max(FLOOR_MAX), z: z.number().min(0).max(FLOOR_MAX) }),
   rotation: rotationSchema,
+  picture: z.string().regex(PICTURE_ID_RE).optional(),
 });
 
 export const officeLayoutSchema = z.object({
@@ -83,6 +87,8 @@ export const layoutPutSchema = z.union([
   z.object({
     layout: z.union([officeLayoutSchema, officeLayoutV1Schema]),
     seating: z.record(ID, ID.nullable()).optional(),
+    // 007 US3: conversationId → `<meeting table id>#<n>` or null (left the meeting).
+    meetingSeating: z.record(ID, ID.nullable()).optional(),
   }),
   officeLayoutSchema,
   officeLayoutV1Schema,
@@ -91,6 +97,7 @@ export const layoutPutSchema = z.union([
 export const employeeProfileSchema = z.object({
   appearance: z.string().max(100),
   deskId: z.string().max(100).nullable(),
+  meetingSeatId: z.string().max(100).nullable().optional(),
   lastSeenAt: z.string(),
   preferredModel: z.object({ modelId: z.string().regex(MODEL_ID_RE), chosenAt: z.string() }).nullable().optional(),
 });

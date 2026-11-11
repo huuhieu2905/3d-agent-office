@@ -66,7 +66,8 @@ export function Employee({ employee, grid, enter, leaving, lobbySlot, dimmed, on
   const character = useMemo(() => instantiate(employee.appearance), [employee.appearance]);
   useEffect(() => () => character.dispose(), [character]);
 
-  const seat = employee.deskId ? grid.seatOf(employee.deskId) : null;
+  // 007: a meeting seat wins over the (reserved) desk; a seat whose table is gone falls back to the desk.
+  const seat = (employee.meetingSeatId ? grid.seatOf(employee.meetingSeatId) : null) ?? (employee.deskId ? grid.seatOf(employee.deskId) : null);
   const brain = useMemo(
     () => new EmployeeBrain({ grid, seat, enter, lobbySlot, crowd, spots, shops, frame, id: employee.conversationId, ...debugBreaks() }),
     // The brain survives desk/state changes; it is recreated only if the office grid changes.

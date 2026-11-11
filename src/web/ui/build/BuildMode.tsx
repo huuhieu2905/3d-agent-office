@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
-import { CATALOG, snap } from '@shared/catalog';
+import { useEffect, useRef, useState } from 'react';
+import { CATALOG, isWallMounted, snap } from '@shared/catalog';
+import { PictureError, preparePicture, uploadPicture } from './picture';
 import { moveIsValid } from '../../scene/interaction/DragLayer';
 import { FLOOR_MAX, FLOOR_MIN, PLACEABLE_TYPES, type OfficeLayout } from '@shared/domain';
 import { floorSizeValid } from '@shared/layout-validation';
@@ -82,7 +83,7 @@ export function BuildMode() {
     setSaving(true);
     setError(null);
     try {
-      await api('/api/layout', { method: 'PUT', json: { layout: s.draft, seating: s.seating } });
+      await api('/api/layout', { method: 'PUT', json: { layout: s.draft, seating: s.seating, meetingSeating: s.meetingSeating } });
       window.dispatchEvent(new CustomEvent(LAYOUT_CHANGED));
       s.end();
     } catch (e) {
@@ -100,16 +101,31 @@ export function BuildMode() {
       <div className="build-title">🛠 Build mode</div>
       <div className="palette">
         {PLACEABLE_TYPES.map((t) => (
-          <button key={t} className={`palette-item ${s.palette === t ? 'active' : ''}`} onClick={() => s.setPalette(s.palette === t ? null : t)}>
+          <button
+            key={t}
+            data-testid={`palette-${t}`}
+            className={`palette-item ${s.palette === t ? 'active' : ''}`}
+            onClick={() => s.setPalette(s.palette === t ? null : t)}
+          >
             {CATALOG[t].label}
           </button>
         ))}
       </div>
-      <div className="muted small">
-        Pick an item in the palette, then click the floor to place it · click an item to select it, hold and drag to move it anywhere (hold{' '}
-        <kbd>Shift</kbd> to snap to the 0.5 m grid) · right-click the selected item to delete it · drag an employee onto a desk to seat them, onto an occupied desk to swap · <kbd>Esc</kbd>
-        cancels a drag · <kbd>⌘Z</kbd>/<kbd>⇧⌘Z</kbd> undo/redo
-      </div>
+      {s.palette && !selected ? (
+        // 007 US1: while placing, the hint line becomes the placing controls (same row, so the toolbar never grows).
+        <div className="muted small" role="group" aria-label="Placing">
+          <strong>{CATALOG[s.palette].label}</strong>: click the floor to place it · <kbd>R</kbd> rotates{' '}
+          <button className="btn" data-testid="build-rotate-placing" onClick={s.rotate}>
+            ⟳ Rotate <kbd>R</kbd>
+          </button>
+        </div>
+      ) : (
+        <div className="muted small">
+          Pick an item in the palette, then click the floor to place it · click an item to select it, hold and drag to move it anywhere (hold{' '}
+          <kbd>Shift</kbd> to snap to the 0.5 m grid) · right-click the selected item to delete it · drag an employee onto a desk or a meeting-table seat to seat them, onto an occupied one to swap · <kbd>Esc</kbd>
+          cancels a drag · <kbd>⌘Z</kbd>/<kbd>⇧⌘Z</kbd> undo/redo
+        </div>
+      )}
       {selected && (
         <div className="build-selected" role="group" aria-label="Selected item">
           <strong>{CATALOG[selected.type].label}</strong>
@@ -117,6 +133,7 @@ export function BuildMode() {
           <button className="btn" onClick={s.rotateSelected}>
             ⟳ Rotate <kbd>R</kbd>
           </button>
+          {isWallMounted(selected.type) && <FramePicture id={selected.id} picture={selected.picture} />}
           <button className="btn" onClick={s.removeSelected}>
             Delete
           </button>
@@ -156,6 +173,45 @@ export function BuildMode() {
         </button>
       </div>
     </div>
+  );
+}
+
+/** 007 US5 (contracts/ui-build.md U7-3): replace or reset the picture of the selected frame. */
+function FramePicture({ id, picture }: { id: string; picture?: string }) {
+  const setPicture = useBuild((st) => st.setPicture);
+  const input = useRef<HTMLInputElement>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const choose = async (file: File | undefined) => {
+    if (!file) return;
+    setBusy(true);
+    setError(null);
+    try {
+      setPicture(id, await uploadPicture(await preparePicture(file)));
+    } catch (e) {
+      setError(e instanceof PictureError ? e.message : 'Could not read this image');
+    } finally {
+      setBusy(false);
+      if (input.current) input.current.value = '';
+    }
+  };
+  return (
+    <>
+      <input ref={input} type="file" accept="image/png,image/jpeg,image/webp" hidden data-testid="frame-picture-input" onChange={(e) => void choose(e.target.files?.[0])} />
+      <button className="btn" data-testid="frame-change-picture" disabled={busy} onClick={() => input.current?.click()}>
+        {busy ? 'Uploading…' : 'Change picture'}
+      </button>
+      {picture && (
+        <button className="btn" data-testid="frame-reset-picture" disabled={busy} onClick={() => setPicture(id, undefined)}>
+          Reset picture
+        </button>
+      )}
+      {error && (
+        <span className="send-failed" role="alert">
+          {error}
+        </span>
+      )}
+    </>
   );
 }
 

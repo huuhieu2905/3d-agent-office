@@ -4,7 +4,7 @@ import type { OfficeLayout, PlacedItem } from '@shared/domain';
 // Layout v2; mirrors src/server/services/default-layout.ts (the web bundle must not import server code).
 // `floor` (T003/T056): a larger office, e.g. 40 × 40 m, keeps the same desk block in its north-west.
 
-export function defaultBenchLayout(floor?: { width: number; depth: number }, opts: { sofa?: boolean } = {}): OfficeLayout {
+export function defaultBenchLayout(floor?: { width: number; depth: number }, opts: { sofa?: boolean; rooms?: boolean } = {}): OfficeLayout {
   const items: PlacedItem[] = [];
   let n = 0;
   const add = (type: PlacedItem['type'], x: number, z: number, rotation: PlacedItem['rotation'] = 0) =>
@@ -31,5 +31,13 @@ export function defaultBenchLayout(floor?: { width: number; depth: number }, opt
     add('plant', x, z);
   const width = floor?.width ?? 16;
   const depth = floor?.depth ?? 12;
+  // 007 SC-006 "rooms": two 8-seat meeting tables east of the desks and 8 frames with (bench) pictures on
+  // the outer walls. Needs a floor of at least 22 × 14 m.
+  if (opts.rooms) {
+    add('meeting_table_8', 18, 2, 90);
+    add('meeting_table_8', 18, 8, 90);
+    for (const z of [2, 3.5, 5, 6.5]) items.push({ id: `photo-${z}`, type: 'photo_frame', pos: { x: 0, z }, rotation: 90, picture: `bench-${z}` });
+    for (const x of [2, 4, 10, 12]) items.push({ id: `painting-${x}`, type: 'painting', pos: { x, z: depth }, rotation: 180, picture: `bench-${x}` });
+  }
   return { schemaVersion: 2, floor: { width, depth }, shell: { glassSide: 'north', door: { side: 'south', offset: Math.min(7, width - 1) } }, items };
 }

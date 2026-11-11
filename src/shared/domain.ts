@@ -148,6 +148,8 @@ export interface Employee {
   visualState: VisualState;
   appearance: AppearanceId;
   deskId: string | null;
+  /** 007 US3: meeting-table seat `<tableId>#<n>` the employee sits at instead of their desk (desk stays reserved). */
+  meetingSeatId: string | null;
   projectId: string | null;
   projectColor: string;
   isSubagent: boolean;
@@ -168,6 +170,8 @@ export interface PreferredModel {
 export interface EmployeeProfile {
   appearance: AppearanceId;
   deskId: string | null;
+  /** 007 US3: meeting-table seat; optional so older files still load. While set, no desk is auto-assigned. */
+  meetingSeatId?: string | null;
   /** Model chosen for this conversation (002 data-model §1). Optional so older files still load. */
   preferredModel?: PreferredModel | null;
   /** When this conversation was last seen in the App; used for 30-day cleanup. */
@@ -199,6 +203,13 @@ export const ITEM_TYPES = [
   'water_cooler',
   'sofa',
   'wall_screen',
+  // 007: rooms, meeting rooms and wall art.
+  'long_glass',
+  'office_door',
+  'meeting_table_4',
+  'meeting_table_8',
+  'painting',
+  'photo_frame',
 ] as const;
 export type ItemType = (typeof ITEM_TYPES)[number];
 
@@ -224,6 +235,8 @@ export interface PlacedItem {
   type: ItemType;
   pos: { x: number; z: number };
   rotation: Rotation;
+  /** 007: frames only — id of an uploaded picture in the local data folder; absent = default picture. */
+  picture?: string;
 }
 
 export type DoorSide = 'south' | 'east' | 'west';

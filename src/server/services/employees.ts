@@ -5,6 +5,7 @@ import type { WsHub } from '../http/ws-hub';
 import type { Logger } from '../log';
 import { colorFor } from '../../shared/colors';
 import { desks } from './default-layout';
+import { findSeat } from '../../shared/nav-core';
 import type { EmployeeProfiles } from './employee-profiles';
 import type { LayoutStore } from './layout-store';
 import { computeVisualState } from './visual-state';
@@ -184,6 +185,7 @@ export class EmployeesService {
         visualState,
         appearance: p.appearance,
         deskId: p.deskId,
+        meetingSeatId: p.meetingSeatId ?? null,
         projectId: c.projectId,
         projectColor: colorFor(c.projectId),
         isSubagent: c.parentId != null,
@@ -222,6 +224,14 @@ export class EmployeesService {
     const allDesks = desks(layout);
     const deskIds = new Set(allDesks.map((d) => d.id));
     const taken = new Set<string>();
+    // 007: meeting seats whose table or seat number is gone, or that two employees hold, are cleared.
+    const seatsTaken = new Set<string>();
+    for (const c of visible) {
+      const p = await this.o.profiles.get(c.id);
+      if (!p.meetingSeatId) continue;
+      if (p.meetingSeatId.includes('#') && findSeat(layout, p.meetingSeatId) && !seatsTaken.has(p.meetingSeatId)) seatsTaken.add(p.meetingSeatId);
+      else await this.o.profiles.update(c.id, { meetingSeatId: null });
+    }
     for (const c of visible) {
       const p = await this.o.profiles.get(c.id);
       if (p.deskId && deskIds.has(p.deskId) && !taken.has(p.deskId)) taken.add(p.deskId);
@@ -231,7 +241,7 @@ export class EmployeesService {
     const ordered = [...visible].sort((a, b) => Number(a.parentId != null) - Number(b.parentId != null));
     for (const c of ordered) {
       const p = await this.o.profiles.get(c.id);
-      if (p.deskId) continue;
+      if (p.deskId || p.meetingSeatId) continue; // 007: no new desk while in a meeting
       const options = free();
       if (options.length === 0) break; // the rest wait in the lobby
       let chosen = options[0]!;

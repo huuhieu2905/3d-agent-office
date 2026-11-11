@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { minFloorSize, resizeBlockers, validateLayout } from '../../src/shared/layout-validation';
+import { dropUnsupportedFrames, edgeSegments, minFloorSize, resizeBlockers, validateLayout } from '../../src/shared/layout-validation';
+import { resizeLayout } from '../../src/shared/layout-resize';
 import { defaultLayout } from '../../src/server/services/default-layout';
 import { OfficeGrid } from '../../src/shared/nav-core';
+import { footprintRect, seatPoint, seatPoints } from '../../src/shared/catalog';
 import { findPath } from '../../src/web/scene/grid/astar';
 import type { OfficeLayout, PlacedItem } from '../../src/shared/domain';
 
@@ -137,5 +139,128 @@ describe('navigation grid (0.25 m) + A*', () => {
     const t0 = performance.now();
     expect(findPath(big, { x: 0, z: 0 }, { x: 159, z: 159 })).not.toBeNull();
     expect(performance.now() - t0).toBeLessThan(200);
+  });
+});
+
+// 007 US2: long glass (2 m) and the office door (1 m) on the 0.5 m edge grid.
+describe('007 rooms: long glass + office door', () => {
+  const base: OfficeLayout = { schemaVersion: 2, floor: { width: 10, depth: 8 }, shell: { glassSide: 'north', door: { side: 'south', offset: 4 } }, items: [] };
+  const it_ = (id: string, type: PlacedItem['type'], x: number, z: number, rotation: PlacedItem['rotation'] = 0): PlacedItem => ({ id, type, pos: { x, z }, rotation });
+  // A 4 m × 3 m room in the north-west corner with a desk inside.
+  const room = (door: PlacedItem[]): OfficeLayout => ({
+    ...base,
+    items: [it_('desk', 'desk', 1, 0.5), it_('g1', 'long_glass', 0, 3), it_('g2', 'long_glass', 2, 3), it_('g3', 'long_glass', 4, 0, 90), ...door],
+  });
+
+  it('a long glass wall covers four 0.5 m segments', () => {
+    expect(edgeSegments(it_('g', 'long_glass', 1, 2))).toEqual(['n:1,2', 'n:1.5,2', 'n:2,2', 'n:2.5,2']);
+    expect(edgeSegments(it_('d', 'office_door', 3, 1, 90))).toEqual(['w:3,1', 'w:3,1.5']);
+  });
+
+  it('rejects a long glass wall overlapping a short glass piece on any segment', () => {
+    const v = validateLayout({ ...base, items: [it_('short', 'glass_wall', 3.5, 5), it_('long', 'long_glass', 2, 5)] });
+    expect(v.invalidItems).toContain('long');
+  });
+
+  it('a room with an office door is valid and the door is walkable', () => {
+    const l = room([it_('door', 'office_door', 4, 2, 90)]);
+    expect(validateLayout(l)).toMatchObject({ ok: true });
+    const g = new OfficeGrid(l);
+    // Crossing the doorway (x = 4 m, z ≈ 2.5 m) is allowed; crossing the long glass next to it is not.
+    expect(g.canStep({ x: 15, z: 10 }, { x: 16, z: 10 })).toBe(true);
+    expect(g.canStep({ x: 15, z: 4 }, { x: 16, z: 4 })).toBe(false);
+  });
+
+  it('the same room closed with glass instead of a door cuts its desk off', () => {
+    const l = room([it_('w1', 'glass_wall', 4, 2, 90), it_('w2', 'glass_wall', 4, 2.5, 90)]);
+    expect(validateLayout(l).reasons['desk']).toBe('No path from the door to this desk');
+  });
+});
+
+// 007 US3: one generic seat rule for desks and meeting tables.
+describe('007 seats', () => {
+  // The desk-only rule from before 007, kept here to prove desks did not move.
+  const oldSeatPoint = (pos: { x: number; z: number }, rotation: 0 | 90 | 180 | 270) => {
+    const cx = pos.x / 0.5;
+    const cz = pos.z / 0.5;
+    const c =
+      rotation === 0 ? { x: cx + 1, z: cz + 2 } : rotation === 180 ? { x: cx + 1, z: cz - 1 } : rotation === 90 ? { x: cx - 1, z: cz + 1 } : { x: cx + 2, z: cz + 1 };
+    return { x: (c.x + 0.5) * 0.5, z: (c.z + 0.5) * 0.5 };
+  };
+
+  it('seatPoint(desk) is unchanged for every rotation', () => {
+    for (const rotation of [0, 90, 180, 270] as const)
+      for (const pos of [{ x: 2, z: 2 }, { x: 3.35, z: 7.15 }]) {
+        const now = seatPoint({ pos, rotation });
+        const old = oldSeatPoint(pos, rotation);
+        expect(now.x).toBeCloseTo(old.x, 6);
+        expect(now.z).toBeCloseTo(old.z, 6);
+      }
+  });
+
+  it('an 8-seat table has 8 distinct seats outside the table for every rotation', () => {
+    for (const rotation of [0, 90, 180, 270] as const) {
+      const t: PlacedItem = { id: 'mt', type: 'meeting_table_8', pos: { x: 4, z: 4 }, rotation };
+      const seats = seatPoints(t);
+      expect(seats.map((s) => s.id)).toEqual(['mt#0', 'mt#1', 'mt#2', 'mt#3', 'mt#4', 'mt#5', 'mt#6', 'mt#7']);
+      expect(new Set(seats.map((s) => `${s.x},${s.z}`)).size).toBe(8);
+      const r = footprintRect(t);
+      for (const s of seats) expect(s.x > r.x0 && s.x < r.x1 && s.z > r.z0 && s.z < r.z1).toBe(false);
+    }
+  });
+
+  it('meeting table seats are walkable and reachable; a blocked seat is reported', () => {
+    const t: PlacedItem = { id: 'mt', type: 'meeting_table_4', pos: { x: 13, z: 4 }, rotation: 0 };
+    const l = withItems([t]);
+    expect(validateLayout(l).ok).toBe(true);
+    const g = new OfficeGrid(l);
+    for (const s of seatPoints(t)) expect(g.seatOf(s.id)).not.toBeNull();
+    // A plant on the north-west seat.
+    expect(validateLayout(withItems([t, plant('p', 13, 3.25)])).reasons['mt']).toBe('A seat of this table is blocked');
+  });
+});
+
+// 007 US5: frames hang on walls, glass or the inside of the outer wall.
+describe('007 frames', () => {
+  const base: OfficeLayout = { schemaVersion: 2, floor: { width: 10, depth: 8 }, shell: { glassSide: 'north', door: { side: 'south', offset: 4 } }, items: [] };
+  const item = (id: string, type: PlacedItem['type'], x: number, z: number, rotation: PlacedItem['rotation'] = 0, extra: Partial<PlacedItem> = {}): PlacedItem => ({ id, type, pos: { x, z }, rotation, ...extra });
+  const glass = item('g', 'long_glass', 2, 3); // z = 3, x 2–4
+  const v = (items: PlacedItem[]) => validateLayout({ ...base, items });
+
+  it('hangs on glass (either side) but not on the open floor or an office door', () => {
+    expect(v([glass, item('f', 'painting', 2.5, 3, 0)]).ok).toBe(true);
+    expect(v([glass, item('f', 'painting', 2.5, 3, 180)]).ok).toBe(true);
+    expect(v([item('f', 'photo_frame', 6, 5)]).reasons['f']).toBe('A picture must hang on a wall');
+    expect(v([item('d', 'office_door', 6, 3), item('f', 'photo_frame', 6, 3)]).reasons['f']).toBe('A picture must hang on a wall');
+  });
+
+  it('hangs on the inside of the outer wall, never on the north façade or the main door', () => {
+    expect(v([item('f', 'painting', 0, 2, 90)]).ok).toBe(true); // west wall, facing east
+    expect(v([item('f', 'painting', 0, 2, 270)]).ok).toBe(false); // facing out
+    expect(v([item('f', 'painting', 3, 0, 0)]).ok).toBe(false); // north glass façade
+    expect(v([item('f', 'photo_frame', 4.5, 8, 180)]).ok).toBe(false); // main door span (x 4–5)
+    expect(v([item('f', 'photo_frame', 6, 8, 180)]).ok).toBe(true); // south wall
+  });
+
+  it('one frame per side of a segment; a picture only on frames', () => {
+    expect(v([glass, item('a', 'painting', 2, 3, 0), item('b', 'photo_frame', 2.5, 3, 0)]).reasons['b']).toBe('Another picture is already here');
+    expect(v([glass, item('a', 'painting', 2, 3, 0), item('b', 'photo_frame', 2.5, 3, 180)]).ok).toBe(true);
+    expect(v([item('s', 'sofa', 6, 5, 0, { picture: `${'a'.repeat(32)}.webp` })]).reasons['s']).toBe('Only picture frames can show a picture');
+  });
+
+  it('a frame on the outer wall moves with it on resize, and is never a resize blocker', () => {
+    const l: OfficeLayout = { ...base, items: [item('e', 'painting', 10, 2, 270), item('s', 'photo_frame', 8, 8, 180)] };
+    expect(resizeBlockers(l, 8, 6)).toEqual([]);
+    const grown = resizeLayout(l, 12, 9);
+    expect(grown.ok && grown.layout.items.map((i) => i.pos)).toEqual([{ x: 12, z: 2 }, { x: 8, z: 9 }]);
+    const shrunk = resizeLayout(l, 8, 6);
+    expect(shrunk.ok && shrunk.layout.items.map((i) => i.pos)).toEqual([{ x: 8, z: 2 }, { x: 7.5, z: 6 }]);
+    expect(shrunk.ok && validateLayout(shrunk.layout).ok).toBe(true);
+  });
+
+  it('dropUnsupportedFrames removes a frame whose glass is gone', () => {
+    const l: OfficeLayout = { ...base, items: [glass, item('f', 'painting', 2.5, 3, 0)] };
+    expect(dropUnsupportedFrames({ ...l, items: [l.items[1]!] }).items).toEqual([]);
+    expect(dropUnsupportedFrames(l)).toBe(l);
   });
 });

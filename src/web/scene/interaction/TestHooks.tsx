@@ -5,7 +5,7 @@ import { BRAINS } from '../Employee';
 import { parkFrame, parkShops } from '../park/park-layout';
 import { fpControl } from '../cameras/FirstPerson';
 import { footprintRect } from '@shared/catalog';
-import type { OfficeLayout } from '@shared/domain';
+import type { OfficeLayout, PlacedItem } from '@shared/domain';
 import { useBuild } from '../../state/build';
 
 // e2e support (002 T029): project a floor-space point (metres from the office's north-west corner) to
@@ -19,7 +19,7 @@ declare global {
     __agentOffice?: {
       project(x: number, z: number, y?: number): { x: number; y: number };
       /** Arrange-mode state, for assertions and debugging. */
-      arrange(): { active: boolean; selectedId: string | null; drag: unknown; seating: Record<string, string | null>; past: number };
+      arrange(): { active: boolean; selectedId: string | null; drag: unknown; seating: Record<string, string | null>; past: number; items: PlacedItem[]; meetingSeating: Record<string, string | null> };
       /** 004 U4-4: every employee brain. */
       brains(): { id: string; mode: string; activity: string | null; x: number; z: number; outside: boolean }[];
       /** 004 U4-4: shorten breaks (ms between breaks) for e2e. */
@@ -47,7 +47,7 @@ export function TestHooks({ layout }: { layout: OfficeLayout }) {
       },
       arrange() {
         const b = useBuild.getState();
-        return { active: b.active, selectedId: b.selectedId, drag: b.drag, seating: b.seating, past: b.past.length };
+        return { active: b.active, selectedId: b.selectedId, drag: b.drag, seating: b.seating, past: b.past.length, items: b.draft?.items ?? layout.items, meetingSeating: b.meetingSeating };
       },
       brains() {
         return [...BRAINS].map(([id, b]) => ({ id, mode: b.modeKind, activity: b.activity, x: b.position.x, z: b.position.z, outside: b.outside }));

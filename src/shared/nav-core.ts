@@ -1,4 +1,4 @@
-import { CATALOG, footprintRect, isEdge, seatPoint } from './catalog';
+import { CATALOG, footprintRect, isMeetingTable, seatPoints, type SeatPoint } from './catalog';
 import type { OfficeLayout, PlacedItem } from './domain';
 import { DOOR_WIDTH } from './domain';
 
@@ -55,7 +55,7 @@ export class OfficeGrid {
           const cz = (z + 0.5) * NAV_CELL;
           if (cx > r.x0 - INFLATE && cx < r.x1 + INFLATE && cz > r.z0 - INFLATE && cz < r.z1 + INFLATE) this.blockedCells[this.idx(x, z)] = 1;
         }
-    } else if (isEdge(item.type)) {
+    } else if (kind === 'edge') {
       if (r.z0 === r.z1) {
         const z = Math.round(r.z0 / NAV_CELL);
         if (z <= 0 || z >= this.depth) return;
@@ -118,11 +118,10 @@ export class OfficeGrid {
     return this.floorToCell(x + this.widthM / 2, z + this.depthM / 2);
   }
 
-  seatOf(deskId: string): Cell | null {
-    const desk = this.layout.items.find((i) => i.id === deskId && i.type === 'desk');
-    if (!desk) return null;
-    const p = seatPoint(desk);
-    return this.floorToCell(p.x, p.z);
+  /** Seat cell of a desk (`deskId`) or of a meeting-table seat (`<tableId>#<n>`, 007). */
+  seatOf(seatId: string): Cell | null {
+    const p = findSeat(this.layout, seatId);
+    return p ? this.floorToCell(p.x, p.z) : null;
   }
 
   /** Nearest walkable cell around an item (e.g. in front of the water cooler). */
@@ -171,4 +170,13 @@ export class OfficeGrid {
     if (!this.walkable(lobby.x, lobby.z)) lobby = door;
     return { door, lobby };
   }
+}
+
+/** A desk id or `<tableId>#<n>` → that seat in the layout, or null (split at the last `#`, table and n checked). */
+export function findSeat(layout: Pick<OfficeLayout, 'items'>, seatId: string): SeatPoint | null {
+  const hash = seatId.lastIndexOf('#');
+  const itemId = hash < 0 ? seatId : seatId.slice(0, hash);
+  const item = layout.items.find((i) => i.id === itemId);
+  if (!item || (hash < 0 ? item.type !== 'desk' : !isMeetingTable(item.type))) return null;
+  return seatPoints(item).find((s) => s.id === seatId) ?? null;
 }
